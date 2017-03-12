@@ -1,0 +1,8 @@
+*.suo
+.vs/
+*.ncb
+Backup*/
+
+[Dd]ebug/
+[Rr]elease/
+*.obj
