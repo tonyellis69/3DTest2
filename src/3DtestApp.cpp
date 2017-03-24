@@ -390,12 +390,18 @@ void C3DtestApp::draw() {
 						Engine.drawModel(*chunk);
 					draw++;
 				}
-				if (chunk->tag == 131) {
-					vec3 pos = chunk->getPos();
-					watch::watch2 << pos.x << " " << pos.y <<" " << pos.z;
+				if (chunk->tag == 1572)
+					int p = 0;
+			
+			}
+
+			if (terrain.layers[layer].superChunks[sc]->tmpIndex == i32vec3(0, 2, 0) && terrain.layers[layer].superChunks[sc]->LoD == 1) {
+				CSuperChunk* sup = terrain.layers[layer].superChunks[sc];
+
+				watch::watch2 << sup->faceBoundary[0] << " " << sup->faceBoundary[1] << " " << sup->faceBoundary[2];
+				watch::watch2 << " " << sup->faceBoundary[3] << " " << sup->faceBoundary[4] << " " << sup->faceBoundary[5];
 
 
-				}
 			}
 		} 
 		

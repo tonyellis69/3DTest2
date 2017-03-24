@@ -6,3 +6,4 @@ Backup*/
 [Dd]ebug/
 [Rr]elease/
 *.obj
+*.pdb
