@@ -56,7 +56,7 @@ public:
 	int hChunkSamplePos;
 	int hChunkTriTable;
 	int hTriTableTex; ///<A data texture of triangle arrangements for Marching Cubes.
-
+	int hChunkTerrainPos;///<Position relative to terrain origin.
 
 	CTerrain terrain;
 	

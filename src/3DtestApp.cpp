@@ -100,6 +100,7 @@ void C3DtestApp::onStart() {
 	hChunkColour = Engine.getShaderDataHandle("inColour");
 	hChunkSamplePos = Engine.getShaderDataHandle("samplePos");
 	hChunkTriTable = Engine.getShaderDataHandle("hTriTableTex");
+	hChunkTerrainPos = Engine.getShaderDataHandle("terrainPos");
 
 	//Upload data texture for chunk shader
 	hTriTableTex = Engine.createDataTexture(intTex,16,256,&triTable);
@@ -136,12 +137,15 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	Engine.setCurrentShader(hChunkProg);
 	Engine.setShaderValue(hChunkCubeSize,chunk.cubeSize);
 
-	//float LoDscale = 4;//chunk.LoD;
+
 	float LoDscale = float(1 << chunk.LoD-1);
 	Engine.setShaderValue(hChunkLoDscale,LoDscale);
 	Engine.setShaderValue(hChunkColour,chunk.colour);
 	Engine.setShaderValue(hChunkSamplePos,chunk.samplePos);
 	Engine.setDataTexture(hTriTableTex);
+
+	vec3 pos =chunk.getPos();
+	Engine.setShaderValue(hChunkTerrainPos, pos);
 
 	unsigned int hFeedBackBuf; 
 	int vertsPerPrimitive = 3 * chunk.nAttribs;
@@ -378,35 +382,28 @@ void C3DtestApp::draw() {
 	Chunk* chunk;
 
 	int draw =0;
-
+	mvp = Engine.currentCamera->clipMatrix * terrain.chunkOrigin;
 	for (int layer=0;layer<terrain.layers.size();layer++) {
 		for (int sc=0;sc<terrain.layers[layer].superChunks.size();sc++) {
 			for (int c=0;c<terrain.layers[layer].superChunks[sc]->chunkList.size();c++) {
 				chunk = terrain.layers[layer].superChunks[sc]->chunkList[c];
-				mvp = Engine.currentCamera->clipMatrix * chunk->worldMatrix; 
+				//mvp = Engine.currentCamera->clipMatrix * terrain.chunkOrigin;// *chunk->worldMatrix;
 				Engine.setShaderValue(Engine.rMVPmatrix,mvp);
 				Engine.setShaderValue(Engine.rNormalModelToCameraMatrix,mat3(chunk->worldMatrix));
 				if ((chunk->hBuffer > 0) && (chunk->live)) {
 						Engine.drawModel(*chunk);
 					draw++;
 				}
-				if (chunk->tag == 1572)
-					int p = 0;
+			}
+
 			
-			}
-
-			if (terrain.layers[layer].superChunks[sc]->tmpIndex == i32vec3(0, 2, 0) && terrain.layers[layer].superChunks[sc]->LoD == 1) {
-				CSuperChunk* sup = terrain.layers[layer].superChunks[sc];
-
-				watch::watch2 << sup->faceBoundary[0] << " " << sup->faceBoundary[1] << " " << sup->faceBoundary[2];
-				watch::watch2 << " " << sup->faceBoundary[3] << " " << sup->faceBoundary[4] << " " << sup->faceBoundary[5];
-
-
-			}
 		} 
 		
 	}
 
+	vec3 pos = terrain.chunkOrigin[3];
+	watch::watch2 << pos.x << " " << pos.t << " " << pos.z;
+	//watch::watch2 << " " << sup->faceBoundary[3] << " " << sup->faceBoundary[4] << " " << sup->faceBoundary[5];
 	
 
 	//wireframe drawing:
@@ -416,9 +413,6 @@ void C3DtestApp::draw() {
 	Engine.setShaderValue(hWireColour,vec4(0,1,0,0.4f));
 
 	//draw bounding boxes
-
-		
-
 	if (supWire) {
 		//draw superchunk
 		float siz; 
@@ -430,15 +424,10 @@ void C3DtestApp::draw() {
 			for (int s=0;s<terrain.layers[l].superChunks.size();s++) {
 				chunkBB.setPos(terrain.layers[l].superChunks[s]->nwWorldPos);
 				Engine.setShaderValue(hWireMVPmatrix,Engine.currentCamera->clipMatrix * chunkBB.worldMatrix);
-				//if (terrain.layers[l].superChunks[s]->LoD == 1)
 					Engine.drawModel(chunkBB);
-				
 			}
-		
 		}
 	}
-
-
 }
 
 void C3DtestApp::drawChunkBB(CModel& model) {

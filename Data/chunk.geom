@@ -11,8 +11,6 @@
 
 in VertexData
 {
-
-	
 	vec3 vert;
 	float sample;
 	
@@ -31,6 +29,8 @@ out	vec3 normal;
 uniform isampler2D triTableTex; 
 
 uniform float iVertTest = 0.5; 
+
+uniform vec3 terrainPos; //position relative to terrain origin.
 
 //Compute interpolated vertex along an edge 
 vec3 vertexInterp(float isolevel, vec3 v0, float l0, vec3 v1, float l1){ 
@@ -114,11 +114,11 @@ int triTableValue(int i, int j){
 								
 	
 		
-			gl_Position = tri[0];	
+			gl_Position = tri[0]  + terrainPos;	
 			EmitVertex();
-			gl_Position = tri[1];	
+			gl_Position = tri[1] + terrainPos;	
 			EmitVertex();
-			gl_Position = tri[2];	
+			gl_Position = tri[2] + terrainPos;	
 			EmitVertex();
 		
 			//End triangle strip at firts triangle 
