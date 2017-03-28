@@ -126,8 +126,9 @@ void C3DtestApp::createBB() {
 									4,5,5,6,6,7,7,4,
 									6,2,7,3,5,1,4,0};
 
-	chunkBB.noVerts = 8;
-	chunkBB.indexSize = 24;
+	//chunkBB.noVerts = 8;
+	//chunkBB.indexSize = 24;
+	Engine.setVertexDetails(chunkBB, 1, 24, 8);
 	Engine.storeIndexedModel(&chunkBB,boxV,index);
 }
 
@@ -148,12 +149,15 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	Engine.setShaderValue(hChunkTerrainPos, pos);
 
 	unsigned int hFeedBackBuf; 
-	int vertsPerPrimitive = 3 * chunk.nAttribs;
+	int vertsPerPrimitive = 3 * chunk.noAttribs;
 	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
 	int nVertsOut = cubesPerChunkEdge * cubesPerChunkEdge * cubesPerChunkEdge * maxMCverts;
 
-	chunk.nTris = Engine.acquireFeedbackModel(shaderChunkGrid,sizeof(vec4)*nVertsOut*chunk.nAttribs,vertsPerPrimitive,chunk);	
-	terrain.totalTris += chunk.nTris;
+	Engine.setVertexDetails(chunk, 3, 0, 0);
+	////////call using CMultiDrawModel instead of chunk, can belong to terrain
+	chunk.noTris = Engine.acquireFeedbackModel(shaderChunkGrid,sizeof(vec4)*nVertsOut*chunk.noAttribs,vertsPerPrimitive,chunk);
+
+	terrain.totalTris += chunk.noTris;
 }
 
 
@@ -372,7 +376,7 @@ void C3DtestApp::onResize(int width, int height) {
 
 
 void C3DtestApp::draw() {
-
+	//return;
 	//draw chunk
 	Engine.setStandard3dShader();
 	glm::mat3 normMatrix(terrain.worldMatrix); 
@@ -390,7 +394,7 @@ void C3DtestApp::draw() {
 				//mvp = Engine.currentCamera->clipMatrix * terrain.chunkOrigin;// *chunk->worldMatrix;
 				Engine.setShaderValue(Engine.rMVPmatrix,mvp);
 				Engine.setShaderValue(Engine.rNormalModelToCameraMatrix,mat3(chunk->worldMatrix));
-				if ((chunk->hBuffer > 0) && (chunk->live)) {
+				if (/*(chunk->hBuffer > 0) &&*/ (chunk->live)) {
 						Engine.drawModel(*chunk);
 					draw++;
 				}
@@ -538,11 +542,12 @@ void C3DtestApp::initChunkShell() {
 	}
 
 	
-	chunkShell.noVerts = shellTotalVerts;
-	chunkShell.nAttribs = 1;
-	chunkShell.indexSize = 0; 
+	//chunkShell.noVerts = shellTotalVerts;
+//	chunkShell.nAttribs = 1;
+//	chunkShell.indexSize = 0; 
+	Engine.setVertexDetails(chunkShell, 1, 0, shellTotalVerts);
 	chunkShell.drawMode = GL_POINTS;
-	Engine.storeModel(&chunkShell,shell);
+	Engine.storeModel(&chunkShell,shell, shellTotalVerts);
 	delete[] shell;
 
 }
@@ -590,12 +595,13 @@ void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
 
 	} while (i < noIndices);
 	
-	shaderChunkGrid.noVerts = noVerts;
-	shaderChunkGrid.nAttribs = 1;
-	shaderChunkGrid.indexSize = noIndices; 
+	//shaderChunkGrid.noVerts = noVerts;
+	//shaderChunkGrid.nAttribs = 1;
+	//shaderChunkGrid.indexSize = noIndices; 
 	shaderChunkGrid.drawMode = GL_LINES_ADJACENCY;
 	
 	//Engine.(&shaderChunkGrid,shaderChunkVerts,index);
+	Engine.setVertexDetails(shaderChunkGrid, 1, noIndices, noVerts);
 	Engine.storeIndexedModel(&shaderChunkGrid,shaderChunkVerts,index);
 
 	delete[] shaderChunkVerts;
