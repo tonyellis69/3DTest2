@@ -41,10 +41,19 @@ void C3DtestApp::onStart() {
 	selectChk = i32vec3(0,0,0);	
 	mouseLook = false;
 
-	terrain.EXTsuperChunkIsEmpty.Set(this,&C3DtestApp::superChunkIsEmpty);
-	terrain.EXTchunkExists.Set(this,&C3DtestApp::chunkExists);
-	terrain.EXTfreeChunkModel.Set(&Engine,&CEngine::freeModel);
-	terrain.EXTcreateChunkMesh.Set(this,&C3DtestApp::createChunkMesh);
+	terrain = Engine.createTerrain();
+	terrain->setMultiBufferSize(200000000,2000);
+
+
+
+
+
+
+
+	terrain->EXTsuperChunkIsEmpty.Set(this,&C3DtestApp::superChunkIsEmpty);
+	terrain->EXTchunkExists.Set(this,&C3DtestApp::chunkExists);
+	terrain->EXTfreeChunkModel.Set(&Engine,&CEngine::freeModel);
+	terrain->EXTcreateChunkMesh.Set(this,&C3DtestApp::createChunkMesh);
 
 	initChunkShell();
 
@@ -58,12 +67,14 @@ void C3DtestApp::onStart() {
 
 	double t = Engine.Time.milliseconds();
 
+	Engine.setVertexDetailsMulti(*terrain, terrainNoAttribs, 0, 200000000);
+
 	initChunkGrid(cubesPerChunkEdge);
 
-	terrain.setSizes(chunksPerSuperChunkEdge,cubesPerChunkEdge,cubeSize);
-	terrain.createLayers(4,2,1);
+	terrain->setSizes(chunksPerSuperChunkEdge,cubesPerChunkEdge,cubeSize);
+	terrain->createLayers(4,2,1);
 
-	terrain.createAllChunks(); //nearly 4/5 of time spent here!
+	terrain->createAllChunks(); //nearly 4/5 of time spent here!
 	//goes down massively with chunks per superchunk, so it's definitel a number-of-calls issue
 
 	t = Engine.Time.milliseconds() - t;
@@ -157,7 +168,7 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	////////call using CMultiDrawModel instead of chunk, can belong to terrain
 	chunk.noTris = Engine.acquireFeedbackModel(shaderChunkGrid,sizeof(vec4)*nVertsOut*chunk.noAttribs,vertsPerPrimitive,chunk);
 
-	terrain.totalTris += chunk.noTris;
+	terrain->totalTris += chunk.noTris;
 }
 
 
@@ -339,8 +350,8 @@ void C3DtestApp::keyCheck() {
 
 		
 		if (KeyDown['Z']) {
-			terrain.advance(north);
-			terrain.advance(west);
+			terrain->advance(north);
+			terrain->advance(west);
 			EatKeys();
 		}
 
@@ -379,19 +390,19 @@ void C3DtestApp::draw() {
 	//return;
 	//draw chunk
 	Engine.setStandard3dShader();
-	glm::mat3 normMatrix(terrain.worldMatrix); 
+	glm::mat3 normMatrix(terrain->worldMatrix); 
 	//Engine.setShaderValue(Engine.rNormalModelToCameraMatrix,normMatrix);
 	mat4 mvp; 
 
 	Chunk* chunk;
 
 	int draw =0;
-	mvp = Engine.currentCamera->clipMatrix * terrain.chunkOrigin;
-	for (int layer=0;layer<terrain.layers.size();layer++) {
-		for (int sc=0;sc<terrain.layers[layer].superChunks.size();sc++) {
-			for (int c=0;c<terrain.layers[layer].superChunks[sc]->chunkList.size();c++) {
-				chunk = terrain.layers[layer].superChunks[sc]->chunkList[c];
-				//mvp = Engine.currentCamera->clipMatrix * terrain.chunkOrigin;// *chunk->worldMatrix;
+	mvp = Engine.currentCamera->clipMatrix * terrain->chunkOrigin;
+	for (int layer=0;layer<terrain->layers.size();layer++) {
+		for (int sc=0;sc<terrain->layers[layer].superChunks.size();sc++) {
+			for (int c=0;c<terrain->layers[layer].superChunks[sc]->chunkList.size();c++) {
+				chunk = terrain->layers[layer].superChunks[sc]->chunkList[c];
+				//mvp = Engine.currentCamera->clipMatrix * terrain->chunkOrigin;// *chunk->worldMatrix;
 				Engine.setShaderValue(Engine.rMVPmatrix,mvp);
 				Engine.setShaderValue(Engine.rNormalModelToCameraMatrix,mat3(chunk->worldMatrix));
 				if (/*(chunk->hBuffer > 0) &&*/ (chunk->live)) {
@@ -405,14 +416,14 @@ void C3DtestApp::draw() {
 		
 	}
 
-	vec3 pos = terrain.chunkOrigin[3];
+	vec3 pos = terrain->chunkOrigin[3];
 	watch::watch2 << pos.x << " " << pos.t << " " << pos.z;
 	//watch::watch2 << " " << sup->faceBoundary[3] << " " << sup->faceBoundary[4] << " " << sup->faceBoundary[5];
 	
 
 	//wireframe drawing:
 	Engine.setCurrentShader(hWireProg);
-	float chunkRealSize = terrain.layers[0].superChunks[0]->cubesPerChunkEdge * terrain.layers[0].superChunks[0]->cubeSize;
+	float chunkRealSize = terrain->layers[0].superChunks[0]->cubesPerChunkEdge * terrain->layers[0].superChunks[0]->cubeSize;
 	Engine.setShaderValue(hWireScale,vec3(chunkRealSize,chunkRealSize,chunkRealSize));
 	Engine.setShaderValue(hWireColour,vec4(0,1,0,0.4f));
 
@@ -421,12 +432,12 @@ void C3DtestApp::draw() {
 		//draw superchunk
 		float siz; 
 		
-		for (int l=0;l<terrain.layers.size();l++) {
+		for (int l=0;l<terrain->layers.size();l++) {
 			Engine.setShaderValue(hWireColour,vec4(0,1,0,0.4f));
-			siz = terrain.layers[l].cubeSize * cubesPerChunkEdge * chunksPerSuperChunkEdge;
+			siz = terrain->layers[l].cubeSize * cubesPerChunkEdge * chunksPerSuperChunkEdge;
 			Engine.setShaderValue(hWireScale,vec3(siz));
-			for (int s=0;s<terrain.layers[l].superChunks.size();s++) {
-				chunkBB.setPos(terrain.layers[l].superChunks[s]->nwWorldPos);
+			for (int s=0;s<terrain->layers[l].superChunks.size();s++) {
+				chunkBB.setPos(terrain->layers[l].superChunks[s]->nwWorldPos);
 				Engine.setShaderValue(hWireMVPmatrix,Engine.currentCamera->clipMatrix * chunkBB.worldMatrix);
 					Engine.drawModel(chunkBB);
 			}
@@ -435,7 +446,7 @@ void C3DtestApp::draw() {
 }
 
 void C3DtestApp::drawChunkBB(CModel& model) {
-	mat4 relativePos = model.worldMatrix *   terrain.worldMatrix;
+	mat4 relativePos = model.worldMatrix *   terrain->worldMatrix;
 	Engine.setShaderValue(hWireMVPmatrix,Engine.currentCamera->clipMatrix * relativePos);
 	Engine.drawModel(model);
 }
@@ -457,8 +468,8 @@ void C3DtestApp::advance(Tdirection direction) {
 
 	//Move terrain in given direction
 	vec3 movement = dir * float(10.0f); 
-	terrain.translate(movement);
-	vec3 pos = terrain.getPos();
+	terrain->translate(movement);
+	vec3 pos = terrain->getPos();
 
 
 	int chunkDist = cubesPerChunkEdge * cubeSize; //span of a chunk in world space
@@ -471,15 +482,15 @@ void C3DtestApp::advance(Tdirection direction) {
 		posMod.x = fmod(pos.x,chunkDist);
 		posMod.y = fmod(pos.y,chunkDist);
 		posMod.z = fmod(pos.z,chunkDist);
-		terrain.setPos(posMod ); //secretly move terrain back before scrolling to ensure it scrolls on the spot
-		terrain.advance(direction); //
+		terrain->setPos(posMod ); //secretly move terrain back before scrolling to ensure it scrolls on the spot
+		terrain->advance(direction); //
 	}
 }
 
 /** Called every frame. Mainly use this to scroll terrain if we're moving in first-person mode*/
 void C3DtestApp::Update() {
 	
-	terrain.update();
+	terrain->update();
 
 	if (fpsOn) {
 		Tdirection direction = none;
@@ -503,7 +514,7 @@ void C3DtestApp::Update() {
 					direction = east;
 				else
 					direction = west;
-				terrain.advance(direction);
+				terrain->advance(direction);
 			}
 			
 			if (outsideChunkBoundary.z) {
@@ -511,7 +522,7 @@ void C3DtestApp::Update() {
 					direction = south;
 				else
 					direction = north;
-				terrain.advance(direction);
+				terrain->advance(direction);
 			}
 		}	
 	}
@@ -611,7 +622,7 @@ void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
 
 
 C3DtestApp::~C3DtestApp() {
-
+	delete terrain;
 	
 }
 

@@ -58,7 +58,7 @@ public:
 	int hTriTableTex; ///<A data texture of triangle arrangements for Marching Cubes.
 	int hChunkTerrainPos;///<Position relative to terrain origin.
 
-	CTerrain terrain;
+	CTerrain* terrain;
 	
 	CModel chunkBB; ///<Wireframe bounding box for chunks.
 
@@ -86,6 +86,8 @@ const float yawAng = 0.22f;
 const int cubesPerChunkEdge = 16; //8 ///<Number of cubes along a chunk edge
 const float cubeSize = 2.5;//10; ///<Size of cubes in worldspace.
 const int chunksPerSuperChunkEdge = 4;//8;
+
+const int terrainNoAttribs = 3;
 
 
 static const int edgeTable[256]=
