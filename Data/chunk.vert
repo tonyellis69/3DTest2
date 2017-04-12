@@ -23,7 +23,7 @@ out vec4 vColour;
 #include noise.lib
 
 float getSample(vec3 cornerOffset) {
-		vec3 sampleCorner = vec3(samplePos) + ((position + cornerOffset) * LoDscale) ;
+		vec3 sampleCorner = vec3(samplePos ) + ((position + cornerOffset) * LoDscale ) ;
 		//sampleCorner.y += 16;
 		//TO DO: SCRAP THIS!!!
 	

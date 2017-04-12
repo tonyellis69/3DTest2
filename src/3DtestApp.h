@@ -60,7 +60,7 @@ public:
 
 	CTerrain* terrain;
 	
-	CModel chunkBB; ///<Wireframe bounding box for chunks.
+	CModel* chunkBB; ///<Wireframe bounding box for chunks.
 
 	
 	double oldTime;
@@ -74,11 +74,13 @@ public:
 
 	glm::i32vec3 selectChk; ///<Index of the chunk we're selecting
 
-	CModel chunkShell; ///<A model to represent the outer layer of a potentianl chunk.
+	CModel* chunkShell; ///<A model to represent the outer layer of a potentianl chunk.
 	int shellTotalVerts; ///<Total vertices that make up the shell.
-	CModel shaderChunkGrid; ///<3D grid of verts modelling the cubes of a chunk, used in terrain creation.
+	CModel* shaderChunkGrid; ///<3D grid of verts modelling the cubes of a chunk, used in terrain creation.
 
 	bool supWire; ///<True when superchunk wireframe is on.
+
+
 
 };
 

@@ -15,12 +15,17 @@ using namespace watch;
 
 using namespace glm;
 
+ 
 
 C3DtestApp::C3DtestApp() {
 
 }
 
 void C3DtestApp::onStart() {
+
+	
+	
+
 
 	dataPath = homeDir + "Data\\";
 	lastMousePos = glm::vec2(0,0);
@@ -42,11 +47,9 @@ void C3DtestApp::onStart() {
 	mouseLook = false;
 
 	terrain = Engine.createTerrain();
-	terrain->setMultiBufferSize(200000000,2000);
+	terrain->setMultiBufferSize(200000000, 2000, terrainNoAttribs, sizeof(vBuf::T3Dvert));
 
-
-
-
+	
 
 
 
@@ -67,12 +70,12 @@ void C3DtestApp::onStart() {
 
 	double t = Engine.Time.milliseconds();
 
-	Engine.setVertexDetailsMulti(*terrain, terrainNoAttribs, 0, 200000000);
+	
 
 	initChunkGrid(cubesPerChunkEdge);
 
 	terrain->setSizes(chunksPerSuperChunkEdge,cubesPerChunkEdge,cubeSize);
-	terrain->createLayers(4,2,1);
+	terrain->createLayers(4,1,1);
 
 	terrain->createAllChunks(); //nearly 4/5 of time spent here!
 	//goes down massively with chunks per superchunk, so it's definitel a number-of-calls issue
@@ -124,7 +127,8 @@ void C3DtestApp::onStart() {
 
 /** Create a wireframe bounding box.*/
 void C3DtestApp::createBB() {
-	chunkBB.drawMode = GL_LINES;
+	chunkBB = Engine.createModel();
+	chunkBB->drawMode = GL_LINES;
 	vec3 boxV[8]  = {	vec3(0,0,0),
 							vec3(1,0,0),
 							vec3(1,1,0),
@@ -137,10 +141,9 @@ void C3DtestApp::createBB() {
 									4,5,5,6,6,7,7,4,
 									6,2,7,3,5,1,4,0};
 
-	//chunkBB.noVerts = 8;
-	//chunkBB.indexSize = 24;
+
 	Engine.setVertexDetails(chunkBB, 1, 24, 8);
-	Engine.storeIndexedModel(&chunkBB,boxV,index);
+	Engine.storeIndexedModel(chunkBB,boxV,8,index);
 }
 
 
@@ -164,22 +167,22 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
 	int nVertsOut = cubesPerChunkEdge * cubesPerChunkEdge * cubesPerChunkEdge * maxMCverts;
 
-	Engine.setVertexDetails(chunk, 3, 0, 0);
-	////////call using CMultiDrawModel instead of chunk, can belong to terrain
-	chunk.noTris = Engine.acquireFeedbackModel(shaderChunkGrid,sizeof(vec4)*nVertsOut*chunk.noAttribs,vertsPerPrimitive,chunk);
+	Engine.setVertexDetails(&chunk, 3, 0, 0);
+
+	//chunk.noTris = Engine.acquireFeedbackModel(shaderChunkGrid,sizeof(vec4)*nVertsOut*chunk.noAttribs,vertsPerPrimitive,chunk);
+	chunk.noTris = Engine.acquireFeedbackModelMulti(*shaderChunkGrid, sizeof(vec4)*nVertsOut*chunk.noAttribs, vertsPerPrimitive, *terrain);
 
 	terrain->totalTris += chunk.noTris;
 }
 
 
 bool C3DtestApp::superChunkIsEmpty(vec3& sampleCorner, int LoD) {
-	//return false;
 	Engine.setCurrentShader(hChunkCheckProg);
 	float LoDscale = LoD * chunksPerSuperChunkEdge;
 	Engine.setShaderValue(hCCsamplePosVec,sampleCorner);
 	Engine.setShaderValue(hCCloDscale,LoDscale);
 
-	unsigned int primitives = Engine.drawModelCount(chunkShell);
+	unsigned int primitives = Engine.drawModelCount(*chunkShell);
 	//TO DO: chunkshell is coarse, create a SCshell with more points
 	if ((primitives == 0) || (primitives == shellTotalVerts*3))
 		return true; //outside surface
@@ -189,7 +192,6 @@ bool C3DtestApp::superChunkIsEmpty(vec3& sampleCorner, int LoD) {
 
 /** Return false if no side of this potential chunk is penetratedby the isosurface.*/
 bool C3DtestApp::chunkExists(vec3& sampleCorner, int LoD) {
-	//return true;
 	//change to chunk test shader
 	Engine.setCurrentShader(hChunkCheckProg);
 	float LoDscale = LoD;
@@ -199,7 +201,7 @@ bool C3DtestApp::chunkExists(vec3& sampleCorner, int LoD) {
 	
 
 	//Draw check grid 
-	unsigned int primitives = Engine.drawModelCount(chunkShell);
+	unsigned int primitives = Engine.drawModelCount(*chunkShell);
 	if ((primitives == 0) || (primitives == shellTotalVerts*3))
 		return false; //outside surface
 	return true;
@@ -361,6 +363,8 @@ void C3DtestApp::keyCheck() {
 			EatKeys();
 		}
 
+		
+
 
 		selectChk = glm::mod(vec3(selectChk),vec3(15,5,15));
 			
@@ -398,23 +402,29 @@ void C3DtestApp::draw() {
 
 	int draw =0;
 	mvp = Engine.currentCamera->clipMatrix * terrain->chunkOrigin;
-	for (int layer=0;layer<terrain->layers.size();layer++) {
-		for (int sc=0;sc<terrain->layers[layer].superChunks.size();sc++) {
-			for (int c=0;c<terrain->layers[layer].superChunks[sc]->chunkList.size();c++) {
-				chunk = terrain->layers[layer].superChunks[sc]->chunkList[c];
+//	for (int layer=0;layer<terrain->layers.size();layer++) {
+	//	for (int sc=0;sc<terrain->layers[layer].superChunks.size();sc++) {
+	//		for (int c=0;c<terrain->layers[layer].superChunks[sc]->chunkList.size();c++) {
+		//		chunk = terrain->layers[layer].superChunks[sc]->chunkList[c];
 				//mvp = Engine.currentCamera->clipMatrix * terrain->chunkOrigin;// *chunk->worldMatrix;
-				Engine.setShaderValue(Engine.rMVPmatrix,mvp);
-				Engine.setShaderValue(Engine.rNormalModelToCameraMatrix,mat3(chunk->worldMatrix));
-				if (/*(chunk->hBuffer > 0) &&*/ (chunk->live)) {
-						Engine.drawModel(*chunk);
-					draw++;
-				}
-			}
+			//	Engine.setShaderValue(Engine.rMVPmatrix,mvp);
+			//	Engine.setShaderValue(Engine.rNormalModelToCameraMatrix,mat3(chunk->worldMatrix));
+				//if (/*(chunk->hBuffer > 0) &&*/ (chunk->live)) {
+				//	Engine.drawModel(*chunk);
+					//draw++;
+				//}
+			//}	
+		//} 
+//}
 
-			
-		} 
-		
-	}
+	mat3 tmp;
+	Engine.setShaderValue(Engine.rMVPmatrix, mvp);
+	Engine.setShaderValue(Engine.rNormalModelToCameraMatrix, tmp); //chunk worldmatrix? needs a rethink
+	Engine.drawMultiModel(*terrain);
+	
+
+
+
 
 	vec3 pos = terrain->chunkOrigin[3];
 	watch::watch2 << pos.x << " " << pos.t << " " << pos.z;
@@ -437,9 +447,9 @@ void C3DtestApp::draw() {
 			siz = terrain->layers[l].cubeSize * cubesPerChunkEdge * chunksPerSuperChunkEdge;
 			Engine.setShaderValue(hWireScale,vec3(siz));
 			for (int s=0;s<terrain->layers[l].superChunks.size();s++) {
-				chunkBB.setPos(terrain->layers[l].superChunks[s]->nwWorldPos);
-				Engine.setShaderValue(hWireMVPmatrix,Engine.currentCamera->clipMatrix * chunkBB.worldMatrix);
-					Engine.drawModel(chunkBB);
+				chunkBB->setPos(terrain->layers[l].superChunks[s]->nwWorldPos);
+				Engine.setShaderValue(hWireMVPmatrix,Engine.currentCamera->clipMatrix * chunkBB->worldMatrix);
+					Engine.drawModel(*chunkBB);
 			}
 		}
 	}
@@ -553,12 +563,10 @@ void C3DtestApp::initChunkShell() {
 	}
 
 	
-	//chunkShell.noVerts = shellTotalVerts;
-//	chunkShell.nAttribs = 1;
-//	chunkShell.indexSize = 0; 
+	chunkShell = Engine.createModel();
 	Engine.setVertexDetails(chunkShell, 1, 0, shellTotalVerts);
-	chunkShell.drawMode = GL_POINTS;
-	Engine.storeModel(&chunkShell,shell, shellTotalVerts);
+	chunkShell->drawMode = GL_POINTS;
+	Engine.storeModel(chunkShell,shell, shellTotalVerts);
 	delete[] shell;
 
 }
@@ -591,11 +599,7 @@ void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
 		index[i++] = vertNo+1+layer;
 		index[i++] = vertNo+layer;
 
-/*		index[i++] = vertNo+vertsPerEdge;
-		index[i++] = vertNo+1+vertsPerEdge;
-		index[i++] = vertNo+1+vertsPerEdge+layer;
-		index[i++] = vertNo+vertsPerEdge+layer;
-*/
+
 		index[i++] = 65535; //signals the end of this line sequence
 
 		vertNo++;
@@ -606,14 +610,13 @@ void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
 
 	} while (i < noIndices);
 	
-	//shaderChunkGrid.noVerts = noVerts;
-	//shaderChunkGrid.nAttribs = 1;
-	//shaderChunkGrid.indexSize = noIndices; 
-	shaderChunkGrid.drawMode = GL_LINES_ADJACENCY;
+	shaderChunkGrid = Engine.createModel();
+
+	shaderChunkGrid->drawMode = GL_LINES_ADJACENCY;
 	
 	//Engine.(&shaderChunkGrid,shaderChunkVerts,index);
 	Engine.setVertexDetails(shaderChunkGrid, 1, noIndices, noVerts);
-	Engine.storeIndexedModel(&shaderChunkGrid,shaderChunkVerts,index);
+	Engine.storeIndexedModel(shaderChunkGrid,shaderChunkVerts,noVerts, index);
 
 	delete[] shaderChunkVerts;
 	delete[] index; 
@@ -623,7 +626,10 @@ void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
 
 C3DtestApp::~C3DtestApp() {
 	delete terrain;
-	
+	//TO DO: since these are created with Engine.createModel, engine should handle deletion.
+	delete chunkShell;
+	delete shaderChunkGrid;
+	delete chunkBB;
 }
 
 

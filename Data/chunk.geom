@@ -95,13 +95,13 @@ int triTableValue(int i, int j){
 		vec3 tri[3];
 		int i = 0;
 		
-	for (i=0; triTableValue(iFlagIndex, i)!=-1; i+=3) { //Strange bug with this way, uncomment to test 
+	//for (i=0; triTableValue(iFlagIndex, i)!=-1; i+=3) { //Strange bug with this way, uncomment to test 
 		
 	
-	//while(true){ 
+	while(true){ 
 		//if (i>15)
-		//	break;
-	//	if(triTableValue(iFlagIndex, i)!=-1){ 
+			//break;
+		if(triTableValue(iFlagIndex, i)!=-1){ 
 			
 			tri[2] = vec3(vertlist[triTableValue(iFlagIndex, i)]); 
 			tri[1] = vec3(vertlist[triTableValue(iFlagIndex, i+1)]); 
@@ -123,12 +123,12 @@ int triTableValue(int i, int j){
 		
 			//End triangle strip at firts triangle 
 			EndPrimitive(); 
-	//	}else{ 
-		//	break; 
-	//	} 
+		}else{ 
+			break; 
+		} 
  
-	//	i=i+3; //Comment it to test the strange bug 
-	//	break;
+		i=i+3; //Comment it to test the strange bug 
+		//break;
 	} 
 		
 		
