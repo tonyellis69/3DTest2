@@ -142,8 +142,12 @@ void C3DtestApp::createBB() {
 									6,2,7,3,5,1,4,0};
 
 
-	Engine.setVertexDetails(chunkBB, 1, 24, 8);
-	Engine.storeIndexedModel(chunkBB,boxV,8,index);
+//	Engine.setVertexDetails(chunkBB, 1, 24, 8);
+	//Engine.storeIndexedModel(chunkBB,boxV,8,index);
+
+	chunkBB->storeVertexes(boxV, sizeof(boxV), 8);
+	chunkBB->storeIndex(index, sizeof(index), 24);
+	chunkBB->storeLayout(3, 0, 0, 0);
 }
 
 
@@ -167,12 +171,13 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
 	int nVertsOut = cubesPerChunkEdge * cubesPerChunkEdge * cubesPerChunkEdge * maxMCverts;
 
-	Engine.setVertexDetails(&chunk, 3, 0, 0);
+//	Engine.setVertexDetails(&chunk, 3, 0, 0);
 
-	//chunk.noTris = Engine.acquireFeedbackModel(shaderChunkGrid,sizeof(vec4)*nVertsOut*chunk.noAttribs,vertsPerPrimitive,chunk);
-	chunk.noTris = Engine.acquireFeedbackModelMulti(*shaderChunkGrid, sizeof(vec4)*nVertsOut*chunk.noAttribs, vertsPerPrimitive, *terrain);
 
-	terrain->totalTris += chunk.noTris;
+	CBaseBuf* terrainBuf = &terrain->multiBuf;
+	unsigned int result = Engine.acquireFeedbackVerts(*shaderChunkGrid, sizeof(vec4)*nVertsOut*chunk.noAttribs, *terrainBuf);
+
+	terrain->totalTris += result;
 }
 
 
@@ -564,9 +569,16 @@ void C3DtestApp::initChunkShell() {
 
 	
 	chunkShell = Engine.createModel();
-	Engine.setVertexDetails(chunkShell, 1, 0, shellTotalVerts);
+//	Engine.setVertexDetails(chunkShell, 1, 0, shellTotalVerts);
 	chunkShell->drawMode = GL_POINTS;
-	Engine.storeModel(chunkShell,shell, shellTotalVerts);
+//	Engine.storeModel(chunkShell,shell, shellTotalVerts);
+
+
+	chunkShell->storeVertexes(shell, sizeof(vec3) * v, v);
+//	chunkShell->storeIndex(index, sizeof(unsigned short)*noIndices, noIndices);
+	chunkShell->storeLayout(3, 0, 0, 0);
+
+
 	delete[] shell;
 
 }
@@ -615,8 +627,12 @@ void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
 	shaderChunkGrid->drawMode = GL_LINES_ADJACENCY;
 	
 	//Engine.(&shaderChunkGrid,shaderChunkVerts,index);
-	Engine.setVertexDetails(shaderChunkGrid, 1, noIndices, noVerts);
-	Engine.storeIndexedModel(shaderChunkGrid,shaderChunkVerts,noVerts, index);
+	//Engine.setVertexDetails(shaderChunkGrid, 1, noIndices, noVerts);
+	//Engine.storeIndexedModel(shaderChunkGrid,shaderChunkVerts,noVerts, index);
+
+	shaderChunkGrid->storeVertexes(shaderChunkVerts, sizeof(vec3) * noVerts, noVerts);
+	shaderChunkGrid->storeIndex(index, sizeof(unsigned short)*noIndices, noIndices);
+	shaderChunkGrid->storeLayout(3, 0, 0, 0);
 
 	delete[] shaderChunkVerts;
 	delete[] index; 
