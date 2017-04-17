@@ -23,9 +23,8 @@ C3DtestApp::C3DtestApp() {
 
 void C3DtestApp::onStart() {
 
-	
-	
 
+	chunkCall = 0;
 
 	dataPath = homeDir + "Data\\";
 	lastMousePos = glm::vec2(0,0);
@@ -47,9 +46,14 @@ void C3DtestApp::onStart() {
 	mouseLook = false;
 
 	terrain = Engine.createTerrain();
-	terrain->setMultiBufferSize(200000000, 2000, terrainNoAttribs, sizeof(vBuf::T3Dvert));
+	CBaseBuf* terrainBuf = &terrain->multiBuf;
+	terrainBuf->setSize(2600000);
+	terrainBuf->setMinSize(200000);
+	//terrain->setMultiBufferSize(20000000);
+	terrainBuf->storeLayout(3, 4, 3, 0);
 
-	
+	tmpBuf = Engine.createBuffer();
+	tmpBuf->setSize(200000);
 
 
 
@@ -75,7 +79,7 @@ void C3DtestApp::onStart() {
 	initChunkGrid(cubesPerChunkEdge);
 
 	terrain->setSizes(chunksPerSuperChunkEdge,cubesPerChunkEdge,cubeSize);
-	terrain->createLayers(4,1,1);
+	terrain->createLayers(4,3,1);
 
 	terrain->createAllChunks(); //nearly 4/5 of time spent here!
 	//goes down massively with chunks per superchunk, so it's definitel a number-of-calls issue
@@ -153,6 +157,7 @@ void C3DtestApp::createBB() {
 
 /*  Create a mesh for this chunk, and register it with the renderer.  */
 void C3DtestApp::createChunkMesh(Chunk& chunk) {
+	chunkCall++;
 	Engine.setCurrentShader(hChunkProg);
 	Engine.setShaderValue(hChunkCubeSize,chunk.cubeSize);
 
@@ -163,21 +168,29 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	Engine.setShaderValue(hChunkSamplePos,chunk.samplePos);
 	Engine.setDataTexture(hTriTableTex);
 
-	vec3 pos =chunk.getPos();
-	Engine.setShaderValue(hChunkTerrainPos, pos);
+//	vec3 pos =chunk.getPos();
+	Engine.setShaderValue(hChunkTerrainPos, chunk.terrainPos);
 
 	unsigned int hFeedBackBuf; 
 	int vertsPerPrimitive = 3 * chunk.noAttribs;
 	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
 	int nVertsOut = cubesPerChunkEdge * cubesPerChunkEdge * cubesPerChunkEdge * maxMCverts;
 
-//	Engine.setVertexDetails(&chunk, 3, 0, 0);
+	int noAttribs = 3;
 
-
+	
 	CBaseBuf* terrainBuf = &terrain->multiBuf;
-	unsigned int result = Engine.acquireFeedbackVerts(*shaderChunkGrid, sizeof(vec4)*nVertsOut*chunk.noAttribs, *terrainBuf);
+	
+	unsigned int primitives = Engine.acquireFeedbackVerts(*shaderChunkGrid, *tmpBuf, *terrainBuf);
 
-	terrain->totalTris += result;
+	if (primitives) {
+		chunk.id = terrainBuf->getLastId();
+		cerr << "\nnew id " << chunk.id;
+	}
+
+
+
+	terrain->totalTris += (primitives*3);
 }
 
 
@@ -207,7 +220,9 @@ bool C3DtestApp::chunkExists(vec3& sampleCorner, int LoD) {
 
 	//Draw check grid 
 	unsigned int primitives = Engine.drawModelCount(*chunkShell);
-	if ((primitives == 0) || (primitives == shellTotalVerts*3))
+	if (primitives == 0)
+		return false;
+	if (primitives == shellTotalVerts * 3)
 		return false; //outside surface
 	return true;
 
@@ -425,8 +440,11 @@ void C3DtestApp::draw() {
 	mat3 tmp;
 	Engine.setShaderValue(Engine.rMVPmatrix, mvp);
 	Engine.setShaderValue(Engine.rNormalModelToCameraMatrix, tmp); //chunk worldmatrix? needs a rethink
+	double t = Engine.Time.milliseconds();
 	Engine.drawMultiModel(*terrain);
-	
+	t = Engine.Time.milliseconds() - t;
+
+	//cerr << "\ncall time " << t;
 
 
 
@@ -646,6 +664,7 @@ C3DtestApp::~C3DtestApp() {
 	delete chunkShell;
 	delete shaderChunkGrid;
 	delete chunkBB;
+	delete tmpBuf;
 }
 
 

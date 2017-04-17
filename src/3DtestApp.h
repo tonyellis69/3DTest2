@@ -80,7 +80,9 @@ public:
 
 	bool supWire; ///<True when superchunk wireframe is on.
 
+	int chunkCall;
 
+	CBaseBuf* tmpBuf; 
 
 };
 
