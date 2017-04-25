@@ -84,6 +84,8 @@ public:
 
 	CBaseBuf* tmpBuf; 
 
+	float bigGap;
+
 };
 
 const float yawAng = 0.22f;

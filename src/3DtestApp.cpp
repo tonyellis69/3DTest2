@@ -9,6 +9,8 @@
 #include <glm/gtx/perpendicular.hpp>
 #include <glm/gtx/common.hpp>
 
+#include <glm/gtc/matrix_access.hpp>	 //temp
+
 #include "watch.h"
 
 using namespace watch;
@@ -158,6 +160,7 @@ void C3DtestApp::createBB() {
 /*  Create a mesh for this chunk, and register it with the renderer.  */
 void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	chunkCall++;
+
 	Engine.setCurrentShader(hChunkProg);
 	Engine.setShaderValue(hChunkCubeSize,chunk.cubeSize);
 
@@ -185,7 +188,6 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 
 	if (primitives) {
 		chunk.id = terrainBuf->getLastId();
-		cerr << "\nnew id " << chunk.id;
 	}
 
 
@@ -210,6 +212,7 @@ bool C3DtestApp::superChunkIsEmpty(vec3& sampleCorner, int LoD) {
 
 /** Return false if no side of this potential chunk is penetratedby the isosurface.*/
 bool C3DtestApp::chunkExists(vec3& sampleCorner, int LoD) {
+	return true;
 	//change to chunk test shader
 	Engine.setCurrentShader(hChunkCheckProg);
 	float LoDscale = LoD;
@@ -232,7 +235,7 @@ bool C3DtestApp::chunkExists(vec3& sampleCorner, int LoD) {
 
 void C3DtestApp::keyCheck() {
 	
-	float moveInc = dT * 0.5f;
+	float moveInc = dT * 0.05; // 0.05125f;
 	
 	if (keyNow('A')) {
 		Engine.currentCamera->track(-moveInc);
@@ -334,8 +337,9 @@ void C3DtestApp::keyCheck() {
 
 		if (KeyDown['1']) {
 			fpsOn = !fpsOn;
-			if (fpsOn)
+			if (fpsOn) {
 				Engine.currentCamera = &fpsCam;
+			}
 			else
 				Engine.currentCamera = Engine.defaultCamera;
 			EatKeys();
@@ -441,16 +445,25 @@ void C3DtestApp::draw() {
 	Engine.setShaderValue(Engine.rMVPmatrix, mvp);
 	Engine.setShaderValue(Engine.rNormalModelToCameraMatrix, tmp); //chunk worldmatrix? needs a rethink
 	double t = Engine.Time.milliseconds();
-	Engine.drawMultiModel(*terrain);
+	
+	//Engine.drawMultiModel(*terrain);
+	
+	terrain->multiBuf.draw();
+	
 	t = Engine.Time.milliseconds() - t;
 
 	//cerr << "\ncall time " << t;
 
+	vec3 pos = terrain->scrollTriggerPoint;
 
 
+//	watch::watch1 << pos.x;
+//	watch::watch1 << " " << pos.y;
+//	watch::watch1 << " " << pos.z;
 
-	vec3 pos = terrain->chunkOrigin[3];
-	watch::watch2 << pos.x << " " << pos.t << " " << pos.z;
+
+	vec3 pos2 = terrain->chunkOrigin[3];
+	watch::watch2 << pos2.x << " " << pos2.y << " " << pos.z;
 	//watch::watch2 << " " << sup->faceBoundary[3] << " " << sup->faceBoundary[4] << " " << sup->faceBoundary[5];
 	
 
@@ -500,9 +513,13 @@ void C3DtestApp::advance(Tdirection direction) {
 	}
 
 	//Move terrain in given direction
-	vec3 movement = dir * float(10.0f); 
-	terrain->translate(movement);
-	vec3 pos = terrain->getPos();
+	vec3 movement = dir *  float(1.0f);
+	//terrain->translate(movement);
+	//vec3 pos = terrain->getPos();
+	//terrain->chunkOrigin[3] += vec4(movement, 0);
+
+	terrain->scrollTriggerPoint += vec3(movement);
+	vec3 pos = terrain->scrollTriggerPoint;
 
 
 	int chunkDist = cubesPerChunkEdge * cubeSize; //span of a chunk in world space
@@ -511,27 +528,50 @@ void C3DtestApp::advance(Tdirection direction) {
 	//If terrain has moved by the length of a chunk
 	if (glm::any(outsideChunkBoundary)) {
 		vec3 posMod;
-		posMod = glm::mod(pos,vec3(chunkDist,chunkDist,chunkDist)); //glm::mod seems to turn negative remainders positive
-		posMod.x = fmod(pos.x,chunkDist);
-		posMod.y = fmod(pos.y,chunkDist);
-		posMod.z = fmod(pos.z,chunkDist);
-		terrain->setPos(posMod ); //secretly move terrain back before scrolling to ensure it scrolls on the spot
+		posMod = glm::mod(pos, vec3(chunkDist, chunkDist, chunkDist)); //glm::mod seems to turn negative remainders positive
+		posMod.x = fmod(pos.x, chunkDist);
+		posMod.y = fmod(pos.y, chunkDist);
+		posMod.z = fmod(pos.z, chunkDist);
+		//	terrain->setPos(posMod ); //secretly move terrain back before scrolling to ensure it scrolls on the spot
+		//	terrain->chunkOrigin[3] = glm::vec4(posMod, 1);
+
+		if (outsideChunkBoundary.x) {
+			pos.x = 0;
+		}
+		if (outsideChunkBoundary.y) {
+			pos.y = 0;
+		}
+		if (outsideChunkBoundary.z) {
+			pos.z = 0;
+		}
+		terrain->chunkOriginInt += dir;
+
+		terrain->scrollTriggerPoint = pos;
+		terrain->chunkOrigin[3] = vec4(terrain->chunkOriginInt * 40,1);
 		terrain->advance(direction); //
 	}
 }
 
 /** Called every frame. Mainly use this to scroll terrain if we're moving in first-person mode*/
 void C3DtestApp::Update() {
-	
+	float move = dT * 0.05;
 	terrain->update();
 
 	if (fpsOn) {
+	//	Engine.currentCamera->track(move);
+		//if (dT > bigGap)
+		//	bigGap = dT;
+	//	cerr << "\n " << dT << " biggest so far:" << bigGap;
 		Tdirection direction = none;
 
-		int chunkDist = cubesPerChunkEdge * cubeSize;
+		float chunkDist = cubesPerChunkEdge * cubeSize;
 
 		vec3 pos = fpsCam.getPos();
-		bvec3 outsideChunkBoundary = glm::greaterThan(glm::abs(pos),vec3(chunkDist,chunkDist,chunkDist));
+		bvec3 outsideChunkBoundary = glm::greaterThan(glm::abs(pos),vec3(chunkDist));
+
+		
+
+		//cerr << "\n" << pos.x << " " << pos.y << " " << pos.z;
 
 		//has viewpoint moved beyond the length of one chunk?
 		if (outsideChunkBoundary.x || outsideChunkBoundary.z) {
@@ -539,7 +579,17 @@ void C3DtestApp::Update() {
 			posMod.x = fmod(pos.x,chunkDist);
 			posMod.y = pos.y;
 			posMod.z = fmod(pos.z,chunkDist);
+
+		//	if (outsideChunkBoundary.x)
+		//		posMod.x = 0;
+		//	if (outsideChunkBoundary.z)
+		//		posMod.z = 0;
+
+
 			fpsCam.setPos(posMod ); //secretly reposition viewpoint prior to scrolling terrain
+		
+			
+			;
 
 			//work out direction to scroll-in new terrain from
 			if (outsideChunkBoundary.x) {
@@ -547,7 +597,11 @@ void C3DtestApp::Update() {
 					direction = east;
 				else
 					direction = west;
+				terrain->chunkOriginInt += dirToVec(flipDir(direction));
+				terrain->chunkOrigin[3] = vec4(terrain->chunkOriginInt * 40, 1);
 				terrain->advance(direction);
+			//	advance(direction);
+				return;
 			}
 			
 			if (outsideChunkBoundary.z) {
@@ -555,7 +609,10 @@ void C3DtestApp::Update() {
 					direction = south;
 				else
 					direction = north;
+				terrain->chunkOriginInt += dirToVec(flipDir(direction));
+				terrain->chunkOrigin[3] = vec4(terrain->chunkOriginInt * 40, 1);
 				terrain->advance(direction);
+			//	advance(direction);
 			}
 		}	
 	}
