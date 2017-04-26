@@ -71,7 +71,7 @@ float octave_noise_2d(  float octaves,  float persistence,  float scale,  float 
 
     float total = 0;
     float frequency = scale;
-    float amplitude = 1;
+    float amplitude = 2;
 	
 
 

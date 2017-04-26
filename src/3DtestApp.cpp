@@ -189,6 +189,9 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	if (primitives) {
 		chunk.id = terrainBuf->getLastId();
 	}
+	else
+		chunk.id = NULL;
+
 
 
 
@@ -235,7 +238,7 @@ bool C3DtestApp::chunkExists(vec3& sampleCorner, int LoD) {
 
 void C3DtestApp::keyCheck() {
 	
-	float moveInc = dT * 0.05; // 0.05125f;
+	float moveInc = dT * 0.5; // 0.05125f;
 	
 	if (keyNow('A')) {
 		Engine.currentCamera->track(-moveInc);
