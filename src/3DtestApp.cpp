@@ -73,6 +73,7 @@ void C3DtestApp::onStart() {
 	Engine.setCurrentShader(hChunkCheckProg);
 	hCCsamplePosVec = Engine.getShaderDataHandle("nwSamplePos");
 	hCCloDscale = Engine.getShaderDataHandle("LoDscale");
+	
 
 	double t = Engine.Time.milliseconds();
 
@@ -121,6 +122,7 @@ void C3DtestApp::onStart() {
 	hChunkSamplePos = Engine.getShaderDataHandle("samplePos");
 	hChunkTriTable = Engine.getShaderDataHandle("hTriTableTex");
 	hChunkTerrainPos = Engine.getShaderDataHandle("terrainPos");
+	hSamplesPerCube = Engine.getShaderDataHandle("samplesPerCube");
 
 	//Upload data texture for chunk shader
 	hTriTableTex = Engine.createDataTexture(intTex,16,256,&triTable);
@@ -159,6 +161,7 @@ void C3DtestApp::createBB() {
 
 /*  Create a mesh for this chunk, and register it with the renderer.  */
 void C3DtestApp::createChunkMesh(Chunk& chunk) {
+
 	chunkCall++;
 
 	Engine.setCurrentShader(hChunkProg);
@@ -169,7 +172,9 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	Engine.setShaderValue(hChunkLoDscale,LoDscale);
 	Engine.setShaderValue(hChunkColour,chunk.colour);
 	Engine.setShaderValue(hChunkSamplePos,chunk.samplePos);
+	Engine.setShaderValue(hSamplesPerCube, terrain->sampleScale);
 	Engine.setDataTexture(hTriTableTex);
+
 
 //	vec3 pos =chunk.getPos();
 	Engine.setShaderValue(hChunkTerrainPos, chunk.terrainPos);
@@ -379,8 +384,11 @@ void C3DtestApp::keyCheck() {
 
 		
 		if (KeyDown['Z']) {
-			terrain->advance(north);
-			terrain->advance(west);
+			for (int sc = 0; sc < terrain->layers[1].superChunks.size(); sc++) {
+				CSuperChunk* super = terrain->layers[1].superChunks[sc];
+				if (super->tmpIndex.x == 1 && super->tmpIndex.y == 1 && super->tmpIndex.z == 0)
+					super->removeAllChunks();
+			}
 			EatKeys();
 		}
 
@@ -466,7 +474,7 @@ void C3DtestApp::draw() {
 
 
 	vec3 pos2 = terrain->chunkOrigin[3];
-	watch::watch2 << pos2.x << " " << pos2.y << " " << pos.z;
+	//watch::watch2 << pos2.x << " " << pos2.y << " " << pos.z;
 	//watch::watch2 << " " << sup->faceBoundary[3] << " " << sup->faceBoundary[4] << " " << sup->faceBoundary[5];
 	
 

@@ -10,7 +10,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 	
-
+extern CSuperChunk* dbgSC;
 
 class C3DtestApp : public  CBaseApp {
 public:
@@ -47,6 +47,7 @@ public:
 	int hChunkCheckProg; ///<Handle for chunk existence check shader
 	int hCCsamplePosVec;
 	int hCCloDscale;
+	
 
 
 	int hChunkProg; ///<Handle for chunk geometry creating shader
@@ -57,6 +58,7 @@ public:
 	int hChunkTriTable;
 	int hTriTableTex; ///<A data texture of triangle arrangements for Marching Cubes.
 	int hChunkTerrainPos;///<Position relative to terrain origin.
+	int hSamplesPerCube;
 
 	CTerrain* terrain;
 	

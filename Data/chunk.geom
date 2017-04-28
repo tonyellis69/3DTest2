@@ -63,6 +63,9 @@ int triTableValue(int i, int j){
 	iFlagIndex += int(vert[1].opSample < iVertTest)*32; 
 	iFlagIndex += int(vert[2].opSample < iVertTest)*64; 
 	iFlagIndex += int(vert[3].opSample < iVertTest)*128; 
+	
+	//If the cube corner sample value is less than iVertTest (0.5), it's inside the surface - that's a 1 in iFlagIndex.
+	//Otherwise, it's outside - that's a 0 in iFlagIndex.
 	 
 	 
 	//Cube is entirely in/out of the surface 
@@ -74,7 +77,7 @@ int triTableValue(int i, int j){
 		
 		
 		
-	vec3 vertlist[12]; 
+	vec3 vertlist[12]; //Each of these verts lies on one of the 12 cube edges.
 	 
 	//Find the vertices where the surface intersects the cube 
 	vertlist[0] = vertexInterp(iVertTest, vert[0].vert, vert[0].sample, vert[1].vert, vert[1].sample); 
@@ -92,15 +95,12 @@ int triTableValue(int i, int j){
 	
 	
 	
-		vec3 tri[3];
-		int i = 0;
-		
-	//for (i=0; triTableValue(iFlagIndex, i)!=-1; i+=3) { //Strange bug with this way, uncomment to test 
-		
+	vec3 tri[3];
+	int i = 0;
+			
 	
 	while(true){ 
-		//if (i>15)
-			//break;
+
 		if(triTableValue(iFlagIndex, i)!=-1){ 
 			
 			tri[2] = vec3(vertlist[triTableValue(iFlagIndex, i)]); 
@@ -109,10 +109,6 @@ int triTableValue(int i, int j){
 		
 			normal = vec3(normalize(cross(vec3(tri[2] - tri[0] ),
 								vec3(tri[2] - tri[1] ))));
-								
-	
-								
-	
 		
 			gl_Position = tri[0]  + terrainPos;	
 			EmitVertex();
@@ -121,14 +117,15 @@ int triTableValue(int i, int j){
 			gl_Position = tri[2] + terrainPos;	
 			EmitVertex();
 		
-			//End triangle strip at firts triangle 
+			//End triangle strip at first triangle 
 			EndPrimitive(); 
-		}else{ 
+		} 
+		else { //no more triangles to create for this cube.
 			break; 
 		} 
  
-		i=i+3; //Comment it to test the strange bug 
-		//break;
+		i=i+3; 
+
 	} 
 		
 		
