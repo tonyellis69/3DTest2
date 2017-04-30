@@ -88,6 +88,7 @@ public:
 
 	float bigGap;
 
+	int tmpSCno;
 };
 
 const float yawAng = 0.22f;

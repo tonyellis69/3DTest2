@@ -21,6 +21,8 @@ using namespace glm;
 
 C3DtestApp::C3DtestApp() {
 
+	tmpSCno = 0;
+
 }
 
 void C3DtestApp::onStart() {
@@ -82,7 +84,7 @@ void C3DtestApp::onStart() {
 	initChunkGrid(cubesPerChunkEdge);
 
 	terrain->setSizes(chunksPerSuperChunkEdge,cubesPerChunkEdge,cubeSize);
-	terrain->createLayers(4,3,1);
+	terrain->createLayers(4,3,1); //(8, 3, 2);
 
 	terrain->createAllChunks(); //nearly 4/5 of time spent here!
 	//goes down massively with chunks per superchunk, so it's definitel a number-of-calls issue
@@ -196,7 +198,7 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	}
 	else
 		chunk.id = NULL;
-
+	chunk.status = chSkinned;
 
 
 
@@ -290,107 +292,118 @@ void C3DtestApp::keyCheck() {
 	{	
 		if (!mouseLook) {
 			mouseLook = true;
-			//mouse capture on
-			mouseCaptured(true);
-			oldMousePos = vec2(mouseX,mouseY);
-			showMouse(false);
-			//centre mouse
-			setMousePos(-1,-1);
+//mouse capture on
+mouseCaptured(true);
+oldMousePos = vec2(mouseX, mouseY);
+showMouse(false);
+//centre mouse
+setMousePos(-1, -1);
 
-		} else {
-			//find mouse movement
-			glm::vec2 mousePos((mouseX - (viewWidth/2)), ((viewHeight/2) - mouseY)  );
-			if (mousePos.x == 0 && mousePos.y == 0)
-				return;
-			float angle = (0.1f * length(mousePos) ) ;
-
-			//move camera
-			vec3 perp = normalize(vec3(mousePos.y,-mousePos.x,0));
-			Engine.currentCamera->freeRotate(perp,angle );
-
-			setMousePos(-1,-1);
 		}
-				
+ else {
+	 //find mouse movement
+	 glm::vec2 mousePos((mouseX - (viewWidth / 2)), ((viewHeight / 2) - mouseY));
+	 if (mousePos.x == 0 && mousePos.y == 0)
+		 return;
+	 float angle = (0.1f * length(mousePos));
+
+	 //move camera
+	 vec3 perp = normalize(vec3(mousePos.y, -mousePos.x, 0));
+	 Engine.currentCamera->freeRotate(perp, angle);
+
+	 setMousePos(-1, -1);
+ }
+
 	}
 	else { //mouselook key not down so
 		if (mouseLook) {
 			mouseCaptured(false);
 			mouseLook = false;
-			setMousePos(oldMousePos.x,oldMousePos.y);
+			setMousePos(oldMousePos.x, oldMousePos.y);
 			showMouse(true);
 
 		}
 
 	}
-	
+
 	if (keyNow('8')) {
-			advance(north);
+		advance(north);
 		//	EatKeys();
-		}
-		if (keyNow('2') ) {
-			advance(south);
-			//EatKeys();
-		}
-		if (keyNow('6') ) {
-			advance(east);
-			//EatKeys();
-		}
-		if (keyNow('4')) {
-			advance(west);
-			//EatKeys();
-		}
-		if (KeyDown['5']) {
-			advance(up);
-		}
+	}
+	if (keyNow('2')) {
+		advance(south);
+		//EatKeys();
+	}
+	if (keyNow('6')) {
+		advance(east);
+		//EatKeys();
+	}
+	if (keyNow('4')) {
+		advance(west);
+		//EatKeys();
+	}
+	if (KeyDown['5']) {
+		advance(up);
+	}
 
-		if (KeyDown['1']) {
-			fpsOn = !fpsOn;
-			if (fpsOn) {
-				Engine.currentCamera = &fpsCam;
+	if (KeyDown['1']) {
+		fpsOn = !fpsOn;
+		if (fpsOn) {
+			Engine.currentCamera = &fpsCam;
+		}
+		else
+			Engine.currentCamera = Engine.defaultCamera;
+		EatKeys();
+
+	}
+
+
+	if (KeyDown['J']) {
+		selectChk.x--;
+		EatKeys();
+	}
+	if (KeyDown['L']) {
+		selectChk.x++;
+		EatKeys();
+	}
+	if (KeyDown['I']) {
+		selectChk.z--;
+		EatKeys();
+	}
+	if (KeyDown['K']) {
+		selectChk.z++;
+		EatKeys();
+	}
+	if (KeyDown['H']) {
+		selectChk.y++;
+		EatKeys();
+	}
+	if (KeyDown['N']) {
+		selectChk.y--;
+		EatKeys();
+	}
+
+
+
+
+	if (KeyDown['Z']) {
+		advance(north);
+		advance(west);
+		EatKeys();
+	}
+
+	if (KeyDown['X']) {
+		for (int l = 0; l < terrain->layers.size(); l++) {
+			for (int sc = 0; sc < terrain->layers[l].superChunks.size(); sc++) {
+				terrain->layers[l].superChunks[sc]->removeAllChunks();
 			}
-			else
-				Engine.currentCamera = Engine.defaultCamera;
-			EatKeys();
+		} 
+	//	terrain->layers[0].superChunks[149]->removeAllChunks();
 
-		}
-
-
-		if (KeyDown['J']) { 
-			selectChk.x--;
+			//dbgSC->removeAllChunks();
 			EatKeys();
 		}
-		if (KeyDown['L']) { 
-			selectChk.x++;
-			EatKeys();
-		}
-		if (KeyDown['I']) {
-			selectChk.z--;
-			EatKeys();
-		}
-		if (KeyDown['K']) { 
-			selectChk.z++;
-			EatKeys();
-		}
-		if (KeyDown['H']) { 
-			selectChk.y++;
-			EatKeys();
-		}
-		if (KeyDown['N']) { 
-			selectChk.y--;
-			EatKeys();
-		}
-
-
-
 		
-		if (KeyDown['Z']) {
-			for (int sc = 0; sc < terrain->layers[1].superChunks.size(); sc++) {
-				CSuperChunk* super = terrain->layers[1].superChunks[sc];
-				if (super->tmpIndex.x == 1 && super->tmpIndex.y == 1 && super->tmpIndex.z == 0)
-					super->removeAllChunks();
-			}
-			EatKeys();
-		}
 
 		//if (keyNow('U') )
 		if (KeyDown['U']) {
@@ -475,7 +488,7 @@ void C3DtestApp::draw() {
 
 	vec3 pos2 = terrain->chunkOrigin[3];
 	//watch::watch2 << pos2.x << " " << pos2.y << " " << pos.z;
-	//watch::watch2 << " " << sup->faceBoundary[3] << " " << sup->faceBoundary[4] << " " << sup->faceBoundary[5];
+	//watch::watch2 << " " << dbgSC->faceBoundary[north] << " " << dbgSC->faceBoundary[east] << " " << dbgSC->faceBoundary[south];
 	
 
 	//wireframe drawing:
@@ -524,7 +537,7 @@ void C3DtestApp::advance(Tdirection direction) {
 	}
 
 	//Move terrain in given direction
-	vec3 movement = dir *  float(1.0f);
+	vec3 movement = dir *  float(1.0f);  //was 1
 	//terrain->translate(movement);
 	//vec3 pos = terrain->getPos();
 	//terrain->chunkOrigin[3] += vec4(movement, 0);
@@ -569,6 +582,13 @@ void C3DtestApp::Update() {
 	terrain->update();
 
 	if (fpsOn) {
+
+		if (terrain->toSkin.size() != 0)
+				return;
+		//cheap dirty fix for the problem of scrolling in one direction before we've finished scrolling in another
+
+
+
 	//	Engine.currentCamera->track(move);
 		//if (dT > bigGap)
 		//	bigGap = dT;
@@ -585,10 +605,10 @@ void C3DtestApp::Update() {
 		//cerr << "\n" << pos.x << " " << pos.y << " " << pos.z;
 
 		//has viewpoint moved beyond the length of one chunk?
-		if (outsideChunkBoundary.x || outsideChunkBoundary.z) {
+		if (outsideChunkBoundary.x || outsideChunkBoundary.y || outsideChunkBoundary.z) {
 			vec3 posMod;
 			posMod.x = fmod(pos.x,chunkDist);
-			posMod.y = pos.y;
+			posMod.y = fmod(pos.y, chunkDist);  //was pos.y
 			posMod.z = fmod(pos.z,chunkDist);
 
 		//	if (outsideChunkBoundary.x)
@@ -611,9 +631,20 @@ void C3DtestApp::Update() {
 				terrain->chunkOriginInt += dirToVec(flipDir(direction));
 				terrain->chunkOrigin[3] = vec4(terrain->chunkOriginInt * 40, 1);
 				terrain->advance(direction);
-			//	advance(direction);
-				return;
+				//return;
 			}
+
+			if (outsideChunkBoundary.y) {
+				if (pos.y > 0)
+					direction = up;
+				else
+					direction = down;
+				terrain->chunkOriginInt += dirToVec(flipDir(direction));
+				terrain->chunkOrigin[3] = vec4(terrain->chunkOriginInt * 40, 1);
+				terrain->advance(direction);
+				//return;
+			}
+
 			
 			if (outsideChunkBoundary.z) {
 				if (pos.z > 0)
@@ -623,7 +654,6 @@ void C3DtestApp::Update() {
 				terrain->chunkOriginInt += dirToVec(flipDir(direction));
 				terrain->chunkOrigin[3] = vec4(terrain->chunkOriginInt * 40, 1);
 				terrain->advance(direction);
-			//	advance(direction);
 			}
 		}	
 	}
