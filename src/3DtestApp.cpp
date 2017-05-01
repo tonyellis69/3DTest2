@@ -84,7 +84,7 @@ void C3DtestApp::onStart() {
 	initChunkGrid(cubesPerChunkEdge);
 
 	terrain->setSizes(chunksPerSuperChunkEdge,cubesPerChunkEdge,cubeSize);
-	terrain->createLayers(4,3,1); //(8, 3, 2);
+	terrain->createLayers(4, 2, 1); //(4,2,1); //(8, 3, 2);
 
 	terrain->createAllChunks(); //nearly 4/5 of time spent here!
 	//goes down massively with chunks per superchunk, so it's definitel a number-of-calls issue
@@ -584,7 +584,7 @@ void C3DtestApp::Update() {
 	if (fpsOn) {
 
 		if (terrain->toSkin.size() != 0)
-				return;
+			;//	return;
 		//cheap dirty fix for the problem of scrolling in one direction before we've finished scrolling in another
 
 
