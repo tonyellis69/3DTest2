@@ -89,6 +89,8 @@ public:
 	float bigGap;
 
 	int tmpSCno;
+
+	CSkyDome* skyDome;
 };
 
 const float yawAng = 0.22f;

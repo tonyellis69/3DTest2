@@ -29,7 +29,7 @@ float getSample(vec3 cornerOffset) {
 	//Get the noise value at the 2D position of this corner.
 	float noise = octave_noise_2d(5,0.5,1,sampleCorner.x ,sampleCorner.z );
 
-	
+	noise = pow(noise,2);
 		
 	//scale the noise a little to create the height at this x,z sample position.
 	float surfaceHeight = (noise * 0.3) - 0.3;

@@ -38,6 +38,12 @@ void C3DtestApp::onStart() {
 	Engine.createCube(vec3(3,300,-3),1.0f);
 	Engine.createCylinder(vec3(0,300,-4),1,2,30);
 
+	
+
+
+
+	//Engine.createHemisphere(vec3(0, 100, 0), 200, 16);
+
 	//position the default camera
 	Engine.currentCamera->setPos(vec3(0,303,6));
 	Engine.currentCamera->lookAt(vec3(0,-1,-3));
@@ -84,10 +90,9 @@ void C3DtestApp::onStart() {
 	initChunkGrid(cubesPerChunkEdge);
 
 	terrain->setSizes(chunksPerSuperChunkEdge,cubesPerChunkEdge,cubeSize);
-	terrain->createLayers(4, 2, 1); //(4,2,1); //(8, 3, 2);
+	terrain->createLayers(4, 2, 1); //(8, 3, 2); //(4,2,1);
 
-	terrain->createAllChunks(); //nearly 4/5 of time spent here!
-	//goes down massively with chunks per superchunk, so it's definitel a number-of-calls issue
+	terrain->createAllChunks(); 
 
 	t = Engine.Time.milliseconds() - t;
 	cerr << "\n time " << t;
@@ -129,6 +134,11 @@ void C3DtestApp::onStart() {
 	//Upload data texture for chunk shader
 	hTriTableTex = Engine.createDataTexture(intTex,16,256,&triTable);
 	Engine.uploadDataTexture(hChunkTriTable,hTriTableTex);
+
+	skyDome = Engine.createSkyDome();
+	
+
+
 
 	oldTime = Engine.Time.milliseconds();
 
@@ -584,7 +594,7 @@ void C3DtestApp::Update() {
 	if (fpsOn) {
 
 		if (terrain->toSkin.size() != 0)
-			;//	return;
+				return;
 		//cheap dirty fix for the problem of scrolling in one direction before we've finished scrolling in another
 
 
