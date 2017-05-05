@@ -57,13 +57,13 @@ void C3DtestApp::onStart() {
 
 	terrain = Engine.createTerrain();
 	CBaseBuf* terrainBuf = &terrain->multiBuf;
-	terrainBuf->setSize(2600000);
-	terrainBuf->setMinSize(200000);
-	//terrain->setMultiBufferSize(20000000);
-	terrainBuf->storeLayout(3, 4, 3, 0);
+	terrainBuf->setSize(175000000);   
+	terrainBuf->setMinSize(100000);
+
+	terrainBuf->storeLayout(3, 3, 0, 0);
 
 	tmpBuf = Engine.createBuffer();
-	tmpBuf->setSize(200000);
+	tmpBuf->setSize(100000);
 
 
 
@@ -88,8 +88,9 @@ void C3DtestApp::onStart() {
 	
 
 	initChunkGrid(cubesPerChunkEdge);
-
+	//4 16 2.5
 	terrain->setSizes(chunksPerSuperChunkEdge,cubesPerChunkEdge,cubeSize);
+	//terrain->setSizes(4, 18, cubeSize);
 	terrain->createLayers(4, 2, 1); //(8, 3, 2); //(4,2,1);
 
 	terrain->createAllChunks(); 
@@ -116,16 +117,15 @@ void C3DtestApp::onStart() {
 	hChunkProg = Engine.attachShaders();
 	const char* feedbackVaryings[3];
 	feedbackVaryings[0] = "gl_Position"; 
-	feedbackVaryings[1] = "outColour";
-	feedbackVaryings[2] = "normal";
-	Engine.setFeedbackData(hChunkProg, 3, feedbackVaryings);
+	//feedbackVaryings[1] = "outColour";
+	feedbackVaryings[1] = "normal";
+	Engine.setFeedbackData(hChunkProg, 2, feedbackVaryings);
 	Engine.linkShaders(hChunkProg);
 
 	//get chunk shader data handles
 	Engine.setCurrentShader(hChunkProg);
 	hChunkCubeSize = Engine.getShaderDataHandle("cubeSize");
 	hChunkLoDscale = Engine.getShaderDataHandle("LoDscale");
-	hChunkColour = Engine.getShaderDataHandle("inColour");
 	hChunkSamplePos = Engine.getShaderDataHandle("samplePos");
 	hChunkTriTable = Engine.getShaderDataHandle("hTriTableTex");
 	hChunkTerrainPos = Engine.getShaderDataHandle("terrainPos");
@@ -182,21 +182,16 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 
 	float LoDscale = float(1 << chunk.LoD-1);
 	Engine.setShaderValue(hChunkLoDscale,LoDscale);
-	Engine.setShaderValue(hChunkColour,chunk.colour);
 	Engine.setShaderValue(hChunkSamplePos,chunk.samplePos);
 	Engine.setShaderValue(hSamplesPerCube, terrain->sampleScale);
 	Engine.setDataTexture(hTriTableTex);
 
-
-//	vec3 pos =chunk.getPos();
 	Engine.setShaderValue(hChunkTerrainPos, chunk.terrainPos);
 
 	unsigned int hFeedBackBuf; 
 	int vertsPerPrimitive = 3 * chunk.noAttribs;
 	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
 	int nVertsOut = cubesPerChunkEdge * cubesPerChunkEdge * cubesPerChunkEdge * maxMCverts;
-
-	int noAttribs = 3;
 
 	
 	CBaseBuf* terrainBuf = &terrain->multiBuf;
@@ -205,6 +200,7 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 
 	if (primitives) {
 		chunk.id = terrainBuf->getLastId();
+		terrainBuf->setBlockColour(chunk.id, (tmpRGBAtype&)chunk.colour);
 	}
 	else
 		chunk.id = NULL;
@@ -480,9 +476,10 @@ void C3DtestApp::draw() {
 	Engine.setShaderValue(Engine.rNormalModelToCameraMatrix, tmp); //chunk worldmatrix? needs a rethink
 	double t = Engine.Time.milliseconds();
 	
-	//Engine.drawMultiModel(*terrain);
+
 	
-	terrain->multiBuf.draw();
+	/////////////////terrain->multiBuf.draw();
+	terrain->drawNew();
 	
 	t = Engine.Time.milliseconds() - t;
 

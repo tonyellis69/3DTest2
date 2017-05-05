@@ -18,10 +18,9 @@ in VertexData
 	float opSample;
 } vert[];
 
-in vec4 vColour[];
+
 
 out vec3 gl_Position;
-out	vec4 outColour;
 out	vec3 normal;
 
 //uniform isampler2D edgeTableTex; 
@@ -46,7 +45,6 @@ int triTableValue(int i, int j){
 
  void main()
 {   	
-		outColour = vColour[0]; 
 	
 
 		int iFlagIndex = 0;

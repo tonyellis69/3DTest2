@@ -53,7 +53,6 @@ public:
 	int hChunkProg; ///<Handle for chunk geometry creating shader
 	int hChunkCubeSize;
 	int hChunkLoDscale;
-	int hChunkColour;
 	int hChunkSamplePos;
 	int hChunkTriTable;
 	int hTriTableTex; ///<A data texture of triangle arrangements for Marching Cubes.

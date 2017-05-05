@@ -5,7 +5,6 @@ layout(location = 0) in vec3 cubeCorner;
 
 uniform float cubeSize;
 uniform float LoDscale;
-uniform vec4 inColour;
 uniform vec3 samplePos; //position of bottom nwcorner of this chunk in sample space.
 uniform float samplesPerCube; 
 
@@ -18,7 +17,7 @@ out VertexData {
 	float opSample;
 } outData;
 
-out vec4 vColour;
+
 
 #include noise.lib
 
@@ -44,7 +43,7 @@ float getSample(vec3 cornerOffset) {
 
 void main() {
 	
-	vColour = inColour;
+
 	
 	outData.vert = cubeCorner * vec3(cubeSize,cubeSize,cubeSize) ;
 	outData.opVert = outData.vert + vec3(0,0,cubeSize);
