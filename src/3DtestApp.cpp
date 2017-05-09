@@ -135,6 +135,10 @@ void C3DtestApp::onStart() {
 	hTriTableTex = Engine.createDataTexture(intTex,16,256,&triTable);
 	Engine.uploadDataTexture(hChunkTriTable,hTriTableTex);
 
+
+	CMaterial* cloud = Engine.createMaterial(dataPath + "cloud001.jpg");
+
+	
 	skyDome = Engine.createSkyDome();
 	
 
