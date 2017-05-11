@@ -38,11 +38,10 @@ void C3DtestApp::onStart() {
 	Engine.createCube(vec3(3,300,-3),1.0f);
 	Engine.createCylinder(vec3(0,300,-4),1,2,30);
 
-	
+	plane = Engine.createPlane(vec3(0, 450, -4), 10000, 10000, 5);
 
 
 
-	//Engine.createHemisphere(vec3(0, 100, 0), 200, 16);
 
 	//position the default camera
 	Engine.currentCamera->setPos(vec3(0,303,6));
@@ -136,7 +135,31 @@ void C3DtestApp::onStart() {
 	Engine.uploadDataTexture(hChunkTriTable,hTriTableTex);
 
 
-	CMaterial* cloud = Engine.createMaterial(dataPath + "cloud001.jpg");
+
+	//load texture shader
+	Engine.loadShader(vertex, dataPath + "texture.vert");
+	Engine.loadShader(frag, dataPath + "texture.frag");
+	hTextureShader = Engine.linkShaders();
+	Engine.setCurrentShader(hTextureShader);
+	Engine.Renderer.hTextureUnit[0] = Engine.getShaderDataHandle("mySampler1");
+	Engine.Renderer.hTextureUnit[1] = Engine.getShaderDataHandle("mySampler2");
+	Engine.Renderer.hTile[0] = Engine.getShaderDataHandle("tile1");
+	Engine.Renderer.hTile[1] = Engine.getShaderDataHandle("tile2");
+	Engine.Renderer.hOffset[0] = Engine.getShaderDataHandle("offset1");
+	Engine.Renderer.hOffset[1] = Engine.getShaderDataHandle("offset2");
+	hTextureMVP = Engine.getShaderDataHandle("mvpMatrix");
+
+
+
+
+	cloud = Engine.createMaterial(dataPath + "cloud001.png");
+	cloud->setShader(hTextureShader);
+	cloud->setTile(0, vec2(2));
+	
+	cloud->addImage(dataPath + "cloud002.png");
+	cloud->setTile(1, vec2(2));
+	
+	plane->setMaterial(*cloud);
 
 	
 	skyDome = Engine.createSkyDome();
@@ -192,7 +215,6 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 
 	Engine.setShaderValue(hChunkTerrainPos, chunk.terrainPos);
 
-	unsigned int hFeedBackBuf; 
 	int vertsPerPrimitive = 3 * chunk.noAttribs;
 	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
 	int nVertsOut = cubesPerChunkEdge * cubesPerChunkEdge * cubesPerChunkEdge * maxMCverts;
@@ -456,24 +478,10 @@ void C3DtestApp::draw() {
 	//Engine.setShaderValue(Engine.rNormalModelToCameraMatrix,normMatrix);
 	mat4 mvp; 
 
-	Chunk* chunk;
 
 	int draw =0;
 	mvp = Engine.currentCamera->clipMatrix * terrain->chunkOrigin;
-//	for (int layer=0;layer<terrain->layers.size();layer++) {
-	//	for (int sc=0;sc<terrain->layers[layer].superChunks.size();sc++) {
-	//		for (int c=0;c<terrain->layers[layer].superChunks[sc]->chunkList.size();c++) {
-		//		chunk = terrain->layers[layer].superChunks[sc]->chunkList[c];
-				//mvp = Engine.currentCamera->clipMatrix * terrain->chunkOrigin;// *chunk->worldMatrix;
-			//	Engine.setShaderValue(Engine.rMVPmatrix,mvp);
-			//	Engine.setShaderValue(Engine.rNormalModelToCameraMatrix,mat3(chunk->worldMatrix));
-				//if (/*(chunk->hBuffer > 0) &&*/ (chunk->live)) {
-				//	Engine.drawModel(*chunk);
-					//draw++;
-				//}
-			//}	
-		//} 
-//}
+
 
 	mat3 tmp;
 	Engine.setShaderValue(Engine.rMVPmatrix, mvp);
@@ -492,9 +500,17 @@ void C3DtestApp::draw() {
 	vec3 pos = terrain->scrollTriggerPoint;
 
 
-//	watch::watch1 << pos.x;
+
+	Engine.Renderer.setShader(hTextureShader);
+	Engine.setShaderValue(hTextureMVP, Engine.currentCamera->clipMatrix * plane->worldMatrix);
+	//Engine.Renderer.attachTexture(cloud->getTexture());
+	plane->drawNew();
+
+	Engine.Renderer.attachTexture(0, 0);
+
+	//watch::watch1 << pos.x;
 //	watch::watch1 << " " << pos.y;
-//	watch::watch1 << " " << pos.z;
+	//watch::watch1 << " " << pos.z;
 
 
 	vec3 pos2 = terrain->chunkOrigin[3];
@@ -589,8 +605,12 @@ void C3DtestApp::advance(Tdirection direction) {
 
 /** Called every frame. Mainly use this to scroll terrain if we're moving in first-person mode*/
 void C3DtestApp::Update() {
-	float move = dT * 0.05;
+	float move = dT * 0.00005;
 	terrain->update();
+
+	cloudOffset += move;
+	cloud->setOffset(0,cloudOffset);
+	cloud->setOffset(1, cloudOffset * 0.5f);
 
 	if (fpsOn) {
 
