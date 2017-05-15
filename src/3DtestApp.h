@@ -91,9 +91,7 @@ public:
 
 	CSkyDome* skyDome;
 
-	CModel* plane;
-	CMaterial* cloud;
-	glm::vec2 cloudOffset;
+	
 };
 
 const float yawAng = 0.22f;

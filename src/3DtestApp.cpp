@@ -38,7 +38,7 @@ void C3DtestApp::onStart() {
 	Engine.createCube(vec3(3,300,-3),1.0f);
 	Engine.createCylinder(vec3(0,300,-4),1,2,30);
 
-	plane = Engine.createPlane(vec3(0, 450, -4), 10000, 10000, 5);
+	
 
 
 
@@ -135,32 +135,6 @@ void C3DtestApp::onStart() {
 	Engine.uploadDataTexture(hChunkTriTable,hTriTableTex);
 
 
-
-	//load texture shader
-	Engine.loadShader(vertex, dataPath + "texture.vert");
-	Engine.loadShader(frag, dataPath + "texture.frag");
-	hTextureShader = Engine.linkShaders();
-	Engine.setCurrentShader(hTextureShader);
-	Engine.Renderer.hTextureUnit[0] = Engine.getShaderDataHandle("mySampler1");
-	Engine.Renderer.hTextureUnit[1] = Engine.getShaderDataHandle("mySampler2");
-	Engine.Renderer.hTile[0] = Engine.getShaderDataHandle("tile1");
-	Engine.Renderer.hTile[1] = Engine.getShaderDataHandle("tile2");
-	Engine.Renderer.hOffset[0] = Engine.getShaderDataHandle("offset1");
-	Engine.Renderer.hOffset[1] = Engine.getShaderDataHandle("offset2");
-	hTextureMVP = Engine.getShaderDataHandle("mvpMatrix");
-
-
-
-
-	cloud = Engine.createMaterial(dataPath + "cloud001.png");
-	cloud->setShader(hTextureShader);
-	cloud->setTile(0, vec2(2));
-	
-	cloud->addImage(dataPath + "cloud002.png");
-	cloud->setTile(1, vec2(2));
-	
-	plane->setMaterial(*cloud);
-
 	
 	skyDome = Engine.createSkyDome();
 	
@@ -200,7 +174,6 @@ void C3DtestApp::createBB() {
 
 /*  Create a mesh for this chunk, and register it with the renderer.  */
 void C3DtestApp::createChunkMesh(Chunk& chunk) {
-
 	chunkCall++;
 
 	Engine.setCurrentShader(hChunkProg);
@@ -491,7 +464,7 @@ void C3DtestApp::draw() {
 
 	
 	/////////////////terrain->multiBuf.draw();
-	terrain->drawNew();
+	//terrain->drawNew();
 	
 	t = Engine.Time.milliseconds() - t;
 
@@ -501,12 +474,8 @@ void C3DtestApp::draw() {
 
 
 
-	Engine.Renderer.setShader(hTextureShader);
-	Engine.setShaderValue(hTextureMVP, Engine.currentCamera->clipMatrix * plane->worldMatrix);
-	//Engine.Renderer.attachTexture(cloud->getTexture());
-	plane->drawNew();
+	
 
-	Engine.Renderer.attachTexture(0, 0);
 
 	//watch::watch1 << pos.x;
 //	watch::watch1 << " " << pos.y;
@@ -608,9 +577,9 @@ void C3DtestApp::Update() {
 	float move = dT * 0.00005;
 	terrain->update();
 
-	cloudOffset += move;
-	cloud->setOffset(0,cloudOffset);
-	cloud->setOffset(1, cloudOffset * 0.5f);
+	skyDome->cloudOffset += move;
+	skyDome->cloud->setOffset(0, skyDome->cloudOffset);
+	skyDome->cloud->setOffset(1, skyDome->cloudOffset * 0.5f);
 
 	if (fpsOn) {
 
