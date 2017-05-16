@@ -9,7 +9,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-	
+#include "chunkShader.h"
+
 extern CSuperChunk* dbgSC;
 
 class C3DtestApp : public  CBaseApp {
@@ -91,7 +92,8 @@ public:
 
 	CSkyDome* skyDome;
 
-	
+	ChunkShader* chunkShader;
+	CBaseTexture* triTableTex; ///<Data texture for MC triangles table
 };
 
 const float yawAng = 0.22f;

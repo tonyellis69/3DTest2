@@ -38,10 +38,6 @@ void C3DtestApp::onStart() {
 	Engine.createCube(vec3(3,300,-3),1.0f);
 	Engine.createCylinder(vec3(0,300,-4),1,2,30);
 
-	
-
-
-
 
 	//position the default camera
 	Engine.currentCamera->setPos(vec3(0,303,6));
@@ -80,7 +76,6 @@ void C3DtestApp::onStart() {
 	Engine.setCurrentShader(hChunkCheckProg);
 	hCCsamplePosVec = Engine.getShaderDataHandle("nwSamplePos");
 	hCCloDscale = Engine.getShaderDataHandle("LoDscale");
-	
 
 	double t = Engine.Time.milliseconds();
 
@@ -111,31 +106,48 @@ void C3DtestApp::onStart() {
 	createBB();
 
 	//load chunk shader
+	const char* feedbackVaryings[3];
+	feedbackVaryings[0] = "gl_Position";
+	//feedbackVaryings[1] = "outColour";
+	feedbackVaryings[1] = "normal";
+/*
 	Engine.loadShader(vertex,dataPath + "chunk.vert");
 	Engine.loadShader(geometry,dataPath + "chunk.geom");
 	hChunkProg = Engine.attachShaders();
-	const char* feedbackVaryings[3];
-	feedbackVaryings[0] = "gl_Position"; 
-	//feedbackVaryings[1] = "outColour";
-	feedbackVaryings[1] = "normal";
+	
 	Engine.setFeedbackData(hChunkProg, 2, feedbackVaryings);
-	Engine.linkShaders(hChunkProg);
+	Engine.linkShaders(hChunkProg); */
 
 	//get chunk shader data handles
-	Engine.setCurrentShader(hChunkProg);
+/*	Engine.setCurrentShader(hChunkProg);
 	hChunkCubeSize = Engine.getShaderDataHandle("cubeSize");
 	hChunkLoDscale = Engine.getShaderDataHandle("LoDscale");
 	hChunkSamplePos = Engine.getShaderDataHandle("samplePos");
 	hChunkTriTable = Engine.getShaderDataHandle("hTriTableTex");
 	hChunkTerrainPos = Engine.getShaderDataHandle("terrainPos");
 	hSamplesPerCube = Engine.getShaderDataHandle("samplesPerCube");
+	*/
+
+	chunkShader = new ChunkShader();
+	chunkShader->pRenderer = &Engine.Renderer;
+	chunkShader->load(vertex, dataPath + "chunk.vert");
+	chunkShader->load(geometry, dataPath + "chunk.geom");
+	chunkShader->attach();
+	chunkShader->setFeedbackData(2, feedbackVaryings);
+	chunkShader->link();
 
 	//Upload data texture for chunk shader
-	hTriTableTex = Engine.createDataTexture(intTex,16,256,&triTable);
-	Engine.uploadDataTexture(hChunkTriTable,hTriTableTex);
+	triTableTex = Engine.createDataTexture(intTex,16,256,&triTable);
+
+	//////////Engine.uploadDataTexture(hChunkTriTable,hTriTableTex);
+	Engine.Renderer.setShader(chunkShader);
+	chunkShader->getShaderHandles();////////causes error!!
+	chunkShader->setChunkTriTable(*triTableTex);
+
+	//Engine.Renderer.setShader(0);
+//	Engine.Renderer.attachTexture(0, 0);
 
 
-	
 	skyDome = Engine.createSkyDome();
 	
 
@@ -176,17 +188,24 @@ void C3DtestApp::createBB() {
 void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	chunkCall++;
 
-	Engine.setCurrentShader(hChunkProg);
-	Engine.setShaderValue(hChunkCubeSize,chunk.cubeSize);
+	//Engine.setCurrentShader(hChunkProg);
+	Engine.Renderer.setShader(chunkShader);
+	//Engine.setShaderValue(hChunkCubeSize,chunk.cubeSize);
+	chunkShader->setChunkCubeSize(chunk.cubeSize);
 
 
 	float LoDscale = float(1 << chunk.LoD-1);
-	Engine.setShaderValue(hChunkLoDscale,LoDscale);
-	Engine.setShaderValue(hChunkSamplePos,chunk.samplePos);
-	Engine.setShaderValue(hSamplesPerCube, terrain->sampleScale);
-	Engine.setDataTexture(hTriTableTex);
+	//Engine.setShaderValue(hChunkLoDscale,LoDscale);
+	chunkShader->setChunkLoDscale(LoDscale);
+	//Engine.setShaderValue(hChunkSamplePos,chunk.samplePos);
+	chunkShader->setChunkSamplePos(chunk.samplePos);
+	//Engine.setShaderValue(hSamplesPerCube, terrain->sampleScale);
+	chunkShader->setSamplesPerCube(terrain->sampleScale);
+	//Engine.setDataTexture(hTriTableTex);
+	chunkShader->setChunkTriTable(*triTableTex);
 
-	Engine.setShaderValue(hChunkTerrainPos, chunk.terrainPos);
+	//Engine.setShaderValue(hChunkTerrainPos, chunk.terrainPos);
+	chunkShader->setChunkTerrainPos(chunk.terrainPos);
 
 	int vertsPerPrimitive = 3 * chunk.noAttribs;
 	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
@@ -212,6 +231,7 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 
 
 bool C3DtestApp::superChunkIsEmpty(vec3& sampleCorner, int LoD) {
+	return false;
 	Engine.setCurrentShader(hChunkCheckProg);
 	float LoDscale = LoD * chunksPerSuperChunkEdge;
 	Engine.setShaderValue(hCCsamplePosVec,sampleCorner);
@@ -464,7 +484,8 @@ void C3DtestApp::draw() {
 
 	
 	/////////////////terrain->multiBuf.draw();
-	//terrain->drawNew();
+	Engine.Renderer.setShader(Engine.Renderer.phongShader);
+	terrain->drawNew();
 	
 	t = Engine.Time.milliseconds() - t;
 
@@ -763,6 +784,7 @@ C3DtestApp::~C3DtestApp() {
 	delete shaderChunkGrid;
 	delete chunkBB;
 	delete tmpBuf;
+	delete chunkShader;
 }
 
 
