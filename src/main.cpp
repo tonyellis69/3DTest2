@@ -11,11 +11,10 @@
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine,int nCmdShow) {
-
+	//_CrtSetBreakAlloc(12920);
 	C3DtestApp* testApp = new C3DtestApp;
 
 	testApp->SetWindow(1200,800,"3D test app :-)",WIN_NORMAL);//GAME_SCREEN_WIDTH,GAME_SCREEN_HEIGHT,"Asteroids :-)",WIN_BORDERLESS);
-
 	testApp->start();
 
 	delete testApp;

@@ -17,16 +17,16 @@ using namespace watch;
 
 using namespace glm;
 
- 
+
 
 C3DtestApp::C3DtestApp() {
 
 	tmpSCno = 0;
-
+	
 }
 
 void C3DtestApp::onStart() {
-
+	
 
 	chunkCall = 0;
 
@@ -110,25 +110,10 @@ void C3DtestApp::onStart() {
 	feedbackVaryings[0] = "gl_Position";
 	//feedbackVaryings[1] = "outColour";
 	feedbackVaryings[1] = "normal";
-/*
-	Engine.loadShader(vertex,dataPath + "chunk.vert");
-	Engine.loadShader(geometry,dataPath + "chunk.geom");
-	hChunkProg = Engine.attachShaders();
-	
-	Engine.setFeedbackData(hChunkProg, 2, feedbackVaryings);
-	Engine.linkShaders(hChunkProg); */
 
-	//get chunk shader data handles
-/*	Engine.setCurrentShader(hChunkProg);
-	hChunkCubeSize = Engine.getShaderDataHandle("cubeSize");
-	hChunkLoDscale = Engine.getShaderDataHandle("LoDscale");
-	hChunkSamplePos = Engine.getShaderDataHandle("samplePos");
-	hChunkTriTable = Engine.getShaderDataHandle("hTriTableTex");
-	hChunkTerrainPos = Engine.getShaderDataHandle("terrainPos");
-	hSamplesPerCube = Engine.getShaderDataHandle("samplesPerCube");
-	*/
 
 	chunkShader = new ChunkShader();
+	Engine.shaderList.push_back(chunkShader);
 	chunkShader->pRenderer = &Engine.Renderer;
 	chunkShader->load(vertex, dataPath + "chunk.vert");
 	chunkShader->load(geometry, dataPath + "chunk.geom");
@@ -144,9 +129,6 @@ void C3DtestApp::onStart() {
 	chunkShader->getShaderHandles();////////causes error!!
 	chunkShader->setChunkTriTable(*triTableTex);
 
-	//Engine.Renderer.setShader(0);
-//	Engine.Renderer.attachTexture(0, 0);
-
 
 	skyDome = Engine.createSkyDome();
 	
@@ -156,6 +138,7 @@ void C3DtestApp::onStart() {
 	oldTime = Engine.Time.milliseconds();
 
 	supWire = false;
+
 }
 
 /** Create a wireframe bounding box.*/
@@ -466,25 +449,26 @@ void C3DtestApp::onResize(int width, int height) {
 void C3DtestApp::draw() {
 	//return;
 	//draw chunk
-	Engine.setStandard3dShader();
 	glm::mat3 normMatrix(terrain->worldMatrix); 
 	//Engine.setShaderValue(Engine.rNormalModelToCameraMatrix,normMatrix);
 	mat4 mvp; 
 
 
 	int draw =0;
-	mvp = Engine.currentCamera->clipMatrix * terrain->chunkOrigin;
-
-
-	mat3 tmp;
-	Engine.setShaderValue(Engine.rMVPmatrix, mvp);
-	Engine.setShaderValue(Engine.rNormalModelToCameraMatrix, tmp); //chunk worldmatrix? needs a rethink
-	double t = Engine.Time.milliseconds();
+		double t = Engine.Time.milliseconds();
 	
 
 	
 	/////////////////terrain->multiBuf.draw();
-	Engine.Renderer.setShader(Engine.Renderer.phongShader);
+	Engine.Renderer.setShader(Engine.phongShader);
+
+	mvp = Engine.currentCamera->clipMatrix * terrain->chunkOrigin;
+	mat3 tmp;
+	//Engine.setShaderValue(Engine.rMVPmatrix, mvp);
+	Engine.phongShader->setMVP(mvp);
+	//Engine.setShaderValue(Engine.rNormalModelToCameraMatrix, tmp); //chunk worldmatrix? needs a rethink
+	Engine.phongShader->setNormalModelToCameraMatrix(tmp);
+
 	terrain->drawNew();
 	
 	t = Engine.Time.milliseconds() - t;
@@ -498,7 +482,7 @@ void C3DtestApp::draw() {
 	
 
 
-	//watch::watch1 << pos.x;
+	
 //	watch::watch1 << " " << pos.y;
 	//watch::watch1 << " " << pos.z;
 
@@ -598,9 +582,9 @@ void C3DtestApp::Update() {
 	float move = dT * 0.00005;
 	terrain->update();
 
-	skyDome->cloudOffset += move;
-	skyDome->cloud->setOffset(0, skyDome->cloudOffset);
-	skyDome->cloud->setOffset(1, skyDome->cloudOffset * 0.5f);
+	//skyDome->cloudOffset += move;
+//	skyDome->cloud->setOffset(0, skyDome->cloudOffset);
+//	skyDome->cloud->setOffset(1, skyDome->cloudOffset * 0.5f);
 
 	if (fpsOn) {
 
@@ -780,11 +764,10 @@ void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
 C3DtestApp::~C3DtestApp() {
 	delete terrain;
 	//TO DO: since these are created with Engine.createModel, engine should handle deletion.
-	delete chunkShell;
-	delete shaderChunkGrid;
-	delete chunkBB;
+	//delete chunkShell;
+//	delete shaderChunkGrid;
+	//delete chunkBB;
 	delete tmpBuf;
-	delete chunkShader;
 }
 
 
