@@ -10,6 +10,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "chunkShader.h"
+#include "chunkCheckShader.h"
+//#include "renderer/wireShader.h"
 
 extern CSuperChunk* dbgSC;
 
@@ -24,7 +26,6 @@ public:
 	void OnKeyDown(unsigned int wParam, long lParam);
 	void onResize(int width, int height);
 	void draw();
-	void drawChunkBB(CModel& model);
 	void advance(Tdirection direction);
 	void Update();
 	
@@ -40,25 +41,7 @@ public:
 	
 	glm::vec2 lastMousePos; ///<Used to track current mouse movement
 
-	int hWireProg; ///<Handle for wireframe shader.
-	int hWireMVPmatrix;
-	int hWireScale;
-	int hWireColour;
 
-	int hChunkCheckProg; ///<Handle for chunk existence check shader
-	int hCCsamplePosVec;
-	int hCCloDscale;
-	
-
-
-	int hChunkProg; ///<Handle for chunk geometry creating shader
-	int hChunkCubeSize;
-	int hChunkLoDscale;
-	int hChunkSamplePos;
-	int hChunkTriTable;
-	int hTriTableTex; ///<A data texture of triangle arrangements for Marching Cubes.
-	int hChunkTerrainPos;///<Position relative to terrain origin.
-	int hSamplesPerCube;
 
 	CTerrain* terrain;
 	
@@ -94,6 +77,8 @@ public:
 
 	ChunkShader* chunkShader;
 	CBaseTexture* triTableTex; ///<Data texture for MC triangles table
+	ChunkCheckShader* chunkCheckShader;
+
 };
 
 const float yawAng = 0.22f;

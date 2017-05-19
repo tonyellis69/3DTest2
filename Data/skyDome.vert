@@ -9,8 +9,7 @@ smooth out vec4 theColor;
 
 uniform mat4 mvpMatrix; //model to view (camera) to perspective matrix
 
-uniform vec4 levels;
-uniform float domeHeight;
+
 uniform vec3 heightColour[4];
 
 
