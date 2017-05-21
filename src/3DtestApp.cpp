@@ -40,8 +40,8 @@ void C3DtestApp::onStart() {
 
 
 	//position the default camera
-	Engine.currentCamera->setPos(vec3(0, 303, 6));
-	Engine.currentCamera->lookAt(vec3(0, -1, -3));
+	Engine.getCurrentCamera()->setPos(vec3(0, 303, 6));
+	Engine.getCurrentCamera()->lookAt(vec3(0, -1, -3));
 
 	//Position FPS camera
 	fpsCam.setPos(vec3(0, 180, 0));
@@ -230,35 +230,35 @@ bool C3DtestApp::chunkExists(vec3& sampleCorner, int LoD) {
 
 
 void C3DtestApp::keyCheck() {
-
+	CCamera* currentCamera = Engine.getCurrentCamera();
 	float moveInc = dT * 0.5; // 0.05125f;
 
 	if (keyNow('A')) {
-		Engine.currentCamera->track(-moveInc);
+		currentCamera->track(-moveInc);
 	}
 
 	if (keyNow('D')) {
-		Engine.currentCamera->track(moveInc);
+		currentCamera->track(moveInc);
 	}
 
 	if (keyNow('W')) {
-		Engine.currentCamera->dolly(moveInc);
+		currentCamera->dolly(moveInc);
 	}
 
 	if (keyNow('S')) {
-		Engine.currentCamera->dolly(-moveInc);
+		currentCamera->dolly(-moveInc);
 	}
 	if (KeyDown[VK_SPACE]) {
-		Engine.currentCamera->elevate(moveInc);
+		currentCamera->elevate(moveInc);
 	}
 
 
 	if (KeyDown['E']) {
-		Engine.currentCamera->yaw(yawAng * dT);
+		currentCamera->yaw(yawAng * dT);
 	}
 
 	if (KeyDown['T']) {
-		Engine.currentCamera->yaw(-yawAng *dT);
+		currentCamera->yaw(-yawAng *dT);
 	}
 
 	float rot = dT * 0.2f;
@@ -295,7 +295,7 @@ void C3DtestApp::keyCheck() {
 
 			//move camera
 			vec3 perp = normalize(vec3(mousePos.y, -mousePos.x, 0));
-			Engine.currentCamera->freeRotate(perp, angle);
+			currentCamera->freeRotate(perp, angle);
 
 			setMousePos(-1, -1);
 		}
@@ -335,10 +335,10 @@ void C3DtestApp::keyCheck() {
 	if (KeyDown['1']) {
 		fpsOn = !fpsOn;
 		if (fpsOn) {
-			Engine.currentCamera = &fpsCam;
+			Engine.setCurrentCamera(&fpsCam);
 		}
 		else
-			Engine.currentCamera = Engine.defaultCamera;
+			Engine.setCurrentCamera(Engine.defaultCamera);
 		EatKeys();
 
 	}
@@ -430,14 +430,14 @@ void C3DtestApp::draw() {
 	glm::mat3 normMatrix(terrain->worldMatrix);
 
 	mat4 mvp;
-
+	CCamera* currentCamera = Engine.getCurrentCamera();
 
 	int draw = 0;
 	double t = Engine.Time.milliseconds();
 
 	Engine.Renderer.setShader(Engine.phongShader);
 
-	mvp = Engine.currentCamera->clipMatrix * terrain->chunkOrigin;
+	mvp = currentCamera->clipMatrix * terrain->chunkOrigin;
 	mat3 tmp;
 	Engine.phongShader->setMVP(mvp);
 	Engine.phongShader->setNormalModelToCameraMatrix(tmp); //why am I doing this?
@@ -462,7 +462,7 @@ void C3DtestApp::draw() {
 			for (int s = 0; s < terrain->layers[l].superChunks.size(); s++) {
 				Engine.Renderer.setShader(Engine.wireShader);
 				chunkBB->setPos(terrain->layers[l].superChunks[s]->nwWorldPos);
-				mvp = Engine.currentCamera->clipMatrix * chunkBB->worldMatrix;
+				mvp = currentCamera->clipMatrix * chunkBB->worldMatrix;
 				Engine.wireShader->setMVP(mvp);
 				chunkBB->drawNew();
 			}
