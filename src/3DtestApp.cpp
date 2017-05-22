@@ -53,12 +53,11 @@ void C3DtestApp::onStart() {
 	terrain = Engine.createTerrain();
 	CBaseBuf* terrainBuf = &terrain->multiBuf;
 	terrainBuf->setSize(175000000);
-	terrainBuf->setMinSize(100000);
 
 	terrainBuf->storeLayout(3, 3, 0, 0);
 
-	tmpBuf = Engine.createBuffer();
-	tmpBuf->setSize(100000);
+	tempFeedbackBuf = Engine.createBuffer();
+	tempFeedbackBuf->setSize(500000);
 
 
 
@@ -177,7 +176,7 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 
 	CBaseBuf* terrainBuf = &terrain->multiBuf;
 
-	unsigned int primitives = Engine.acquireFeedbackVerts(*shaderChunkGrid, *tmpBuf, *terrainBuf);
+	unsigned int primitives = Engine.acquireFeedbackVerts(*shaderChunkGrid, *tempFeedbackBuf, *terrainBuf);
 
 	if (primitives) {
 		chunk.id = terrainBuf->getLastId();
@@ -522,7 +521,8 @@ void C3DtestApp::advance(Tdirection direction) {
 		terrain->chunkOriginInt += dir;
 
 		terrain->scrollTriggerPoint = pos;
-		terrain->chunkOrigin[3] = vec4(terrain->chunkOriginInt * 40, 1);
+		vec3 translation =  vec3(terrain->chunkOriginInt *  cubesPerChunkEdge) * cubeSize ;
+		terrain->chunkOrigin[3] = vec4(translation, 1);
 		terrain->advance(direction); //
 	}
 }
@@ -570,6 +570,7 @@ void C3DtestApp::Update() {
 
 			;
 
+			vec3 translation = vec3(terrain->chunkOriginInt *  cubesPerChunkEdge) * cubeSize;
 			//work out direction to scroll-in new terrain from
 			if (outsideChunkBoundary.x) {
 				if (pos.x > 0)
@@ -577,7 +578,7 @@ void C3DtestApp::Update() {
 				else
 					direction = west;
 				terrain->chunkOriginInt += dirToVec(flipDir(direction));
-				terrain->chunkOrigin[3] = vec4(terrain->chunkOriginInt * 40, 1);
+				terrain->chunkOrigin[3] = vec4(chunkDist * vec3(terrain->chunkOriginInt), 1);
 				terrain->advance(direction);
 				//return;
 			}
@@ -588,7 +589,7 @@ void C3DtestApp::Update() {
 				else
 					direction = down;
 				terrain->chunkOriginInt += dirToVec(flipDir(direction));
-				terrain->chunkOrigin[3] = vec4(terrain->chunkOriginInt * 40, 1);
+				terrain->chunkOrigin[3] = vec4(chunkDist * vec3(terrain->chunkOriginInt), 1);
 				terrain->advance(direction);
 				//return;
 			}
@@ -600,7 +601,7 @@ void C3DtestApp::Update() {
 				else
 					direction = north;
 				terrain->chunkOriginInt += dirToVec(flipDir(direction));
-				terrain->chunkOrigin[3] = vec4(terrain->chunkOriginInt * 40, 1);
+				terrain->chunkOrigin[3] = vec4(chunkDist * vec3(terrain->chunkOriginInt) , 1);
 				terrain->advance(direction);
 			}
 		}
@@ -703,7 +704,7 @@ C3DtestApp::~C3DtestApp() {
 	//delete chunkShell;
 //	delete shaderChunkGrid;
 	//delete chunkBB;
-	delete tmpBuf;
+//	delete tempFeedbackBuf;
 }
 
 

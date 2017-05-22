@@ -67,7 +67,7 @@ public:
 
 	int chunkCall;
 
-	CBaseBuf* tmpBuf; 
+	CBaseBuf* tempFeedbackBuf; 
 
 	float bigGap;
 
@@ -82,9 +82,9 @@ public:
 };
 
 const float yawAng = 0.22f;
-const int cubesPerChunkEdge = 16; //8 ///<Number of cubes along a chunk edge
-const float cubeSize = 2.5;//10; ///<Size of cubes in worldspace.
-const int chunksPerSuperChunkEdge = 4;//8;
+const int cubesPerChunkEdge = 16;// 16; //8 ///<Number of cubes along a chunk edge
+const float cubeSize =  2.5;//10; ///<Size of cubes in worldspace.
+const int chunksPerSuperChunkEdge = 4;// 4;//8;
 
 const int terrainNoAttribs = 3;
 
