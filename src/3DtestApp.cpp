@@ -83,8 +83,10 @@ void C3DtestApp::onStart() {
 	initChunkGrid(cubesPerChunkEdge);
 	//4 16 2.5
 	terrain->setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
-	//terrain->setSizes(4, 18, cubeSize);
-	terrain->createLayers(4, 2, 1); //(8, 3, 2); //(4,2,1);
+
+	terrain->createLayers2(1280, 320, 0);
+
+	//terrain->createLayers(4, 2, 1); //(8, 3, 2); //(4,2,1);
 
 	terrain->createAllChunks();
 
