@@ -84,9 +84,10 @@ void C3DtestApp::onStart() {
 	//4 16 2.5
 	terrain->setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
 
+	//terrain->createLayers2(5120, 640, 0); //1280 320
 	terrain->createLayers2(1280, 320, 0);
 
-	//terrain->createLayers(4, 2, 1); //(8, 3, 2); //(4,2,1);
+	//terrain->createLayers(8, 2, 2); //(8, 3, 2); //(4,2,1);
 
 	terrain->createAllChunks();
 
