@@ -392,6 +392,16 @@ void C3DtestApp::keyCheck() {
 		EatKeys();
 	}
 
+	if (KeyDown['C']) {
+		vec3 pos = currentCamera->getPos();
+		pos = pos + currentCamera->getTargetDir() * 200.0f;
+		CModel* cube = Engine.createCube(pos, 60);
+		CPhysObj* phys = Engine.addPhysics(cube);
+		phys->setVelocity(vec3(0, 0, 0));
+
+		EatKeys();
+	}
+
 
 	//if (keyNow('U') )
 	if (KeyDown['U']) {
@@ -455,20 +465,32 @@ void C3DtestApp::draw() {
 
 	//draw bounding boxes
 	if (supWire) {
-		//draw superchunk
-		float siz;
-
+		int SCs = terrain->totalSCs;
+		vBuf::T3DnormVert box[500]; //should be enough
+		int index = 0;
+		CBuf boxBuf;
 		for (int l = 0; l < terrain->layers.size(); l++) {
-			siz = terrain->layers[l].cubeSize * cubesPerChunkEdge * chunksPerSuperChunkEdge;
-			Engine.wireShader->setScale(vec3(siz));
+			//siz = terrain->layers[l].cubeSize * cubesPerChunkEdge * chunksPerSuperChunkEdge;
+			//Engine.wireShader->setScale(vec3(siz));
 			for (int s = 0; s < terrain->layers[l].superChunks.size(); s++) {
-				Engine.Renderer.setShader(Engine.wireShader);
-				chunkBB->setPos(terrain->layers[l].superChunks[s]->nwWorldPos);
-				mvp = currentCamera->clipMatrix * chunkBB->worldMatrix;
-				Engine.wireShader->setMVP(mvp);
-				chunkBB->drawNew();
+				//Engine.Renderer.setShader(Engine.wireShader);
+				//chunkBB->setPos(terrain->layers[l].superChunks[s]->nwWorldPos);
+				//mvp = currentCamera->clipMatrix * chunkBB->worldMatrix;
+				//Engine.wireShader->setMVP(mvp);
+				//chunkBB->drawNew();
+				box[index].v = terrain->layers[l].superChunks[s]->nwWorldPos;
+				box[index].normal = vec3(100);
+				index++;
 			}
 		}
+
+		//now draw it
+		//transfer verts to buffer
+		boxBuf.storeVertexes(box, sizeof(vBuf::T3DnormVert) * index, index);
+		boxBuf.storeLayout(3, 3, 0, 0);
+		//set wire shader
+
+		//draw
 	}
 }
 
