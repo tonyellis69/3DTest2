@@ -396,7 +396,7 @@ void C3DtestApp::keyCheck() {
 		vec3 pos = currentCamera->getPos();
 		pos = pos + currentCamera->getTargetDir() * 200.0f;
 		CModel* cube = Engine.createCube(pos, 60);
-		CPhysObj* phys = Engine.addPhysics(cube);
+		CBasePhysObj* phys = Engine.addPhysics(cube);
 		phys->setVelocity(vec3(0, 0, 0));
 
 		EatKeys();
@@ -561,7 +561,11 @@ void C3DtestApp::Update() {
 
 	terrain->update();
 
-	
+	vec3 pos = Engine.getCurrentCamera()->getPos();
+	CSuperChunk* sc = terrain->getSC(pos);
+
+	if (sc)
+		watch1 << sc->tmpIndex.x << " " << sc->tmpIndex.y << " " << sc->tmpIndex.z << " ";
 
 	if (fpsOn) {
 
