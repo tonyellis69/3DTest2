@@ -120,7 +120,7 @@ void C3DtestApp::onStart() {
 
 	skyDome = Engine.createSkyDome();
 
-	oldTime = Engine.Time.milliseconds();
+	oldTime = Engine.Time.seconds();
 
 	supWire = false;
 
@@ -153,29 +153,21 @@ void C3DtestApp::createBB() {
 void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	chunkCall++;
 
-	//Engine.setCurrentShader(hChunkProg);
 	Engine.Renderer.setShader(chunkShader);
-	//Engine.setShaderValue(hChunkCubeSize,chunk.cubeSize);
 	chunkShader->setChunkCubeSize(chunk.cubeSize);
 
 
 	float LoDscale = float(1 << chunk.LoD - 1);
-	//Engine.setShaderValue(hChunkLoDscale,LoDscale);
 	chunkShader->setChunkLoDscale(LoDscale);
-	//Engine.setShaderValue(hChunkSamplePos,chunk.samplePos);
 	chunkShader->setChunkSamplePos(chunk.samplePos);
-	//Engine.setShaderValue(hSamplesPerCube, terrain->sampleScale);
 	chunkShader->setSamplesPerCube(terrain->sampleScale);
-	//Engine.setDataTexture(hTriTableTex);
 	chunkShader->setChunkTriTable(*triTableTex);
 
-	//Engine.setShaderValue(hChunkTerrainPos, chunk.terrainPos);
 	chunkShader->setChunkTerrainPos(chunk.terrainPos);
 
 	int vertsPerPrimitive = 3 * chunk.noAttribs;
 	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
 	int nVertsOut = cubesPerChunkEdge * cubesPerChunkEdge * cubesPerChunkEdge * maxMCverts;
-
 
 	CBaseBuf* terrainBuf = &terrain->multiBuf;
 
@@ -233,7 +225,7 @@ bool C3DtestApp::chunkExists(vec3& sampleCorner, int LoD) {
 
 void C3DtestApp::keyCheck() {
 	CCamera* currentCamera = Engine.getCurrentCamera();
-	float moveInc = dT * 0.5; // 0.05125f;
+	float moveInc = dT * 500.0; // 0.05125f;
 
 	if (keyNow('A')) {
 		currentCamera->track(-moveInc);
@@ -263,7 +255,7 @@ void C3DtestApp::keyCheck() {
 		currentCamera->yaw(-yawAng *dT);
 	}
 
-	float rot = dT * 0.2f;
+	float rot = dT * 200.0f;
 	if (KeyDown['P']) {
 		cube->rotate(rot, glm::vec3(1, 0, 0));
 	}
@@ -397,7 +389,8 @@ void C3DtestApp::keyCheck() {
 		pos = pos + currentCamera->getTargetDir() * 200.0f;
 		CModel* cube = Engine.createCube(pos, 60);
 		CBasePhysObj* phys = Engine.addPhysics(cube);
-		phys->setVelocity(vec3(0, 0, 0));
+		phys->setMass(10);
+		phys->bSphere.setRadius(35);
 
 		EatKeys();
 	}
