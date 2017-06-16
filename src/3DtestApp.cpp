@@ -26,6 +26,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
+	
 
 
 	chunkCall = 0;
@@ -78,8 +79,7 @@ void C3DtestApp::onStart() {
 
 	double t = Engine.Time.milliseconds();
 
-
-
+	
 	initChunkGrid(cubesPerChunkEdge);
 	//4 16 2.5
 	terrain->setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
@@ -94,7 +94,7 @@ void C3DtestApp::onStart() {
 	t = Engine.Time.milliseconds() - t;
 	cerr << "\n time " << t;
 
-
+	
 	createBB();
 
 	//load chunk shader
@@ -123,7 +123,7 @@ void C3DtestApp::onStart() {
 	oldTime = Engine.Time.seconds();
 
 	supWire = false;
-
+	
 }
 
 /** Create a wireframe bounding box.*/
@@ -339,7 +339,7 @@ void C3DtestApp::keyCheck() {
 
 
 	if (KeyDown['J']) {
-		physCube->velocity += vec3(0, 0, -50);
+		physCube->velocity += vec3(0, 0, -1);
 		EatKeys();
 	}
 	if (KeyDown['L']) {
@@ -387,7 +387,7 @@ void C3DtestApp::keyCheck() {
 	if (KeyDown['C']) {
 		vec3 pos = currentCamera->getPos();
 		pos = pos + currentCamera->getTargetDir() * 200.0f;
-		CModel* cube = Engine.createCube(pos, 60);
+		CModel* cube = Engine.createCube(pos, 40);
 		physCube = Engine.addPhysics(cube);
 		physCube->setMass(10);
 		physCube->bSphere.setRadius(35);
