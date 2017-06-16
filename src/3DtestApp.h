@@ -79,6 +79,8 @@ public:
 	CBaseTexture* triTableTex; ///<Data texture for MC triangles table
 	ChunkCheckShader* chunkCheckShader;
 
+	CBasePhysObj* physCube;
+
 };
 
 const float yawAng = 0.22f;

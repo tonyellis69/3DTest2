@@ -339,7 +339,7 @@ void C3DtestApp::keyCheck() {
 
 
 	if (KeyDown['J']) {
-		selectChk.x--;
+		physCube->velocity += vec3(0, 0, -50);
 		EatKeys();
 	}
 	if (KeyDown['L']) {
@@ -388,9 +388,10 @@ void C3DtestApp::keyCheck() {
 		vec3 pos = currentCamera->getPos();
 		pos = pos + currentCamera->getTargetDir() * 200.0f;
 		CModel* cube = Engine.createCube(pos, 60);
-		CBasePhysObj* phys = Engine.addPhysics(cube);
-		phys->setMass(10);
-		phys->bSphere.setRadius(35);
+		physCube = Engine.addPhysics(cube);
+		physCube->setMass(10);
+		physCube->bSphere.setRadius(35);
+		
 
 		EatKeys();
 	}
