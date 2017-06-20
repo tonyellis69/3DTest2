@@ -44,6 +44,10 @@ void C3DtestApp::onStart() {
 	Engine.getCurrentCamera()->setPos(vec3(0, 303, 6));
 	Engine.getCurrentCamera()->lookAt(vec3(0, -1, -3));
 
+	Engine.getCurrentCamera()->setPos(vec3(193.171, 271.751, 150.291));
+	Engine.getCurrentCamera()->lookAt(vec3(-0.736374, -0.452755, 0.502762));
+
+
 	//Position FPS camera
 	fpsCam.setPos(vec3(0, 180, 0));
 	fpsCam.lookAt(vec3(0, -1, -3));
@@ -391,6 +395,28 @@ void C3DtestApp::keyCheck() {
 		physCube = Engine.addPhysics(cube);
 		physCube->setMass(10);
 		physCube->bSphere.setRadius(35);
+		physCube->acceleration = vec3(0, -10, 0);
+
+		EatKeys();
+	}
+
+	if (KeyDown['V']) {
+		vec3 pos = currentCamera->getPos();
+		pos = pos + currentCamera->getTargetDir() * 50.0f;
+		CModel* cube = Engine.createCube(pos, 5);
+		physCube = Engine.addPhysics(cube);
+		physCube->setMass(10);
+		physCube->bSphere.setRadius(2);
+		physCube->acceleration = vec3(0, -10, 0);
+
+		EatKeys();
+	}
+
+	if (KeyDown['B']) {
+		vec3 camPos = currentCamera->getPos();
+		cerr << "\ncam pos " << camPos.x << " " << camPos.y << " " << camPos.z;
+		vec3 camTarg = currentCamera->getTargetDir();
+		cerr << "\ncam target " << camTarg.x << " " << camTarg.y << " " << camTarg.z;
 		
 
 		EatKeys();

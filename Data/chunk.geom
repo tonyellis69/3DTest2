@@ -107,6 +107,12 @@ int triTableValue(int i, int j){
 		
 			normal = vec3(normalize(cross(vec3(tri[2] - tri[0] ),
 								vec3(tri[2] - tri[1] ))));
+			
+			//catches the few degenerate triangles created
+			//a known flaw of vanilla MC
+			
+			if (!all(equal(tri[0],tri[1])) && !all(equal(tri[0],tri[2]))) {
+				
 		
 			gl_Position = tri[0]  + terrainPos;	
 			EmitVertex();
@@ -117,6 +123,7 @@ int triTableValue(int i, int j){
 		
 			//End triangle strip at first triangle 
 			EndPrimitive(); 
+			}
 		} 
 		else { //no more triangles to create for this cube.
 			break; 
