@@ -44,8 +44,8 @@ void C3DtestApp::onStart() {
 	Engine.getCurrentCamera()->setPos(vec3(0, 303, 6));
 	Engine.getCurrentCamera()->lookAt(vec3(0, -1, -3));
 
-	Engine.getCurrentCamera()->setPos(vec3(193.171, 271.751, 150.291));
-	Engine.getCurrentCamera()->lookAt(vec3(-0.736374, -0.452755, 0.502762));
+	Engine.getCurrentCamera()->setPos(vec3(141.059, 293.077, 148.701));
+	Engine.getCurrentCamera()->lookAt(vec3(0.0119089, -0.751703, -0.659395));
 
 
 	//Position FPS camera
