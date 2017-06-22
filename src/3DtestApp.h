@@ -81,6 +81,8 @@ public:
 
 	CBasePhysObj* physCube;
 
+	bool tmp;
+
 };
 
 const float yawAng = 0.22f;

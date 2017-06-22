@@ -22,7 +22,7 @@ using namespace glm;
 C3DtestApp::C3DtestApp() {
 
 	tmpSCno = 0;
-
+	tmp = false;
 }
 
 void C3DtestApp::onStart() {
@@ -344,6 +344,10 @@ void C3DtestApp::keyCheck() {
 
 	if (KeyDown['J']) {
 		physCube->velocity += vec3(0, 0, -1);
+		if (!tmp) {
+			cerr << "\n!!!!Sideways push started!";
+			tmp = true;
+		}
 		EatKeys();
 	}
 	if (KeyDown['L']) {
