@@ -399,6 +399,7 @@ void C3DtestApp::keyCheck() {
 		physCube = Engine.addPhysics(cube);
 		physCube->setMass(10);
 		physCube->bSphere.setRadius(35);
+		physCube->AABB.setSize(40, 40);
 		physCube->acceleration = vec3(0, -10, 0);
 
 		EatKeys();
@@ -411,6 +412,7 @@ void C3DtestApp::keyCheck() {
 		physCube = Engine.addPhysics(cube);
 		physCube->setMass(10);
 		physCube->bSphere.setRadius(2);
+		physCube->AABB.setSize(5, 5);
 		physCube->acceleration = vec3(0, -10, 0);
 
 		EatKeys();
