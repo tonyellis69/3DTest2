@@ -26,7 +26,7 @@ float getSample(vec3 cornerOffset) {
 	
 	
 	//Get the noise value at the 2D position of this corner.
-	float noise =  octave_noise_2d(5,0.5,1,sampleCorner.x ,sampleCorner.z ); //0.5f;
+	float noise = octave_noise_2d(5,0.5,1,sampleCorner.x ,sampleCorner.z ); //0.5f;
 
 	noise = pow(noise,2);
 		
