@@ -45,7 +45,8 @@ void C3DtestApp::onStart() {
 	Engine.getCurrentCamera()->lookAt(vec3(0, -1, -3));
 
 	Engine.getCurrentCamera()->setPos(vec3(83.8443, 259.706, 34.8063));
-	Engine.getCurrentCamera()->lookAt(vec3(-0.991203, -0.0693839, -0.112703));
+	Engine.getCurrentCamera()->setPos(vec3(83.8443, 359.706, 34.8063));
+	Engine.getCurrentCamera()->lookAt(vec3(-0.995789, -0.0588613, 0.070279));
 
 
 	//Position FPS camera
@@ -349,33 +350,34 @@ void C3DtestApp::keyCheck() {
 	}
 
 
-	if (KeyDown['J']) {
-	//	physCube->velocity += vec3(0, 0, -0.5f);
-		physCube->position.z -= 0.05f;
+	if (KeyDown['K']) {
+		physCube->velocity += vec3(0, 0, -0.1f);
+	//	physCube->position.z -= 0.05f;
 		if (!tmp) {
 			cerr << "\n!!!!Sideways push started!";
 			tmp = true;
 		}
 		//EatKeys();
 	}
-	if (KeyDown['L']) {
-		selectChk.x++;
-		EatKeys();
+	if (KeyDown['J']) {
+		physCube->position.z += 0.05f;
+		if (!tmp) {
+			cerr << "\n!!!!Sideways push started!";
+			tmp = true;
+		}
 	}
 	if (KeyDown['I']) {
-		selectChk.z--;
-		EatKeys();
+		physCube->position.x -= 0.05f;
 	}
-	if (KeyDown['K']) {
-		selectChk.z++;
-		EatKeys();
+	
+	if (KeyDown['M']) {
+		physCube->position.x += 0.05f;
 	}
-	if (KeyDown['H']) {
-		selectChk.y++;
-		EatKeys();
-	}
+
 	if (KeyDown['N']) {
-		selectChk.y--;
+		vec3 camPos = physCube->position;
+		cerr << "\ncube pos " << camPos.x << " " << camPos.y << " " << camPos.z;
+		
 		EatKeys();
 	}
 
@@ -415,6 +417,7 @@ void C3DtestApp::keyCheck() {
 
 	if (KeyDown['V']) {
 		vec3 pos = currentCamera->getPos();
+		//pos = vec3(293.96, 198.179, -82.5066);
 		pos = pos + currentCamera->getTargetDir() * 30.0f;
 		CModel* cube = Engine.createCube(pos, 5);
 		physCube = Engine.addPhysics(cube);
