@@ -34,6 +34,7 @@ public:
 	bool chunkExists(glm::vec3& sampleCorner, int LoD);
 	void initChunkShell();
 	void initChunkGrid(int cubesPerChunkEdge);
+	void initWireSCs();
 
 	string dataPath; ///<Filepath to the Data folder
 	
@@ -62,6 +63,7 @@ public:
 	CModel* chunkShell; ///<A model to represent the outer layer of a potentianl chunk.
 	int shellTotalVerts; ///<Total vertices that make up the shell.
 	CModel* shaderChunkGrid; ///<3D grid of verts modelling the cubes of a chunk, used in terrain creation.
+	CModel* wireSCs; ///<A model representing the SC wireframe.
 
 	bool supWire; ///<True when superchunk wireframe is on.
 

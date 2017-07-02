@@ -9,6 +9,8 @@
 #include <glm/gtx/perpendicular.hpp>
 #include <glm/gtx/common.hpp>
 
+#include "colour.h"
+
 #include <glm/gtc/matrix_access.hpp>	 //temp
 
 #include "watch.h"
@@ -127,6 +129,7 @@ void C3DtestApp::onStart() {
 
 	oldTime = Engine.Time.seconds();
 
+	initWireSCs();
 	supWire = false;
 	
 }
@@ -497,37 +500,44 @@ void C3DtestApp::draw() {
 
 
 	//wireframe drawing:
-	Engine.Renderer.setShader(Engine.wireShader);
-	Engine.wireShader->setColour(vec4(0, 1, 0, 0.4f));
+//	Engine.Renderer.setShader(Engine.wireShader);
+	//Engine.wireShader->setColour(vec4(0, 1, 0, 0.4f));
 
 	//draw bounding boxes
 	if (supWire) {
-		int SCs = terrain->totalSCs;
-		vBuf::T3DnormVert box[500]; //should be enough
-		int index = 0;
-		CBuf boxBuf;
-		for (int l = 0; l < terrain->layers.size(); l++) {
-			//siz = terrain->layers[l].cubeSize * cubesPerChunkEdge * chunksPerSuperChunkEdge;
-			//Engine.wireShader->setScale(vec3(siz));
+		int component = 1;
+		CSuperChunk* sc;
+		vec4 colour = vec4(0, 0, 0, 1);
+		vec3 cornerAdjust, opCornerAdjust;
+		Engine.Renderer.setShader(Engine.wireBoxShader);
+		for (int l = terrain->layers.size()-1; l > -1; l--) {
+			vBuf::T3DnormVert box[500]; //should be enough
+			int index = 0;
 			for (int s = 0; s < terrain->layers[l].superChunks.size(); s++) {
-				//Engine.Renderer.setShader(Engine.wireShader);
-				//chunkBB->setPos(terrain->layers[l].superChunks[s]->nwWorldPos);
-				//mvp = currentCamera->clipMatrix * chunkBB->worldMatrix;
-				//Engine.wireShader->setMVP(mvp);
-				//chunkBB->drawNew();
-				box[index].v = terrain->layers[l].superChunks[s]->nwWorldPos;
-				box[index].normal = vec3(100);
+				sc = terrain->layers[l].superChunks[s];
+				box[index].v = sc->nwWorldPos + terrain->layers[l].nwLayerPos;
+				cornerAdjust = vec3(sc->faceBoundary[west], sc->faceBoundary[down], sc->faceBoundary[north]);
+				box[index].v += cornerAdjust * sc->chunkSize;
+
+				opCornerAdjust = vec3(sc->faceBoundary[east] + 1, sc->faceBoundary[up] + 1,
+					sc->faceBoundary[south] + 1);
+				opCornerAdjust -= cornerAdjust;
+				box[index].normal = opCornerAdjust * sc->chunkSize;
 				index++;
 			}
+			wireSCs->storeVertexes(box, sizeof(vBuf::T3DnormVert) * index, index);
+			wireSCs->storeLayout(3, 3, 0, 0);
+			mvp = currentCamera->clipMatrix * wireSCs->worldMatrix;
+			Engine.wireBoxShader->setMVP(mvp);
+			
+			colour[component++] = 0.8f;
+			if (component > 2)
+				component = 0;
+			Engine.wireBoxShader->setColour(colour);
+			wireSCs->drawNew();
 		}
-
-		//now draw it
-		//transfer verts to buffer
-		boxBuf.storeVertexes(box, sizeof(vBuf::T3DnormVert) * index, index);
-		boxBuf.storeLayout(3, 3, 0, 0);
-		//set wire shader
-
-		//draw
+		
+	
 	}
 }
 
@@ -759,6 +769,19 @@ void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
 
 	delete[] shaderChunkVerts;
 	delete[] index;
+}
+
+/** Create a model for drawing superChunk positions in wireframe. */
+void C3DtestApp::initWireSCs() {
+	wireSCs = Engine.createModel();
+	
+	wireSCs->drawMode = GL_POINTS;
+	wireSCs->getMaterial()->setShader(Engine.wireBoxShader);
+
+	wireSCs->setPos(vec3(0));
+
+
+	
 }
 
 
