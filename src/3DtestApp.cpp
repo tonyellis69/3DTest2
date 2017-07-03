@@ -37,8 +37,8 @@ void C3DtestApp::onStart() {
 	lastMousePos = glm::vec2(0, 0);
 
 	//test objects, temporary
-	cube = Engine.createCube(vec3(-3, 300, -3), 1.0f);
-	Engine.createCube(vec3(3, 300, -3), 1.0f);
+	cube = Engine.createCube(vec3(-3, 300, -3), vec3(1.0f)); Engine.modelDrawList.push_back(cube);
+	Engine.modelDrawList.push_back(Engine.createCube(vec3(3, 300, -3), vec3(1.0f)));
 	Engine.createCylinder(vec3(0, 300, -4), 1, 2, 30);
 
 
@@ -131,7 +131,16 @@ void C3DtestApp::onStart() {
 
 	initWireSCs();
 	supWire = false;
-	
+
+	//initialise player object
+	playerObject.pModel = Engine.createCube(vec3(0), vec3(playerObject.width, playerObject.height, playerObject.width));
+	playerObject.setPos(vec3(0, 300, 0));
+
+	playerPhys = Engine.addPhysics(&playerObject);
+	playerPhys->setMass(10);
+	playerPhys->AABB.setSize(2, 2);
+	playerPhys->asleep = true;
+	return;
 }
 
 /** Create a wireframe bounding box.*/
@@ -235,53 +244,82 @@ void C3DtestApp::keyCheck() {
 	CCamera* currentCamera = Engine.getCurrentCamera();
 	float moveInc = dT * 500.0; // 0.05125f;
 
-	
+	if (!fpsOn) {
 
-	if (keyNow('E')) {
-		moveInc *= 0.1f;
-		currentCamera->dolly(moveInc);
-	}
+		if (keyNow('E')) {
+			moveInc *= 0.1f;
+			currentCamera->dolly(moveInc);
+		}
 
-	if (keyNow('A')) {
-		currentCamera->track(-moveInc);
-	}
+		if (keyNow('A')) {
+			currentCamera->track(-moveInc);
+		}
 
-	if (keyNow('D')) {
-		currentCamera->track(moveInc);
-	}
+		if (keyNow('D')) {
+			currentCamera->track(moveInc);
+		}
 
-	if (keyNow('W')) {
-		currentCamera->dolly(moveInc);
-	}
+		if (keyNow('W')) {
+			currentCamera->dolly(moveInc);
+		}
 
-	if (keyNow('S')) {
-		currentCamera->dolly(-moveInc);
-	}
-	if (KeyDown[VK_SPACE]) {
-		currentCamera->elevate(moveInc);
-	}
-
-
-	if (KeyDown['E']) {
-		currentCamera->yaw(yawAng * dT);
-	}
-
-	if (KeyDown['T']) {
-		currentCamera->yaw(-yawAng *dT);
-	}
-
-	float rot = dT * 200.0f;
-	if (KeyDown['P']) {
-		cube->rotate(rot, glm::vec3(1, 0, 0));
-	}
-	if (KeyDown['Y']) {
-		cube->rotate(rot, glm::vec3(0, 1, 0));
-	}
-	if (KeyDown['R']) {
-		cube->rotate(rot, glm::vec3(0, 0, 1));
-	}
+		if (keyNow('S')) {
+			currentCamera->dolly(-moveInc);
+		}
+		if (KeyDown[VK_SPACE]) {
+			currentCamera->elevate(moveInc);
+		}
 
 
+		if (KeyDown['E']) {
+			currentCamera->yaw(yawAng * dT);
+		}
+
+		if (KeyDown['T']) {
+			currentCamera->yaw(-yawAng *dT);
+		}
+
+		float rot = dT * 200.0f;
+		if (KeyDown['P']) {
+			cube->rotate(rot, glm::vec3(1, 0, 0));
+		}
+		if (KeyDown['Y']) {
+			cube->rotate(rot, glm::vec3(0, 1, 0));
+		}
+		if (KeyDown['R']) {
+			cube->rotate(rot, glm::vec3(0, 0, 1));
+		}
+
+	}
+	else {
+
+		if (keyNow('W')) {
+			vec3 dir = playerObject.povCam.getTargetDir();
+			//playerPhys->velocity += dir * 0.1f;
+			playerPhys->pModel->translate( dir * 0.5f);
+		}
+		if (keyNow('S')) {
+			vec3 dir = playerObject.povCam.getTargetDir();
+			playerPhys->pModel->translate(dir * -0.5f);
+		}
+		if (keyNow('D')) {
+			vec3 dir = playerObject.povCam.getTargetDir();
+			vec3 perp = dir;
+			perp.x = dir.z;
+			perp.z = -dir.x;
+			playerPhys->pModel->translate(perp * -0.5f);
+		}
+		if (keyNow('A')) {
+			vec3 dir = playerObject.povCam.getTargetDir();
+			vec3 perp = dir;
+			perp.x = -dir.z;
+			perp.z = dir.x;
+			playerPhys->pModel->translate(perp * -0.5f);
+		}
+
+
+
+	}
 
 	if (mouseKey == MK_LBUTTON)
 	{
@@ -344,7 +382,9 @@ void C3DtestApp::keyCheck() {
 	if (KeyDown['1']) {
 		fpsOn = !fpsOn;
 		if (fpsOn) {
-			Engine.setCurrentCamera(&fpsCam);
+			//Engine.setCurrentCamera(&fpsCam);
+			Engine.setCurrentCamera(&playerObject.povCam);
+			playerPhys->asleep = false;
 		}
 		else
 			Engine.setCurrentCamera(Engine.defaultCamera);
@@ -363,18 +403,18 @@ void C3DtestApp::keyCheck() {
 		//EatKeys();
 	}
 	if (KeyDown['J']) {
-		physCube->position.z += 0.05f;
+		physCube->pModel->translate(vec3(0,0,0.05f));
 		if (!tmp) {
 			cerr << "\n!!!!Sideways push started!";
 			tmp = true;
 		}
 	}
 	if (KeyDown['I']) {
-		physCube->position.x -= 0.05f;
+		physCube->pModel->translate(vec3(-0.05f,0,0));
 	}
 	
 	if (KeyDown['M']) {
-		physCube->position.x += 0.05f;
+		physCube->pModel->translate(vec3(0.05f, 0, 0));
 	}
 
 	if (KeyDown['N']) {
@@ -408,7 +448,7 @@ void C3DtestApp::keyCheck() {
 	if (KeyDown['C']) {
 		vec3 pos = currentCamera->getPos();
 		pos = pos + currentCamera->getTargetDir() * 200.0f;
-		CModel* cube = Engine.createCube(pos, 40);
+		CModel* cube = Engine.createCube(pos, vec3(40));
 		physCube = Engine.addPhysics(cube);
 		physCube->setMass(10);
 		physCube->bSphere.setRadius(35);
@@ -419,10 +459,13 @@ void C3DtestApp::keyCheck() {
 	}
 
 	if (KeyDown['V']) {
+	
+
 		vec3 pos = currentCamera->getPos();
 		//pos = vec3(293.96, 198.179, -82.5066);
 		pos = pos + currentCamera->getTargetDir() * 30.0f;
-		CModel* cube = Engine.createCube(pos, 5);
+		CModel* cube = Engine.createCube(pos, vec3(5));
+		Engine.modelDrawList.push_back(cube);
 		physCube = Engine.addPhysics(cube);
 		physCube->setMass(10);
 		physCube->bSphere.setRadius(2);
@@ -539,6 +582,12 @@ void C3DtestApp::draw() {
 		
 	
 	}
+
+	if (!fpsOn) {
+		mvp = currentCamera->clipMatrix * playerObject.pModel->worldMatrix;
+		Engine.phongShader->setMVP(mvp);
+		playerObject.pModel->drawNew();
+	}
 }
 
 
@@ -595,7 +644,8 @@ void C3DtestApp::advance(Tdirection direction) {
 		terrain->scrollTriggerPoint = pos;
 		vec3 translation =  vec3(terrain->chunkOriginInt *  cubesPerChunkEdge) * cubeSize ;
 		terrain->chunkOrigin[3] = vec4(translation, 1);
-		terrain->advance(direction); //
+		terrain->advance(direction); 
+		onTerrainAdvance(direction);
 	}
 }
 
@@ -782,6 +832,15 @@ void C3DtestApp::initWireSCs() {
 
 
 	
+}
+
+/**	Called when terrain advances - ie, moves. */
+void C3DtestApp::onTerrainAdvance(Tdirection direction) {
+	if (physCube) {
+		physCube->pModel->translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
+		//physCube->position += -dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize;
+
+	}
 }
 
 

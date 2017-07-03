@@ -11,7 +11,7 @@
 
 #include "chunkShader.h"
 #include "chunkCheckShader.h"
-//#include "renderer/wireShader.h"
+#include "playerObj.h"
 
 extern CSuperChunk* dbgSC;
 
@@ -35,6 +35,7 @@ public:
 	void initChunkShell();
 	void initChunkGrid(int cubesPerChunkEdge);
 	void initWireSCs();
+	void onTerrainAdvance(Tdirection direction);
 
 	string dataPath; ///<Filepath to the Data folder
 	
@@ -84,6 +85,10 @@ public:
 	CBasePhysObj* physCube;
 
 	bool tmp;
+
+	CPlayerObj playerObject;
+	
+	CBasePhysObj* playerPhys;
 
 };
 
