@@ -135,10 +135,12 @@ void C3DtestApp::onStart() {
 	//initialise player object
 	playerObject.pModel = Engine.createCube(vec3(0), vec3(playerObject.width, playerObject.height, playerObject.width));
 	playerObject.setPos(vec3(0, 300, 0));
+	playerObject.setPos(vec3(-3.37528 ,197.09, - 2.34346));
 
 	playerPhys = Engine.addPhysics(&playerObject);
 	playerPhys->setMass(10);
-	playerPhys->AABB.setSize(2, 2);
+	playerPhys->AABB.setSize(1, 1);
+	playerPhys->setAcceleration(vec3(0, -10, 0));
 	playerPhys->asleep = true;
 	return;
 }
@@ -292,29 +294,57 @@ void C3DtestApp::keyCheck() {
 
 	}
 	else {
-
+		float moveVelocity = 0.05f;
+		std::cerr << "\nvertical velocity at keypress: " << playerPhys->velocity.y;
 		if (keyNow('W')) {
-			vec3 dir = playerObject.povCam.getTargetDir();
-			//playerPhys->velocity += dir * 0.1f;
-			playerPhys->pModel->translate( dir * 0.5f);
+			if (length(playerPhys->currentContactNormal) > 0) {
+				vec3 dir = playerObject.povCam.getTargetDir();
+
+
+				vec3 groundNormal = playerPhys->currentContactNormal;
+				vec3 eyeLine = playerObject.povCam.getTargetDir();
+
+				vec3 moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
+				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+
+		
+				playerPhys->velocity += moveDir * 0.2f;   //0.03f safe but slow
+
+			//	if ( length(playerPhys->velocity) > 0.6f) //also safe but slow
+			//		playerPhys->velocity *= 0.5f;
+
+
+
+				//playerPhys->velocity += dir * moveVelocity;
+				//playerPhys->pModel->translate( dir * 1.5f);
+				cerr << "\n********Moving!";
+				cerr << "\nMoveDir " << moveDir.x << " " << moveDir.y << " " << moveDir.z;
+				cerr << " Speed of " << length(playerPhys->velocity);
+			}
+			else {
+				cerr << "\nmove aborted";
+			}
 		}
 		if (keyNow('S')) {
 			vec3 dir = playerObject.povCam.getTargetDir();
-			playerPhys->pModel->translate(dir * -0.5f);
-		}
-		if (keyNow('D')) {
-			vec3 dir = playerObject.povCam.getTargetDir();
-			vec3 perp = dir;
-			perp.x = dir.z;
-			perp.z = -dir.x;
-			playerPhys->pModel->translate(perp * -0.5f);
+			playerPhys->velocity += -dir * moveVelocity;
+			//playerPhys->pModel->translate(dir * -0.5f);
 		}
 		if (keyNow('A')) {
 			vec3 dir = playerObject.povCam.getTargetDir();
 			vec3 perp = dir;
+			perp.x = dir.z;
+			perp.z = -dir.x;
+			//playerPhys->pModel->translate(perp * -0.01f);
+			playerPhys->velocity += perp * moveVelocity;
+		}
+		if (keyNow('D')) {
+			vec3 dir = playerObject.povCam.getTargetDir();
+			vec3 perp = dir;
 			perp.x = -dir.z;
 			perp.z = dir.x;
-			playerPhys->pModel->translate(perp * -0.5f);
+			//playerPhys->pModel->translate(perp * -0.01f);
+			playerPhys->velocity += perp * moveVelocity;
 		}
 
 
@@ -394,8 +424,23 @@ void C3DtestApp::keyCheck() {
 
 
 	if (KeyDown['K']) {
-		physCube->velocity += vec3(0, 0, -0.1f);
+		//A is player direction
+		//B is the normal of the plane they're standing on
+		// A projected onto the plane is:  B ×(A×B / |B | ) / |B |
+		vec3 groundNormal = physCube->currentContactNormal;
+		if (length(groundNormal) <= 0) {
+			return;
+		}
+		vec3 eyeLine = vec3(0, 0, -1); // playerObject.povCam.getTargetDir();
+
+		vec3 moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
+		moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+
+		physCube->velocity += moveDir * 0.2f;
+		//physCube->velocity += vec3(0, 0, -0.1f);
+		//physCube->velocity += vec3(0, -0.05f, -0.02f);
 	//	physCube->position.z -= 0.05f;
+		cerr << "\nmoveDir of " << moveDir.x << " " << moveDir.y << " " << moveDir.z;
 		if (!tmp) {
 			cerr << "\n!!!!Sideways push started!";
 			tmp = true;
@@ -463,7 +508,9 @@ void C3DtestApp::keyCheck() {
 
 		vec3 pos = currentCamera->getPos();
 		//pos = vec3(293.96, 198.179, -82.5066);
+		
 		pos = pos + currentCamera->getTargetDir() * 30.0f;
+		pos = vec3(-3.6289, 235.689, -8.32864);
 		CModel* cube = Engine.createCube(pos, vec3(5));
 		Engine.modelDrawList.push_back(cube);
 		physCube = Engine.addPhysics(cube);
@@ -477,6 +524,7 @@ void C3DtestApp::keyCheck() {
 
 	if (KeyDown['B']) {
 		vec3 camPos = currentCamera->getPos();
+		//camPos = physCube->getModel()->getPos();
 		cerr << "\ncam pos " << camPos.x << " " << camPos.y << " " << camPos.z;
 		vec3 camTarg = currentCamera->getTargetDir();
 		cerr << "\ncam target " << camTarg.x << " " << camTarg.y << " " << camTarg.z;
