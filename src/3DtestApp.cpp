@@ -308,7 +308,7 @@ void C3DtestApp::keyCheck() {
 				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
 
 		
-				playerPhys->velocity += moveDir * 0.2f;   //0.03f safe but slow
+				playerPhys->velocity += moveDir * 0.3f;   //0.03f safe but slow //0.2f formerly caused bounces
 
 			//	if ( length(playerPhys->velocity) > 0.6f) //also safe but slow
 			//		playerPhys->velocity *= 0.5f;
@@ -510,7 +510,7 @@ void C3DtestApp::keyCheck() {
 		//pos = vec3(293.96, 198.179, -82.5066);
 		
 		pos = pos + currentCamera->getTargetDir() * 30.0f;
-		pos = vec3(-3.6289, 235.689, -8.32864);
+		pos = vec3(-3.6289, 335.689, -8.32864);
 		CModel* cube = Engine.createCube(pos, vec3(5));
 		Engine.modelDrawList.push_back(cube);
 		physCube = Engine.addPhysics(cube);
