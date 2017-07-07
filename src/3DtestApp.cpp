@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/perpendicular.hpp>
 #include <glm/gtx/common.hpp>
+#include <glm/gtx/rotate_vector.hpp> 
 
 #include "colour.h"
 
@@ -25,6 +26,7 @@ C3DtestApp::C3DtestApp() {
 
 	tmpSCno = 0;
 	tmp = false;
+	physCube = NULL;
 }
 
 void C3DtestApp::onStart() {
@@ -134,13 +136,12 @@ void C3DtestApp::onStart() {
 
 	//initialise player object
 	playerObject.pModel = Engine.createCube(vec3(0), vec3(playerObject.width, playerObject.height, playerObject.width));
-	playerObject.setPos(vec3(0, 300, 0));
-	playerObject.setPos(vec3(-3.37528 ,197.09, - 2.34346));
+	playerObject.setPos(vec3(0, 237, 0));
+	playerObject.setPos(vec3(0, 50, 0));
 
 	playerPhys = Engine.addPhysics(&playerObject);
 	playerPhys->setMass(10);
 	playerPhys->AABB.setSize(1, 1);
-	playerPhys->setAcceleration(vec3(0, -10, 0));
 	playerPhys->asleep = true;
 	return;
 }
@@ -269,7 +270,7 @@ void C3DtestApp::keyCheck() {
 			currentCamera->dolly(-moveInc);
 		}
 		if (KeyDown[VK_SPACE]) {
-			currentCamera->elevate(moveInc);
+			;// currentCamera->elevate(moveInc);
 		}
 
 
@@ -294,58 +295,64 @@ void C3DtestApp::keyCheck() {
 
 	}
 	else {
-		float moveVelocity = 0.05f;
+		vec3 moveDir(0);
 		std::cerr << "\nvertical velocity at keypress: " << playerPhys->velocity.y;
+
+		if (length(playerPhys->currentContactNormal) <= 0) {
+			cerr << "\nmove aborted";
+			return;
+		}
+
+
+			vec3 dir = playerObject.povCam.getTargetDir();
+			vec3 groundNormal = playerPhys->currentContactNormal;
+			vec3 eyeLine = playerObject.povCam.getTargetDir();
+			vec3 flip;
+			
+			if (KeyDown[VK_SPACE] && physCube == NULL) {
+				playerPhys->velocity.y += 20;
+				playerPhys->velocity.x *= 2.5f;
+				playerPhys->velocity.z *= 2.5f;
+				
+				cerr << "\nJumping!!!";
+			}
+
 		if (keyNow('W')) {
-			if (length(playerPhys->currentContactNormal) > 0) {
-				vec3 dir = playerObject.povCam.getTargetDir();
+			moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
+			moveDir = cross(groundNormal, moveDir) / length(groundNormal);
 
+				playerPhys->velocity += moveDir * 1.4f;   //0.03f safe but slow //0.2f formerly caused bounces
 
-				vec3 groundNormal = playerPhys->currentContactNormal;
-				vec3 eyeLine = playerObject.povCam.getTargetDir();
-
-				vec3 moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
-				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
-
-		
-				playerPhys->velocity += moveDir * 0.3f;   //0.03f safe but slow //0.2f formerly caused bounces
-
-			//	if ( length(playerPhys->velocity) > 0.6f) //also safe but slow
-			//		playerPhys->velocity *= 0.5f;
-
-
-
-				//playerPhys->velocity += dir * moveVelocity;
-				//playerPhys->pModel->translate( dir * 1.5f);
+	
 				cerr << "\n********Moving!";
 				cerr << "\nMoveDir " << moveDir.x << " " << moveDir.y << " " << moveDir.z;
 				cerr << " Speed of " << length(playerPhys->velocity);
-			}
-			else {
-				cerr << "\nmove aborted";
-			}
+				EatKeys();
+		
 		}
 		if (keyNow('S')) {
-			vec3 dir = playerObject.povCam.getTargetDir();
-			playerPhys->velocity += -dir * moveVelocity;
-			//playerPhys->pModel->translate(dir * -0.5f);
+			flip.y = -eyeLine.y;
+			flip.x = -eyeLine.x;
+			flip.z = -eyeLine.z;
+			moveDir = cross(flip, groundNormal) / length(groundNormal);
+			moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+			playerPhys->velocity += moveDir * 0.4f;
 		}
 		if (keyNow('A')) {
-			vec3 dir = playerObject.povCam.getTargetDir();
-			vec3 perp = dir;
-			perp.x = dir.z;
-			perp.z = -dir.x;
-			//playerPhys->pModel->translate(perp * -0.01f);
-			playerPhys->velocity += perp * moveVelocity;
+			flip.x = eyeLine.z;
+			flip.z = -eyeLine.x;
+			moveDir = cross(flip, groundNormal) / length(groundNormal);
+			moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+			playerPhys->velocity += moveDir * 0.4f;
 		}
 		if (keyNow('D')) {
-			vec3 dir = playerObject.povCam.getTargetDir();
-			vec3 perp = dir;
-			perp.x = -dir.z;
-			perp.z = dir.x;
-			//playerPhys->pModel->translate(perp * -0.01f);
-			playerPhys->velocity += perp * moveVelocity;
+			flip.x = -eyeLine.z;
+			flip.z = eyeLine.x;
+			moveDir = cross(flip, groundNormal) / length(groundNormal);
+			moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+			playerPhys->velocity += moveDir * 0.4f;
 		}
+		
 
 
 
@@ -436,10 +443,8 @@ void C3DtestApp::keyCheck() {
 		vec3 moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
 		moveDir = cross(groundNormal, moveDir) / length(groundNormal);
 
-		physCube->velocity += moveDir * 0.2f;
-		//physCube->velocity += vec3(0, 0, -0.1f);
-		//physCube->velocity += vec3(0, -0.05f, -0.02f);
-	//	physCube->position.z -= 0.05f;
+		physCube->velocity += moveDir * 0.4f;
+
 		cerr << "\nmoveDir of " << moveDir.x << " " << moveDir.y << " " << moveDir.z;
 		if (!tmp) {
 			cerr << "\n!!!!Sideways push started!";
@@ -466,6 +471,16 @@ void C3DtestApp::keyCheck() {
 		vec3 camPos = physCube->position;
 		cerr << "\ncube pos " << camPos.x << " " << camPos.y << " " << camPos.z;
 		
+		EatKeys();
+	}
+
+	if (physCube != NULL)
+		if  (KeyDown[VK_SPACE]) {
+		physCube->velocity.y += 20;
+		physCube->velocity.z *= 2;
+		physCube->velocity.x *= 2;
+
+		cerr << "\nJumping!!!";
 		EatKeys();
 	}
 
@@ -498,7 +513,7 @@ void C3DtestApp::keyCheck() {
 		physCube->setMass(10);
 		physCube->bSphere.setRadius(35);
 		physCube->AABB.setSize(40, 40);
-		physCube->acceleration = vec3(0, -10, 0);
+		
 
 		EatKeys();
 	}
@@ -510,14 +525,14 @@ void C3DtestApp::keyCheck() {
 		//pos = vec3(293.96, 198.179, -82.5066);
 		
 		pos = pos + currentCamera->getTargetDir() * 30.0f;
-		pos = vec3(-3.6289, 335.689, -8.32864);
+		//pos = vec3(-3.6289, 335.689, -8.32864);
 		CModel* cube = Engine.createCube(pos, vec3(5));
 		Engine.modelDrawList.push_back(cube);
 		physCube = Engine.addPhysics(cube);
 		physCube->setMass(10);
 		physCube->bSphere.setRadius(2);
 		physCube->AABB.setSize(5, 5);
-		physCube->acceleration = vec3(0, -10, 0);
+	
 
 		EatKeys();
 	}
@@ -656,7 +671,7 @@ void C3DtestApp::advance(Tdirection direction) {
 	}
 
 	//Move terrain in given direction
-	vec3 movement = dir *  float(1.0f);  //was 1
+	vec3 movement = dir *  float(10.0f);  //was 1
 	//terrain->translate(movement);
 	//vec3 pos = terrain->getPos();
 	//terrain->chunkOrigin[3] += vec4(movement, 0);
@@ -714,15 +729,17 @@ void C3DtestApp::Update() {
 
 	if (fpsOn) {
 
-		if (terrain->toSkin.size() != 0)
-			return;
+	//	if (terrain->toSkin.size() != 0)
+	//		return;
 		//cheap dirty fix for the problem of scrolling in one direction before we've finished scrolling in another
 
 		Tdirection direction = none;
 
 		float chunkDist = cubesPerChunkEdge * cubeSize;
 
-		vec3 pos = fpsCam.getPos();
+		vec3 pos;
+	//	pos = fpsCam.getPos();
+	//	pos = playerObject.getPos();
 		bvec3 outsideChunkBoundary = glm::greaterThan(glm::abs(pos), vec3(chunkDist));
 
 
@@ -733,14 +750,10 @@ void C3DtestApp::Update() {
 			posMod.y = fmod(pos.y, chunkDist);  //was pos.y
 			posMod.z = fmod(pos.z, chunkDist);
 
-			//	if (outsideChunkBoundary.x)
-			//		posMod.x = 0;
-			//	if (outsideChunkBoundary.z)
-			//		posMod.z = 0;
-
-
-			fpsCam.setPos(posMod); //secretly reposition viewpoint prior to scrolling terrain
-
+			
+			//WAS
+			//fpsCam.setPos(posMod); //secretly reposition viewpoint prior to scrolling terrain
+			playerObject.setPos(posMod);
 
 			;
 
@@ -885,10 +898,10 @@ void C3DtestApp::initWireSCs() {
 /**	Called when terrain advances - ie, moves. */
 void C3DtestApp::onTerrainAdvance(Tdirection direction) {
 	if (physCube) {
-		physCube->pModel->translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
+	//	physCube->pModel->translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
 		//physCube->position += -dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize;
-
 	}
+	//playerObject.translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
 }
 
 
