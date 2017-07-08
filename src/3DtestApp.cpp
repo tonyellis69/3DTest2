@@ -104,7 +104,7 @@ void C3DtestApp::onStart() {
 	cerr << "\n time " << t;
 
 	
-	createBB();
+
 
 	//load chunk shader
 	const char* feedbackVaryings[23];
@@ -146,27 +146,6 @@ void C3DtestApp::onStart() {
 	return;
 }
 
-/** Create a wireframe bounding box.*/
-void C3DtestApp::createBB() {
-	chunkBB = Engine.createModel();
-	chunkBB->drawMode = GL_LINES;
-	vec3 boxV[8] = { vec3(0,0,0),
-							vec3(1,0,0),
-							vec3(1,1,0),
-							vec3(0,1,0),
-							vec3(0,0,1),
-							vec3(1,0,1),
-							vec3(1,1,1),
-							vec3(0,1,1) };
-	unsigned short index[12 * 2] = { 0,1,1,2,2,3,3,0,
-									4,5,5,6,6,7,7,4,
-									6,2,7,3,5,1,4,0 };
-
-	chunkBB->storeVertexes(boxV, sizeof(boxV), 8);
-	chunkBB->storeIndex(index, sizeof(index), 24);
-	chunkBB->storeLayout(3, 0, 0, 0);
-	chunkBB->getMaterial()->setShader(Engine.wireShader);
-}
 
 
 /*  Create a mesh for this chunk, and register it with the renderer.  */
@@ -739,7 +718,7 @@ void C3DtestApp::Update() {
 
 		vec3 pos;
 	//	pos = fpsCam.getPos();
-	//	pos = playerObject.getPos();
+		pos = playerObject.getPos();
 		bvec3 outsideChunkBoundary = glm::greaterThan(glm::abs(pos), vec3(chunkDist));
 
 

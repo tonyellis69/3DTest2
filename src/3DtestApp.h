@@ -20,7 +20,7 @@ public:
 	C3DtestApp();
 	~C3DtestApp();
 	void onStart();
-	void createBB();
+
 	void keyCheck();
 	void mouseMove(int x, int y, int key);
 	void OnKeyDown(unsigned int wParam, long lParam);
@@ -47,8 +47,6 @@ public:
 
 	CTerrain* terrain;
 	
-	CModel* chunkBB; ///<Wireframe bounding box for chunks.
-
 	
 	double oldTime;
 
