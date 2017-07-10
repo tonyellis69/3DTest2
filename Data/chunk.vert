@@ -1,56 +1,52 @@
 #version 330
 
-layout(location = 0) in vec3 cubeCorner;
+layout(location = 0) in vec3 cubeVertPos; //Relative position of an MC cube vertex within this chunk.
 
 
-uniform float cubeSize;
-uniform float LoDscale;
+uniform float cubeSize; //The worldspace size of the MC cubes that make up this chunk.
+uniform float LoDscale; // This chunk's size multiplyer. Goes 1,2,4,8 etc for LoDs of 1,2,3,4
 uniform vec3 samplePos; //position of bottom nwcorner of this chunk in sample space.
-uniform float samplesPerCube; 
+uniform float samplesPerCube; //the samplespace size of the MC cubes that make up this chunk. TO DO: change name?
 
-out VertexData {
+out vertexPair {
 
 	vec3 vert;
 	float sample;
 	
 	vec3 opVert;
 	float opSample;
-} outData;
+} vertexPairOut;
 
 
 
 #include noise.lib
 
-float getSample(vec3 cornerOffset) {
-		vec3 sampleCorner = vec3(samplePos ) + ((   (cubeCorner * samplesPerCube)  + cornerOffset)  * LoDscale * 1) ;
-	
-	
-	//Get the noise value at the 2D position of this corner.
-	float noise = octave_noise_2d(5,0.5,1,sampleCorner.x ,sampleCorner.z ); //0.5f;
+float getSample(vec3 vertSamplePos) {
+		
+	float noise = octave_noise_2d(5,0.5,1,vertSamplePos.xz ); 
 
 	noise = pow(noise,2);
 		
-	//scale the noise a little to create the height at this x,z sample position.
-	float surfaceHeight = (noise * 0.3) - 0.3;
+	//scale the height of noise down from -1 - 1 to -0.3 - 0.3, to make it less spikey
+	//TO DO: this should be a function of the tertain routine we call, not hard-coded
+	noise = (noise * 0.3) - 0.3;
 	
 	
-	//clip the surface height against the height of this corner. Values outside 1 mean the surface doesn't intersect this point.
-	return sampleCorner.y - surfaceHeight;
-
+	//clip the noise against our y position in the volume. Values outside 1 mean the surface doesn't intersect this point.
+	//TO DO: kind of arbitary. Need to find a better way to do this.
+	return vertSamplePos.y - noise;
 }
 
 
 
 void main() {
+	vertexPairOut.vert = cubeVertPos * vec3(cubeSize,cubeSize,cubeSize); //cube vertex position in worldspace units
+	vertexPairOut.opVert = vertexPairOut.vert + vec3(0,0,cubeSize); //opposite cube vertex in worldspace units
 	
-
+	float scaledCubeSampleSize = samplesPerCube  * LoDscale;
+	vec3 vertSamplePos = samplePos  + ( cubeVertPos * scaledCubeSampleSize) ;
+	vertexPairOut.sample = getSample(vertSamplePos);
 	
-	outData.vert = cubeCorner * vec3(cubeSize,cubeSize,cubeSize) ;
-	outData.opVert = outData.vert + vec3(0,0,cubeSize);
-	
-	outData.sample = getSample(vec3(0,0,0));
-	outData.opSample = getSample(vec3(0,0,samplesPerCube));
-	
-
-	
+	vec3 opVertSamplePos = vertSamplePos + vec3(0,0,scaledCubeSampleSize);
+	vertexPairOut.opSample = getSample(opVertSamplePos);
 }

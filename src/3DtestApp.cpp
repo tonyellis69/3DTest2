@@ -159,7 +159,9 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	float LoDscale = float(1 << chunk.LoD - 1);
 	chunkShader->setChunkLoDscale(LoDscale);
 	chunkShader->setChunkSamplePos(chunk.samplePos);
-	chunkShader->setSamplesPerCube(terrain->sampleScale);
+	//chunkShader->setSamplesPerCube(terrain->sampleScale);
+	float samplesPerCube = cubeSize / terrain->worldUnitsPerSampleUnit;
+	chunkShader->setSamplesPerCube(samplesPerCube);
 	chunkShader->setChunkTriTable(*triTableTex);
 
 	chunkShader->setChunkTerrainPos(chunk.terrainPos);

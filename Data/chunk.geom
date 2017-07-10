@@ -9,8 +9,8 @@
  layout(lines_adjacency) in;
  layout(triangle_strip, max_vertices = 16) out;
 
-in VertexData
-{
+in vertexPair {
+
 	vec3 vert;
 	float sample;
 	
