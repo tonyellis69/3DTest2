@@ -22,16 +22,15 @@ out vertexPair {
 #include noise.lib
 
 float getSample(vec3 vertSamplePos) {
+	int octaves = 5;
+	float persistence = 0.5f;
+	float xzScaling = 2;	
+	float startingAmplitude = 0.22f; //0.5f;//0.22f;
 		
-	float noise = octave_noise_2d(5,0.5,1,vertSamplePos.xz ); 
+	float noise = octave_noise_2d(octaves,persistence,xzScaling, startingAmplitude, vertSamplePos.xz ); 
 
 	noise = pow(noise,2);
-		
-	//scale the height of noise down from -1 - 1 to -0.3 - 0.3, to make it less spikey
-	//TO DO: this should be a function of the tertain routine we call, not hard-coded
-	noise = (noise * 0.3) - 0.3;
-	
-	
+			
 	//clip the noise against our y position in the volume. Values outside 1 mean the surface doesn't intersect this point.
 	//TO DO: kind of arbitary. Need to find a better way to do this.
 	return vertSamplePos.y - noise;
@@ -40,11 +39,14 @@ float getSample(vec3 vertSamplePos) {
 
 
 void main() {
+	vec3 scaledCubeVertPos = cubeVertPos;
+
+
 	vertexPairOut.vert = cubeVertPos * vec3(cubeSize,cubeSize,cubeSize); //cube vertex position in worldspace units
 	vertexPairOut.opVert = vertexPairOut.vert + vec3(0,0,cubeSize); //opposite cube vertex in worldspace units
 	
 	float scaledCubeSampleSize = samplesPerCube  * LoDscale;
-	vec3 vertSamplePos = samplePos  + ( cubeVertPos * scaledCubeSampleSize) ;
+	vec3 vertSamplePos = samplePos  + ( scaledCubeVertPos * scaledCubeSampleSize) ;
 	vertexPairOut.sample = getSample(vertSamplePos);
 	
 	vec3 opVertSamplePos = vertSamplePos + vec3(0,0,scaledCubeSampleSize);

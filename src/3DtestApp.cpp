@@ -107,17 +107,19 @@ void C3DtestApp::onStart() {
 
 
 	//load chunk shader
-	const char* feedbackVaryings[23];
-	feedbackVaryings[0] = "gl_Position";
-	feedbackVaryings[1] = "normal";
+	//const char* feedbackVaryings[23];
+	//feedbackVaryings[0] = "gl_Position";
+	//feedbackVaryings[1] = "normal";
 
 	chunkShader = new ChunkShader();
+	chunkShader->feedbackVaryings[0] = "gl_Position";
+	chunkShader->feedbackVaryings[1] = "normal";
 	Engine.shaderList.push_back(chunkShader);
 	chunkShader->pRenderer = &Engine.Renderer;
 	chunkShader->load(vertex, dataPath + "chunk.vert");
 	chunkShader->load(geometry, dataPath + "chunk.geom");
 	chunkShader->attach();
-	chunkShader->setFeedbackData(2, feedbackVaryings);
+	chunkShader->setFeedbackData(2);
 	chunkShader->link();
 
 	//Upload data texture for chunk shader
@@ -271,7 +273,9 @@ void C3DtestApp::keyCheck() {
 			cube->rotate(rot, glm::vec3(0, 1, 0));
 		}
 		if (KeyDown['R']) {
-			cube->rotate(rot, glm::vec3(0, 0, 1));
+			//cube->rotate(rot, glm::vec3(0, 0, 1));
+			chunkShader->recompile();
+		
 		}
 
 	}

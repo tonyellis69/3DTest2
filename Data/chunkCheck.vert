@@ -23,7 +23,7 @@ void main () {
 	//get a height value at this point
 	//float surfaceHeight = octave_noise_2d(6,0.2,0.02,vertSamplePos.x,vertSamplePos.z);
 	
-	float noise = octave_noise_2d(5,0.5,1,vertSamplePos.xz );
+	float noise = octave_noise_2d(5,0.5,2,0.5,vertSamplePos.xz );
 	
 	//surfaceHeight = (surfaceHeight * 0.5) + 0.5;  //convert to 0 - 1.
 	
