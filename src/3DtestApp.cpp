@@ -479,26 +479,20 @@ void C3DtestApp::keyCheck() {
 	}
 
 	if (KeyDown['X']) {
-		for (int l = 0; l < terrain->layers.size(); l++) {
-			for (int sc = 0; sc < terrain->layers[l].superChunks.size(); sc++) {
-				terrain->layers[l].superChunks[sc]->removeAllChunks();
-			}
-		}
-		//	terrain->layers[0].superChunks[149]->removeAllChunks();
-
-				//dbgSC->removeAllChunks();
+		terrain->clear();
 		EatKeys();
 	}
 
 	if (KeyDown['C']) {
-		vec3 pos = currentCamera->getPos();
+	/*	vec3 pos = currentCamera->getPos();
 		pos = pos + currentCamera->getTargetDir() * 200.0f;
 		CModel* cube = Engine.createCube(pos, vec3(40));
 		physCube = Engine.addPhysics(cube);
 		physCube->setMass(10);
 		physCube->bSphere.setRadius(35);
-		physCube->AABB.setSize(40, 40);
+		physCube->AABB.setSize(40, 40);*/
 		
+		terrain->createAllChunks();
 
 		EatKeys();
 	}
