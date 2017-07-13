@@ -16,6 +16,8 @@
 
 #include "watch.h"
 
+#include "UI\GUIimage.h"
+
 using namespace watch;
 
 using namespace glm;
@@ -145,6 +147,19 @@ void C3DtestApp::onStart() {
 	playerPhys->setMass(10);
 	playerPhys->AABB.setSize(1, 1);
 	playerPhys->asleep = true;
+
+/*	Engine.uiRectShader = new CGUIrectShader();
+	Engine.uiRectShader->pRenderer = &Engine.Renderer;
+	Engine.uiRectShader->create(dataPath + "uiRect");
+	Engine.uiRectShader->getShaderHandles();
+	Engine.uiRectShader->setType(uiRect);
+	Engine.shaderList.push_back(Engine.uiRectShader);
+*/
+	//CGUIimage* image = new CGUIimage(500, 200, 400, 200);
+	image = new CGUIimage(10, 10, 500, 500);
+	GUIroot.Add(image);
+
+
 	return;
 }
 
@@ -630,6 +645,12 @@ void C3DtestApp::draw() {
 		Engine.phongShader->setMVP(mvp);
 		playerObject.pModel->drawNew();
 	}
+
+
+
+	//Engine.Renderer.setShader(Engine.uiRectShader);
+	//GUIroot.pDrawFuncs->drawCtrlRect(*image);
+//	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 

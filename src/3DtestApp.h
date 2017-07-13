@@ -13,6 +13,9 @@
 #include "chunkCheckShader.h"
 #include "playerObj.h"
 
+
+#include "UI\GUIimage.h"
+
 extern CSuperChunk* dbgSC;
 
 class C3DtestApp : public  CBaseApp {
@@ -87,6 +90,8 @@ public:
 	CPlayerObj playerObject;
 	
 	CBasePhysObj* playerPhys;
+
+	CGUIimage* image;
 
 };
 
