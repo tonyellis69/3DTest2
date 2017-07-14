@@ -1,19 +1,15 @@
 #version 330 core
 
 
-layout(location = 0) in vec3 vertex;
-layout(location = 1) in vec4 colour;
-layout(location = 2) in vec3 normal;
+layout(location = 0) in vec2 vertex;
+layout(location = 1) in vec2 texCoord;
 
-smooth out vec4 fragColour;
 
-uniform mat4 mvpMatrix; //model to view (camera) to perspective matrix
-
+uniform mat4 orthoMatrix; //2D to OpenGL orthographic view
+smooth out vec2 fragTexCoord;
 
 void main()
 {
-	gl_Position =  mvpMatrix * vec4(vertex.x,vertex.y,0,1);
-	
-	
-	fragColour = colour;
+	gl_Position =  orthoMatrix * vec4(vertex.xy,0,1);
+	fragTexCoord = texCoord;
 }

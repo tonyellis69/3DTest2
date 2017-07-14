@@ -1,10 +1,12 @@
 #version 330
 
-smooth in vec4 fragColour;
 
+uniform vec4 colour1;
+uniform vec4 colour2;
+in vec2 fragTexCoord;
 out vec4 outputColor;
 
 void main()
 {
-	outputColor = fragColour;
+	outputColor = mix(colour1,colour2,fragTexCoord.y);
 }
