@@ -66,6 +66,7 @@ float octave_noise_2d(  int octaves,  float persistence,  float startingFrequenc
     float amplitude = startingAmplitude;
 	float lacunarity = 2;
 
+	
 	float total = 0;;
     for( int i=0; i < octaves; i++ ) {
         total += snoise(xy * frequency) * amplitude;
@@ -77,4 +78,17 @@ float octave_noise_2d(  int octaves,  float persistence,  float startingFrequenc
     return total;
 }
 
+float terrainHeight (  int octaves,  float persistence,  float startingFrequency, float startingAmplitude,  vec2 xy ) {
+	octaves = 1;
+	startingFrequency = 0.5f;
+	startingAmplitude = 1;
+	float noise = octave_noise_2d(octaves,   persistence,   startingFrequency,  startingAmplitude,   xy);
+	//noise = pow(noise,2);
+	
+	
+	//noise = step(0.0,xy.x);
+	//noise *= 0.5f;
+	//noise += step(0.0,xy.y) * 0.5f;
+	return noise;
+}
 

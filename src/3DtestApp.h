@@ -11,6 +11,8 @@
 
 #include "chunkShader.h"
 #include "chunkCheckShader.h"
+#include "terrain2texShader.h"
+
 #include "playerObj.h"
 
 
@@ -39,6 +41,9 @@ public:
 	void initChunkGrid(int cubesPerChunkEdge);
 	void initWireSCs();
 	void onTerrainAdvance(Tdirection direction);
+
+	void initHeightmapGUI();
+	void updateHeightmapImage();
 
 	string dataPath; ///<Filepath to the Data folder
 	
@@ -91,8 +96,10 @@ public:
 	
 	CBasePhysObj* playerPhys;
 
-	CGUIimage* image;
+	CGUIimage* heightmapImage;
+	CBaseTexture* heightmapTex;
 
+	CTerrain2texShader* terrain2texShader; 
 };
 
 const float yawAng = 0.22f;

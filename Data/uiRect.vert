@@ -6,7 +6,7 @@ layout(location = 1) in vec2 texCoord;
 
 
 uniform mat4 orthoMatrix; //2D to OpenGL orthographic view
-smooth out vec2 fragTexCoord;
+out vec2 fragTexCoord;
 
 void main()
 {

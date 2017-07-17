@@ -27,10 +27,8 @@ float getSample(vec3 vertSamplePos) {
 	float xzScaling = 2;	
 	float startingAmplitude = 0.22f; //0.5f;//0.22f;
 		
-	float noise = octave_noise_2d(octaves,persistence,xzScaling, startingAmplitude, vertSamplePos.xz ); 
-
-	noise = pow(noise,2);
-			
+	float noise = terrainHeight(octaves,persistence,xzScaling, startingAmplitude, vertSamplePos.xz ); 
+	
 	//clip the noise against our y position in the volume. Values outside 1 mean the surface doesn't intersect this point.
 	//TO DO: kind of arbitary. Need to find a better way to do this.
 	return vertSamplePos.y - noise;
@@ -39,14 +37,11 @@ float getSample(vec3 vertSamplePos) {
 
 
 void main() {
-	vec3 scaledCubeVertPos = cubeVertPos;
-
-
 	vertexPairOut.vert = cubeVertPos * vec3(cubeSize,cubeSize,cubeSize); //cube vertex position in worldspace units
 	vertexPairOut.opVert = vertexPairOut.vert + vec3(0,0,cubeSize); //opposite cube vertex in worldspace units
 	
 	float scaledCubeSampleSize = samplesPerCube  * LoDscale;
-	vec3 vertSamplePos = samplePos  + ( scaledCubeVertPos * scaledCubeSampleSize) ;
+	vec3 vertSamplePos = samplePos  + ( cubeVertPos * scaledCubeSampleSize) ;
 	vertexPairOut.sample = getSample(vertSamplePos);
 	
 	vec3 opVertSamplePos = vertSamplePos + vec3(0,0,scaledCubeSampleSize);

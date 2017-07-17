@@ -53,6 +53,8 @@ void C3DtestApp::onStart() {
 	Engine.getCurrentCamera()->setPos(vec3(83.8443, 259.706, 34.8063));
 	Engine.getCurrentCamera()->setPos(vec3(83.8443, 359.706, 34.8063));
 	Engine.getCurrentCamera()->lookAt(vec3(-0.995789, -0.0588613, 0.070279));
+	Engine.getCurrentCamera()->setPos(vec3(-999.922, 3873.51, -4844.32));
+	Engine.getCurrentCamera()->lookAt(vec3(0.422264, -0.545714, 0.723792));
 
 
 	//Position FPS camera
@@ -148,18 +150,9 @@ void C3DtestApp::onStart() {
 	playerPhys->AABB.setSize(1, 1);
 	playerPhys->asleep = true;
 
-/*	Engine.uiRectShader = new CGUIrectShader();
-	Engine.uiRectShader->pRenderer = &Engine.Renderer;
-	Engine.uiRectShader->create(dataPath + "uiRect");
-	Engine.uiRectShader->getShaderHandles();
-	Engine.uiRectShader->setType(uiRect);
-	Engine.shaderList.push_back(Engine.uiRectShader);
-*/
-	//CGUIimage* image = new CGUIimage(500, 200, 400, 200);
-	image = new CGUIimage(10, 10, 500, 500);
-	GUIroot.Add(image);
 
-
+	initHeightmapGUI();
+		
 	return;
 }
 
@@ -549,8 +542,10 @@ void C3DtestApp::keyCheck() {
 		EatKeys();
 	}
 
-
-
+	if (KeyDown['H']) {
+		updateHeightmapImage();
+		EatKeys();
+	}
 
 	selectChk = glm::mod(vec3(selectChk), vec3(15, 5, 15));
 
@@ -902,6 +897,34 @@ void C3DtestApp::onTerrainAdvance(Tdirection direction) {
 		//physCube->position += -dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize;
 	}
 	//playerObject.translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
+}
+
+/** Create the GUI and textures for displaying 2D terrain heightmaps. */
+void C3DtestApp::initHeightmapGUI() {
+	heightmapImage = new CGUIimage(10, 10, 500, 500);
+	GUIroot.Add(heightmapImage);
+	heightmapTex = Engine.Renderer.textureManager.createEmptyTexture(500, 500);
+	heightmapImage->setTexture(*heightmapTex);
+
+	//set up shader(s)
+	terrain2texShader = new CTerrain2texShader();
+	terrain2texShader->pRenderer = &Engine.Renderer;
+	terrain2texShader->create(dataPath + "terrain2tex");
+	terrain2texShader->getShaderHandles();
+	terrain2texShader->setType(userShader);
+	Engine.shaderList.push_back(terrain2texShader);
+}
+
+/** Render the current terrain shader to our heightmap image. */
+void C3DtestApp::updateHeightmapImage() {
+	terrain2texShader->recompile();
+	//activate the render-to-texture shader
+	Engine.Renderer.setShader(terrain2texShader);
+	vec3 sampleCorner = terrain->layers[0].nwSampleCorner;
+	terrain2texShader->setNwSampleCorner(vec2(sampleCorner.x,sampleCorner.z));
+	terrain2texShader->setPixelScale(2.0f / 500.0f);
+
+	Engine.Renderer.renderToTexture(*heightmapTex);
 }
 
 
