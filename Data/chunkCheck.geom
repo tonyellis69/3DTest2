@@ -12,7 +12,7 @@ in VertexData {
 
 
 void main() {
-	if ((vert[0].vertSample < 1) && (vert[0].vertSample > 0)) {
+	if ((vert[0].vertSample < 0.5) && (vert[0].vertSample > 0.47)) {  //was 47
 		EmitVertex();
 		EmitVertex();
 		EmitVertex();

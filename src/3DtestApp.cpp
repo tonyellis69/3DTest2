@@ -50,11 +50,9 @@ void C3DtestApp::onStart() {
 	Engine.getCurrentCamera()->setPos(vec3(0, 303, 6));
 	Engine.getCurrentCamera()->lookAt(vec3(0, -1, -3));
 
-	Engine.getCurrentCamera()->setPos(vec3(83.8443, 259.706, 34.8063));
-	Engine.getCurrentCamera()->setPos(vec3(83.8443, 359.706, 34.8063));
-	Engine.getCurrentCamera()->lookAt(vec3(-0.995789, -0.0588613, 0.070279));
-	Engine.getCurrentCamera()->setPos(vec3(-999.922, 3873.51, -4844.32));
-	Engine.getCurrentCamera()->lookAt(vec3(0.422264, -0.545714, 0.723792));
+
+	Engine.getCurrentCamera()->setPos(vec3(-108.678, 1810.77, - 3356.29));
+	Engine.getCurrentCamera()->lookAt(vec3(0.0281552, - 0.573389, 0.818797));
 
 
 	//Position FPS camera
@@ -90,7 +88,7 @@ void C3DtestApp::onStart() {
 
 	initChunkShell();
 
-	double t = Engine.Time.milliseconds();
+	
 
 	
 	initChunkGrid(cubesPerChunkEdge);
@@ -99,13 +97,20 @@ void C3DtestApp::onStart() {
 
 	terrain->createLayers2(5120, 320, 2); //1280 320
 	//terrain->createLayers2(1280, 320, 0);
-
+	//terrain->createLayers2(10000, 320, 2);
+	//terrain->createLayers2(1280, 320, 0);
 	//terrain->createLayers(8, 2, 2); //(8, 3, 2); //(4,2,1);
 
+	initHeightmapGUI();
+	updateHeightmapImage(); //ensures this is ready for isSCempty() check
+
+
+	double t = Engine.Time.milliseconds();
+	SCpassed = SCrejected = 0;
 	terrain->createAllChunks();
 
 	t = Engine.Time.milliseconds() - t;
-	cerr << "\n time " << t;
+	cerr << "\n time " << t << " SCs rejected " << SCrejected << " SCs passed " << SCpassed;
 
 	
 
@@ -143,7 +148,7 @@ void C3DtestApp::onStart() {
 	//initialise player object
 	playerObject.pModel = Engine.createCube(vec3(0), vec3(playerObject.width, playerObject.height, playerObject.width));
 	playerObject.setPos(vec3(0, 237, 0));
-	playerObject.setPos(vec3(0, 50, 0));
+	playerObject.setPos(vec3(0, 5, 0));
 
 	playerPhys = Engine.addPhysics(&playerObject);
 	playerPhys->setMass(10);
@@ -151,7 +156,7 @@ void C3DtestApp::onStart() {
 	playerPhys->asleep = true;
 
 
-	initHeightmapGUI();
+	
 		
 	return;
 }
@@ -197,19 +202,69 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	terrain->totalTris += (primitives * 3);
 }
 
+/** Return true if this superchunk doesn't intersect the terrain heightfield. */
+bool C3DtestApp::superChunkIsEmpty(CSuperChunk& SC) {
+	
+	//SCpassed++;
+	//return false;
 
-bool C3DtestApp::superChunkIsEmpty(vec3& sampleCorner, int LoD) {
+
 	Engine.Renderer.setShader(chunkCheckShader);
-	float LoDscale = LoD * chunksPerSuperChunkEdge;
-	chunkCheckShader->setSampleCorner(sampleCorner);
+	float chunkSampleStep = SC.chunkSize / terrain->worldUnitsPerSampleUnit;
+	float LoDscale = ( SC.sampleStep  ) /( cubesPerChunkEdge+1);
+	chunkCheckShader->setSampleCorner(SC.nwSamplePos);
 	chunkCheckShader->setLoDscale(LoDscale);
 
 	unsigned int primitives = Engine.drawModelCount(*chunkShell);
 
 	//TO DO: chunkshell is coarse, create a SCshell with more points
-	if ((primitives == 0) || (primitives == shellTotalVerts * 3))
+	if ((primitives == 0)){ // ||  (primitives == shellTotalVerts * 3)) {
+		SCrejected++;
 		return true; //outside surface
+	}
+	SCpassed++;
+	SC.tmp = true;
 	return false;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//return false;
+//	if (SC.tmpIndex.y == 7)
+//		int b = 0;
+
+	//find the SC nw corner in sample space
+	vec3 SCsampleCorner = SC.nwSamplePos;
+	//return false;
+	//map this to the height map
+	SCsampleCorner = SCsampleCorner - terrain->layers[0].nwSampleCorner ;
+	float SCsampleStep = terrain->layers[terrain->layers.size() - SC.LoD].SCsampleStep;
+	float scale = (terrain->worldSize.x / terrain->worldUnitsPerSampleUnit) / heightmapTex->width;
+	vec3 heightMapPos = SCsampleCorner / scale;
+
+	//read pixels
+	uvec4 pixel = heightmapTex->getPixel(heightMapPos.x, heightMapPos.z);
+	float height = (float)pixel.r / 255.0f; //.68
+	float sampleVolumeHeight = terrain->worldSize.y / terrain->worldUnitsPerSampleUnit;
+	//does the height value fall inside the vertical space of this SC?
+	height = sampleVolumeHeight * height;
+	//return false;
+	if (height > SCsampleCorner.y   && height < (SCsampleCorner.y + SCsampleStep + 0.148f)) {
+		SCpassed++;
+		return false;
+	}
+
+	SCrejected++;
+	return true;
 }
 
 
@@ -236,7 +291,7 @@ bool C3DtestApp::chunkExists(vec3& sampleCorner, int LoD) {
 
 void C3DtestApp::keyCheck() {
 	CCamera* currentCamera = Engine.getCurrentCamera();
-	float moveInc = dT * 500.0; // 0.05125f;
+	float moveInc = dT * 1000.0; // 0.05125f;
 
 	if (!fpsOn) {
 
@@ -488,6 +543,11 @@ void C3DtestApp::keyCheck() {
 
 	if (KeyDown['X']) {
 		terrain->clear();
+		chunkShader->recompile();
+		terrain2texShader->recompile();
+		terrain->createAllChunks();
+		updateHeightmapImage();
+
 		EatKeys();
 	}
 
@@ -543,7 +603,9 @@ void C3DtestApp::keyCheck() {
 	}
 
 	if (KeyDown['H']) {
-		updateHeightmapImage();
+		heightmapImage->visible = !heightmapImage->visible;
+		if (heightmapImage->visible)
+			updateHeightmapImage();
 		EatKeys();
 	}
 
@@ -606,19 +668,21 @@ void C3DtestApp::draw() {
 		vec3 cornerAdjust, opCornerAdjust;
 		Engine.Renderer.setShader(Engine.wireBoxShader);
 		for (int l = terrain->layers.size()-1; l > -1; l--) {
-			vBuf::T3DnormVert box[500]; //should be enough
+			vBuf::T3DnormVert box[2000]; //should be enough
 			int index = 0;
 			for (int s = 0; s < terrain->layers[l].superChunks.size(); s++) {
 				sc = terrain->layers[l].superChunks[s];
-				box[index].v = sc->nwWorldPos + terrain->layers[l].nwLayerPos;
-				cornerAdjust = vec3(sc->faceBoundary[west], sc->faceBoundary[down], sc->faceBoundary[north]);
-				box[index].v += cornerAdjust * sc->chunkSize;
+				if (sc->tmp) {
+					box[index].v = sc->nwWorldPos + terrain->layers[l].nwLayerPos;
+					cornerAdjust = vec3(sc->faceBoundary[west], sc->faceBoundary[down], sc->faceBoundary[north]);
+					box[index].v += cornerAdjust * sc->chunkSize;
 
-				opCornerAdjust = vec3(sc->faceBoundary[east] + 1, sc->faceBoundary[up] + 1,
-					sc->faceBoundary[south] + 1);
-				opCornerAdjust -= cornerAdjust;
-				box[index].normal = opCornerAdjust * sc->chunkSize;
-				index++;
+					opCornerAdjust = vec3(sc->faceBoundary[east] + 1, sc->faceBoundary[up] + 1,
+						sc->faceBoundary[south] + 1);
+					opCornerAdjust -= cornerAdjust;
+					box[index].normal = opCornerAdjust * sc->chunkSize;
+					index++;
+				}
 			}
 			wireSCs->storeVertexes(box, sizeof(vBuf::T3DnormVert) * index, index);
 			wireSCs->storeLayout(3, 3, 0, 0);
@@ -802,15 +866,15 @@ void C3DtestApp::initChunkShell() {
 			shell[v++] = vec3(x, y, cubesPerChunkEdge);
 		}
 		for (int z = 1; z < cubesPerChunkEdge; z++) {
-			shell[v++] = vec3(0, z, y);
-			shell[v++] = vec3(cubesPerChunkEdge, z, y);
+			shell[v++] = vec3(0, y, z);
+			shell[v++] = vec3(cubesPerChunkEdge, y, z);
 		}
 	}
 
 	for (int x = 1; x < cubesPerChunkEdge; x++) {
 		for (int z = 1; z < cubesPerChunkEdge; z++) {
-			shell[v++] = vec3(x, z, 0);
-			shell[v++] = vec3(x, z, cubesPerChunkEdge);
+			shell[v++] = vec3(x, 0,z);
+			shell[v++] = vec3(x, cubesPerChunkEdge,z);
 		}
 	}
 
@@ -905,6 +969,7 @@ void C3DtestApp::initHeightmapGUI() {
 	GUIroot.Add(heightmapImage);
 	heightmapTex = Engine.Renderer.textureManager.createEmptyTexture(500, 500);
 	heightmapImage->setTexture(*heightmapTex);
+	heightmapImage->visible = false;
 
 	//set up shader(s)
 	terrain2texShader = new CTerrain2texShader();
@@ -917,12 +982,16 @@ void C3DtestApp::initHeightmapGUI() {
 
 /** Render the current terrain shader to our heightmap image. */
 void C3DtestApp::updateHeightmapImage() {
-	terrain2texShader->recompile();
+	terrain2texShader->recompile();//temporary, in case I've tweaked it
 	//activate the render-to-texture shader
 	Engine.Renderer.setShader(terrain2texShader);
 	vec3 sampleCorner = terrain->layers[0].nwSampleCorner;
 	terrain2texShader->setNwSampleCorner(vec2(sampleCorner.x,sampleCorner.z));
-	terrain2texShader->setPixelScale(2.0f / 500.0f);
+
+	//calculate scaling
+	float scale = (terrain->worldSize.x / terrain->worldUnitsPerSampleUnit) / heightmapTex->width;
+
+	terrain2texShader->setPixelScale(scale);
 
 	Engine.Renderer.renderToTexture(*heightmapTex);
 }

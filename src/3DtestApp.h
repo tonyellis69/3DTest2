@@ -35,7 +35,7 @@ public:
 	void Update();
 	
 	void createChunkMesh(Chunk& chunk);
-	bool superChunkIsEmpty(glm::vec3& sampleCorner, int LoD);
+	bool superChunkIsEmpty(CSuperChunk& SC);
 	bool chunkExists(glm::vec3& sampleCorner, int LoD);
 	void initChunkShell();
 	void initChunkGrid(int cubesPerChunkEdge);
@@ -100,11 +100,13 @@ public:
 	CBaseTexture* heightmapTex;
 
 	CTerrain2texShader* terrain2texShader; 
+
+	int SCpassed, SCrejected;
 };
 
 const float yawAng = 0.22f;
 const int cubesPerChunkEdge = 16;// 16; //8 ///<Number of cubes along a chunk edge
-const float cubeSize =  2.5;//10; ///<Size of cubes in worldspace.
+const float cubeSize = 1;//  2.5f; ///<Size of cubes in worldspace.
 const int chunksPerSuperChunkEdge = 4;// 4;//8;
 
 const int terrainNoAttribs = 3;

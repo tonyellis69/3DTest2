@@ -26,7 +26,9 @@ void main() {
 	//noise += 0.2f;
 	//noise *= 2;
 	
-	noise =  1- noise;
+	//noise =  1- noise;
+	
+	//noise = smoothstep(0.22,-0.22,noise);
 
 	colour = vec4(noise,noise,noise,1);
 }
