@@ -317,7 +317,7 @@ float terrainHeight (  int octaves,  float persistence,  float startingFrequency
 	vec2 xy = vec2(xyz.xz);
 	
 	//baseNoise = distantMountains(5,   persistence ,   1 ,  0.45 ,   xy);
-	baseNoise = upsAndDowns(3,   0.50,   0.5,  1,   xy);
+	baseNoise = upsAndDowns(3,   0.50,   0.5,  0.5,   xy);
 	//float mask = blobbyMask(1,xy);
 	
 	//float noise3D = octave_noise_3d(octaves, persistence, startingFrequency, startingAmplitude, xyz);

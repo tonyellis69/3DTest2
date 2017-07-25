@@ -146,7 +146,7 @@ void C3DtestApp::onStart() {
 	supWire = false;
 
 	//initialise player object
-	playerObject.pModel = Engine.createCube(vec3(0), vec3(playerObject.width, playerObject.height, playerObject.width));
+	playerObject.pModel = Engine.createCube(vec3(0), vec3(playerObject.width*1, playerObject.height, playerObject.width*1));
 	playerObject.setPos(vec3(0, 237, 0));
 	playerObject.setPos(vec3(0, 500, 0));
 
@@ -709,16 +709,13 @@ void C3DtestApp::draw() {
 	}
 
 	if (!fpsOn) {
+		Engine.Renderer.setShader(Engine.phongShader);
 		mvp = currentCamera->clipMatrix * playerObject.pModel->worldMatrix;
 		Engine.phongShader->setMVP(mvp);
 		playerObject.pModel->drawNew();
 	}
 
 
-
-	//Engine.Renderer.setShader(Engine.uiRectShader);
-	//GUIroot.pDrawFuncs->drawCtrlRect(*image);
-//	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 
