@@ -95,9 +95,9 @@ void C3DtestApp::onStart() {
 	//4 16 2.5
 	terrain->setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
 
-	terrain->createLayers2(5120, 320, 2); //1280 320
+	//terrain->createLayers2(5120, 320, 2); //1280 320
 	//terrain->createLayers2(1280, 320, 0);
-	//terrain->createLayers2(10000, 320, 2);
+	terrain->createLayers2(10000, 320, 2);
 	//terrain->createLayers2(1280, 320, 0);
 	//terrain->createLayers(8, 2, 2); //(8, 3, 2); //(4,2,1);
 
@@ -148,7 +148,7 @@ void C3DtestApp::onStart() {
 	//initialise player object
 	playerObject.pModel = Engine.createCube(vec3(0), vec3(playerObject.width, playerObject.height, playerObject.width));
 	playerObject.setPos(vec3(0, 237, 0));
-	playerObject.setPos(vec3(0, 5, 0));
+	playerObject.setPos(vec3(0, 500, 0));
 
 	playerPhys = Engine.addPhysics(&playerObject);
 	playerPhys->setMass(10);
@@ -203,6 +203,7 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 }
 
 /** Return true if this superchunk doesn't intersect the terrain heightfield. */
+//TO DO: fast but too coarse, leaves cracks
 bool C3DtestApp::superChunkIsEmpty(CSuperChunk& SC) {
 	
 	//SCpassed++;
@@ -293,6 +294,8 @@ void C3DtestApp::keyCheck() {
 	CCamera* currentCamera = Engine.getCurrentCamera();
 	float moveInc = dT * 1000.0; // 0.05125f;
 
+	
+
 	if (!fpsOn) {
 
 		if (keyNow('E')) {
@@ -347,64 +350,66 @@ void C3DtestApp::keyCheck() {
 		std::cerr << "\nvertical velocity at keypress: " << playerPhys->velocity.y;
 
 		if (length(playerPhys->currentContactNormal) <= 0) {
-			cerr << "\nmove aborted";
-			return;
+			cerr << "\nmove aborted";	
 		}
+		else {
 
 
 			vec3 dir = playerObject.povCam.getTargetDir();
 			vec3 groundNormal = playerPhys->currentContactNormal;
 			vec3 eyeLine = playerObject.povCam.getTargetDir();
 			vec3 flip;
-			
+
 			if (KeyDown[VK_SPACE] && physCube == NULL) {
 				playerPhys->velocity.y += 20;
 				playerPhys->velocity.x *= 2.5f;
 				playerPhys->velocity.z *= 2.5f;
-				
+
 				cerr << "\nJumping!!!";
 			}
 
-		if (keyNow('W')) {
-			moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
-			moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+			if (keyNow('W')) {
+				moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
+				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
 
 				playerPhys->velocity += moveDir * 1.4f;   //0.03f safe but slow //0.2f formerly caused bounces
 
-	
+
 				cerr << "\n********Moving!";
 				cerr << "\nMoveDir " << moveDir.x << " " << moveDir.y << " " << moveDir.z;
 				cerr << " Speed of " << length(playerPhys->velocity);
 				EatKeys();
-		
-		}
-		if (keyNow('S')) {
-			flip.y = -eyeLine.y;
-			flip.x = -eyeLine.x;
-			flip.z = -eyeLine.z;
-			moveDir = cross(flip, groundNormal) / length(groundNormal);
-			moveDir = cross(groundNormal, moveDir) / length(groundNormal);
-			playerPhys->velocity += moveDir * 0.4f;
-		}
-		if (keyNow('A')) {
-			flip.x = eyeLine.z;
-			flip.z = -eyeLine.x;
-			moveDir = cross(flip, groundNormal) / length(groundNormal);
-			moveDir = cross(groundNormal, moveDir) / length(groundNormal);
-			playerPhys->velocity += moveDir * 0.4f;
-		}
-		if (keyNow('D')) {
-			flip.x = -eyeLine.z;
-			flip.z = eyeLine.x;
-			moveDir = cross(flip, groundNormal) / length(groundNormal);
-			moveDir = cross(groundNormal, moveDir) / length(groundNormal);
-			playerPhys->velocity += moveDir * 0.4f;
-		}
-		
 
+			}
+			if (keyNow('S')) {
+				flip.y = -eyeLine.y;
+				flip.x = -eyeLine.x;
+				flip.z = -eyeLine.z;
+				moveDir = cross(flip, groundNormal) / length(groundNormal);
+				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+				playerPhys->velocity += moveDir * 0.4f;
+			}
+			if (keyNow('A')) {
+				flip.x = eyeLine.z;
+				flip.z = -eyeLine.x;
+				moveDir = cross(flip, groundNormal) / length(groundNormal);
+				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+				playerPhys->velocity += moveDir * 0.4f;
+			}
+			if (keyNow('D')) {
+				flip.x = -eyeLine.z;
+				flip.z = eyeLine.x;
+				moveDir = cross(flip, groundNormal) / length(groundNormal);
+				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+				playerPhys->velocity += moveDir * 0.4f;
+			}
+
+		}
 
 
 	}
+
+	
 
 	if (mouseKey == MK_LBUTTON)
 	{
@@ -460,8 +465,11 @@ void C3DtestApp::keyCheck() {
 		advance(west);
 		//EatKeys();
 	}
-	if (KeyDown['5']) {
+	if (keyNow('5')) {
 		advance(up);
+	}
+	if (keyNow('0')) {
+		advance(down);
 	}
 
 	if (KeyDown['1']) {
@@ -672,7 +680,8 @@ void C3DtestApp::draw() {
 			int index = 0;
 			for (int s = 0; s < terrain->layers[l].superChunks.size(); s++) {
 				sc = terrain->layers[l].superChunks[s];
-				if (sc->tmp) {
+				//if (sc->tmp) 
+				{
 					box[index].v = sc->nwWorldPos + terrain->layers[l].nwLayerPos;
 					cornerAdjust = vec3(sc->faceBoundary[west], sc->faceBoundary[down], sc->faceBoundary[north]);
 					box[index].v += cornerAdjust * sc->chunkSize;
@@ -726,6 +735,10 @@ void C3DtestApp::advance(Tdirection direction) {
 	case east:		dir = vec3(-1, 0, 0);
 		break;
 	case west:		dir = vec3(1, 0, 0);
+		break;
+	case up:		dir = vec3(0, -1, 0);
+		break;
+	case down:		dir = vec3(0, 1, 0);
 		break;
 	}
 
@@ -787,7 +800,7 @@ void C3DtestApp::Update() {
 		watch1 << sc->tmpIndex.x << " " << sc->tmpIndex.y << " " << sc->tmpIndex.z << " ";
 
 	if (fpsOn) {
-
+		
 	//	if (terrain->toSkin.size() != 0)
 	//		return;
 		//cheap dirty fix for the problem of scrolling in one direction before we've finished scrolling in another
@@ -797,7 +810,6 @@ void C3DtestApp::Update() {
 		float chunkDist = cubesPerChunkEdge * cubeSize;
 
 		vec3 pos;
-	//	pos = fpsCam.getPos();
 		pos = playerObject.getPos();
 		bvec3 outsideChunkBoundary = glm::greaterThan(glm::abs(pos), vec3(chunkDist));
 
@@ -813,7 +825,7 @@ void C3DtestApp::Update() {
 			//WAS
 			//fpsCam.setPos(posMod); //secretly reposition viewpoint prior to scrolling terrain
 			playerObject.setPos(posMod);
-
+			playerPhys->position = posMod;
 			;
 
 			vec3 translation = vec3(terrain->chunkOriginInt *  cubesPerChunkEdge) * cubeSize;

@@ -1,5 +1,5 @@
 #version 330
-
+#include noise.lib
 layout(location = 0) in vec3 cubeVertPos; //Relative position of an MC cube vertex within this chunk.
 
 
@@ -19,7 +19,7 @@ out vertexPair {
 
 
 
-#include noise.lib
+
 
 float getSample(vec3 vertSamplePos) {
 	int octaves = 5;
@@ -27,7 +27,7 @@ float getSample(vec3 vertSamplePos) {
 	float xzScaling = 2;	
 	float startingAmplitude = 0.22f; //0.5f;//0.22f;
 		
-	float noise = terrainHeight(octaves,persistence,xzScaling, startingAmplitude, vertSamplePos.xz ); 
+	float noise = terrainHeight(octaves,persistence,xzScaling, startingAmplitude, vertSamplePos.xyz ); 
 	
 	//clip the noise against our y position in the volume. Values outside 1 mean the surface doesn't intersect this point.
 	//TO DO: kind of arbitary. Need to find a better way to do this.

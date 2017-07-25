@@ -15,8 +15,10 @@ void main() {
 	float persistence = 0.5f;
 	float xzScaling = 2;	
 	float startingAmplitude = 0.22f; //0.5f;//0.22f;
+	
+	vec3 sampleCorner3D = vec3(nwSampleCorner,1);
 		
-	float noise = terrainHeight(octaves,persistence,xzScaling, startingAmplitude, nwSampleCorner +  (gl_FragCoord.xy  * pixelScale)); 
+	float noise = terrainHeight(octaves,persistence,xzScaling, startingAmplitude, sampleCorner3D +  (gl_FragCoord.xyz  * pixelScale)); 
 
 	
 	noise = (noise * 0.5f) + 0.5f; //put in 0-1 range

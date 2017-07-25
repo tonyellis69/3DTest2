@@ -106,7 +106,7 @@ public:
 
 const float yawAng = 0.22f;
 const int cubesPerChunkEdge = 16;// 16; //8 ///<Number of cubes along a chunk edge
-const float cubeSize = 1;//  2.5f; ///<Size of cubes in worldspace.
+const float cubeSize = 2.5;// 1;//  2.5f; ///<Size of cubes in worldspace.
 const int chunksPerSuperChunkEdge = 4;// 4;//8;
 
 const int terrainNoAttribs = 3;
