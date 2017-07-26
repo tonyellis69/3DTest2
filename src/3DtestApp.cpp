@@ -212,7 +212,7 @@ bool C3DtestApp::superChunkIsEmpty(CSuperChunk& SC) {
 
 	Engine.Renderer.setShader(chunkCheckShader);
 	float chunkSampleStep = SC.chunkSize / terrain->worldUnitsPerSampleUnit;
-	float LoDscale = ( SC.sampleStep  ) /( cubesPerChunkEdge+1);
+	float LoDscale = ( SC.sampleStep  ) /( cubesPerChunkEdge);
 	chunkCheckShader->setSampleCorner(SC.nwSamplePos);
 	chunkCheckShader->setLoDscale(LoDscale);
 
@@ -797,7 +797,7 @@ void C3DtestApp::Update() {
 		watch1 << sc->tmpIndex.x << " " << sc->tmpIndex.y << " " << sc->tmpIndex.z << " ";
 
 	if (fpsOn) {
-		
+		//return;
 	//	if (terrain->toSkin.size() != 0)
 	//		return;
 		//cheap dirty fix for the problem of scrolling in one direction before we've finished scrolling in another
