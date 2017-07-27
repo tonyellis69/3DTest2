@@ -87,43 +87,31 @@ void C3DtestApp::onStart() {
 	chunkCheckShader->getShaderHandles();
 
 	initChunkShell();
-
-
 	initChunkGrid(cubesPerChunkEdge);
-	//4 16 2.5
-	terrain->setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
 
+	terrain->setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
 
 	initHeightFinder();
 
-	float height = findTerrainHeight(vec3(0.0,-2,0.0));
-	terrain->tryCorner = vec3(-2.0, -2.0 + height, -2.0);
-
-
-	//terrain->createLayers2(5120, 320, 2); //1280 320
-	//terrain->createLayers2(1280, 320, 0);
-	terrain->createLayers2(10000, 320, 2);
-	//terrain->createLayers2(1280, 320, 0);
+	//terrain->createLayers(5120, 320, 2); //1280 320
+	//terrain->createLayers(1280, 320, 0);
+	terrain->createLayers(10000, 320, 2);
+	//terrain->createLayers(1280, 320, 0);
 	//terrain->createLayers(8, 2, 2); //(8, 3, 2); //(4,2,1);
 
-	initHeightmapGUI();
-	updateHeightmapImage(); //ensures this is ready for isSCempty() check
+	createTerrain(vec2(0, 0));
 
+	initHeightmapGUI();
+	
 
 	double t = Engine.Time.milliseconds();
 	SCpassed = SCrejected = 0;
+
 	terrain->createAllChunks();
 
 	t = Engine.Time.milliseconds() - t;
 	cerr << "\n time " << t << " SCs rejected " << SCrejected << " SCs passed " << SCpassed;
 
-	
-
-
-	//load chunk shader
-	//const char* feedbackVaryings[23];
-	//feedbackVaryings[0] = "gl_Position";
-	//feedbackVaryings[1] = "normal";
 
 	chunkShader = new ChunkShader();
 	chunkShader->feedbackVaryings[0] = "gl_Position";
@@ -163,8 +151,7 @@ void C3DtestApp::onStart() {
 
 	
 
-	
-		
+
 	return;
 }
 
@@ -1042,10 +1029,17 @@ void C3DtestApp::initHeightFinder() {
 	delete v;
 }
 
+/** Generate a landscape centred on the given point. */
+void C3DtestApp::createTerrain(glm::vec2 & centre) {
+	//find the terrain height at this point
+	const float defaultStart = terrain->worldUnitsPerSampleUnit / 1000;
+	float height = findTerrainHeight(vec3(centre.x, -defaultStart ,centre.y));
+	terrain->setSampleCentre(vec3(centre.x, height, centre.y));
+}
+
 /** Searching up from the given point in sample space, return the height at which terrain is first encountered. */
 float C3DtestApp::findTerrainHeight(glm::vec3& basePos) {
 	Engine.Renderer.setShader(terrainPointShader);
-	float searchRange = 10000; //we're going to search 10000 metres
 	float offsetScale = 1 / terrain->worldUnitsPerSampleUnit ;
 	terrainPointShader->setOffsetScale(offsetScale);
 	vec3 startPos = basePos;
@@ -1054,28 +1048,19 @@ float C3DtestApp::findTerrainHeight(glm::vec3& basePos) {
 	heightResultsBuf->setDrawMode(drawPoints);
 
 	float* heightResults = new float[findHeightVerts];
-	float terrainHeight = -1000;// basePos.y;
+	float terrainHeight; const float MCvertexTest = 0.5f;
 	
 	for (int step = 0; step < 100; step++) {
 		terrainPointShader->setSampleBase(startPos);
-
-		//draw verts
-		unsigned int hits = Engine.acquireFeedbackVerts(heightFinderBuf, *heightResultsBuf);
-		//check result
+		Engine.acquireFeedbackVerts(heightFinderBuf, *heightResultsBuf);
 		heightResultsBuf->getData((unsigned char*)heightResults, sizeof(float) * findHeightVerts);
 		for (int r = 0; r < findHeightVerts; r++) {
-			if (heightResults[r] < 0.5 &&  heightResults[r] > 0.47)
+			if (heightResults[r] < MCvertexTest) 
 				terrainHeight = startPos.y + (r * offsetScale);
 		}
-
-
 		startPos.y += findHeightVerts * offsetScale;
 	}
-	
-
-	
 	delete heightResults;
-
 	return terrainHeight;
 }
 

@@ -48,6 +48,8 @@ public:
 
 	void initHeightFinder();
 
+	void createTerrain(glm::vec2& centre);
+
 	float findTerrainHeight(glm::vec3 & basePos);
 
 	string dataPath; ///<Filepath to the Data folder
