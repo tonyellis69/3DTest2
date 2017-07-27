@@ -12,6 +12,7 @@
 #include "chunkShader.h"
 #include "chunkCheckShader.h"
 #include "terrain2texShader.h"
+#include "terrainPointShader.h"
 
 #include "playerObj.h"
 
@@ -44,6 +45,10 @@ public:
 
 	void initHeightmapGUI();
 	void updateHeightmapImage();
+
+	void initHeightFinder();
+
+	float findTerrainHeight(glm::vec3 & basePos);
 
 	string dataPath; ///<Filepath to the Data folder
 	
@@ -102,6 +107,9 @@ public:
 	CTerrain2texShader* terrain2texShader; 
 
 	int SCpassed, SCrejected;
+
+	CTerrainPointShader* terrainPointShader;
+	CBuf heightFinderBuf;
 };
 
 const float yawAng = 0.22f;
@@ -111,6 +119,7 @@ const int chunksPerSuperChunkEdge = 4;// 4;//8;
 
 const int terrainNoAttribs = 3;
 
+const float findHeightVerts = 100; ///<Number of verts findTerrainHeight checks at a time. 
 
 static const int triTable[256][16] =
 	{{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},

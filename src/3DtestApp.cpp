@@ -70,7 +70,7 @@ void C3DtestApp::onStart() {
 
 	tempFeedbackBuf = Engine.createBuffer();
 	tempFeedbackBuf->setSize(500000);
-
+	tempFeedbackBuf->setDrawMode(drawTris);
 
 
 	terrain->EXTsuperChunkIsEmpty.Set(this, &C3DtestApp::superChunkIsEmpty);
@@ -88,12 +88,17 @@ void C3DtestApp::onStart() {
 
 	initChunkShell();
 
-	
 
-	
 	initChunkGrid(cubesPerChunkEdge);
 	//4 16 2.5
 	terrain->setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
+
+
+	initHeightFinder();
+
+	float height = findTerrainHeight(vec3(0.0,-2,0.0));
+	terrain->tryCorner = vec3(-2.0, -2.0 + height, -2.0);
+
 
 	//terrain->createLayers2(5120, 320, 2); //1280 320
 	//terrain->createLayers2(1280, 320, 0);
@@ -148,13 +153,15 @@ void C3DtestApp::onStart() {
 	//initialise player object
 	playerObject.pModel = Engine.createCube(vec3(0), vec3(playerObject.width*1, playerObject.height, playerObject.width*1));
 	playerObject.setPos(vec3(0, 237, 0));
-	playerObject.setPos(vec3(0, 500, 0));
+	playerObject.setPos(vec3(0, 0, 0));
 
 	playerPhys = Engine.addPhysics(&playerObject);
 	playerPhys->setMass(10);
 	playerPhys->AABB.setSize(1, 1);
 	playerPhys->asleep = true;
 
+
+	
 
 	
 		
@@ -186,10 +193,17 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	int nVertsOut = cubesPerChunkEdge * cubesPerChunkEdge * cubesPerChunkEdge * maxMCverts;
 
 	CBaseBuf* terrainBuf = &terrain->multiBuf;
+	CBuf* srcBuf = &((CRenderModel*)shaderChunkGrid)->buf;
+	unsigned int primitives = Engine.acquireFeedbackVerts(*srcBuf, *tempFeedbackBuf);
 
-	unsigned int primitives = Engine.acquireFeedbackVerts(*shaderChunkGrid, *tempFeedbackBuf, *terrainBuf);
-
+																					
 	if (primitives) {
+		int outSize = primitives * 3 * sizeof(vBuf::T3DnormVert);
+		totalbufsize += outSize;
+		totalchunks++;
+
+		terrainBuf->copyBuf(*tempFeedbackBuf, outSize);
+
 		chunk.id = terrainBuf->getLastId();
 		terrainBuf->setBlockColour(chunk.id, (tmpRGBAtype&)chunk.colour);
 	}
@@ -888,7 +902,7 @@ void C3DtestApp::initChunkShell() {
 	}
 
 	chunkShell = Engine.createModel();
-	chunkShell->drawMode = GL_POINTS;
+	chunkShell->setDrawMode( drawPoints);
 	chunkShell->storeVertexes(shell, sizeof(vec3) * v, v);
 	chunkShell->storeLayout(3, 0, 0, 0);
 	delete[] shell;
@@ -936,7 +950,7 @@ void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
 
 	shaderChunkGrid = Engine.createModel();
 
-	shaderChunkGrid->drawMode = GL_LINES_ADJACENCY;
+	shaderChunkGrid->setDrawMode(drawLinesAdjacency);
 
 	//Engine.(&shaderChunkGrid,shaderChunkVerts,index);
 	//Engine.setVertexDetails(shaderChunkGrid, 1, noIndices, noVerts);
@@ -1003,6 +1017,66 @@ void C3DtestApp::updateHeightmapImage() {
 	terrain2texShader->setPixelScale(scale);
 
 	Engine.Renderer.renderToTexture(*heightmapTex);
+}
+
+/** Initialise shader and buffer required to run a terrain height-finding query. */
+void C3DtestApp::initHeightFinder() {
+	terrainPointShader = new CTerrainPointShader();
+	terrainPointShader->feedbackVaryings[0] = "result";
+	Engine.shaderList.push_back(terrainPointShader);
+	terrainPointShader->pRenderer = &Engine.Renderer;
+	terrainPointShader->load(vertex,dataPath + "terrainPoint.vert");
+	terrainPointShader->attach();
+	terrainPointShader->setFeedbackData(1);
+	terrainPointShader->link();
+	terrainPointShader->getShaderHandles();
+
+	//create verts
+	vec3* v = new vec3[findHeightVerts];
+	for (int x = 0; x < findHeightVerts; x++)
+		v[x] = vec3(0, x, 0);
+
+	heightFinderBuf.storeVertexes(v, sizeof(vec3) * findHeightVerts, findHeightVerts);
+	heightFinderBuf.storeLayout(3, 0, 0, 0);
+	heightFinderBuf.setDrawMode(drawPoints);
+	delete v;
+}
+
+/** Searching up from the given point in sample space, return the height at which terrain is first encountered. */
+float C3DtestApp::findTerrainHeight(glm::vec3& basePos) {
+	Engine.Renderer.setShader(terrainPointShader);
+	float searchRange = 10000; //we're going to search 10000 metres
+	float offsetScale = 1 / terrain->worldUnitsPerSampleUnit ;
+	terrainPointShader->setOffsetScale(offsetScale);
+	vec3 startPos = basePos;
+	CBaseBuf* heightResultsBuf = Engine.createBuffer(); 
+	heightResultsBuf->setSize(sizeof(float) * findHeightVerts);
+	heightResultsBuf->setDrawMode(drawPoints);
+
+	float* heightResults = new float[findHeightVerts];
+	float terrainHeight = -1000;// basePos.y;
+	
+	for (int step = 0; step < 100; step++) {
+		terrainPointShader->setSampleBase(startPos);
+
+		//draw verts
+		unsigned int hits = Engine.acquireFeedbackVerts(heightFinderBuf, *heightResultsBuf);
+		//check result
+		heightResultsBuf->getData((unsigned char*)heightResults, sizeof(float) * findHeightVerts);
+		for (int r = 0; r < findHeightVerts; r++) {
+			if (heightResults[r] < 0.5 &&  heightResults[r] > 0.47)
+				terrainHeight = startPos.y + (r * offsetScale);
+		}
+
+
+		startPos.y += findHeightVerts * offsetScale;
+	}
+	
+
+	
+	delete heightResults;
+
+	return terrainHeight;
 }
 
 

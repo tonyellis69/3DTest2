@@ -320,15 +320,14 @@ float terrainHeight (  int octaves,  float persistence,  float startingFrequency
 	baseNoise = upsAndDowns(3,   0.50,   0.5,  0.5,   xy);
 	//float mask = blobbyMask(1,xy);
 	
-	//float noise3D = octave_noise_3d(octaves, persistence, startingFrequency, startingAmplitude, xyz);
+	float noise3D = octave_noise_3d(octaves, persistence, startingFrequency, startingAmplitude, xyz);
 
-	//noise3D = min(0.1,noise3D);
+	noise3D = min(0.1,noise3D);
 	
 	
-//	baseNoise += noise3D ;
+	baseNoise += noise3D ;
 	
-//	return 0.3;
-	
+
 	return  noise + baseNoise ;
 }
 
