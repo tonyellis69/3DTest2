@@ -99,7 +99,7 @@ void C3DtestApp::onStart() {
 	//terrain->createLayers(1280, 320, 0);
 	//terrain->createLayers(8, 2, 2); //(8, 3, 2); //(4,2,1);
 
-	createTerrain(vec2(0, 0));
+	createTerrain(vec2(6, 6)); //seem to get striations above 999
 
 	initHeightmapGUI();
 	
@@ -151,7 +151,7 @@ void C3DtestApp::onStart() {
 
 	
 
-
+	updateHeightmapImage();
 	return;
 }
 
@@ -792,11 +792,9 @@ void C3DtestApp::Update() {
 	terrain->update();
 
 	vec3 pos = Engine.getCurrentCamera()->getPos();
-	CSuperChunk* sc = terrain->getSC(pos);
 
-	if (sc)
-		watch1 << sc->tmpIndex.x << " " << sc->tmpIndex.y << " " << sc->tmpIndex.z << " ";
 
+	
 	if (fpsOn) {
 		//return;
 	//	if (terrain->toSkin.size() != 0)
@@ -1048,7 +1046,7 @@ float C3DtestApp::findTerrainHeight(glm::vec3& basePos) {
 	heightResultsBuf->setDrawMode(drawPoints);
 
 	float* heightResults = new float[findHeightVerts];
-	float terrainHeight; const float MCvertexTest = 0.5f;
+	float terrainHeight = 0;; const float MCvertexTest = 0.5f;
 	
 	for (int step = 0; step < 100; step++) {
 		terrainPointShader->setSampleBase(startPos);

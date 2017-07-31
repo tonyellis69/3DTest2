@@ -14,18 +14,8 @@ void main () {
 	//find the position in sample space of this vertex
 	vec3 vertSamplePos = sampleBase + (vertPos * offsetScale);
 
-	int octaves = 5;
-	float persistence = 0.5f;
-	float xzScaling = 2;	
-	float startingAmplitude = 0.22f; //0.5f;//0.22f;
-
-	
-	float noise = terrainHeight(octaves,persistence,xzScaling, startingAmplitude, vertSamplePos.xyz ); 
+	float noise = terrainValue(5,vertSamplePos); 
 	
 	
-
-	//clip the surface height against the height of this corner. Values outside 1 mean the surface doesn't intersect this point.
-	result = vertSamplePos.y - noise;
-
-	
+	result = noise;	
 }

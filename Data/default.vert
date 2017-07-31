@@ -5,6 +5,7 @@ layout(location = 1) in vec3 normal;
 
 
 smooth out vec4 fragColour;
+smooth out vec4 worldPos;
 
 uniform mat4 mvpMatrix; //model to view (camera) to perspective matrix
 
@@ -17,6 +18,7 @@ uniform vec4 colour;
 void main()
 {
 	gl_Position = mvpMatrix * vec4(position,1);
+	worldPos = vec4(position,1);
 	
 	vec3 normCamSpace = normalize(normalModelToCameraMatrix * vec3(normal));
 	

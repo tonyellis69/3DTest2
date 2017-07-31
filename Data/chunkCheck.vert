@@ -19,24 +19,7 @@ void main () {
 	//find the position in sample space of this vertex
 	vec3 vertSamplePos = nwSamplePos + (vertPos * LoDscale);
 
-	
-	
-	int octaves = 5;
-	float persistence = 0.5f;
-	float xzScaling = 2;	
-	float startingAmplitude = 0.22f; //0.5f;//0.22f;
+	float noise = terrainValue(5,vertSamplePos.xyz ); 
 
-	
-	float noise = terrainHeight(octaves,persistence,xzScaling, startingAmplitude, vertSamplePos.xyz ); 
-	
-	
-	
-	
-
-
-	//clip the surface height against the height of this corner. Values outside 1 mean the surface doesn't intersect this point.
-	float vertSample = vertSamplePos.y - noise;
-
-	outData.vertSample = vertSample; // output the result to the geometry shader
-
+	outData.vertSample = noise; // output the result to the geometry shader
 }

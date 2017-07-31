@@ -1,3 +1,5 @@
+const int realmSize = 4;
+
 // Modulo 289 without a division (only multiplications)
 vec3 mod289(vec3 x) {
   return x - floor(x * (1.0 / 289.0)) * 289.0;
@@ -205,40 +207,48 @@ float snoise(vec2 v)
 }
 
 
-float octave_noise_2d(  int octaves,  float persistence,  float startingFrequency, float startingAmplitude,  vec2 xy ) {
-    float frequency = startingFrequency;
-    float amplitude = startingAmplitude;
+float fbm2D( int octaves, vec2 xy) {
+	float frequency = 1;
 	float lacunarity = 2;
-
-	float total = 0;;
+	float amplitude = 1;
+	float persistence = 0.5;
+	float total = 0;
     for( int i=0; i < octaves; i++ ) {
         total += snoise(xy * frequency) * amplitude;
-
         frequency *= lacunarity;
         amplitude *= persistence;
     }
-
     return total;
 }
 
-float upsAndDowns( int octaves,  float persistence,  float startingFrequency, float startingAmplitude,  vec2 xy) {
-	//startingFrequency = 5; startingAmplitude = 0.1; //work OK
-	float noise = octave_noise_2d(octaves,   persistence,   startingFrequency,  startingAmplitude,   xy);
-	noise *= 0.15f;
-	return noise;
+float fbm3D( int octaves, vec3 xyz) {
+	float frequency = 1;
+	float lacunarity = 2;
+	float amplitude = 1;
+	float persistence = 0.5;
+	float total = 0;
+    for( int i=0; i < octaves; i++ ) {
+        total += snoise(xyz * frequency) * amplitude;
+        frequency *= lacunarity;
+        amplitude *= persistence;
+    }
+    return total;
 }
 
-float turbulence( int octaves, float persistence,  float startingFrequency, float startingAmplitude,  vec2 xy) {
-	float amplitude = startingAmplitude;
-	float value = 0;
-	
+
+
+float turbulence( int octaves,   vec2 xy) {
+	float frequency = 1;
+	float lacunarity = 2;
+	float amplitude = 1;
+	float persistence = 0.5;
+	float total = 0;
 	for (int i = 0; i < octaves; i++) {
-		value += amplitude * abs(snoise(xy));
-		xy *= 2.;
-		amplitude *= .5;
+		total += amplitude * abs(snoise(xy * frequency));
+		frequency *= lacunarity;
+		amplitude *= persistence;
 	}
-	
-	return value;
+	return total;
 }
 
 float ridge ( float h, float offset) {
@@ -248,13 +258,13 @@ float ridge ( float h, float offset) {
 	return h;
 }
 
-float ridgedMF ( int octaves, float persistence,  float startingFrequency, float startingAmplitude,  vec2 xy) {
+float ridgedMF ( int octaves, vec2 xy) {
     float lacunarity = 2.0;
-    float offset = 0.9;
-        
+    float offset = 0.9;  
     float sum = 0.0;
-    float freq = startingFrequency, amp = startingAmplitude;
+    float freq = 1, amp = 1;
     float prev = 1.0;
+	float persistence = 0.5;
     for(int i=0; i < octaves; i++) {
         float n = ridge(snoise(xy*freq), offset);
         sum += n*amp;
@@ -266,28 +276,50 @@ float ridgedMF ( int octaves, float persistence,  float startingFrequency, float
     return sum;
 }
 
-float distantMountains(int octaves,  float persistence,  float startingFrequency, float startingAmplitude,  vec2 xy ) {
-	float distance = length(xy) ;
-	float squash = pow(distance,3);
-	squash = clamp(0.5,0.05,squash);
+float distantMountains(int octaves,   vec2 xy ) {
+	//round down to the nearest epiecentre
+	vec2 epiCentre = (floor(xy / realmSize) * realmSize) + realmSize/2;
+	float distance = distance(xy , epiCentre) ;
+	distance /= 2;
+	float squash;
+
+	squash = smoothstep(0.3,0.9,distance);
 	
-	float noise = octave_noise_2d(octaves,   persistence ,   startingFrequency ,  startingAmplitude * squash,   xy);
+	float noise = fbm2D(octaves ,   xy);
+
+	noise *= squash;
+	
 	noise = abs(noise);
 	
-
 	//noise = squash;
 	return noise;
 }
 
-float hillocksAndRidges(int octaves, vec2 xy) {
-	float noise = upsAndDowns(4,   0.50,   17,  2,   xy);
-	noise = max(0.00,noise);
+
+float grandCanyon (int octaves,   vec2 xy ) {
+	//round down to the nearest epiecentre
+	vec2 epiCentre = (floor(xy / realmSize) * realmSize) + realmSize/2;
+	float distance = distance(xy , epiCentre) ;
+	distance /= 2;
+	float squash;
+
+	squash = smoothstep(0.3,0.9,distance);
+	
+	float noise = fbm2D(octaves,   xy);
+	noise *= squash;
+	noise = abs(noise);
+	noise = min(0.5,noise);
+	
+	
+
 	return noise;
 }
 
+
+
 float blobbyMask(int octaves, vec2 xy) {
 	//octave 1 or 2
-	float noise = octave_noise_2d(octaves, 0.5,  0.5, 1.0, xy);
+	float noise = fbm2D(octaves, xy);
 	noise = smoothstep(0.4,0.5,noise);
 	return noise;
 }
@@ -296,38 +328,48 @@ float terrace(float noise, int steps) {
 	return round(noise * steps) / steps;
 }
 
-float octave_noise_3d(  int octaves,  float persistence,  float startingFrequency, float startingAmplitude,  vec3 xyz ) {
-	float frequency = startingFrequency;
-    float amplitude = startingAmplitude;
-	float lacunarity = 2;
 
-	float total = 0;
-
-    for( int i=0; i < octaves; i++ ) {
-        total += snoise(xyz * frequency) * amplitude;
-
-        frequency *= lacunarity;
-        amplitude *= persistence;
-    }
-	return total;
-}
-
-float terrainHeight (  int octaves,  float persistence,  float startingFrequency, float startingAmplitude,  vec3 xyz ) {
+float terrainValue (  int octaves,   vec3 xyz ) {
 	float baseNoise = 0; float noise = 0;
 	vec2 xy = vec2(xyz.xz);
 	
-	//baseNoise = distantMountains(5,   persistence ,   1 ,  0.45 ,   xy);
-	baseNoise = upsAndDowns(3,   0.50,   0.5,  0.5,   xy);
-	//float mask = blobbyMask(1,xy);
-	
-	float noise3D = octave_noise_3d(octaves, persistence, startingFrequency, startingAmplitude, xyz);
-
-	noise3D = min(0.1,noise3D);
-	
-	
-	baseNoise += noise3D ;
+		
+		
+	//baseNoise = grandCanyon(5,    xy) ;
 	
 
-	return  noise + baseNoise ;
+	
+	//baseNoise += noise3D ;
+	
+
+
+	//noise = fbm2D(5, xy * 2) * 0.1; //good standard (busy, varied)
+	
+	//noise = fbm2D(4, xy ) * 0.05; //sand dunes
+
+	//noise = turbulence(4, xy) * 0.15;
+	
+	//noise = ridgedMF(4,xy ) * 0.1;
+	
+	baseNoise = distantMountains(5,xy) * 0.3;
+	
+//	baseNoise = fbm2D(5, xy * 2) * 0.1;
+	//float mask = blobbyMask(1,xy * 0.5);
+	
+	//baseNoise = fbm2D(5, xy * 2) * 0.1; //standard
+//	baseNoise = max(0,baseNoise);
+	
+	//noise =  ridgedMF(4,xy ) * 0.1;
+	
+	//baseNoise += noise * mask;
+	
+	baseNoise = xyz.y - baseNoise ; //clip 2D height value against 3D position
+	
+	noise = fbm3D(5,xyz ) * 0.15;
+	
+	
+	baseNoise += noise;
+	
+	return baseNoise;
+
 }
-

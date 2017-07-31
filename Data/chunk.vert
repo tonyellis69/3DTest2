@@ -22,16 +22,9 @@ out vertexPair {
 
 
 float getSample(vec3 vertSamplePos) {
-	int octaves = 5;
-	float persistence = 0.5f;
-	float xzScaling = 2;	
-	float startingAmplitude = 0.22f; //0.5f;//0.22f;
-		
-	float noise = terrainHeight(octaves,persistence,xzScaling, startingAmplitude, vertSamplePos.xyz ); 
+	float noise = terrainValue(5, vertSamplePos.xyz ); 
 	
-	//clip the noise against our y position in the volume. Values outside 1 mean the surface doesn't intersect this point.
-	//TO DO: kind of arbitary. Need to find a better way to do this.
-	return vertSamplePos.y - noise;
+	return noise;
 }
 
 
