@@ -13,11 +13,13 @@
 #include "chunkCheckShader.h"
 #include "terrain2texShader.h"
 #include "terrainPointShader.h"
+#include "findPointHeightShader.h"
 
 #include "playerObj.h"
 
-
 #include "UI\GUIimage.h"
+
+#include "poisson.h"
 
 extern CSuperChunk* dbgSC;
 
@@ -49,8 +51,10 @@ public:
 	void initHeightFinder();
 
 	void createTerrain(glm::vec2& centre);
-
 	float findTerrainHeight(glm::vec3 & basePos);
+	void initGrassFinding();
+
+	void findGrassPoints(Chunk& chunk);
 
 	string dataPath; ///<Filepath to the Data folder
 	
@@ -112,6 +116,12 @@ public:
 
 	CTerrainPointShader* terrainPointShader;
 	CBuf heightFinderBuf;
+
+	CBaseBuf* grassPoints; ///<A 2D buffer for potential grass placement.
+	unsigned int noGrassPoints;
+
+
+	CFindPointHeightShader* findPointHeightShader;
 };
 
 const float yawAng = 0.22f;
