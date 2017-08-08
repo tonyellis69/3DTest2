@@ -672,6 +672,8 @@ void C3DtestApp::draw() {
 
 	terrain->drawNew();
 
+	drawGrass();
+
 	t = Engine.Time.milliseconds() - t;
 
 
@@ -1097,8 +1099,6 @@ void C3DtestApp::initGrassFinding() {
 	grassPoints->storeVertexes(points3D.data(), sizeof(glm::vec3) * noGrassPoints, noGrassPoints);
 	grassPoints->storeLayout(3, 0, 0, 0);
 
-
-
 	//load the point finding shader
 	findPointHeightShader = new CFindPointHeightShader();
 	findPointHeightShader->feedbackVaryings[0] = "newPoint";
@@ -1109,6 +1109,15 @@ void C3DtestApp::initGrassFinding() {
 	findPointHeightShader->setFeedbackData(1);
 	findPointHeightShader->link();
 	findPointHeightShader->getShaderHandles();
+
+	CModel* instancedCube = Engine.createCube(glm::vec3(0), glm::vec3(5));
+
+	terrain->grassMultiBuf.setSize(grassBufSize);
+	terrain->grassMultiBuf.setInstanced(*instancedCube->getBuffer(), 2);
+	terrain->grassMultiBuf.storeLayout(3, 3, 3, 0);
+
+
+
 
 }
 
@@ -1121,6 +1130,7 @@ void C3DtestApp::findGrassPoints(Chunk & chunk) {
 	findPointHeightShader->setCurrentY(0);
 	findPointHeightShader->setSamplePosition(chunk.samplePos);
 	findPointHeightShader->setSampleScale(1.0f / terrain->worldUnitsPerSampleUnit);
+	findPointHeightShader->setChunkLocaliser(glm::vec3(0));
 
 	//copy grasspoints
 	CBaseBuf* pointBuf = Engine.createBuffer();
@@ -1138,8 +1148,10 @@ void C3DtestApp::findGrassPoints(Chunk & chunk) {
 
 	//loop
 	CBaseBuf* srcBuf = outBuf; CBaseBuf* destBuf = pointBuf; CBaseBuf* swapBuf;
-	float stepHeight = chunkSize / 10;
-	for (int step = 1; step < 10; step++) {
+	float stepHeight = chunkSize / 16;
+	for (int step = 1; step <= 16; step++) {
+		if (step == 16)
+			findPointHeightShader->setChunkLocaliser(chunk.terrainPos);
 		findPointHeightShader->setCurrentY( step * stepHeight);
 		int noPrimitives = Engine.acquireFeedbackVerts(*srcBuf, drawPoints, *destBuf, drawPoints);
 		//feed points back into shader
@@ -1153,7 +1165,29 @@ void C3DtestApp::findGrassPoints(Chunk & chunk) {
 	glm::vec3* ptr = (glm::vec3*) glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 	glBindBuffer(GL_ARRAY_BUFFER, 0); */
-	
+
+	terrain->grassMultiBuf.copyBuf(*srcBuf, srcBuf->getBufSize());
+	chunk.grassId = terrain->grassMultiBuf.getLastId();
+}
+
+
+/** Run through the grass multibuf, drawing instanced grass. */
+void C3DtestApp::drawGrass() {
+	CChildBuf* childBuf;
+	for (int child = 0; child < terrain->grassMultiBuf.noChildBufs; child++) {
+		childBuf = &terrain->grassMultiBuf.childBufs[child];
+		if (!childBuf->instancedBuf)
+			return;
+		unsigned int nInstancedVerts = childBuf->instancedBuf->getNoVerts();;
+		glBindVertexArray(terrain->grassMultiBuf.childBufs[child].hVAO);
+		for (int object = 0; object < childBuf->objCount; object++) {
+
+			//TO DO: should be model's drawmode, not GL_Triangles
+			//glDrawArrays(GL_TRIANGLES, childBuf->first[object], childBuf->count[object]);
+			glDrawArraysInstancedBaseInstance(GL_TRIANGLES, 0, nInstancedVerts, childBuf->count[object], childBuf->first[object]);
+			glDrawElementsInstancedBaseInstance
+		}
+	}
 }
 
 

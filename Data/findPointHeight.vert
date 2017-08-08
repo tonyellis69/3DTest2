@@ -6,6 +6,7 @@ layout(location = 0) in vec3 point; //A point somewhere in a chunk.
 uniform float currentY; //The current world space y value we are investigating. 
 uniform vec3 chunkSamplePosition; //Position in sample space of the chunk.
 uniform float sampleScale; //Converts world space to sample space.
+uniform vec3 chunkLocaliser; //Used once to make the point local to our terrain origin.
 
 out vec3 newPoint; //the xzy point we output.
 
@@ -28,10 +29,8 @@ void main () {
 	//find the terrain value at that point
 	float value = terrainValue(5, samplePoint);
 	
-	
-	
-
 	newPoint = point;
+
 	
 	
 	if (value < 0.5) { //samplePoint is inside terrain, so check the next point up
@@ -41,11 +40,11 @@ void main () {
 		nextSamplePoint.y += cubeSize * sampleScale;
 		float nextValue = terrainValue(5, nextSamplePoint);
 		
-		if (nextValue >= 0.5) { //surface intersects these 2 points
+		if (nextValue >= 0.5) { //surface intersects space between these 2 points
 			vec3 intersect = vertexInterp(0.5,currentPoint,value,nextPoint,nextValue);
-			newPoint  = intersect;
+			newPoint  = intersect;	
 		}
 	}
 	
-	
+	newPoint += chunkLocaliser;
 }

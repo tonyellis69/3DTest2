@@ -53,8 +53,10 @@ public:
 	void createTerrain(glm::vec2& centre);
 	float findTerrainHeight(glm::vec3 & basePos);
 	void initGrassFinding();
-
 	void findGrassPoints(Chunk& chunk);
+
+	void drawGrass();
+
 
 	string dataPath; ///<Filepath to the Data folder
 	
@@ -132,6 +134,8 @@ const int chunksPerSuperChunkEdge = 4;// 4;//8;
 const int terrainNoAttribs = 3;
 
 const float findHeightVerts = 100; ///<Number of verts findTerrainHeight checks at a time. 
+
+const unsigned int grassBufSize = 5000000;
 
 static const int triTable[256][16] =
 	{{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
