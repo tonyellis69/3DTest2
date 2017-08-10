@@ -14,6 +14,7 @@
 #include "terrain2texShader.h"
 #include "terrainPointShader.h"
 #include "findPointHeightShader.h"
+#include "grassShader.h"
 
 #include "playerObj.h"
 
@@ -55,7 +56,7 @@ public:
 	void initGrassFinding();
 	void findGrassPoints(Chunk& chunk);
 
-	void drawGrass();
+	void drawGrass(glm::mat4& mvp);
 
 
 	string dataPath; ///<Filepath to the Data folder
@@ -124,6 +125,10 @@ public:
 
 
 	CFindPointHeightShader* findPointHeightShader;
+
+	CGrassShader* grassShader;
+
+	CBaseBuf* dummy2;
 };
 
 const float yawAng = 0.22f;
@@ -135,7 +140,7 @@ const int terrainNoAttribs = 3;
 
 const float findHeightVerts = 100; ///<Number of verts findTerrainHeight checks at a time. 
 
-const unsigned int grassBufSize = 5000000;
+const unsigned int grassBufSize = 6000000;
 
 static const int triTable[256][16] =
 	{{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},

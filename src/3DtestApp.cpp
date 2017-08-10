@@ -29,6 +29,7 @@ C3DtestApp::C3DtestApp() {
 	tmpSCno = 0;
 	tmp = false;
 	physCube = NULL;
+	dummy2 = NULL;
 }
 
 void C3DtestApp::onStart() {
@@ -69,7 +70,7 @@ void C3DtestApp::onStart() {
 	terrainBuf->storeLayout(3, 3, 0, 0);
 
 	tempFeedbackBuf = Engine.createBuffer();
-	tempFeedbackBuf->setSize(500000);
+	tempFeedbackBuf->setSize(1000000);
 
 
 	terrain->EXTsuperChunkIsEmpty.Set(this, &C3DtestApp::superChunkIsEmpty);
@@ -150,7 +151,12 @@ void C3DtestApp::onStart() {
 	
 	initGrassFinding();
 	
-
+	dummy2 = Engine.createBuffer();
+	vec3 v(1);
+	unsigned short index = 0;
+	dummy2->storeVertexes(&v, sizeof(vec3), 1);
+	dummy2->storeIndex(&index, sizeof(index), 1);
+	dummy2->storeLayout(3, 0, 0, 0);
 
 	return;
 }
@@ -356,8 +362,6 @@ void C3DtestApp::keyCheck() {
 	}
 	else {
 		vec3 moveDir(0);
-		std::cerr << "\nvertical velocity at keypress: " << playerPhys->velocity.y;
-
 		if (length(playerPhys->currentContactNormal) <= 0) {
 			cerr << "\nmove aborted";	
 		}
@@ -374,19 +378,18 @@ void C3DtestApp::keyCheck() {
 				playerPhys->velocity.x *= 2.5f;
 				playerPhys->velocity.z *= 2.5f;
 
-				cerr << "\nJumping!!!";
 			}
 
 			if (keyNow('W')) {
 				moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
 				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+				moveDir.y = 0; //*
+				playerPhys->velocity += moveDir * 0.35f;// was 1.4f;   //0.03f safe but slow //0.2f formerly caused bounces
 
-				playerPhys->velocity += moveDir * 1.4f;   //0.03f safe but slow //0.2f formerly caused bounces
+				//TO DO: 0.35 causes bounce on steep ascent when looking up. 0.25f does not. 
+				//probably doesn't even need fixing as those aren't realistic conditions
+				//*Setting y=0 fixed it... look into scrapping the whole velocity-parallel-to-the-ground thing
 
-
-				cerr << "\n********Moving!";
-				cerr << "\nMoveDir " << moveDir.x << " " << moveDir.y << " " << moveDir.z;
-				cerr << " Speed of " << length(playerPhys->velocity);
 				EatKeys();
 
 			}
@@ -651,6 +654,8 @@ void C3DtestApp::onResize(int width, int height) {
 
 
 void C3DtestApp::draw() {
+
+	
 	//return;
 	//draw chunk
 	glm::mat3 normMatrix(terrain->worldMatrix);
@@ -662,6 +667,7 @@ void C3DtestApp::draw() {
 	double t = Engine.Time.milliseconds();
 
 	Engine.Renderer.setShader(Engine.phongShader);
+//	
 
 	mvp = currentCamera->clipMatrix * terrain->chunkOrigin;
 
@@ -672,12 +678,18 @@ void C3DtestApp::draw() {
 
 	terrain->drawNew();
 
-	drawGrass();
+	Engine.Renderer.setShader(grassShader);
+	drawGrass(mvp);
 
 	t = Engine.Time.milliseconds() - t;
 
-
-
+/*	CBuf* buf = (CBuf*) dummy2;
+	grassShader->setMVP(mvp);
+	Engine.Renderer.backFaceCulling(false);
+	if (dummy2)
+		Engine.Renderer.drawBuf(*buf, drawPoints);
+	Engine.Renderer.backFaceCulling(true);
+	*/
 
 	//wireframe drawing:
 //	Engine.Renderer.setShader(Engine.wireShader);
@@ -1088,7 +1100,7 @@ void C3DtestApp::initGrassFinding() {
 	grassPoints = Engine.createBuffer();
 	std::vector <glm::vec2> points2D;
 	float LoD1chunkSize = terrain->LoD1cubeSize * cubesPerChunkEdge;
-	points2D = pois::generate_poisson(LoD1chunkSize, LoD1chunkSize, 1, 10);
+	points2D = pois::generate_poisson(LoD1chunkSize, LoD1chunkSize, 0.8f, 10);
 	noGrassPoints = points2D.size();
 	std::vector < glm::vec3> points3D(noGrassPoints);
 	for (int p = 0; p < noGrassPoints; p++) {
@@ -1110,15 +1122,27 @@ void C3DtestApp::initGrassFinding() {
 	findPointHeightShader->link();
 	findPointHeightShader->getShaderHandles();
 
-	CModel* instancedCube = Engine.createCube(glm::vec3(0), glm::vec3(5));
+
+	CBaseBuf* dummy = Engine.createBuffer();
+	vec3 v(1);
+	unsigned short index = 0;
+	dummy->storeVertexes(&v, sizeof(vec3), 1);
+	dummy->storeIndex(&index, sizeof(index), 1);
+	dummy->storeLayout(3, 0, 0, 0);
 
 	terrain->grassMultiBuf.setSize(grassBufSize);
-	terrain->grassMultiBuf.setInstanced(*instancedCube->getBuffer(), 2);
-	terrain->grassMultiBuf.storeLayout(3, 3, 3, 0);
+	terrain->grassMultiBuf.setInstanced(*dummy, 1);
+	terrain->grassMultiBuf.storeLayout(3, 3, 0, 0);
 
+	CBaseTexture* grassTex = Engine.Renderer.textureManager.getTexture(dataPath + "grassPack.dds");
 
-
-
+	//load the grass drawing shader
+	grassShader = new CGrassShader();
+	grassShader->pRenderer = &Engine.Renderer;
+	grassShader->create(dataPath + "grass");
+	grassShader->getShaderHandles();
+	grassShader->setType(userShader);
+	Engine.shaderList.push_back(grassShader);
 }
 
 /**	Create a selection of points on the terrain surface of this chunk where grass
@@ -1160,11 +1184,7 @@ void C3DtestApp::findGrassPoints(Chunk & chunk) {
 		destBuf = swapBuf;
 	}
 
-	/*
-	glBindBuffer(GL_ARRAY_BUFFER, destBuf->getBufHandle());
-	glm::vec3* ptr = (glm::vec3*) glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-	glBindBuffer(GL_ARRAY_BUFFER, 0); */
+
 
 	terrain->grassMultiBuf.copyBuf(*srcBuf, srcBuf->getBufSize());
 	chunk.grassId = terrain->grassMultiBuf.getLastId();
@@ -1172,22 +1192,24 @@ void C3DtestApp::findGrassPoints(Chunk & chunk) {
 
 
 /** Run through the grass multibuf, drawing instanced grass. */
-void C3DtestApp::drawGrass() {
+void C3DtestApp::drawGrass(glm::mat4& mvp) {
+	Engine.Renderer.backFaceCulling(false);
+	Engine.Renderer.setShader(grassShader);
+	grassShader->setMVP(mvp);
+
 	CChildBuf* childBuf;
 	for (int child = 0; child < terrain->grassMultiBuf.noChildBufs; child++) {
 		childBuf = &terrain->grassMultiBuf.childBufs[child];
-		if (!childBuf->instancedBuf)
-			return;
-		unsigned int nInstancedVerts = childBuf->instancedBuf->getNoVerts();;
+
+		unsigned int nInstancedVerts = childBuf->instancedBuf->getNoVerts();
+		unsigned int nIndices = childBuf->instancedBuf->getNoIndices();
 		glBindVertexArray(terrain->grassMultiBuf.childBufs[child].hVAO);
 		for (int object = 0; object < childBuf->objCount; object++) {
-
-			//TO DO: should be model's drawmode, not GL_Triangles
-			//glDrawArrays(GL_TRIANGLES, childBuf->first[object], childBuf->count[object]);
-			glDrawArraysInstancedBaseInstance(GL_TRIANGLES, 0, nInstancedVerts, childBuf->count[object], childBuf->first[object]);
-			glDrawElementsInstancedBaseInstance
+			glDrawElementsInstancedBaseInstance(GL_POINTS, nIndices, GL_UNSIGNED_SHORT, 0,
+				childBuf->count[object], childBuf->first[object]);
 		}
 	}
+	Engine.Renderer.backFaceCulling(true);
 }
 
 

@@ -365,12 +365,14 @@ float terrainValue (  int octaves,   vec3 xyz ) {
 	
 	baseNoise = xyz.y - baseNoise ; //clip 2D height value against 3D position
 	
-	noise = fbm3D(5,xyz ) *  0.15;
+	noise = fbm3D(5,xyz ) * 0.15;
 	
 	
 	
 	baseNoise += noise;
 	
-	return baseNoise;
+
+	
+	return baseNoise ;
 
 }
