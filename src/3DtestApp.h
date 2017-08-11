@@ -127,7 +127,7 @@ public:
 	CFindPointHeightShader* findPointHeightShader;
 
 	CGrassShader* grassShader;
-
+	CBaseTexture* grassTex;
 	CBaseBuf* dummy2;
 };
 

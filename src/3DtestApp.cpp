@@ -679,6 +679,8 @@ void C3DtestApp::draw() {
 	terrain->drawNew();
 
 	Engine.Renderer.setShader(grassShader);
+	Engine.Renderer.attachTexture(0, *grassTex);
+	grassShader->setTextureUnit(0);
 	drawGrass(mvp);
 
 	t = Engine.Time.milliseconds() - t;
@@ -1100,7 +1102,7 @@ void C3DtestApp::initGrassFinding() {
 	grassPoints = Engine.createBuffer();
 	std::vector <glm::vec2> points2D;
 	float LoD1chunkSize = terrain->LoD1cubeSize * cubesPerChunkEdge;
-	points2D = pois::generate_poisson(LoD1chunkSize, LoD1chunkSize, 0.8f, 10);
+	points2D = pois::generate_poisson(LoD1chunkSize, LoD1chunkSize, 0.25f, 10);
 	noGrassPoints = points2D.size();
 	std::vector < glm::vec3> points3D(noGrassPoints);
 	for (int p = 0; p < noGrassPoints; p++) {
@@ -1134,7 +1136,7 @@ void C3DtestApp::initGrassFinding() {
 	terrain->grassMultiBuf.setInstanced(*dummy, 1);
 	terrain->grassMultiBuf.storeLayout(3, 3, 0, 0);
 
-	CBaseTexture* grassTex = Engine.Renderer.textureManager.getTexture(dataPath + "grassPack.dds");
+	grassTex = Engine.Renderer.textureManager.getTexture(dataPath + "grassPack.dds");
 
 	//load the grass drawing shader
 	grassShader = new CGrassShader();

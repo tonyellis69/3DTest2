@@ -1,45 +1,103 @@
 #version 330
 
  layout(points) in;
- layout(triangle_strip, max_vertices = 4) out;
+ layout(triangle_strip, max_vertices = 12) out;
+ 
+ uniform mat4 mvpMatrix; //The standard model-to-perspective-view matrix.
+
 
  in vec4 position[];
  in mat4 passMatrix[];
- //in vec3 dummyVec[];
+ 
+smooth out vec2 texCoord;
 
- out vec4 corner; //The vertex we output for each corner of the quad
- smooth out vec4 fragColour;
+vec3 vLocalSeed;
+
+//Returns random number from zero to one
+float randZeroOne()
+{
+    uint n = floatBitsToUint(vLocalSeed.y * 214013.0 + vLocalSeed.x * 2531011.0 + vLocalSeed.z * 141251.0);
+    n = n * (n * n * 15731u + 789221u);
+    n = (n >> 9u) | 0x3F800000u;
+ 
+    float fRes =  2.0 - uintBitsToFloat(n);
+    vLocalSeed = vec3(vLocalSeed.x + 147158.0 * fRes, vLocalSeed.y*fRes  + 415161.0 * fRes, vLocalSeed.z + 324154.0*fRes);
+    return fRes;
+}
+
+float random (vec2 st) {
+    return fract(sin(dot(st.xy,
+                         vec2(12.9898,78.233)))*
+        43758.5453123);
+}
+
+int randomInt(int min, int max)
+{
+	//float fRandomFloat = randZeroOne();
+	float fRandomFloat = random(normalize(position[0].xz));
+	return int(float(min)+fRandomFloat*float(max-min));
+}
+
+mat4 rotationMatrix(vec3 axis, float angle)
+{
+    axis = normalize(axis);
+    float s = sin(angle);
+    float c = cos(angle);
+    float oc = 1.0 - c;
+    
+    return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
+                oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
+                oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
+                0.0,                                0.0,                                0.0,                                1.0);
+}
+
+
+
+
+
+
 
  void main() {
-	fragColour = vec4(0,1.0,0,1.0);
+	float PIover180 = 3.1415/180.0;
+	vec3 vBaseDir[3];
+	vBaseDir[0] = vec3(1.0, 0.0, 0.0);
+	vBaseDir[1] = vec3(float(cos(45.0*PIover180)), 0.0f, float(sin(45.0*PIover180)));
+	vBaseDir[2] =vec3(float(cos(-45.0*PIover180)), 0.0f, float(sin(-45.0*PIover180)));
 	
+	vec3 vLocalSeed =  vec3(gl_Position[0]);
 	
-	float quadSize = 0.5;
+	float fGrassPatchSize = 1.5;
+	float fGrassPatchHeight = 0.5 + random(position[0].xz)*0.3; 
  
-	//find the  verts of the quad
-	vec4 tmp =   position[0];
+ 
+	for (int i = 0; i < 3; i++) {
+	//find the verts of the quad
+	int iGrassPatch = randomInt(0, 3);
+	float fTCStartX = float(iGrassPatch)*0.25f;
+	float fTCEndX = fTCStartX+0.25f;
 	
-	gl_Position = passMatrix[0] * (tmp + vec4(-quadSize,0,0,0));
-	//gl_Position = passMatrix[0] * tmp;
-	//fragColour = vec4(dummyVec[0],1.0);
+	//bottom left vertex
+	//gl_Position = mvpMatrix * ( position[0] + vec4(-fGrassPatchSize * 0.5,0,0,0));
+	gl_Position = mvpMatrix * ( position[0] +    vec4(vBaseDir[i] * -fGrassPatchSize * 0.5,0));//                     vec4(-fGrassPatchSize * 0.5,0,0,0));
+	texCoord = vec2(fTCStartX,0);
 	EmitVertex();
 	
-	gl_Position =  passMatrix[0] * (tmp + vec4(quadSize,0,0,0));
-	//gl_Position = passMatrix[0] * tmp;
-	//fragColour = vec4(dummyVec[0],1.0);
+	//bottom right vertex
+	gl_Position =  mvpMatrix * ( position[0] + vec4( vBaseDir[i] * fGrassPatchSize * 0.5,0));
+	texCoord = vec2(fTCEndX,0);
 	EmitVertex();
 	
-	gl_Position = passMatrix[0] * (tmp + vec4(-quadSize,quadSize,0,0));
-	//gl_Position =  passMatrix[0] * tmp;
-	//fragColour = vec4(dummyVec[0],1.0);
+	//top left vertex
+	gl_Position = mvpMatrix * ( position[0] + vec4(vBaseDir[i] * -fGrassPatchSize * 0.5,0) + vec4(0,fGrassPatchHeight,0,0));
+	texCoord = vec2(fTCStartX,1);
 	EmitVertex();
 	
-	
-	gl_Position = passMatrix[0] * ( tmp + vec4(quadSize,quadSize,0,0));
-	//gl_Position = passMatrix[0] * tmp;
-//	fragColour = vec4(dummyVec[0],1.0);
+	//top right vertex
+	gl_Position = mvpMatrix * (  position[0] + vec4(vBaseDir[i] * fGrassPatchSize * 0.5,0) + vec4(0,fGrassPatchHeight,0,0));
+	texCoord = vec2(fTCEndX,1);
 	EmitVertex();
 	
 	EndPrimitive();
+	}
 	
 }
