@@ -355,7 +355,8 @@ void C3DtestApp::keyCheck() {
 		}
 		if (KeyDown['R']) {
 			//cube->rotate(rot, glm::vec3(0, 0, 1));
-			chunkShader->recompile();
+			//chunkShader->recompile();
+			grassShader->recompile();
 		
 		}
 
@@ -681,6 +682,7 @@ void C3DtestApp::draw() {
 	Engine.Renderer.setShader(grassShader);
 	Engine.Renderer.attachTexture(0, *grassTex);
 	grassShader->setTextureUnit(0);
+	grassShader->setTime(Time);
 	drawGrass(mvp);
 
 	t = Engine.Time.milliseconds() - t;

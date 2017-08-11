@@ -3,8 +3,8 @@
  layout(points) in;
  layout(triangle_strip, max_vertices = 12) out;
  
- uniform mat4 mvpMatrix; //The standard model-to-perspective-view matrix.
-
+uniform mat4 mvpMatrix; //The standard model-to-perspective-view matrix.
+uniform float time; //Current time in seconds.
 
  in vec4 position[];
  in mat4 passMatrix[];
@@ -64,40 +64,49 @@ mat4 rotationMatrix(vec3 axis, float angle)
 	vBaseDir[1] = vec3(float(cos(45.0*PIover180)), 0.0f, float(sin(45.0*PIover180)));
 	vBaseDir[2] =vec3(float(cos(-45.0*PIover180)), 0.0f, float(sin(-45.0*PIover180)));
 	
-	vec3 vLocalSeed =  vec3(gl_Position[0]);
 	
 	float fGrassPatchSize = 1.5;
 	float fGrassPatchHeight = 0.5 + random(position[0].xz)*0.3; 
+	
+	float fWindStrength = 0.25;;
+	vec3 vWindDirection = vec3(1.0, 0.0, 1.0);
+	vWindDirection = normalize(vWindDirection);
  
  
 	for (int i = 0; i < 3; i++) {
-	//find the verts of the quad
-	int iGrassPatch = randomInt(0, 3);
-	float fTCStartX = float(iGrassPatch)*0.25f;
-	float fTCEndX = fTCStartX+0.25f;
-	
-	//bottom left vertex
-	//gl_Position = mvpMatrix * ( position[0] + vec4(-fGrassPatchSize * 0.5,0,0,0));
-	gl_Position = mvpMatrix * ( position[0] +    vec4(vBaseDir[i] * -fGrassPatchSize * 0.5,0));//                     vec4(-fGrassPatchSize * 0.5,0,0,0));
-	texCoord = vec2(fTCStartX,0);
-	EmitVertex();
-	
-	//bottom right vertex
-	gl_Position =  mvpMatrix * ( position[0] + vec4( vBaseDir[i] * fGrassPatchSize * 0.5,0));
-	texCoord = vec2(fTCEndX,0);
-	EmitVertex();
-	
-	//top left vertex
-	gl_Position = mvpMatrix * ( position[0] + vec4(vBaseDir[i] * -fGrassPatchSize * 0.5,0) + vec4(0,fGrassPatchHeight,0,0));
-	texCoord = vec2(fTCStartX,1);
-	EmitVertex();
-	
-	//top right vertex
-	gl_Position = mvpMatrix * (  position[0] + vec4(vBaseDir[i] * fGrassPatchSize * 0.5,0) + vec4(0,fGrassPatchHeight,0,0));
-	texCoord = vec2(fTCEndX,1);
-	EmitVertex();
-	
-	EndPrimitive();
+		//find the verts of the quad
+		int iGrassPatch = randomInt(0, 3);
+		float fTCStartX = float(iGrassPatch)*0.25f;
+		float fTCEndX = fTCStartX+0.25f;
+		
+		float fWindPower = 0.5f+sin(position[0].x/5 + position[0].z/5 + time*(1.2f+fWindStrength/20.0f));
+		if(fWindPower < 0.0f)
+			fWindPower = fWindPower*0.2f;
+		else fWindPower = fWindPower*0.3f;
+		
+		fWindPower *= fWindStrength;
+		
+		//bottom left vertex
+		gl_Position = mvpMatrix * ( position[0] +    vec4(vBaseDir[i] * -fGrassPatchSize * 0.5,0));
+		texCoord = vec2(fTCStartX,0);
+		EmitVertex();
+		
+		//bottom right vertex
+		gl_Position =  mvpMatrix * ( position[0] + vec4( vBaseDir[i] * fGrassPatchSize * 0.5,0));
+		texCoord = vec2(fTCEndX,0);
+		EmitVertex();
+		
+		//top left vertex
+		gl_Position = mvpMatrix * ( position[0] + vec4((vBaseDir[i] * -fGrassPatchSize * 0.5) + vWindDirection*fWindPower,0) + vec4(0,fGrassPatchHeight,0,0));
+		texCoord = vec2(fTCStartX,1);
+		EmitVertex();
+		
+		//top right vertex
+		gl_Position = mvpMatrix * (  position[0] + vec4((vBaseDir[i] * fGrassPatchSize * 0.5) + vWindDirection*fWindPower,0) + vec4(0,fGrassPatchHeight,0,0));
+		texCoord = vec2(fTCEndX,1);
+		EmitVertex();
+		
+		EndPrimitive();
 	}
 	
 }
