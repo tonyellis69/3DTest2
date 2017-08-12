@@ -205,6 +205,10 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 		chunk.id = terrainBuf->getLastId();
 		terrainBuf->setBlockColour(chunk.id, (tmpRGBAtype&)chunk.colour);
 
+		TDrawDetails* details = &chunk.drawDetails;
+		terrainBuf->getElementData(chunk.id, details->vertStart, details->vertCount, details->childBufNo);
+		details->colour = chunk.colour;
+
 		if (chunk.LoD == 1)
 			findGrassPoints(chunk);
 	}
@@ -677,13 +681,38 @@ void C3DtestApp::draw() {
 	Engine.phongShader->setMVP(mvp);
 	Engine.phongShader->setNormalModelToCameraMatrix(tmp); //why am I doing this?
 
-	terrain->drawNew();
+	//terrain->drawNew();
+	
+	int childBuf = -1;
+	for (int layerNo = 0; layerNo < terrain->layers.size(); layerNo++) {
+		int slSize = terrain->layers[layerNo].superChunks.size();
+		for (int scNo = 0; scNo < slSize; scNo++) {
+			CSuperChunk* sc = terrain->layers[layerNo].superChunks[scNo];
+			int clSize = sc->chunkList.size();
+			for (int chunkNo = 0; chunkNo < clSize; chunkNo++) {
+				Chunk* chunk = sc->chunkList[chunkNo];
+				if (chunk->drawDetails.childBufNo != childBuf && chunk->drawDetails.childBufNo != -1) {
+					childBuf = chunk->drawDetails.childBufNo;
+					glBindVertexArray(terrain->multiBuf.childBufs[childBuf].hVAO);
+				}
+				Engine.phongShader->setColour(chunk->drawDetails.colour);
+				//TO DO: should be model's drawmode, not GL_Triangles
+					glDrawArrays(GL_TRIANGLES, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
+				
+			}
+
+		}
+	} 
+	
+	
+
+
 
 	Engine.Renderer.setShader(grassShader);
 	Engine.Renderer.attachTexture(0, *grassTex);
 	grassShader->setTextureUnit(0);
 	grassShader->setTime(Time);
-	drawGrass(mvp);
+	//drawGrass(mvp);
 
 	t = Engine.Time.milliseconds() - t;
 
@@ -1209,6 +1238,7 @@ void C3DtestApp::drawGrass(glm::mat4& mvp) {
 		unsigned int nIndices = childBuf->instancedBuf->getNoIndices();
 		glBindVertexArray(terrain->grassMultiBuf.childBufs[child].hVAO);
 		for (int object = 0; object < childBuf->objCount; object++) {
+			//if (object % 2 == 0)
 			glDrawElementsInstancedBaseInstance(GL_POINTS, nIndices, GL_UNSIGNED_SHORT, 0,
 				childBuf->count[object], childBuf->first[object]);
 		}
