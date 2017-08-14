@@ -1180,16 +1180,16 @@ void C3DtestApp::initGrassFinding() {
 	findPointHeightShader->getShaderHandles();
 
 
-	CBaseBuf* dummy = Engine.createBuffer();
+/*	CBaseBuf* dummy = Engine.createBuffer();
 	vec3 v(1);
 	unsigned short index = 0;
 	dummy->storeVertexes(&v, sizeof(vec3), 1);
 	dummy->storeIndex(&index, sizeof(index), 1);
-	dummy->storeLayout(3, 0, 0, 0);
+	dummy->storeLayout(3, 0, 0, 0); */
 
 	terrain->grassMultiBuf.setSize(grassBufSize);
-	terrain->grassMultiBuf.setInstanced(*dummy, 1);
-	terrain->grassMultiBuf.storeLayout(3, 3, 0, 0);
+//	terrain->grassMultiBuf.setInstanced(*dummy, 1);
+	terrain->grassMultiBuf.storeLayout(3, 0, 0, 0);
 
 	grassTex = Engine.Renderer.textureManager.getTexture(dataPath + "grassPack.dds");
 
@@ -1275,9 +1275,10 @@ void C3DtestApp::drawGrass(glm::mat4& mvp, std::vector<CSuperChunk*>& drawList) 
 				childBuf = &terrain->grassMultiBuf.childBufs[childBufNo];
 				glBindVertexArray(childBuf->hVAO);
 			}
-			nIndices = childBuf->instancedBuf->getNoIndices();
-				glDrawElementsInstancedBaseInstance(GL_POINTS, nIndices, GL_UNSIGNED_SHORT, 0,
-					chunk->grassDrawDetails.vertCount, chunk->grassDrawDetails.vertStart);
+			//nIndices = childBuf->instancedBuf->getNoIndices();
+				//glDrawElementsInstancedBaseInstance(GL_POINTS, nIndices, GL_UNSIGNED_SHORT, 0,
+					//chunk->grassDrawDetails.vertCount, chunk->grassDrawDetails.vertStart);
+			glDrawArrays(GL_POINTS, chunk->grassDrawDetails.vertStart, chunk->grassDrawDetails.vertCount);
 		}
 	}
 
