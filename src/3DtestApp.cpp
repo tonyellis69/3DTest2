@@ -30,6 +30,7 @@ C3DtestApp::C3DtestApp() {
 	tmp = false;
 	physCube = NULL;
 	dummy2 = NULL;
+	SCculling = false;
 }
 
 void C3DtestApp::onStart() {
@@ -313,7 +314,13 @@ void C3DtestApp::keyCheck() {
 	CCamera* currentCamera = Engine.getCurrentCamera();
 	float moveInc = dT * 1000.0; // 0.05125f;
 
-	
+	if (KeyDown['R']) {
+		//cube->rotate(rot, glm::vec3(0, 0, 1));
+		//chunkShader->recompile();
+		grassShader->recompile();
+		SCculling = !SCculling;
+		EatKeys();
+	}
 
 	if (!fpsOn) {
 
@@ -357,12 +364,7 @@ void C3DtestApp::keyCheck() {
 		if (KeyDown['Y']) {
 			cube->rotate(rot, glm::vec3(0, 1, 0));
 		}
-		if (KeyDown['R']) {
-			//cube->rotate(rot, glm::vec3(0, 0, 1));
-			//chunkShader->recompile();
-			grassShader->recompile();
 		
-		}
 
 	}
 	else {
@@ -567,12 +569,19 @@ void C3DtestApp::keyCheck() {
 	}
 
 	if (KeyDown['X']) {
-		terrain->clear();
+	/*	terrain->clear();
 		chunkShader->recompile();
 		terrain2texShader->recompile();
 		terrain->createAllChunks();
 		updateHeightmapImage();
+		*/
+		for (int s = 0; s  < terrain->layers[3].superChunks.size(); s++) {
+			CSuperChunk* sc = terrain->layers[3].superChunks[s];
+			if (sc->tmpIndex == i32vec3(2,1,1)) {
+				sc->removeAllChunks();
 
+			}
+		}
 		EatKeys();
 	}
 
@@ -676,18 +685,28 @@ void C3DtestApp::draw() {
 
 	mvp = currentCamera->clipMatrix * terrain->chunkOrigin;
 
+	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
+//	fpsCam = mvp;
+
 
 	mat3 tmp;
 	Engine.phongShader->setMVP(mvp);
 	Engine.phongShader->setNormalModelToCameraMatrix(tmp); //why am I doing this?
-
+	int scsCulled = 0;
 	//terrain->drawNew();
-	
+	vec3 planePos; vec3 planeNormal;
+	currentCamera->getBackPlane(planePos, planeNormal);
 	int childBuf = -1;
 	for (int layerNo = 0; layerNo < terrain->layers.size(); layerNo++) {
 		int slSize = terrain->layers[layerNo].superChunks.size();
 		for (int scNo = 0; scNo < slSize; scNo++) {
 			CSuperChunk* sc = terrain->layers[layerNo].superChunks[scNo];
+			if (SCculling )
+			//if (!sc->inFrontOfPlane(planePos, planeNormal)) {
+				if ( sc->isOutsideFustrum(fpsCam)) {
+				scsCulled++;
+				continue;
+			}
 			int clSize = sc->chunkList.size();
 			for (int chunkNo = 0; chunkNo < clSize; chunkNo++) {
 				Chunk* chunk = sc->chunkList[chunkNo];
@@ -704,6 +723,7 @@ void C3DtestApp::draw() {
 		}
 	} 
 	
+	cerr << "\nSCs culled " << scsCulled;
 	
 
 

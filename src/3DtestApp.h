@@ -129,6 +129,8 @@ public:
 	CGrassShader* grassShader;
 	CBaseTexture* grassTex;
 	CBaseBuf* dummy2;
+
+	bool SCculling;
 };
 
 const float yawAng = 0.22f;
