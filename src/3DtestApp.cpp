@@ -204,7 +204,7 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 		terrainBuf->copyBuf(*tempFeedbackBuf, outSize);
 
 		chunk.id = terrainBuf->getLastId();
-		terrainBuf->setBlockColour(chunk.id, (tmpRGBAtype&)chunk.colour);
+		//terrainBuf->setBlockColour(chunk.id, (tmpRGBAtype&)chunk.colour);
 
 		TDrawDetails* details = &chunk.drawDetails;
 		terrainBuf->getElementData(chunk.id, details->vertStart, details->vertCount, details->childBufNo);
@@ -668,8 +668,8 @@ void C3DtestApp::onResize(int width, int height) {
 
 
 void C3DtestApp::draw() {
-
-	
+	vector <CSuperChunk*> scDrawList;
+	CSuperChunk* sc;
 	//return;
 	//draw chunk
 	glm::mat3 normMatrix(terrain->worldMatrix);
@@ -700,28 +700,32 @@ void C3DtestApp::draw() {
 	for (int layerNo = 0; layerNo < terrain->layers.size(); layerNo++) {
 		int slSize = terrain->layers[layerNo].superChunks.size();
 		for (int scNo = 0; scNo < slSize; scNo++) {
-			CSuperChunk* sc = terrain->layers[layerNo].superChunks[scNo];
+			sc = terrain->layers[layerNo].superChunks[scNo];
 			if (SCculling )
-			//if (!sc->inFrontOfPlane(planePos, planeNormal)) {
 				if ( sc->isOutsideFustrum(fpsCam)) {
 				scsCulled++;
 				continue;
 			}
-			int clSize = sc->chunkList.size();
-			for (int chunkNo = 0; chunkNo < clSize; chunkNo++) {
-				Chunk* chunk = sc->chunkList[chunkNo];
-				if (chunk->drawDetails.childBufNo != childBuf && chunk->drawDetails.childBufNo != -1) {
-					childBuf = chunk->drawDetails.childBufNo;
-					glBindVertexArray(terrain->multiBuf.childBufs[childBuf].hVAO);
-				}
-				Engine.phongShader->setColour(chunk->drawDetails.colour);
-				//TO DO: should be model's drawmode, not GL_Triangles
-					glDrawArrays(GL_TRIANGLES, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
-				
-			}
-
+			scDrawList.push_back(sc);
 		}
-	} 
+	}
+
+	int scListSize = scDrawList.size();
+	for (int scNo = 0; scNo < scListSize; scNo++) {
+		sc = scDrawList[scNo];
+		int clSize = sc->chunkList.size();
+		for (int chunkNo = 0; chunkNo < clSize; chunkNo++) {
+			Chunk* chunk = sc->chunkList[chunkNo];
+			if (chunk->drawDetails.childBufNo != childBuf && chunk->drawDetails.childBufNo != -1) {
+				childBuf = chunk->drawDetails.childBufNo;
+				glBindVertexArray(terrain->multiBuf.childBufs[childBuf].hVAO);
+			}
+			Engine.phongShader->setColour(chunk->drawDetails.colour);
+			//TO DO: should be model's drawmode, not GL_Triangles
+			glDrawArrays(GL_TRIANGLES, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
+		}
+	}
+
 	
 	cerr << "\nSCs culled " << scsCulled;
 	
@@ -732,7 +736,7 @@ void C3DtestApp::draw() {
 	Engine.Renderer.attachTexture(0, *grassTex);
 	grassShader->setTextureUnit(0);
 	grassShader->setTime(Time);
-	//drawGrass(mvp);
+	drawGrass(mvp, scDrawList);
 
 	t = Engine.Time.milliseconds() - t;
 
@@ -1237,32 +1241,48 @@ void C3DtestApp::findGrassPoints(Chunk & chunk) {
 		destBuf = swapBuf;
 	}
 
-
-
 	terrain->grassMultiBuf.copyBuf(*srcBuf, srcBuf->getBufSize());
 	chunk.grassId = terrain->grassMultiBuf.getLastId();
+
+	TDrawDetails* details = &chunk.grassDrawDetails;
+	terrain->grassMultiBuf.getElementData(chunk.grassId, details->vertStart, details->vertCount, details->childBufNo);
+
 }
 
 
 /** Run through the grass multibuf, drawing instanced grass. */
-void C3DtestApp::drawGrass(glm::mat4& mvp) {
+void C3DtestApp::drawGrass(glm::mat4& mvp, std::vector<CSuperChunk*>& drawList) {
 	Engine.Renderer.backFaceCulling(false);
 	Engine.Renderer.setShader(grassShader);
 	grassShader->setMVP(mvp);
 
-	CChildBuf* childBuf;
-	for (int child = 0; child < terrain->grassMultiBuf.noChildBufs; child++) {
-		childBuf = &terrain->grassMultiBuf.childBufs[child];
+	int childBufNo = -5; CSuperChunk* sc; CChildBuf* childBuf = NULL;;
+	unsigned int nInstancedVerts;
+	unsigned int nIndices;
 
-		unsigned int nInstancedVerts = childBuf->instancedBuf->getNoVerts();
-		unsigned int nIndices = childBuf->instancedBuf->getNoIndices();
-		glBindVertexArray(terrain->grassMultiBuf.childBufs[child].hVAO);
-		for (int object = 0; object < childBuf->objCount; object++) {
-			//if (object % 2 == 0)
-			glDrawElementsInstancedBaseInstance(GL_POINTS, nIndices, GL_UNSIGNED_SHORT, 0,
-				childBuf->count[object], childBuf->first[object]);
+	int drawListSize = drawList.size(); int clSize;
+	for (int scNo = 0; scNo < drawListSize; scNo++) {
+		sc = drawList[scNo];
+		if (sc->LoD != 1)
+			continue;
+		clSize = sc->chunkList.size();
+		for (int chunkNo = 0; chunkNo < clSize; chunkNo++) { //for each chunk...
+			Chunk* chunk = sc->chunkList[chunkNo];
+			if (chunk->grassDrawDetails.childBufNo == -1)
+				continue;
+			if (chunk->grassDrawDetails.childBufNo != childBufNo) { //ensure we have the right childbuf 
+				childBufNo = chunk->grassDrawDetails.childBufNo;
+				childBuf = &terrain->grassMultiBuf.childBufs[childBufNo];
+				glBindVertexArray(childBuf->hVAO);
+			}
+			nIndices = childBuf->instancedBuf->getNoIndices();
+				glDrawElementsInstancedBaseInstance(GL_POINTS, nIndices, GL_UNSIGNED_SHORT, 0,
+					chunk->grassDrawDetails.vertCount, chunk->grassDrawDetails.vertStart);
 		}
 	}
+
+
+
 	Engine.Renderer.backFaceCulling(true);
 }
 

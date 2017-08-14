@@ -56,7 +56,7 @@ public:
 	void initGrassFinding();
 	void findGrassPoints(Chunk& chunk);
 
-	void drawGrass(glm::mat4& mvp);
+	void drawGrass(glm::mat4& mvp,std::vector<CSuperChunk*>& drawList);
 
 
 	string dataPath; ///<Filepath to the Data folder
@@ -131,6 +131,7 @@ public:
 	CBaseBuf* dummy2;
 
 	bool SCculling;
+	
 };
 
 const float yawAng = 0.22f;
@@ -142,7 +143,9 @@ const int terrainNoAttribs = 3;
 
 const float findHeightVerts = 100; ///<Number of verts findTerrainHeight checks at a time. 
 
-const unsigned int grassBufSize = 6000000;
+const unsigned int grassBufSize = 90000000;
+//TO DO: this is waaaaaaaaaaaaaay too big, set to this value
+//when I was drawing masses of grass.
 
 static const int triTable[256][16] =
 	{{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
