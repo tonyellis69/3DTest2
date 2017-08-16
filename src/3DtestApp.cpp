@@ -18,6 +18,8 @@
 
 #include "UI\GUIimage.h"
 
+#include "plants\fractalTree.h"
+
 using namespace watch;
 
 using namespace glm;
@@ -49,12 +51,11 @@ void C3DtestApp::onStart() {
 
 
 	//position the default camera
-	Engine.getCurrentCamera()->setPos(vec3(0, 303, 6));
-	Engine.getCurrentCamera()->lookAt(vec3(0, -1, -3));
-
-
 	Engine.getCurrentCamera()->setPos(vec3(-108.678, 1810.77, - 3356.29));
 	Engine.getCurrentCamera()->lookAt(vec3(0.0281552, - 0.573389, 0.818797));
+
+	Engine.getCurrentCamera()->setPos(vec3(-36.8797, 208.289, -220.606));
+	Engine.getCurrentCamera()->lookAt(vec3(0.0746933, -0.291096, 0.953797));
 
 
 	//Position FPS camera
@@ -152,13 +153,12 @@ void C3DtestApp::onStart() {
 	
 	initGrassFinding();
 	
-	dummy2 = Engine.createBuffer();
-	vec3 v(1);
-	unsigned short index = 0;
-	dummy2->storeVertexes(&v, sizeof(vec3), 1);
-	dummy2->storeIndex(&index, sizeof(index), 1);
-	dummy2->storeLayout(3, 0, 0, 0);
-
+	CFractalTree fractalTree;
+	fractalTree.setStemLength(100.0f);
+	fractalTree.setStemRadius(2.0f);
+	fractalTree.createStem(1, vec3(0), vec3(0, 1, 0));
+	tree = Engine.createModel();
+	fractalTree.getModel(tree);
 	return;
 }
 
@@ -692,7 +692,7 @@ void C3DtestApp::draw() {
 	mat3 tmp;
 	Engine.phongShader->setMVP(mvp);
 	Engine.phongShader->setNormalModelToCameraMatrix(tmp); //why am I doing this?
-	int scsCulled = 0;
+
 	//terrain->drawNew();
 	vec3 planePos; vec3 planeNormal;
 	currentCamera->getBackPlane(planePos, planeNormal);
@@ -703,14 +703,14 @@ void C3DtestApp::draw() {
 			sc = terrain->layers[layerNo].superChunks[scNo];
 			if (SCculling )
 				if ( sc->isOutsideFustrum(fpsCam)) {
-				scsCulled++;
+	
 				continue;
 			}
 			scDrawList.push_back(sc);
 		}
 	}
 
-	int scListSize = scDrawList.size();
+/*	int scListSize = scDrawList.size();
 	for (int scNo = 0; scNo < scListSize; scNo++) {
 		sc = scDrawList[scNo];
 		int clSize = sc->chunkList.size();
@@ -724,19 +724,17 @@ void C3DtestApp::draw() {
 			//TO DO: should be model's drawmode, not GL_Triangles
 			glDrawArrays(GL_TRIANGLES, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
 		}
-	}
+	}*/
 
-	
-	cerr << "\nSCs culled " << scsCulled;
-	
 
+	Engine.drawModel(*tree);
 
 
 	Engine.Renderer.setShader(grassShader);
 	Engine.Renderer.attachTexture(0, *grassTex);
 	grassShader->setTextureUnit(0);
 	grassShader->setTime(Time);
-	drawGrass(mvp, scDrawList);
+	//drawGrass(mvp, scDrawList);
 
 	t = Engine.Time.milliseconds() - t;
 
@@ -777,7 +775,7 @@ void C3DtestApp::draw() {
 					index++;
 				}
 			}
-			wireSCs->storeVertexes(box, sizeof(vBuf::T3DnormVert) * index, index);
+			wireSCs->storeVertexes(box, sizeof(vBuf::T3DnormVert) , index);
 			wireSCs->storeLayout(3, 3, 0, 0);
 			mvp = currentCamera->clipMatrix * wireSCs->worldMatrix;
 			Engine.wireBoxShader->setMVP(mvp);
@@ -971,7 +969,7 @@ void C3DtestApp::initChunkShell() {
 
 	chunkShell = Engine.createModel();
 	chunkShell->setDrawMode( drawPoints);
-	chunkShell->storeVertexes(shell, sizeof(vec3) * v, v);
+	chunkShell->storeVertexes(shell, sizeof(vec3), v);
 	chunkShell->storeLayout(3, 0, 0, 0);
 	delete[] shell;
 	chunkShell->getMaterial()->setShader(chunkCheckShader);
@@ -1024,8 +1022,8 @@ void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
 	//Engine.setVertexDetails(shaderChunkGrid, 1, noIndices, noVerts);
 	//Engine.storeIndexedModel(shaderChunkGrid,shaderChunkVerts,noVerts, index);
 
-	shaderChunkGrid->storeVertexes(shaderChunkVerts, sizeof(vec3) * noVerts, noVerts);
-	shaderChunkGrid->storeIndex(index, sizeof(unsigned short)*noIndices, noIndices);
+	shaderChunkGrid->storeVertexes(shaderChunkVerts, sizeof(vec3), noVerts);
+	shaderChunkGrid->storeIndex(index, noIndices);
 	shaderChunkGrid->storeLayout(3, 0, 0, 0);
 
 	delete[] shaderChunkVerts;
@@ -1292,7 +1290,7 @@ void C3DtestApp::drawGrass(glm::mat4& mvp, std::vector<CSuperChunk*>& drawList) 
 C3DtestApp::~C3DtestApp() {
 	delete chunkCheckShader;
 	delete terrain;
-	//TO DO: since these are created with Engine.createModel, engine should handle deletion.
+	//TO DO: since these are created with Engine.getModel, engine should handle deletion.
 	//delete chunkShell;
 //	delete shaderChunkGrid;
 	//delete chunkBB;
