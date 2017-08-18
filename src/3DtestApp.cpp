@@ -154,9 +154,11 @@ void C3DtestApp::onStart() {
 	initGrassFinding();
 	
 	CFractalTree fractalTree;
-	fractalTree.setStemLength(100.0f);
-	fractalTree.setStemRadius(2.0f);
-	fractalTree.createStem(1, vec3(0), vec3(0, 1, 0));
+	fractalTree.setStemLength(70.0f, 0.2f);
+	fractalTree.setNumBranches(6,3);
+	fractalTree.setBranchAngle(30, 0.2f);
+	fractalTree.setStemRadius(6.0f);
+	fractalTree.create();
 	tree = Engine.createModel();
 	fractalTree.getModel(tree);
 	return;
@@ -710,7 +712,8 @@ void C3DtestApp::draw() {
 		}
 	}
 
-/*	int scListSize = scDrawList.size();
+	/*
+	int scListSize = scDrawList.size();
 	for (int scNo = 0; scNo < scListSize; scNo++) {
 		sc = scDrawList[scNo];
 		int clSize = sc->chunkList.size();
@@ -724,7 +727,8 @@ void C3DtestApp::draw() {
 			//TO DO: should be model's drawmode, not GL_Triangles
 			glDrawArrays(GL_TRIANGLES, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
 		}
-	}*/
+	} 
+	*/
 
 
 	Engine.drawModel(*tree);
@@ -994,7 +998,7 @@ void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
 	int noIndices = cubesPerChunkEdge * cubesPerChunkEdge *cubesPerChunkEdge * 5;
 
 	unsigned short layer = vertsPerEdge * vertsPerEdge;
-	unsigned short* index = new unsigned short[noIndices];
+	unsigned int* index = new unsigned int[noIndices];
 	i = 0;
 	unsigned short vertNo = 0;
 	do {

@@ -1,9 +1,10 @@
 
 BaseApp constructor.
-Status: Using GLEW 1.12.0
 
-OpenGL version: 4.5.0 NVIDIA 382.53.
+Using GLEW 1.12.0
+OpenGL version: 4.5.0 NVIDIA 382.53
 Has NPOT
+glsl version: 4.50 NVIDIA
 
 total superchnks 704
- time 59.4695 SCs rejected 479 SCs passed 201
+ time 62.2624 SCs rejected 479 SCs passed 201
