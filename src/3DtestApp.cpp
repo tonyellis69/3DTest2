@@ -660,83 +660,54 @@ void C3DtestApp::OnKeyDown(unsigned int wParam, long lParam) {
 
 /** Called when mouse moves. */
 void C3DtestApp::mouseMove(int x, int y, int key) {
-	return;
-
 }
 
 
 void C3DtestApp::onResize(int width, int height) {
-
 }
 
 
-
 void C3DtestApp::draw() {
-	CSuperChunk* sc;
-	//return;
-	//draw chunk
-	glm::mat3 normMatrix(terrain->worldMatrix);
-
-	mat4 mvp;
-	CCamera* currentCamera = Engine.getCurrentCamera();
-
-	int draw = 0;
-	double t = Engine.Time.milliseconds();
-
-	Engine.Renderer.setShader(Engine.phongShader);
-//	
-
-	mvp = currentCamera->clipMatrix * terrain->chunkOrigin;
-
 	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
-//	fpsCam = mvp;
-
-
-	mat3 tmp;
-	Engine.phongShader->setMVP(mvp);
-	Engine.phongShader->setNormalModelToCameraMatrix(tmp); //why am I doing this?
-
-	//terrain->drawNew();
-	//vec3 planePos; vec3 planeNormal;
-	//currentCamera->getBackPlane(planePos, planeNormal);
-	//
 	terrain->updateVisibleSClist(fpsCam);
 
+	double t = Engine.Time.milliseconds();
+
+	mat4 mvp = Engine.getCurrentCamera()->clipMatrix * terrain->chunkOrigin;
+
+	//draw chunks
+	mat3 tmp;
+	Engine.Renderer.setShader(Engine.phongShader);
+	Engine.phongShader->setNormalModelToCameraMatrix(tmp); //why am I doing this?
+	Engine.phongShader->setMVP(mvp);
 	terrain->drawVisibleChunks();
 	
 
-
 	//Engine.drawModel(*tree);
 
-
+	//draw grass
 	Engine.Renderer.setShader(grassShader);
 	Engine.Renderer.attachTexture(0, *grassTex);
 	grassShader->setTextureUnit(0);
 	grassShader->setTime(Time);
-	//drawGrass(mvp, scDrawList);
+	grassShader->setMVP(mvp);
+	terrain->drawGrass(mvp, terrain->visibleSClist);
 
+
+	//draw trees
 	Engine.Renderer.setShader(Engine.phongShaderInstanced);
 	Engine.phongShaderInstanced->setNormalModelToCameraMatrix(tmp); 
 	Engine.phongShaderInstanced->setMVP(mvp);
 
 	glEnable(GL_PRIMITIVE_RESTART);
-	drawGrass(mvp, terrain->visibleSClist);
+	//drawGrass(mvp, terrain->visibleSClist);
 	glDisable(GL_PRIMITIVE_RESTART);
 
 	t = Engine.Time.milliseconds() - t;
 
-/*	CBuf* buf = (CBuf*) dummy2;
-	grassShader->setMVP(mvp);
-	Engine.Renderer.backFaceCulling(false);
-	if (dummy2)
-		Engine.Renderer.drawBuf(*buf, drawPoints);
-	Engine.Renderer.backFaceCulling(true);
-	*/
+
 
 	//wireframe drawing:
-//	Engine.Renderer.setShader(Engine.wireShader);
-	//Engine.wireShader->setColour(vec4(0, 1, 0, 0.4f));
-
 	//draw bounding boxes
 	if (supWire) {
 		int component = 1;
@@ -764,7 +735,7 @@ void C3DtestApp::draw() {
 			}
 			wireSCs->storeVertexes(box, sizeof(vBuf::T3DnormVert) , index);
 			wireSCs->storeLayout(3, 3, 0, 0);
-			mvp = currentCamera->clipMatrix * wireSCs->worldMatrix;
+			mvp = Engine.getCurrentCamera()->clipMatrix * wireSCs->worldMatrix;
 			Engine.wireBoxShader->setMVP(mvp);
 			
 			colour[component++] = 0.8f;
@@ -779,7 +750,7 @@ void C3DtestApp::draw() {
 
 	if (!fpsOn) {
 		Engine.Renderer.setShader(Engine.phongShader);
-		mvp = currentCamera->clipMatrix * playerObject.pModel->worldMatrix;
+		mvp = Engine.getCurrentCamera()->clipMatrix * playerObject.pModel->worldMatrix;
 		Engine.phongShader->setMVP(mvp);
 		playerObject.pModel->drawNew();
 	}
@@ -1177,8 +1148,9 @@ void C3DtestApp::initGrassFinding() {
 	terrain->grassMultiBuf.setSize(grassBufSize);
 //	terrain->grassMultiBuf.setInstanced(*dummy, 1);
 
-	terrain->grassMultiBuf.setInstanced(*tree->getBuffer(), 2);
-	terrain->grassMultiBuf.storeLayout(3, 3, 3, 0);
+	//terrain->grassMultiBuf.setInstanced(*tree->getBuffer(), 2);
+	//terrain->grassMultiBuf.storeLayout(3, 3, 3, 0);
+	terrain->grassMultiBuf.storeLayout(3, 0, 0, 0);
 
 	grassTex = Engine.Renderer.textureManager.getTexture(dataPath + "grassPack.dds");
 
@@ -1241,42 +1213,6 @@ void C3DtestApp::findGrassPoints(Chunk & chunk) {
 }
 
 
-/** Run through the grass multibuf, drawing instanced grass. */
-void C3DtestApp::drawGrass(glm::mat4& mvp, std::vector<CSuperChunk*>& drawList) {
-//	Engine.Renderer.backFaceCulling(false);
-//	Engine.Renderer.setShader(grassShader);
-//	grassShader->setMVP(mvp);
-
-	int childBufNo = -5; CSuperChunk* sc; CChildBuf* childBuf = NULL;;
-	unsigned int nInstancedVerts;
-	unsigned int nIndices;
-
-	int drawListSize = drawList.size(); int clSize;
-	for (int scNo = 0; scNo < drawListSize; scNo++) {
-		sc = drawList[scNo];
-		if (sc->LoD != 1)
-			continue;
-		clSize = sc->chunkList.size();
-		for (int chunkNo = 0; chunkNo < clSize; chunkNo++) { //for each chunk...
-			Chunk* chunk = sc->chunkList[chunkNo];
-			if (chunk->grassDrawDetails.childBufNo == -1)
-				continue;
-			if (chunk->grassDrawDetails.childBufNo != childBufNo) { //ensure we have the right childbuf 
-				childBufNo = chunk->grassDrawDetails.childBufNo;
-				childBuf = &terrain->grassMultiBuf.childBufs[childBufNo];
-				Engine.Renderer.setVAO(childBuf->hVAO);
-			}
-			nIndices = childBuf->instancedBuf->getNoIndices();
-				glDrawElementsInstancedBaseInstance(GL_TRIANGLE_STRIP, nIndices, GL_UNSIGNED_SHORT, 0,
-					chunk->grassDrawDetails.vertCount, chunk->grassDrawDetails.vertStart);
-			//glDrawArrays(GL_POINTS, chunk->grassDrawDetails.vertStart, chunk->grassDrawDetails.vertCount);
-		}
-	}
-
-
-
-	Engine.Renderer.backFaceCulling(true);
-}
 
 
 

@@ -56,7 +56,6 @@ public:
 	void initGrassFinding();
 	void findGrassPoints(Chunk& chunk);
 
-	void drawGrass(glm::mat4& mvp,std::vector<CSuperChunk*>& drawList);
 
 
 	string dataPath; ///<Filepath to the Data folder
