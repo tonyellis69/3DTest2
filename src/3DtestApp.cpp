@@ -27,17 +27,16 @@ using namespace glm;
 
 
 C3DtestApp::C3DtestApp() {
-
+	
 	tmpSCno = 0;
 	tmp = false;
 	physCube = NULL;
 	dummy2 = NULL;
-	SCculling = false;
 }
 
 void C3DtestApp::onStart() {
 	
-
+	
 
 	chunkCall = 0;
 
@@ -64,9 +63,10 @@ void C3DtestApp::onStart() {
 	fpsOn = false;
 	selectChk = i32vec3(0, 0, 0);
 	mouseLook = false;
-
+	
 	terrain = Engine.createTerrain();
-	CBaseBuf* terrainBuf = &terrain->multiBuf;
+	CBaseBuf* terrainBuf = &terrain->multiBuf; //TO DO: ugh, make a setter
+	((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
 	terrainBuf->setSize(175000000);
 
 	terrainBuf->storeLayout(3, 3, 0, 0);
@@ -80,7 +80,7 @@ void C3DtestApp::onStart() {
 	terrain->EXTfreeChunkModel.Set(&Engine, &CEngine::freeModel);
 	terrain->EXTcreateChunkMesh.Set(this, &C3DtestApp::createChunkMesh);
 
-
+	terrain->chunkDrawShader = Engine.phongShader;
 
 	//load chunkCheck shader
 	chunkCheckShader = new ChunkCheckShader();
@@ -151,16 +151,19 @@ void C3DtestApp::onStart() {
 	playerPhys->asleep = true;
 
 	
-	initGrassFinding();
+	
 	
 	CFractalTree fractalTree;
-	fractalTree.setStemLength(70.0f, 0.2f);
+	fractalTree.setStemLength(7.0f, 0.2f);
 	fractalTree.setNumBranches(6,3);
 	fractalTree.setBranchAngle(30, 0.2f);
-	fractalTree.setStemRadius(6.0f);
+	fractalTree.setStemRadius(0.6f);
 	fractalTree.create();
 	tree = Engine.createModel();
 	fractalTree.getModel(tree);
+
+	initGrassFinding();
+	
 	return;
 }
 
@@ -320,7 +323,6 @@ void C3DtestApp::keyCheck() {
 		//cube->rotate(rot, glm::vec3(0, 0, 1));
 		//chunkShader->recompile();
 		grassShader->recompile();
-		SCculling = !SCculling;
 		EatKeys();
 	}
 
@@ -670,7 +672,6 @@ void C3DtestApp::onResize(int width, int height) {
 
 
 void C3DtestApp::draw() {
-	vector <CSuperChunk*> scDrawList;
 	CSuperChunk* sc;
 	//return;
 	//draw chunk
@@ -696,42 +697,16 @@ void C3DtestApp::draw() {
 	Engine.phongShader->setNormalModelToCameraMatrix(tmp); //why am I doing this?
 
 	//terrain->drawNew();
-	vec3 planePos; vec3 planeNormal;
-	currentCamera->getBackPlane(planePos, planeNormal);
-	int childBuf = -1;
-	for (int layerNo = 0; layerNo < terrain->layers.size(); layerNo++) {
-		int slSize = terrain->layers[layerNo].superChunks.size();
-		for (int scNo = 0; scNo < slSize; scNo++) {
-			sc = terrain->layers[layerNo].superChunks[scNo];
-			if (SCculling )
-				if ( sc->isOutsideFustrum(fpsCam)) {
+	//vec3 planePos; vec3 planeNormal;
+	//currentCamera->getBackPlane(planePos, planeNormal);
+	//
+	terrain->updateVisibleSClist(fpsCam);
+
+	terrain->drawVisibleChunks();
 	
-				continue;
-			}
-			scDrawList.push_back(sc);
-		}
-	}
-
-	/*
-	int scListSize = scDrawList.size();
-	for (int scNo = 0; scNo < scListSize; scNo++) {
-		sc = scDrawList[scNo];
-		int clSize = sc->chunkList.size();
-		for (int chunkNo = 0; chunkNo < clSize; chunkNo++) {
-			Chunk* chunk = sc->chunkList[chunkNo];
-			if (chunk->drawDetails.childBufNo != childBuf && chunk->drawDetails.childBufNo != -1) {
-				childBuf = chunk->drawDetails.childBufNo;
-				glBindVertexArray(terrain->multiBuf.childBufs[childBuf].hVAO);
-			}
-			Engine.phongShader->setColour(chunk->drawDetails.colour);
-			//TO DO: should be model's drawmode, not GL_Triangles
-			glDrawArrays(GL_TRIANGLES, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
-		}
-	} 
-	*/
 
 
-	Engine.drawModel(*tree);
+	//Engine.drawModel(*tree);
 
 
 	Engine.Renderer.setShader(grassShader);
@@ -739,6 +714,14 @@ void C3DtestApp::draw() {
 	grassShader->setTextureUnit(0);
 	grassShader->setTime(Time);
 	//drawGrass(mvp, scDrawList);
+
+	Engine.Renderer.setShader(Engine.phongShaderInstanced);
+	Engine.phongShaderInstanced->setNormalModelToCameraMatrix(tmp); 
+	Engine.phongShaderInstanced->setMVP(mvp);
+
+	glEnable(GL_PRIMITIVE_RESTART);
+	drawGrass(mvp, terrain->visibleSClist);
+	glDisable(GL_PRIMITIVE_RESTART);
 
 	t = Engine.Time.milliseconds() - t;
 
@@ -1114,6 +1097,7 @@ void C3DtestApp::initHeightFinder() {
 	for (int x = 0; x < findHeightVerts; x++)
 		v[x] = vec3(0, x, 0);
 
+	heightFinderBuf.setRenderer(&Engine.Renderer); 
 	heightFinderBuf.storeVertexes(v, sizeof(vec3) * findHeightVerts, findHeightVerts);
 	heightFinderBuf.storeLayout(3, 0, 0, 0);
 	delete v;
@@ -1159,7 +1143,7 @@ void C3DtestApp::initGrassFinding() {
 	grassPoints = Engine.createBuffer();
 	std::vector <glm::vec2> points2D;
 	float LoD1chunkSize = terrain->LoD1cubeSize * cubesPerChunkEdge;
-	points2D = pois::generate_poisson(LoD1chunkSize, LoD1chunkSize, 0.25f, 10);
+	points2D = pois::generate_poisson(LoD1chunkSize, LoD1chunkSize, 7.0f /*0.25f*/, 10);
 	noGrassPoints = points2D.size();
 	std::vector < glm::vec3> points3D(noGrassPoints);
 	for (int p = 0; p < noGrassPoints; p++) {
@@ -1189,9 +1173,12 @@ void C3DtestApp::initGrassFinding() {
 	dummy->storeIndex(&index, sizeof(index), 1);
 	dummy->storeLayout(3, 0, 0, 0); */
 
+	terrain->grassMultiBuf.setRenderer(&Engine.Renderer);
 	terrain->grassMultiBuf.setSize(grassBufSize);
 //	terrain->grassMultiBuf.setInstanced(*dummy, 1);
-	terrain->grassMultiBuf.storeLayout(3, 0, 0, 0);
+
+	terrain->grassMultiBuf.setInstanced(*tree->getBuffer(), 2);
+	terrain->grassMultiBuf.storeLayout(3, 3, 3, 0);
 
 	grassTex = Engine.Renderer.textureManager.getTexture(dataPath + "grassPack.dds");
 
@@ -1202,6 +1189,8 @@ void C3DtestApp::initGrassFinding() {
 	grassShader->getShaderHandles();
 	grassShader->setType(userShader);
 	Engine.shaderList.push_back(grassShader);
+
+
 }
 
 /**	Create a selection of points on the terrain surface of this chunk where grass
@@ -1254,9 +1243,9 @@ void C3DtestApp::findGrassPoints(Chunk & chunk) {
 
 /** Run through the grass multibuf, drawing instanced grass. */
 void C3DtestApp::drawGrass(glm::mat4& mvp, std::vector<CSuperChunk*>& drawList) {
-	Engine.Renderer.backFaceCulling(false);
-	Engine.Renderer.setShader(grassShader);
-	grassShader->setMVP(mvp);
+//	Engine.Renderer.backFaceCulling(false);
+//	Engine.Renderer.setShader(grassShader);
+//	grassShader->setMVP(mvp);
 
 	int childBufNo = -5; CSuperChunk* sc; CChildBuf* childBuf = NULL;;
 	unsigned int nInstancedVerts;
@@ -1275,12 +1264,12 @@ void C3DtestApp::drawGrass(glm::mat4& mvp, std::vector<CSuperChunk*>& drawList) 
 			if (chunk->grassDrawDetails.childBufNo != childBufNo) { //ensure we have the right childbuf 
 				childBufNo = chunk->grassDrawDetails.childBufNo;
 				childBuf = &terrain->grassMultiBuf.childBufs[childBufNo];
-				glBindVertexArray(childBuf->hVAO);
+				Engine.Renderer.setVAO(childBuf->hVAO);
 			}
-			//nIndices = childBuf->instancedBuf->getNoIndices();
-				//glDrawElementsInstancedBaseInstance(GL_POINTS, nIndices, GL_UNSIGNED_SHORT, 0,
-					//chunk->grassDrawDetails.vertCount, chunk->grassDrawDetails.vertStart);
-			glDrawArrays(GL_POINTS, chunk->grassDrawDetails.vertStart, chunk->grassDrawDetails.vertCount);
+			nIndices = childBuf->instancedBuf->getNoIndices();
+				glDrawElementsInstancedBaseInstance(GL_TRIANGLE_STRIP, nIndices, GL_UNSIGNED_SHORT, 0,
+					chunk->grassDrawDetails.vertCount, chunk->grassDrawDetails.vertStart);
+			//glDrawArrays(GL_POINTS, chunk->grassDrawDetails.vertStart, chunk->grassDrawDetails.vertCount);
 		}
 	}
 

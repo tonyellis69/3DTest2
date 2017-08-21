@@ -130,9 +130,10 @@ public:
 	CBaseTexture* grassTex;
 	CBaseBuf* dummy2;
 
-	bool SCculling;
+
 	
 	CModel* tree;
+
 };
 
 const float yawAng = 0.22f;

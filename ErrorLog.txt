@@ -7,4 +7,4 @@ Has NPOT
 glsl version: 4.50 NVIDIA
 
 total superchnks 704
- time 62.2624 SCs rejected 479 SCs passed 201
+ time 63.9016 SCs rejected 479 SCs passed 201
