@@ -3,6 +3,7 @@
 #include "BaseApp.h"
 #include "superChunk.h" //TO replace with terrain.h
 #include "terrain.h"
+#include "gameTerrain.h"
 #include "direction.h"
 #include <glew.h>
 
@@ -66,7 +67,7 @@ public:
 
 
 
-	CTerrain* terrain;
+	CGameTerrain* terrain;
 	
 	
 	double oldTime;

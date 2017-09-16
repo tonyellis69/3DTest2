@@ -64,7 +64,7 @@ void C3DtestApp::onStart() {
 	selectChk = i32vec3(0, 0, 0);
 	mouseLook = false;
 	
-	terrain = Engine.createTerrain();
+	terrain = (CGameTerrain*)Engine.createTerrain(); //TO DO: get rid of Engine.createTerrain
 	CBaseBuf* terrainBuf = &terrain->multiBuf; //TO DO: ugh, make a setter
 	//((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
 	terrainBuf->setSize(175000000);
