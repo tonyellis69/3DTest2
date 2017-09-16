@@ -66,7 +66,7 @@ void C3DtestApp::onStart() {
 	
 	terrain = Engine.createTerrain();
 	CBaseBuf* terrainBuf = &terrain->multiBuf; //TO DO: ugh, make a setter
-	((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
+	//((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
 	terrainBuf->setSize(175000000);
 
 	terrainBuf->storeLayout(3, 3, 0, 0);
@@ -84,7 +84,6 @@ void C3DtestApp::onStart() {
 
 	//load chunkCheck shader
 	chunkCheckShader = new ChunkCheckShader();
-	chunkCheckShader->pRenderer = &Engine.Renderer;
 	chunkCheckShader->create(dataPath + "chunkCheck");
 	chunkCheckShader->getShaderHandles();
 
@@ -119,7 +118,6 @@ void C3DtestApp::onStart() {
 	chunkShader->feedbackVaryings[0] = "gl_Position";
 	chunkShader->feedbackVaryings[1] = "normal";
 	Engine.shaderList.push_back(chunkShader);
-	chunkShader->pRenderer = &Engine.Renderer;
 	chunkShader->load(vertex, dataPath + "chunk.vert");
 	chunkShader->load(geometry, dataPath + "chunk.geom");
 	chunkShader->attach();
@@ -691,7 +689,7 @@ void C3DtestApp::draw() {
 	grassShader->setTextureUnit(0);
 	grassShader->setTime(Time);
 	grassShader->setMVP(mvp);
-	terrain->drawGrass(mvp, terrain->visibleSClist);
+	//terrain->drawGrass(mvp, terrain->visibleSClist);
 
 
 	//draw trees
@@ -700,6 +698,9 @@ void C3DtestApp::draw() {
 	Engine.phongShaderInstanced->setMVP(mvp);
 
 	glEnable(GL_PRIMITIVE_RESTART);
+	terrain->drawTrees(mvp, terrain->visibleSClist);
+
+	
 	//drawGrass(mvp, terrain->visibleSClist);
 	glDisable(GL_PRIMITIVE_RESTART);
 
@@ -1022,7 +1023,6 @@ void C3DtestApp::initHeightmapGUI() {
 
 	//set up shader(s)
 	terrain2texShader = new CTerrain2texShader();
-	terrain2texShader->pRenderer = &Engine.Renderer;
 	terrain2texShader->create(dataPath + "terrain2tex");
 	terrain2texShader->getShaderHandles();
 	terrain2texShader->setType(userShader);
@@ -1056,7 +1056,6 @@ void C3DtestApp::initHeightFinder() {
 	terrainPointShader = new CTerrainPointShader();
 	terrainPointShader->feedbackVaryings[0] = "result";
 	Engine.shaderList.push_back(terrainPointShader);
-	terrainPointShader->pRenderer = &Engine.Renderer;
 	terrainPointShader->load(vertex,dataPath + "terrainPoint.vert");
 	terrainPointShader->attach();
 	terrainPointShader->setFeedbackData(1);
@@ -1068,7 +1067,6 @@ void C3DtestApp::initHeightFinder() {
 	for (int x = 0; x < findHeightVerts; x++)
 		v[x] = vec3(0, x, 0);
 
-	heightFinderBuf.setRenderer(&Engine.Renderer); 
 	heightFinderBuf.storeVertexes(v, sizeof(vec3) * findHeightVerts, findHeightVerts);
 	heightFinderBuf.storeLayout(3, 0, 0, 0);
 	delete v;
@@ -1129,7 +1127,6 @@ void C3DtestApp::initGrassFinding() {
 	findPointHeightShader = new CFindPointHeightShader();
 	findPointHeightShader->feedbackVaryings[0] = "newPoint";
 	Engine.shaderList.push_back(findPointHeightShader);
-	findPointHeightShader->pRenderer = &Engine.Renderer;
 	findPointHeightShader->load(vertex, dataPath + "findPointHeight.vert");
 	findPointHeightShader->attach();
 	findPointHeightShader->setFeedbackData(1);
@@ -1144,19 +1141,19 @@ void C3DtestApp::initGrassFinding() {
 	dummy->storeIndex(&index, sizeof(index), 1);
 	dummy->storeLayout(3, 0, 0, 0); */
 
-	terrain->grassMultiBuf.setRenderer(&Engine.Renderer);
 	terrain->grassMultiBuf.setSize(grassBufSize);
 //	terrain->grassMultiBuf.setInstanced(*dummy, 1);
 
-	//terrain->grassMultiBuf.setInstanced(*tree->getBuffer(), 2);
-	//terrain->grassMultiBuf.storeLayout(3, 3, 3, 0);
-	terrain->grassMultiBuf.storeLayout(3, 0, 0, 0);
+	terrain->grassMultiBuf.setInstanced(*tree->getBuffer(), 2);
+	terrain->grassMultiBuf.storeLayout(3, 3, 3, 0);
+	
+	
+	//terrain->grassMultiBuf.storeLayout(3, 0, 0, 0);
 
 	grassTex = Engine.Renderer.textureManager.getTexture(dataPath + "grassPack.dds");
 
 	//load the grass drawing shader
 	grassShader = new CGrassShader();
-	grassShader->pRenderer = &Engine.Renderer;
 	grassShader->create(dataPath + "grass");
 	grassShader->getShaderHandles();
 	grassShader->setType(userShader);
