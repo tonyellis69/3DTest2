@@ -11,7 +11,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "chunkShader.h"
-#include "chunkCheckShader.h"
+
 #include "terrain2texShader.h"
 #include "terrainPointShader.h"
 #include "findPointHeightShader.h"
@@ -40,9 +40,9 @@ public:
 	void Update();
 	
 	void createChunkMesh(Chunk& chunk);
-	bool superChunkIsEmpty(CSuperChunk& SC);
-	bool chunkExists(glm::vec3& sampleCorner, int LoD);
-	void initChunkShell();
+	//bool superChunkIsEmpty(CSuperChunk& SC);
+	//bool chunkExists(glm::vec3& sampleCorner, int LoD);
+	//void initChunkShell();
 	void initChunkGrid(int cubesPerChunkEdge);
 	void initWireSCs();
 	void onTerrainAdvance(Tdirection direction);
@@ -67,7 +67,7 @@ public:
 
 
 
-	CGameTerrain* terrain;
+	CGameTerrain terrain;
 	
 	
 	double oldTime;
@@ -100,7 +100,7 @@ public:
 
 	ChunkShader* chunkShader;
 	CBaseTexture* triTableTex; ///<Data texture for MC triangles table
-	ChunkCheckShader* chunkCheckShader;
+	
 
 	CBasePhysObj* physCube;
 

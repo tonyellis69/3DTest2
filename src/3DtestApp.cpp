@@ -50,11 +50,13 @@ void C3DtestApp::onStart() {
 
 
 	//position the default camera
-	Engine.getCurrentCamera()->setPos(vec3(-108.678, 1810.77, - 3356.29));
-	Engine.getCurrentCamera()->lookAt(vec3(0.0281552, - 0.573389, 0.818797));
-
+	
 	Engine.getCurrentCamera()->setPos(vec3(-36.8797, 208.289, -220.606));
 	Engine.getCurrentCamera()->lookAt(vec3(0.0746933, -0.291096, 0.953797));
+
+	//for centre/tree view
+	Engine.getCurrentCamera()->setPos(vec3(0.499624, 6.46961, 21.5411));
+	Engine.getCurrentCamera()->lookAt(vec3(0.0130739, -0.0538602, -0.998463));
 
 
 	//Position FPS camera
@@ -64,8 +66,16 @@ void C3DtestApp::onStart() {
 	selectChk = i32vec3(0, 0, 0);
 	mouseLook = false;
 	
-	terrain = (CGameTerrain*)Engine.createTerrain(); //TO DO: get rid of Engine.createTerrain
-	CBaseBuf* terrainBuf = &terrain->multiBuf; //TO DO: ugh, make a setter
+		
+	CTerrainPhysObj* terrainPhysObj = new CTerrainPhysObj();
+	terrainPhysObj->attachModel(&terrain);
+	terrainPhysObj->setCollides(false);
+	Engine.physObjManager.addPhysObj(terrainPhysObj);
+	
+	
+	
+	
+	CBaseBuf* terrainBuf = &terrain.multiBuf; //TO DO: ugh, make a setter
 	//((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
 	terrainBuf->setSize(175000000);
 
@@ -75,28 +85,26 @@ void C3DtestApp::onStart() {
 	tempFeedbackBuf->setSize(1000000);
 
 
-	terrain->EXTsuperChunkIsEmpty.Set(this, &C3DtestApp::superChunkIsEmpty);
-	terrain->EXTchunkExists.Set(this, &C3DtestApp::chunkExists);
-	terrain->EXTfreeChunkModel.Set(&Engine, &CEngine::freeModel);
-	terrain->EXTcreateChunkMesh.Set(this, &C3DtestApp::createChunkMesh);
+//	terrain.EXTsuperChunkIsEmpty.Set(this, &C3DtestApp::superChunkIsEmpty);
+//	terrain.EXTchunkExists.Set(this, &C3DtestApp::chunkExists);
+	terrain.EXTfreeChunkModel.Set(&Engine, &CEngine::freeModel);
+	terrain.EXTcreateChunkMesh.Set(this, &C3DtestApp::createChunkMesh);
 
-	terrain->chunkDrawShader = Engine.phongShader;
+	terrain.chunkDrawShader = Engine.phongShader;
 
-	//load chunkCheck shader
-	chunkCheckShader = new ChunkCheckShader();
-	chunkCheckShader->create(dataPath + "chunkCheck");
-	chunkCheckShader->getShaderHandles();
+	
+	terrain.setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
 
-	initChunkShell();
+	terrain.initChunkShell();
 	initChunkGrid(cubesPerChunkEdge);
 
-	terrain->setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
+	
 
 	initHeightFinder();
 
 	//terrain->createLayers(5120, 320, 2); //1280 320
 	//terrain->createLayers(1280, 320, 0);
-	terrain->createLayers(10000, 320, 2);
+	terrain.createLayers(10000, 320, 2);
 	//terrain->createLayers(1280, 320, 0);
 	//terrain->createLayers(8, 2, 2); //(8, 3, 2); //(4,2,1);
 
@@ -108,10 +116,10 @@ void C3DtestApp::onStart() {
 	double t = Engine.Time.milliseconds();
 	SCpassed = SCrejected = 0;
 
-	terrain->createAllChunks();
+	terrain.createAllChunks();
 
 	t = Engine.Time.milliseconds() - t;
-	cerr << "\n time " << t << " SCs rejected " << SCrejected << " SCs passed " << SCpassed;
+	
 
 
 	chunkShader = new ChunkShader();
@@ -180,7 +188,7 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	chunkShader->setChunkSamplePos(chunk.samplePos);
 	//chunkShader->setSamplesPerCube(terrain->sampleScale);
 
-	float samplesPerCube = cubeSize / terrain->worldUnitsPerSampleUnit;
+	float samplesPerCube = cubeSize / terrain.worldUnitsPerSampleUnit;
 	chunkShader->setSamplesPerCube(samplesPerCube);
 
 	
@@ -192,7 +200,7 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	int nVertsOut = cubesPerChunkEdge * cubesPerChunkEdge * cubesPerChunkEdge * maxMCverts;
 
 
-	CBaseBuf* terrainBuf = &terrain->multiBuf;
+	CBaseBuf* terrainBuf = &terrain.multiBuf;
 	CBuf* srcBuf = &((CRenderModel*)shaderChunkGrid)->buf;
 	unsigned int primitives = Engine.acquireFeedbackVerts(*srcBuf, drawLinesAdjacency, *tempFeedbackBuf, drawTris);
 
@@ -222,11 +230,12 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 
 
 
-	terrain->totalTris += (primitives * 3);
+	terrain.totalTris += (primitives * 3);
 }
 
 /** Return true if this superchunk doesn't intersect the terrain heightfield. */
 //TO DO: fast but too coarse, leaves cracks
+/*
 bool C3DtestApp::superChunkIsEmpty(CSuperChunk& SC) {
 	
 	//SCpassed++;
@@ -234,7 +243,7 @@ bool C3DtestApp::superChunkIsEmpty(CSuperChunk& SC) {
 
 
 	Engine.Renderer.setShader(chunkCheckShader);
-	float chunkSampleStep = SC.chunkSize / terrain->worldUnitsPerSampleUnit;
+	float chunkSampleStep = SC.chunkSize / terrain.worldUnitsPerSampleUnit;
 	float LoDscale = ( SC.sampleStep  ) /( cubesPerChunkEdge);
 	chunkCheckShader->setSampleCorner(SC.nwSamplePos);
 	chunkCheckShader->setLoDscale(LoDscale);
@@ -270,15 +279,15 @@ bool C3DtestApp::superChunkIsEmpty(CSuperChunk& SC) {
 	vec3 SCsampleCorner = SC.nwSamplePos;
 	//return false;
 	//map this to the height map
-	SCsampleCorner = SCsampleCorner - terrain->layers[0].nwSampleCorner ;
-	float SCsampleStep = terrain->layers[terrain->layers.size() - SC.LoD].SCsampleStep;
-	float scale = (terrain->worldSize.x / terrain->worldUnitsPerSampleUnit) / heightmapTex->width;
+	SCsampleCorner = SCsampleCorner - terrain.layers[0].nwSampleCorner ;
+	float SCsampleStep = terrain.layers[terrain.layers.size() - SC.LoD].SCsampleStep;
+	float scale = (terrain.worldSize.x / terrain.worldUnitsPerSampleUnit) / heightmapTex->width;
 	vec3 heightMapPos = SCsampleCorner / scale;
 
 	//read pixels
 	uvec4 pixel = heightmapTex->getPixel(heightMapPos.x, heightMapPos.z);
 	float height = (float)pixel.r / 255.0f; //.68
-	float sampleVolumeHeight = terrain->worldSize.y / terrain->worldUnitsPerSampleUnit;
+	float sampleVolumeHeight = terrain.worldSize.y / terrain.worldUnitsPerSampleUnit;
 	//does the height value fall inside the vertical space of this SC?
 	height = sampleVolumeHeight * height;
 	//return false;
@@ -290,9 +299,10 @@ bool C3DtestApp::superChunkIsEmpty(CSuperChunk& SC) {
 	SCrejected++;
 	return true;
 }
-
+*/
 
 /** Return false if no side of this potential chunk is penetratedby the isosurface.*/
+/*
 bool C3DtestApp::chunkExists(vec3& sampleCorner, int LoD) {
 	return true;
 	//change to chunk test shader
@@ -310,7 +320,7 @@ bool C3DtestApp::chunkExists(vec3& sampleCorner, int LoD) {
 		return false; //outside surface
 	return true;
 }
-
+*/
 
 
 void C3DtestApp::keyCheck() {
@@ -577,8 +587,8 @@ void C3DtestApp::keyCheck() {
 		terrain->createAllChunks();
 		updateHeightmapImage();
 		*/
-		for (int s = 0; s  < terrain->layers[3].superChunks.size(); s++) {
-			CSuperChunk* sc = terrain->layers[3].superChunks[s];
+		for (int s = 0; s  < terrain.layers[3].superChunks.size(); s++) {
+			CSuperChunk* sc = terrain.layers[3].superChunks[s];
 			if (sc->tmpIndex == i32vec3(2,1,1)) {
 				sc->removeAllChunks();
 
@@ -596,7 +606,7 @@ void C3DtestApp::keyCheck() {
 		physCube->bSphere.setRadius(35);
 		physCube->AABB.setSize(40, 40);*/
 		
-		terrain->createAllChunks();
+		terrain.createAllChunks();
 
 		EatKeys();
 	}
@@ -667,21 +677,21 @@ void C3DtestApp::onResize(int width, int height) {
 
 void C3DtestApp::draw() {
 	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
-	terrain->updateVisibleSClist(fpsCam);
+	terrain.updateVisibleSClist(fpsCam);
 
 	double t = Engine.Time.milliseconds();
 
-	mat4 mvp = Engine.getCurrentCamera()->clipMatrix * terrain->chunkOrigin;
+	mat4 mvp = Engine.getCurrentCamera()->clipMatrix * terrain.chunkOrigin;
 
 	//draw chunks
 	mat3 tmp;
 	Engine.Renderer.setShader(Engine.phongShader);
 	Engine.phongShader->setNormalModelToCameraMatrix(tmp); //why am I doing this?
 	Engine.phongShader->setMVP(mvp);
-	terrain->drawVisibleChunks();
+	//terrain.drawVisibleChunks();
 	
 
-	//Engine.drawModel(*tree);
+	
 
 	//draw grass
 	Engine.Renderer.setShader(grassShader);
@@ -698,9 +708,9 @@ void C3DtestApp::draw() {
 	Engine.phongShaderInstanced->setMVP(mvp);
 
 	glEnable(GL_PRIMITIVE_RESTART);
-	terrain->drawTrees(mvp, terrain->visibleSClist);
-
-	
+	//Engine.drawModel(*tree);
+	tree->drawNew();
+	//terrain.drawTrees(mvp, terrain.visibleSClist);
 	//drawGrass(mvp, terrain->visibleSClist);
 	glDisable(GL_PRIMITIVE_RESTART);
 
@@ -716,14 +726,14 @@ void C3DtestApp::draw() {
 		vec4 colour = vec4(0, 0, 0, 1);
 		vec3 cornerAdjust, opCornerAdjust;
 		Engine.Renderer.setShader(Engine.wireBoxShader);
-		for (int l = terrain->layers.size()-1; l > -1; l--) {
+		for (int l = terrain.layers.size()-1; l > -1; l--) {
 			vBuf::T3DnormVert box[2000]; //should be enough
 			int index = 0;
-			for (int s = 0; s < terrain->layers[l].superChunks.size(); s++) {
-				sc = terrain->layers[l].superChunks[s];
+			for (int s = 0; s < terrain.layers[l].superChunks.size(); s++) {
+				sc = terrain.layers[l].superChunks[s];
 				//if (sc->tmp) 
 				{
-					box[index].v = sc->nwWorldPos + terrain->layers[l].nwLayerPos;
+					box[index].v = sc->nwWorldPos + terrain.layers[l].nwLayerPos;
 					cornerAdjust = vec3(sc->faceBoundary[west], sc->faceBoundary[down], sc->faceBoundary[north]);
 					box[index].v += cornerAdjust * sc->chunkSize;
 
@@ -786,8 +796,8 @@ void C3DtestApp::advance(Tdirection direction) {
 	//vec3 pos = terrain->getPos();
 	//terrain->chunkOrigin[3] += vec4(movement, 0);
 
-	terrain->scrollTriggerPoint += vec3(movement);
-	vec3 pos = terrain->scrollTriggerPoint;
+	terrain.scrollTriggerPoint += vec3(movement);
+	vec3 pos = terrain.scrollTriggerPoint;
 
 
 	int chunkDist = cubesPerChunkEdge * cubeSize; //span of a chunk in world space
@@ -812,12 +822,12 @@ void C3DtestApp::advance(Tdirection direction) {
 		if (outsideChunkBoundary.z) {
 			pos.z = 0;
 		}
-		terrain->chunkOriginInt += dir;
+		terrain.chunkOriginInt += dir;
 
-		terrain->scrollTriggerPoint = pos;
-		vec3 translation =  vec3(terrain->chunkOriginInt *  cubesPerChunkEdge) * cubeSize ;
-		terrain->chunkOrigin[3] = vec4(translation, 1);
-		terrain->advance(direction); 
+		terrain.scrollTriggerPoint = pos;
+		vec3 translation =  vec3(terrain.chunkOriginInt *  cubesPerChunkEdge) * cubeSize ;
+		terrain.chunkOrigin[3] = vec4(translation, 1);
+		terrain.advance(direction); 
 		onTerrainAdvance(direction);
 	}
 }
@@ -829,7 +839,7 @@ void C3DtestApp::Update() {
 	if (skyDome)
 		skyDome->update(dT);
 
-	terrain->update();
+	terrain.update();
 
 	vec3 pos = Engine.getCurrentCamera()->getPos();
 
@@ -864,16 +874,16 @@ void C3DtestApp::Update() {
 			playerPhys->position = posMod;
 			;
 
-			vec3 translation = vec3(terrain->chunkOriginInt *  cubesPerChunkEdge) * cubeSize;
+			vec3 translation = vec3(terrain.chunkOriginInt *  cubesPerChunkEdge) * cubeSize;
 			//work out direction to scroll-in new terrain from
 			if (outsideChunkBoundary.x) {
 				if (pos.x > 0)
 					direction = east;
 				else
 					direction = west;
-				terrain->chunkOriginInt += dirToVec(flipDir(direction));
-				terrain->chunkOrigin[3] = vec4(chunkDist * vec3(terrain->chunkOriginInt), 1);
-				terrain->advance(direction);
+				terrain.chunkOriginInt += dirToVec(flipDir(direction));
+				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt), 1);
+				terrain.advance(direction);
 				//return;
 			}
 
@@ -882,9 +892,9 @@ void C3DtestApp::Update() {
 					direction = up;
 				else
 					direction = down;
-				terrain->chunkOriginInt += dirToVec(flipDir(direction));
-				terrain->chunkOrigin[3] = vec4(chunkDist * vec3(terrain->chunkOriginInt), 1);
-				terrain->advance(direction);
+				terrain.chunkOriginInt += dirToVec(flipDir(direction));
+				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt), 1);
+				terrain.advance(direction);
 				//return;
 			}
 
@@ -894,15 +904,16 @@ void C3DtestApp::Update() {
 					direction = south;
 				else
 					direction = north;
-				terrain->chunkOriginInt += dirToVec(flipDir(direction));
-				terrain->chunkOrigin[3] = vec4(chunkDist * vec3(terrain->chunkOriginInt) , 1);
-				terrain->advance(direction);
+				terrain.chunkOriginInt += dirToVec(flipDir(direction));
+				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt) , 1);
+				terrain.advance(direction);
 			}
 		}
 	}
 }
 
 /** Prepare a hollow shell of vertices to use in checks for empty chunks. */
+/*
 void C3DtestApp::initChunkShell() {
 	float vertsPerEdge = cubesPerChunkEdge + 1;
 	shellTotalVerts = std::pow(vertsPerEdge, 3) - std::pow(vertsPerEdge - 2, 3);
@@ -933,6 +944,7 @@ void C3DtestApp::initChunkShell() {
 	delete[] shell;
 	chunkShell->getMaterial()->setShader(chunkCheckShader);
 }
+*/
 
 /** Initialise a 3D grid of points to represent the cubes of a chunk in drawing. */
 void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
@@ -1038,11 +1050,11 @@ void C3DtestApp::updateHeightmapImage() {
 
 	heightmapImage->setTexture(*heightmapTex);
 	Engine.Renderer.setShader(terrain2texShader);
-	vec3 sampleCorner = terrain->layers[0].nwSampleCorner;
+	vec3 sampleCorner = terrain.layers[0].nwSampleCorner;
 	terrain2texShader->setNwSampleCorner(vec2(sampleCorner.x,sampleCorner.z));
 
 	//calculate scaling
-	float scale = (terrain->worldSize.x / terrain->worldUnitsPerSampleUnit) / heightmapTex->width;
+	float scale = (terrain.worldSize.x / terrain.worldUnitsPerSampleUnit) / heightmapTex->width;
 
 	terrain2texShader->setPixelScale(scale);
 
@@ -1075,15 +1087,15 @@ void C3DtestApp::initHeightFinder() {
 /** Generate a landscape centred on the given point. */
 void C3DtestApp::createTerrain(glm::vec2 & centre) {
 	//find the terrain height at this point
-	const float defaultStart = terrain->worldUnitsPerSampleUnit / 1000;
+	const float defaultStart = terrain.worldUnitsPerSampleUnit / 1000;
 	float height = findTerrainHeight(vec3(centre.x, -defaultStart ,centre.y));
-	terrain->setSampleCentre(vec3(centre.x, height, centre.y));
+	terrain.setSampleCentre(vec3(centre.x, height, centre.y));
 }
 
 /** Searching up from the given point in sample space, return the height at which terrain is first encountered. */
 float C3DtestApp::findTerrainHeight(glm::vec3& basePos) {
 	Engine.Renderer.setShader(terrainPointShader);
-	float offsetScale = 1 / terrain->worldUnitsPerSampleUnit ;
+	float offsetScale = 1 / terrain.worldUnitsPerSampleUnit ;
 	terrainPointShader->setOffsetScale(offsetScale);
 	vec3 startPos = basePos;
 	CBaseBuf* heightResultsBuf = Engine.createBuffer(); 
@@ -1111,7 +1123,7 @@ void C3DtestApp::initGrassFinding() {
 	//Create a buffer of evenly distributed random points for grass placement.
 	grassPoints = Engine.createBuffer();
 	std::vector <glm::vec2> points2D;
-	float LoD1chunkSize = terrain->LoD1cubeSize * cubesPerChunkEdge;
+	float LoD1chunkSize = terrain.LoD1cubeSize * cubesPerChunkEdge;
 	points2D = pois::generate_poisson(LoD1chunkSize, LoD1chunkSize, 7.0f /*0.25f*/, 10);
 	noGrassPoints = points2D.size();
 	std::vector < glm::vec3> points3D(noGrassPoints);
@@ -1141,11 +1153,11 @@ void C3DtestApp::initGrassFinding() {
 	dummy->storeIndex(&index, sizeof(index), 1);
 	dummy->storeLayout(3, 0, 0, 0); */
 
-	terrain->grassMultiBuf.setSize(grassBufSize);
+	terrain.grassMultiBuf.setSize(grassBufSize);
 //	terrain->grassMultiBuf.setInstanced(*dummy, 1);
 
-	terrain->grassMultiBuf.setInstanced(*tree->getBuffer(), 2);
-	terrain->grassMultiBuf.storeLayout(3, 3, 3, 0);
+	terrain.grassMultiBuf.setInstanced(*tree->getBuffer(), 2);
+	terrain.grassMultiBuf.storeLayout(3, 3, 3, 0);
 	
 	
 	//terrain->grassMultiBuf.storeLayout(3, 0, 0, 0);
@@ -1165,12 +1177,12 @@ void C3DtestApp::initGrassFinding() {
 /**	Create a selection of points on the terrain surface of this chunk where grass
 	can be drawn. */
 void C3DtestApp::findGrassPoints(Chunk & chunk) {
-	float chunkSize = terrain->LoD1cubeSize * terrain->cubesPerChunkEdge;
+	float chunkSize = terrain.LoD1cubeSize * terrain.cubesPerChunkEdge;
 	//load shader
 	Engine.Renderer.setShader(findPointHeightShader);
 	findPointHeightShader->setCurrentY(0);
 	findPointHeightShader->setSamplePosition(chunk.samplePos);
-	findPointHeightShader->setSampleScale(1.0f / terrain->worldUnitsPerSampleUnit);
+	findPointHeightShader->setSampleScale(1.0f / terrain.worldUnitsPerSampleUnit);
 	findPointHeightShader->setChunkLocaliser(glm::vec3(0));
 
 	//copy grasspoints
@@ -1201,11 +1213,11 @@ void C3DtestApp::findGrassPoints(Chunk & chunk) {
 		destBuf = swapBuf;
 	}
 
-	terrain->grassMultiBuf.copyBuf(*srcBuf, srcBuf->getBufSize());
-	chunk.grassId = terrain->grassMultiBuf.getLastId();
+	terrain.grassMultiBuf.copyBuf(*srcBuf, srcBuf->getBufSize());
+	chunk.grassId = terrain.grassMultiBuf.getLastId();
 
 	TDrawDetails* details = &chunk.grassDrawDetails;
-	terrain->grassMultiBuf.getElementData(chunk.grassId, details->vertStart, details->vertCount, details->childBufNo);
+	terrain.grassMultiBuf.getElementData(chunk.grassId, details->vertStart, details->vertCount, details->childBufNo);
 
 }
 
@@ -1214,8 +1226,8 @@ void C3DtestApp::findGrassPoints(Chunk & chunk) {
 
 
 C3DtestApp::~C3DtestApp() {
-	delete chunkCheckShader;
-	delete terrain;
+	
+	//delete terrain;
 	//TO DO: since these are created with Engine.getModel, engine should handle deletion.
 	//delete chunkShell;
 //	delete shaderChunkGrid;
