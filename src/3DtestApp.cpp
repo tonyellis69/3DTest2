@@ -51,12 +51,12 @@ void C3DtestApp::onStart() {
 
 	//position the default camera
 	
-	Engine.getCurrentCamera()->setPos(vec3(-36.8797, 208.289, -220.606));
+	Engine.getCurrentCamera()->setPos(vec3(-3, 300, 3));
 	Engine.getCurrentCamera()->lookAt(vec3(0.0746933, -0.291096, 0.953797));
 
 	//for centre/tree view
-	Engine.getCurrentCamera()->setPos(vec3(0.499624, 6.46961, 21.5411));
-	Engine.getCurrentCamera()->lookAt(vec3(0.0130739, -0.0538602, -0.998463));
+//	Engine.getCurrentCamera()->setPos(vec3(0.499624, 6.46961, 21.5411));
+//	Engine.getCurrentCamera()->lookAt(vec3(0.0130739, -0.0538602, -0.998463));
 
 
 	//Position FPS camera
@@ -90,7 +90,7 @@ void C3DtestApp::onStart() {
 	terrain.EXTfreeChunkModel.Set(&Engine, &CEngine::freeModel);
 	terrain.EXTcreateChunkMesh.Set(this, &C3DtestApp::createChunkMesh);
 
-	terrain.chunkDrawShader = Engine.phongShader;
+	terrain.chunkDrawShader = Engine.Renderer.phongShader;
 
 	
 	terrain.setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
@@ -125,7 +125,7 @@ void C3DtestApp::onStart() {
 	chunkShader = new ChunkShader();
 	chunkShader->feedbackVaryings[0] = "gl_Position";
 	chunkShader->feedbackVaryings[1] = "normal";
-	Engine.shaderList.push_back(chunkShader);
+	Engine.Renderer.shaderList.push_back(chunkShader);
 	chunkShader->load(vertex, dataPath + "chunk.vert");
 	chunkShader->load(geometry, dataPath + "chunk.geom");
 	chunkShader->attach();
@@ -160,10 +160,43 @@ void C3DtestApp::onStart() {
 	
 	
 	CFractalTree fractalTree;
+	/*
+	//standard tree:
 	fractalTree.setStemLength(7.0f, 0.2f);
 	fractalTree.setNumBranches(6,3);
 	fractalTree.setBranchAngle(30, 0.2f);
 	fractalTree.setStemRadius(0.6f);
+	fractalTree.setMaxStages(4);
+	fractalTree.setStemFaces(5);
+	fractalTree.setStageScale(0.6f);
+	fractalTree.setBranchType(split);
+	*/
+
+	/*
+	//work in progress lateral branching tree
+	fractalTree.setStemLength(7.0f, 0.2f);
+	fractalTree.setNumBranches(42, 3);
+	fractalTree.setBranchAngle(80, 0.1f);
+	fractalTree.setStemRadius(0.3f);
+	fractalTree.setMaxStages(2);
+	fractalTree.setStageScale(0.5f);
+	fractalTree.setStemFaces(5);
+	fractalTree.setBranchType(lateral);
+	*/
+
+	fractalTree.setLength(6.0f, 0.2f);
+	fractalTree.setMaxJoints(3);
+	fractalTree.setJointAngle(10, 0);
+	fractalTree.setNumBranches(4, 1);
+	fractalTree.setBranchAngle(30, 0.2f);
+	fractalTree.setStemRadius(0.2f);
+	fractalTree.setMaxStages(3);
+	fractalTree.setStemFaces(5);
+	fractalTree.setStageScale(0.6f);
+	fractalTree.setBranchType(split);
+	fractalTree.setNumLateralPoints(2);
+	fractalTree.setLeadingBranch(true);
+
 	fractalTree.create();
 	tree = Engine.createModel();
 	fractalTree.getModel(tree);
@@ -183,7 +216,7 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	chunkShader->setChunkCubeSize(chunk.cubeSize);
 
 
-	float LoDscale = float(1 << chunk.LoD - 1);
+	float LoDscale = float(1 << (chunk.LoD - 1));
 	chunkShader->setChunkLoDscale(LoDscale);
 	chunkShader->setChunkSamplePos(chunk.samplePos);
 	//chunkShader->setSamplesPerCube(terrain->sampleScale);
@@ -233,99 +266,12 @@ void C3DtestApp::createChunkMesh(Chunk& chunk) {
 	terrain.totalTris += (primitives * 3);
 }
 
-/** Return true if this superchunk doesn't intersect the terrain heightfield. */
-//TO DO: fast but too coarse, leaves cracks
-/*
-bool C3DtestApp::superChunkIsEmpty(CSuperChunk& SC) {
-	
-	//SCpassed++;
-	//return false;
 
-
-	Engine.Renderer.setShader(chunkCheckShader);
-	float chunkSampleStep = SC.chunkSize / terrain.worldUnitsPerSampleUnit;
-	float LoDscale = ( SC.sampleStep  ) /( cubesPerChunkEdge);
-	chunkCheckShader->setSampleCorner(SC.nwSamplePos);
-	chunkCheckShader->setLoDscale(LoDscale);
-
-	unsigned int primitives = Engine.drawModelCount(*chunkShell);
-
-	//TO DO: chunkshell is coarse, create a SCshell with more points
-	if ((primitives == 0)){ // ||  (primitives == shellTotalVerts * 3)) {
-		SCrejected++;
-		return true; //outside surface
-	}
-	SCpassed++;
-	SC.tmp = true;
-	return false;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//return false;
-//	if (SC.tmpIndex.y == 7)
-//		int b = 0;
-
-	//find the SC nw corner in sample space
-	vec3 SCsampleCorner = SC.nwSamplePos;
-	//return false;
-	//map this to the height map
-	SCsampleCorner = SCsampleCorner - terrain.layers[0].nwSampleCorner ;
-	float SCsampleStep = terrain.layers[terrain.layers.size() - SC.LoD].SCsampleStep;
-	float scale = (terrain.worldSize.x / terrain.worldUnitsPerSampleUnit) / heightmapTex->width;
-	vec3 heightMapPos = SCsampleCorner / scale;
-
-	//read pixels
-	uvec4 pixel = heightmapTex->getPixel(heightMapPos.x, heightMapPos.z);
-	float height = (float)pixel.r / 255.0f; //.68
-	float sampleVolumeHeight = terrain.worldSize.y / terrain.worldUnitsPerSampleUnit;
-	//does the height value fall inside the vertical space of this SC?
-	height = sampleVolumeHeight * height;
-	//return false;
-	if (height > SCsampleCorner.y   && height < (SCsampleCorner.y + SCsampleStep + 0.148f)) {
-		SCpassed++;
-		return false;
-	}
-
-	SCrejected++;
-	return true;
-}
-*/
-
-/** Return false if no side of this potential chunk is penetratedby the isosurface.*/
-/*
-bool C3DtestApp::chunkExists(vec3& sampleCorner, int LoD) {
-	return true;
-	//change to chunk test shader
-	Engine.Renderer.setShader(chunkCheckShader);
-	float LoDscale = LoD;
-	//load shader values
-	chunkCheckShader->setSampleCorner(sampleCorner);
-	chunkCheckShader->setLoDscale(LoDscale);
-
-	//Draw check grid 
-	unsigned int primitives = Engine.drawModelCount(*chunkShell);
-	if (primitives == 0)
-		return false;
-	if (primitives == shellTotalVerts * 3)
-		return false; //outside surface
-	return true;
-}
-*/
 
 
 void C3DtestApp::keyCheck() {
 	CCamera* currentCamera = Engine.getCurrentCamera();
-	float moveInc = dT * 1000.0; // 0.05125f;
+	float moveInc = float( dT * 1000.0); // 0.05125f;
 
 	if (KeyDown['R']) {
 		//cube->rotate(rot, glm::vec3(0, 0, 1));
@@ -362,11 +308,11 @@ void C3DtestApp::keyCheck() {
 
 
 		if (KeyDown['E']) {
-			currentCamera->yaw(yawAng * dT);
+			currentCamera->yaw(float(yawAng * dT));
 		}
 
 		if (KeyDown['T']) {
-			currentCamera->yaw(-yawAng *dT);
+			currentCamera->yaw(float(-yawAng *dT));
 		}
 
 		float rot = dT * 200.0f;
@@ -685,10 +631,10 @@ void C3DtestApp::draw() {
 
 	//draw chunks
 	mat3 tmp;
-	Engine.Renderer.setShader(Engine.phongShader);
-	Engine.phongShader->setNormalModelToCameraMatrix(tmp); //why am I doing this?
-	Engine.phongShader->setMVP(mvp);
-	//terrain.drawVisibleChunks();
+	Engine.Renderer.setShader(Engine.Renderer.phongShader);
+	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hNormalModelToCameraMatrix,tmp); //why am I doing this?
+	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP, mvp);
+	//terrain.drawVisibleChunks();/////////////////////////////
 	
 
 	
@@ -709,7 +655,10 @@ void C3DtestApp::draw() {
 
 	glEnable(GL_PRIMITIVE_RESTART);
 	//Engine.drawModel(*tree);
-	tree->drawNew();
+	
+	
+	tree->drawNew();////////////////////
+	
 	//terrain.drawTrees(mvp, terrain.visibleSClist);
 	//drawGrass(mvp, terrain->visibleSClist);
 	glDisable(GL_PRIMITIVE_RESTART);
@@ -760,10 +709,10 @@ void C3DtestApp::draw() {
 	}
 
 	if (!fpsOn) {
-		Engine.Renderer.setShader(Engine.phongShader);
+		Engine.Renderer.setShader(Engine.Renderer.phongShader);
 		mvp = Engine.getCurrentCamera()->clipMatrix * playerObject.pModel->worldMatrix;
-		Engine.phongShader->setMVP(mvp);
-		playerObject.pModel->drawNew();
+		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP,mvp);
+		//playerObject.pModel->drawNew();
 	}
 
 
@@ -1038,7 +987,7 @@ void C3DtestApp::initHeightmapGUI() {
 	terrain2texShader->create(dataPath + "terrain2tex");
 	terrain2texShader->getShaderHandles();
 	terrain2texShader->setType(userShader);
-	Engine.shaderList.push_back(terrain2texShader);
+	Engine.Renderer.shaderList.push_back(terrain2texShader);
 }
 
 /** Render the current terrain shader to our heightmap image. */
@@ -1067,7 +1016,7 @@ void C3DtestApp::updateHeightmapImage() {
 void C3DtestApp::initHeightFinder() {
 	terrainPointShader = new CTerrainPointShader();
 	terrainPointShader->feedbackVaryings[0] = "result";
-	Engine.shaderList.push_back(terrainPointShader);
+	Engine.Renderer.shaderList.push_back(terrainPointShader);
 	terrainPointShader->load(vertex,dataPath + "terrainPoint.vert");
 	terrainPointShader->attach();
 	terrainPointShader->setFeedbackData(1);
@@ -1138,7 +1087,7 @@ void C3DtestApp::initGrassFinding() {
 	//load the point finding shader
 	findPointHeightShader = new CFindPointHeightShader();
 	findPointHeightShader->feedbackVaryings[0] = "newPoint";
-	Engine.shaderList.push_back(findPointHeightShader);
+	Engine.Renderer.shaderList.push_back(findPointHeightShader);
 	findPointHeightShader->load(vertex, dataPath + "findPointHeight.vert");
 	findPointHeightShader->attach();
 	findPointHeightShader->setFeedbackData(1);
@@ -1169,7 +1118,7 @@ void C3DtestApp::initGrassFinding() {
 	grassShader->create(dataPath + "grass");
 	grassShader->getShaderHandles();
 	grassShader->setType(userShader);
-	Engine.shaderList.push_back(grassShader);
+	Engine.Renderer.shaderList.push_back(grassShader);
 
 
 }
