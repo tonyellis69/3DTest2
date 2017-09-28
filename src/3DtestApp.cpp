@@ -55,8 +55,8 @@ void C3DtestApp::onStart() {
 	Engine.getCurrentCamera()->lookAt(vec3(0.0746933, -0.291096, 0.953797));
 
 	//for centre/tree view
-//	Engine.getCurrentCamera()->setPos(vec3(0.499624, 6.46961, 21.5411));
-//	Engine.getCurrentCamera()->lookAt(vec3(0.0130739, -0.0538602, -0.998463));
+	Engine.getCurrentCamera()->setPos(vec3(0.499624, 6.46961, 21.5411));
+	Engine.getCurrentCamera()->lookAt(vec3(0.0130739, -0.0538602, -0.998463));
 
 
 	//Position FPS camera
