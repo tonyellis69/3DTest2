@@ -138,14 +138,13 @@ public:
 
 const float yawAng = 0.22f;
 const int cubesPerChunkEdge = 16;// 16; //8 ///<Number of cubes along a chunk edge
-const float cubeSize = 2.5;// 1;//  2.5f; ///<Size of cubes in worldspace.
 const int chunksPerSuperChunkEdge = 4;// 4;//8;
 
 const int terrainNoAttribs = 3;
 
 const float findHeightVerts = 100; ///<Number of verts findTerrainHeight checks at a time. 
 
-const unsigned int grassBufSize = 90000000;
+//const unsigned int grassBufSize = 90000000;
 //TO DO: this is waaaaaaaaaaaaaay too big, set to this value
 //when I was drawing masses of grass.
 

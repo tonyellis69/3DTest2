@@ -96,7 +96,7 @@ void C3DtestApp::onStart() {
 	terrain.setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
 
 	terrain.initChunkShell();
-	initChunkGrid(cubesPerChunkEdge);
+	terrain.initChunkGrid(cubesPerChunkEdge);
 
 	
 
@@ -122,22 +122,22 @@ void C3DtestApp::onStart() {
 	
 
 
-	chunkShader = new ChunkShader();
-	chunkShader->feedbackVaryings[0] = "gl_Position";
-	chunkShader->feedbackVaryings[1] = "normal";
-	Engine.Renderer.shaderList.push_back(chunkShader);
-	chunkShader->load(vertex, dataPath + "chunk.vert");
-	chunkShader->load(geometry, dataPath + "chunk.geom");
-	chunkShader->attach();
-	chunkShader->setFeedbackData(2);
-	chunkShader->link();
+	terrain.chunkShader = new ChunkShader();
+	terrain.chunkShader->feedbackVaryings[0] = "gl_Position";
+	terrain.chunkShader->feedbackVaryings[1] = "normal";
+	Engine.Renderer.shaderList.push_back(terrain.chunkShader);
+	terrain.chunkShader->load(vertex, dataPath + "chunk.vert");
+	terrain.chunkShader->load(geometry, dataPath + "chunk.geom");
+	terrain.chunkShader->attach();
+	terrain.chunkShader->setFeedbackData(2);
+	terrain.chunkShader->link();
 
 	//Upload data texture for chunk shader
-	triTableTex = Engine.createDataTexture(intTex, 16, 256, &triTable);
+	terrain.triTableTex = Engine.createDataTexture(intTex, 16, 256, &triTable);
 
-	Engine.Renderer.setShader(chunkShader);
-	chunkShader->getShaderHandles();
-	chunkShader->setChunkTriTable(*triTableTex);
+	Engine.Renderer.setShader(terrain.chunkShader);
+	terrain.chunkShader->getShaderHandles();
+	terrain.chunkShader->setChunkTriTable(*terrain.triTableTex);
 
 	skyDome = Engine.createSkyDome();
 
@@ -198,10 +198,10 @@ void C3DtestApp::onStart() {
 	fractalTree.setLeadingBranch(true);
 
 	fractalTree.create();
-	tree = Engine.createModel();
-	fractalTree.getModel(tree);
+	terrain.tree = Engine.createModel();
+	fractalTree.getModel(terrain.tree);
 
-	initGrassFinding();
+	terrain.initGrassFinding();
 	
 	return;
 }
@@ -634,17 +634,17 @@ void C3DtestApp::draw() {
 	Engine.Renderer.setShader(Engine.Renderer.phongShader);
 	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hNormalModelToCameraMatrix,tmp); //why am I doing this?
 	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP, mvp);
-	//terrain.drawVisibleChunks();/////////////////////////////
+	terrain.drawVisibleChunks();/////////////////////////////
 	
 
 	
 
 	//draw grass
-	Engine.Renderer.setShader(grassShader);
-	Engine.Renderer.attachTexture(0, *grassTex);
-	grassShader->setTextureUnit(0);
-	grassShader->setTime(Time);
-	grassShader->setMVP(mvp);
+	Engine.Renderer.setShader(terrain.grassShader);
+	Engine.Renderer.attachTexture(0, *terrain.grassTex);
+	terrain.grassShader->setTextureUnit(0);
+	terrain.grassShader->setTime(Time);
+	terrain.grassShader->setMVP(mvp);
 	//terrain->drawGrass(mvp, terrain->visibleSClist);
 
 
@@ -654,12 +654,12 @@ void C3DtestApp::draw() {
 	Engine.phongShaderInstanced->setMVP(mvp);
 
 	glEnable(GL_PRIMITIVE_RESTART);
-	//Engine.drawModel(*tree);
+	Engine.drawModel(*terrain.tree);
 	
 	
-	tree->drawNew();////////////////////
+	//tree->drawNew();////////////////////
 	
-	//terrain.drawTrees(mvp, terrain.visibleSClist);
+	terrain.drawTrees(mvp, terrain.visibleSClist);
 	//drawGrass(mvp, terrain->visibleSClist);
 	glDisable(GL_PRIMITIVE_RESTART);
 
@@ -712,7 +712,7 @@ void C3DtestApp::draw() {
 		Engine.Renderer.setShader(Engine.Renderer.phongShader);
 		mvp = Engine.getCurrentCamera()->clipMatrix * playerObject.pModel->worldMatrix;
 		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP,mvp);
-		//playerObject.pModel->drawNew();
+		playerObject.pModel->drawNew();
 	}
 
 
@@ -1111,7 +1111,7 @@ void C3DtestApp::initGrassFinding() {
 	
 	//terrain->grassMultiBuf.storeLayout(3, 0, 0, 0);
 
-	grassTex = Engine.Renderer.textureManager.getTexture(dataPath + "grassPack.dds");
+	terrain.grassTex = Engine.Renderer.textureManager.getTexture(dataPath + "grassPack.dds");
 
 	//load the grass drawing shader
 	grassShader = new CGrassShader();
