@@ -84,31 +84,30 @@ void C3DtestApp::onStart() {
 	tempFeedbackBuf = Engine.createBuffer();
 	tempFeedbackBuf->setSize(1000000);
 
-
-//	terrain.EXTsuperChunkIsEmpty.Set(this, &C3DtestApp::superChunkIsEmpty);
-//	terrain.EXTchunkExists.Set(this, &C3DtestApp::chunkExists);
 	terrain.EXTfreeChunkModel.Set(&Engine, &CEngine::freeModel);
-	terrain.EXTcreateChunkMesh.Set(this, &C3DtestApp::createChunkMesh);
+
 
 	terrain.chunkDrawShader = Engine.Renderer.phongShader;
 
-	
 	terrain.setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
-
-	terrain.initChunkShell();
-	terrain.initChunkGrid(cubesPerChunkEdge);
-
-	
-
-	initHeightFinder();
-
 	//terrain->createLayers(5120, 320, 2); //1280 320
 	//terrain->createLayers(1280, 320, 0);
 	terrain.createLayers(10000, 320, 2);
 	//terrain->createLayers(1280, 320, 0);
 	//terrain->createLayers(8, 2, 2); //(8, 3, 2); //(4,2,1);
 
-	createTerrain(vec2(6, 6)); //seem to get striations above 999
+	terrain.initChunkShell();
+	terrain.initChunkGrid(cubesPerChunkEdge);
+
+	
+
+	terrain.initHeightFinder();
+
+	
+	
+	
+
+	terrain.createTerrain(vec2(6, 6)); //seem to get striations above 999
 
 	initHeightmapGUI();
 	
@@ -184,12 +183,12 @@ void C3DtestApp::onStart() {
 	fractalTree.setBranchType(lateral);
 	*/
 
-	fractalTree.setLength(6.0f, 0.2f);
+	fractalTree.setLength(10.0f, 0.2f);
 	fractalTree.setMaxJoints(3);
-	fractalTree.setJointAngle(10, 0);
+	fractalTree.setJointAngle(5, 0);
 	fractalTree.setNumBranches(4, 1);
-	fractalTree.setBranchAngle(30, 0.2f);
-	fractalTree.setStemRadius(0.2f);
+	fractalTree.setBranchAngle(40, 0.2f);
+	fractalTree.setStemRadius(0.5f);
 	fractalTree.setMaxStages(3);
 	fractalTree.setStemFaces(5);
 	fractalTree.setStageScale(0.6f);
@@ -201,6 +200,7 @@ void C3DtestApp::onStart() {
 	terrain.tree = Engine.createModel();
 	fractalTree.getModel(terrain.tree);
 
+	terrain.initTreeFinding();
 	terrain.initGrassFinding();
 	
 	return;
@@ -208,63 +208,6 @@ void C3DtestApp::onStart() {
 
 
 
-/*  Create a mesh for this chunk, and register it with the renderer.  */
-void C3DtestApp::createChunkMesh(Chunk& chunk) {
-	chunkCall++;
-
-	Engine.Renderer.setShader(chunkShader);
-	chunkShader->setChunkCubeSize(chunk.cubeSize);
-
-
-	float LoDscale = float(1 << (chunk.LoD - 1));
-	chunkShader->setChunkLoDscale(LoDscale);
-	chunkShader->setChunkSamplePos(chunk.samplePos);
-	//chunkShader->setSamplesPerCube(terrain->sampleScale);
-
-	float samplesPerCube = cubeSize / terrain.worldUnitsPerSampleUnit;
-	chunkShader->setSamplesPerCube(samplesPerCube);
-
-	
-	chunkShader->setChunkTriTable(*triTableTex);
-	chunkShader->setChunkTerrainPos(chunk.terrainPos);
-
-	int vertsPerPrimitive = 3 * chunk.noAttribs;
-	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
-	int nVertsOut = cubesPerChunkEdge * cubesPerChunkEdge * cubesPerChunkEdge * maxMCverts;
-
-
-	CBaseBuf* terrainBuf = &terrain.multiBuf;
-	CBuf* srcBuf = &((CRenderModel*)shaderChunkGrid)->buf;
-	unsigned int primitives = Engine.acquireFeedbackVerts(*srcBuf, drawLinesAdjacency, *tempFeedbackBuf, drawTris);
-
-
-
-
-	if (primitives) {
-		int outSize = primitives * 3 * sizeof(vBuf::T3DnormVert);
-		totalbufsize += outSize;
-		totalchunks++;
-
-		terrainBuf->copyBuf(*tempFeedbackBuf, outSize);
-
-		chunk.id = terrainBuf->getLastId();
-		//terrainBuf->setBlockColour(chunk.id, (tmpRGBAtype&)chunk.colour);
-
-		TDrawDetails* details = &chunk.drawDetails;
-		terrainBuf->getElementData(chunk.id, details->vertStart, details->vertCount, details->childBufNo);
-		details->colour = chunk.colour;
-
-		if (chunk.LoD == 1)
-			findGrassPoints(chunk);
-	}
-	else
-		chunk.id = NULL;
-	chunk.status = chSkinned;
-
-
-
-	terrain.totalTris += (primitives * 3);
-}
 
 
 
@@ -276,7 +219,7 @@ void C3DtestApp::keyCheck() {
 	if (KeyDown['R']) {
 		//cube->rotate(rot, glm::vec3(0, 0, 1));
 		//chunkShader->recompile();
-		grassShader->recompile();
+		terrain.grassShader->recompile();
 		EatKeys();
 	}
 
@@ -645,7 +588,7 @@ void C3DtestApp::draw() {
 	terrain.grassShader->setTextureUnit(0);
 	terrain.grassShader->setTime(Time);
 	terrain.grassShader->setMVP(mvp);
-	//terrain->drawGrass(mvp, terrain->visibleSClist);
+	terrain.drawGrass(mvp, terrain.visibleSClist);
 
 
 	//draw trees
@@ -861,94 +804,7 @@ void C3DtestApp::Update() {
 	}
 }
 
-/** Prepare a hollow shell of vertices to use in checks for empty chunks. */
-/*
-void C3DtestApp::initChunkShell() {
-	float vertsPerEdge = cubesPerChunkEdge + 1;
-	shellTotalVerts = std::pow(vertsPerEdge, 3) - std::pow(vertsPerEdge - 2, 3);
-	vec3* shell = new vec3[shellTotalVerts];
-	int v = 0;
-	for (int y = 0; y < vertsPerEdge; y++) {
-		for (int x = 0; x < vertsPerEdge; x++) {
-			shell[v++] = vec3(x, y, 0);
-			shell[v++] = vec3(x, y, cubesPerChunkEdge);
-		}
-		for (int z = 1; z < cubesPerChunkEdge; z++) {
-			shell[v++] = vec3(0, y, z);
-			shell[v++] = vec3(cubesPerChunkEdge, y, z);
-		}
-	}
 
-	for (int x = 1; x < cubesPerChunkEdge; x++) {
-		for (int z = 1; z < cubesPerChunkEdge; z++) {
-			shell[v++] = vec3(x, 0,z);
-			shell[v++] = vec3(x, cubesPerChunkEdge,z);
-		}
-	}
-
-	chunkShell = Engine.createModel();
-	chunkShell->setDrawMode( drawPoints);
-	chunkShell->storeVertexes(shell, sizeof(vec3), v);
-	chunkShell->storeLayout(3, 0, 0, 0);
-	delete[] shell;
-	chunkShell->getMaterial()->setShader(chunkCheckShader);
-}
-*/
-
-/** Initialise a 3D grid of points to represent the cubes of a chunk in drawing. */
-void C3DtestApp::initChunkGrid(int cubesPerChunkEdge) {
-	int vertsPerEdge = cubesPerChunkEdge + 1;
-	int noVerts = vertsPerEdge * vertsPerEdge * vertsPerEdge;
-	vec3* shaderChunkVerts = new vec3[noVerts];
-	int i = 0;
-	for (float y = 0; y < vertsPerEdge; y++) {
-		for (float z = 0; z < vertsPerEdge; z++) {
-			for (float x = 0; x < vertsPerEdge; x++) {
-				shaderChunkVerts[i++] = vec3(x, y, z);
-			}
-		}
-	}
-
-
-	//create an index that creates a bottom square for each cube in the grid
-	int noIndices = cubesPerChunkEdge * cubesPerChunkEdge *cubesPerChunkEdge * 5;
-
-	unsigned short layer = vertsPerEdge * vertsPerEdge;
-	unsigned int* index = new unsigned int[noIndices];
-	i = 0;
-	unsigned short vertNo = 0;
-	do {
-		index[i++] = vertNo;
-		index[i++] = vertNo + 1;
-		index[i++] = vertNo + 1 + layer;
-		index[i++] = vertNo + layer;
-
-
-		index[i++] = 65535; //signals the end of this line sequence
-
-		vertNo++;
-		if (((vertNo + 1) % vertsPerEdge) == 0)
-			vertNo++;
-		if ((vertNo % layer) == (vertsPerEdge * (vertsPerEdge - 1)))
-			vertNo += vertsPerEdge;
-
-	} while (i < noIndices);
-
-	shaderChunkGrid = Engine.createModel();
-
-	shaderChunkGrid->setDrawMode(drawLinesAdjacency);
-
-	//Engine.(&shaderChunkGrid,shaderChunkVerts,index);
-	//Engine.setVertexDetails(shaderChunkGrid, 1, noIndices, noVerts);
-	//Engine.storeIndexedModel(shaderChunkGrid,shaderChunkVerts,noVerts, index);
-
-	shaderChunkGrid->storeVertexes(shaderChunkVerts, sizeof(vec3), noVerts);
-	shaderChunkGrid->storeIndex(index, noIndices);
-	shaderChunkGrid->storeLayout(3, 0, 0, 0);
-
-	delete[] shaderChunkVerts;
-	delete[] index;
-}
 
 /** Create a model for drawing superChunk positions in wireframe. */
 void C3DtestApp::initWireSCs() {
@@ -1012,163 +868,8 @@ void C3DtestApp::updateHeightmapImage() {
 	
 }
 
-/** Initialise shader and buffer required to run a terrain height-finding query. */
-void C3DtestApp::initHeightFinder() {
-	terrainPointShader = new CTerrainPointShader();
-	terrainPointShader->feedbackVaryings[0] = "result";
-	Engine.Renderer.shaderList.push_back(terrainPointShader);
-	terrainPointShader->load(vertex,dataPath + "terrainPoint.vert");
-	terrainPointShader->attach();
-	terrainPointShader->setFeedbackData(1);
-	terrainPointShader->link();
-	terrainPointShader->getShaderHandles();
-
-	//create verts
-	vec3* v = new vec3[findHeightVerts];
-	for (int x = 0; x < findHeightVerts; x++)
-		v[x] = vec3(0, x, 0);
-
-	heightFinderBuf.storeVertexes(v, sizeof(vec3) * findHeightVerts, findHeightVerts);
-	heightFinderBuf.storeLayout(3, 0, 0, 0);
-	delete v;
-}
-
-/** Generate a landscape centred on the given point. */
-void C3DtestApp::createTerrain(glm::vec2 & centre) {
-	//find the terrain height at this point
-	const float defaultStart = terrain.worldUnitsPerSampleUnit / 1000;
-	float height = findTerrainHeight(vec3(centre.x, -defaultStart ,centre.y));
-	terrain.setSampleCentre(vec3(centre.x, height, centre.y));
-}
-
-/** Searching up from the given point in sample space, return the height at which terrain is first encountered. */
-float C3DtestApp::findTerrainHeight(glm::vec3& basePos) {
-	Engine.Renderer.setShader(terrainPointShader);
-	float offsetScale = 1 / terrain.worldUnitsPerSampleUnit ;
-	terrainPointShader->setOffsetScale(offsetScale);
-	vec3 startPos = basePos;
-	CBaseBuf* heightResultsBuf = Engine.createBuffer(); 
-	heightResultsBuf->setSize(sizeof(float) * findHeightVerts);
-
-	float* heightResults = new float[findHeightVerts];
-	float terrainHeight = 0;; const float MCvertexTest = 0.5f;
-	
-	for (int step = 0; step < 100; step++) {
-		terrainPointShader->setSampleBase(startPos);
-		Engine.acquireFeedbackVerts(heightFinderBuf, drawPoints, *heightResultsBuf, drawPoints);
-		heightResultsBuf->getData((unsigned char*)heightResults, sizeof(float) * findHeightVerts);
-		for (int r = 0; r < findHeightVerts; r++) {
-			if (heightResults[r] < MCvertexTest) 
-				terrainHeight = startPos.y + (r * offsetScale);
-		}
-		startPos.y += findHeightVerts * offsetScale;
-	}
-	delete heightResults;
-	return terrainHeight;
-}
-
-/** Do the necessary setup for finding grass placement points on chunks. */
-void C3DtestApp::initGrassFinding() {
-	//Create a buffer of evenly distributed random points for grass placement.
-	grassPoints = Engine.createBuffer();
-	std::vector <glm::vec2> points2D;
-	float LoD1chunkSize = terrain.LoD1cubeSize * cubesPerChunkEdge;
-	points2D = pois::generate_poisson(LoD1chunkSize, LoD1chunkSize, 7.0f /*0.25f*/, 10);
-	noGrassPoints = points2D.size();
-	std::vector < glm::vec3> points3D(noGrassPoints);
-	for (int p = 0; p < noGrassPoints; p++) {
-		points3D[p].x = points2D[p].x;
-		points3D[p].z = points2D[p].y;
-		points3D[p].y = -FLT_MAX;
-	}
-	grassPoints->storeVertexes(points3D.data(), sizeof(glm::vec3) * noGrassPoints, noGrassPoints);
-	grassPoints->storeLayout(3, 0, 0, 0);
-
-	//load the point finding shader
-	findPointHeightShader = new CFindPointHeightShader();
-	findPointHeightShader->feedbackVaryings[0] = "newPoint";
-	Engine.Renderer.shaderList.push_back(findPointHeightShader);
-	findPointHeightShader->load(vertex, dataPath + "findPointHeight.vert");
-	findPointHeightShader->attach();
-	findPointHeightShader->setFeedbackData(1);
-	findPointHeightShader->link();
-	findPointHeightShader->getShaderHandles();
 
 
-/*	CBaseBuf* dummy = Engine.createBuffer();
-	vec3 v(1);
-	unsigned short index = 0;
-	dummy->storeVertexes(&v, sizeof(vec3), 1);
-	dummy->storeIndex(&index, sizeof(index), 1);
-	dummy->storeLayout(3, 0, 0, 0); */
-
-	terrain.grassMultiBuf.setSize(grassBufSize);
-//	terrain->grassMultiBuf.setInstanced(*dummy, 1);
-
-	terrain.grassMultiBuf.setInstanced(*tree->getBuffer(), 2);
-	terrain.grassMultiBuf.storeLayout(3, 3, 3, 0);
-	
-	
-	//terrain->grassMultiBuf.storeLayout(3, 0, 0, 0);
-
-	terrain.grassTex = Engine.Renderer.textureManager.getTexture(dataPath + "grassPack.dds");
-
-	//load the grass drawing shader
-	grassShader = new CGrassShader();
-	grassShader->create(dataPath + "grass");
-	grassShader->getShaderHandles();
-	grassShader->setType(userShader);
-	Engine.Renderer.shaderList.push_back(grassShader);
-
-
-}
-
-/**	Create a selection of points on the terrain surface of this chunk where grass
-	can be drawn. */
-void C3DtestApp::findGrassPoints(Chunk & chunk) {
-	float chunkSize = terrain.LoD1cubeSize * terrain.cubesPerChunkEdge;
-	//load shader
-	Engine.Renderer.setShader(findPointHeightShader);
-	findPointHeightShader->setCurrentY(0);
-	findPointHeightShader->setSamplePosition(chunk.samplePos);
-	findPointHeightShader->setSampleScale(1.0f / terrain.worldUnitsPerSampleUnit);
-	findPointHeightShader->setChunkLocaliser(glm::vec3(0));
-
-	//copy grasspoints
-	CBaseBuf* pointBuf = Engine.createBuffer();
-	pointBuf->setSize(noGrassPoints * sizeof(glm::vec3));
-	pointBuf->copyBuf(*grassPoints, noGrassPoints * sizeof(glm::vec3));
-
-
-	CBaseBuf* outBuf = Engine.createBuffer();
-	outBuf->setSize(noGrassPoints * sizeof(glm::vec3));
-	outBuf->setNoVerts(noGrassPoints);
-	outBuf->storeLayout(3, 0, 0, 0);
-	
-	//draw chunk using transform feedback
-	int points = Engine.acquireFeedbackVerts(*pointBuf, drawPoints, *outBuf, drawPoints);
-
-	//loop
-	CBaseBuf* srcBuf = outBuf; CBaseBuf* destBuf = pointBuf; CBaseBuf* swapBuf;
-	float stepHeight = chunkSize / 16;
-	for (int step = 1; step <= 16; step++) {
-		if (step == 16)
-			findPointHeightShader->setChunkLocaliser(chunk.terrainPos);
-		findPointHeightShader->setCurrentY( step * stepHeight);
-		int noPrimitives = Engine.acquireFeedbackVerts(*srcBuf, drawPoints, *destBuf, drawPoints);
-		//feed points back into shader
-		swapBuf = srcBuf;
-		srcBuf = destBuf;
-		destBuf = swapBuf;
-	}
-
-	terrain.grassMultiBuf.copyBuf(*srcBuf, srcBuf->getBufSize());
-	chunk.grassId = terrain.grassMultiBuf.getLastId();
-
-	TDrawDetails* details = &chunk.grassDrawDetails;
-	terrain.grassMultiBuf.getElementData(chunk.grassId, details->vertStart, details->vertCount, details->childBufNo);
-
-}
 
 
 

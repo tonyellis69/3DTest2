@@ -7,14 +7,22 @@
 using namespace glm;
 
 CGameTerrain::CGameTerrain() {
-	//load chunkCheck shader
-	chunkCheckShader = new ChunkCheckShader();
-	chunkCheckShader->create(pRenderer->dataPath + "chunkCheck");
-	chunkCheckShader->getShaderHandles();
+	loadShaders();
+
+	
 
 	tempFeedbackBuf = pRenderer->createBuffer();
 	tempFeedbackBuf->setSize(1000000);
 }
+
+/** Generate a landscape centred on the given point. */
+void CGameTerrain::createTerrain(glm::vec2 & centre) {
+	//find the terrain height at this point
+	const float defaultStart = worldUnitsPerSampleUnit / 1000;
+	float height = findTerrainHeight(vec3(centre.x, -defaultStart, centre.y));
+	setSampleCentre(vec3(centre.x, height, centre.y));
+}
+
 
 /** Prepare a hollow shell of vertices to use in checks for empty chunks. */
 void CGameTerrain::initChunkShell() {
@@ -208,8 +216,10 @@ void CGameTerrain::createChunkMesh(Chunk& chunk) {
 		terrainBuf->getElementData(chunk.id, details->vertStart, details->vertCount, details->childBufNo);
 		details->colour = chunk.colour;
 
-		if (chunk.LoD == 1)
+		if (chunk.LoD == 1) {
+			findTreePoints(chunk);
 			findGrassPoints(chunk);
+		}
 	}
 	else
 		chunk.id = NULL;
@@ -224,30 +234,8 @@ void CGameTerrain::createChunkMesh(Chunk& chunk) {
 /** Do the necessary setup for finding grass placement points on chunks. */
 void CGameTerrain::initGrassFinding() {
 	//Create a buffer of evenly distributed random points for grass placement.
-	grassPoints = pRenderer->createBuffer();
-	std::vector <glm::vec2> points2D;
-	float LoD1chunkSize = LoD1cubeSize * cubesPerChunkEdge;
-	points2D = pois::generate_poisson(LoD1chunkSize, LoD1chunkSize, 7.0f /*0.25f*/, 10);
-	noGrassPoints = points2D.size();
-	std::vector < glm::vec3> points3D(noGrassPoints);
-	for (int p = 0; p < noGrassPoints; p++) {
-		points3D[p].x = points2D[p].x;
-		points3D[p].z = points2D[p].y;
-		points3D[p].y = -FLT_MAX;
-	}
-	grassPoints->storeVertexes(points3D.data(), sizeof(glm::vec3) * noGrassPoints, noGrassPoints);
-	grassPoints->storeLayout(3, 0, 0, 0);
-
-	//load the point finding shader
-	findPointHeightShader = new CFindPointHeightShader();
-	findPointHeightShader->feedbackVaryings[0] = "newPoint";
-	pRenderer->shaderList.push_back(findPointHeightShader);
-	findPointHeightShader->load(vertex, pRenderer->dataPath + "findPointHeight.vert");
-	findPointHeightShader->attach();
-	findPointHeightShader->setFeedbackData(1);
-	findPointHeightShader->link();
-	findPointHeightShader->getShaderHandles();
-
+	grassPoints = createHeightPoints(0.25f);
+	noGrassPoints = grassPoints->getNoVerts();
 
 	/*	CBaseBuf* dummy = Engine.createBuffer();
 	vec3 v(1);
@@ -259,44 +247,96 @@ void CGameTerrain::initGrassFinding() {
 	grassMultiBuf.setSize(grassBufSize);
 	//	terrain->grassMultiBuf.setInstanced(*dummy, 1);
 
-	grassMultiBuf.setInstanced(*tree->getBuffer(), 2);
-	grassMultiBuf.storeLayout(3, 3, 3, 0);
+	//grassMultiBuf.setInstanced(*tree->getBuffer(), 2);
+	//grassMultiBuf.storeLayout(3, 3, 3, 0);
 
 
-	//terrain->grassMultiBuf.storeLayout(3, 0, 0, 0);
-
-	grassTex = pRenderer->textureManager.getTexture(pRenderer->dataPath + "grassPack.dds");
-
-	//load the grass drawing shader
-	grassShader = new CGrassShader();
-	grassShader->create(pRenderer->dataPath + "grass");
-	grassShader->getShaderHandles();
-	grassShader->setType(userShader);
-	pRenderer->shaderList.push_back(grassShader);
-
-
+	grassMultiBuf.storeLayout(3, 0, 0, 0);
 }
 
-/**	Create a selection of points on the terrain surface of this chunk where grass
-can be drawn. */
+
+/** Do the necessary setup for finding tree placement points on chunks. */
+void CGameTerrain::initTreeFinding() {
+	//Create a buffer of evenly distributed random points for tree placement.
+	treePoints = createHeightPoints(2.0f);
+	noTreePoints = treePoints->getNoVerts();
+
+	treeMultiBuf.setSize(treeBufSize);
+
+	treeMultiBuf.setInstanced(*tree->getBuffer(), 2);
+	treeMultiBuf.storeLayout(3, 3, 3, 0);
+}
+
+
+
+/** Create a buffer full of random points evenly distributed over the area of a LoD1 chunk. */
+CBaseBuf* CGameTerrain::createHeightPoints(float proximity) {
+	CBaseBuf* points = pRenderer->createBuffer();
+	std::vector <glm::vec2> points2D;
+	float LoD1chunkSize = LoD1cubeSize * cubesPerChunkEdge;
+	points2D = pois::generate_poisson(LoD1chunkSize, LoD1chunkSize, proximity, 10);
+	int noPoints = points2D.size();
+	std::vector < glm::vec3> points3D(noPoints);
+	for (int p = 0; p < noPoints; p++) {
+		points3D[p].x = points2D[p].x;
+		points3D[p].z = points2D[p].y;
+		points3D[p].y = -FLT_MAX;
+	}
+	points->storeVertexes(points3D.data(), sizeof(glm::vec3) * noPoints, noPoints);
+	points->storeLayout(3, 0, 0, 0);
+	return points;
+}
+
+
+/**	Create a selection of points on the terrain surface of this chunk where trees can be drawn. */
+void CGameTerrain::findTreePoints(Chunk & chunk) {
+	CBaseBuf* mappedPoints = createSurfacePoints(treePoints, chunk);
+
+	mappedPoints = cullPoints(mappedPoints, chunk, 1);
+
+	treeMultiBuf.copyBuf(*mappedPoints,mappedPoints->getBufSize());
+	chunk.treeId = treeMultiBuf.getLastId();
+
+	TDrawDetails* details = &chunk.treeDrawDetails;
+	treeMultiBuf.getElementData(chunk.treeId, details->vertStart, details->vertCount, details->childBufNo);
+} 
+
+/**	Create a selection of points on the terrain surface of this chunk where grass can be drawn. */
 void CGameTerrain::findGrassPoints(Chunk & chunk) {
+	CBaseBuf* mappedPoints = createSurfacePoints(grassPoints, chunk);
+
+	mappedPoints = cullPoints(mappedPoints, chunk, 2);
+
+	grassMultiBuf.copyBuf(*mappedPoints, mappedPoints->getBufSize());
+	chunk.grassId = grassMultiBuf.getLastId();
+
+	TDrawDetails* details = &chunk.grassDrawDetails;
+	grassMultiBuf.getElementData(chunk.grassId, details->vertStart, details->vertCount, details->childBufNo);
+}
+
+
+
+
+/** Return a buffer of the given xz points, elevated to the surface of the given chunk. */
+CBaseBuf* CGameTerrain::createSurfacePoints(CBaseBuf* xzPoints, Chunk& chunk) {
 	float chunkSize = LoD1cubeSize * cubesPerChunkEdge;
-	//load shader
+
 	pRenderer->setShader(findPointHeightShader);
 	findPointHeightShader->setCurrentY(0);
 	findPointHeightShader->setSamplePosition(chunk.samplePos);
 	findPointHeightShader->setSampleScale(1.0f / worldUnitsPerSampleUnit);
 	findPointHeightShader->setChunkLocaliser(glm::vec3(0));
 
-	//copy grasspoints
+	//copy points
+	int noPoints = xzPoints->getNoVerts();
 	CBaseBuf* pointBuf = pRenderer->createBuffer();
-	pointBuf->setSize(noGrassPoints * sizeof(glm::vec3));
-	pointBuf->copyBuf(*grassPoints, noGrassPoints * sizeof(glm::vec3));
+	pointBuf->setSize(noPoints * sizeof(glm::vec3));
+	pointBuf->copyBuf(*xzPoints, noPoints * sizeof(glm::vec3));
 
 
 	CBaseBuf* outBuf = pRenderer->createBuffer();
-	outBuf->setSize(noGrassPoints * sizeof(glm::vec3));
-	outBuf->setNoVerts(noGrassPoints);
+	outBuf->setSize(noPoints * sizeof(glm::vec3));
+	outBuf->setNoVerts(noPoints);
 	outBuf->storeLayout(3, 0, 0, 0);
 
 	//draw chunk using transform feedback
@@ -315,16 +355,121 @@ void CGameTerrain::findGrassPoints(Chunk & chunk) {
 		srcBuf = destBuf;
 		destBuf = swapBuf;
 	}
+	//TO DO: look into freeing up some of these buffers!
 
-	grassMultiBuf.copyBuf(*srcBuf, srcBuf->getBufSize());
-	chunk.grassId = grassMultiBuf.getLastId();
+	return srcBuf;
+}
 
-	TDrawDetails* details = &chunk.grassDrawDetails;
-	grassMultiBuf.getElementData(chunk.grassId, details->vertStart, details->vertCount, details->childBufNo);
+/** Remove some of the points in the given point field, to create a more organic pattern. */
+CBaseBuf * CGameTerrain::cullPoints(CBaseBuf * points, Chunk & chunk, int mode) {
+
+	int noPoints = points->getNoVerts();
+	CBaseBuf* outBuf = pRenderer->createBuffer();
+	outBuf->setSize(noPoints * sizeof(glm::vec3));
+	outBuf->setNoVerts(noPoints);
+	outBuf->storeLayout(3, 0, 0, 0);
+
+	float sampleScale = 1 / worldUnitsPerSampleUnit;
+
+	pRenderer->setShader(cullPointsShader);
+	cullPointsShader->setShaderValue(hSampleOffset, sampleOffset);
+	cullPointsShader->setShaderValue(hSampleScale, sampleScale);
+	cullPointsShader->setShaderValue(hMode, mode);
+
+	//draw chunk using transform feedback
+	int nPoints = pRenderer->getGeometryFeedback((CBuf&)*points, drawLines, (CBuf&)*outBuf, drawPoints);
+
+
+	return outBuf;
+}
+
+/** Initialise shader and buffer required to run a terrain height-finding query. */
+void CGameTerrain::initHeightFinder() {
+
+
+	//create verts
+	vec3* v = new vec3[findHeightVerts];
+	for (int x = 0; x < findHeightVerts; x++)
+		v[x] = vec3(0, x, 0);
+
+	heightFinderBuf.storeVertexes(v, sizeof(vec3) * findHeightVerts, findHeightVerts);
+	heightFinderBuf.storeLayout(3, 0, 0, 0);
+	delete v;
+}
+
+void CGameTerrain::loadShaders() {
+	//load chunkCheck shader
+	chunkCheckShader = new ChunkCheckShader();
+	chunkCheckShader->create(pRenderer->dataPath + "chunkCheck");
+	chunkCheckShader->getShaderHandles();
+
+	//load the point finding shader
+	findPointHeightShader = new CFindPointHeightShader();
+	findPointHeightShader->feedbackVaryings[0] = "newPoint";
+	pRenderer->shaderList.push_back(findPointHeightShader);
+	findPointHeightShader->load(vertex, pRenderer->dataPath + "findPointHeight.vert");
+	findPointHeightShader->attach();
+	findPointHeightShader->setFeedbackData(1);
+	findPointHeightShader->link();
+	findPointHeightShader->getShaderHandles();
+
+	grassTex = pRenderer->textureManager.getTexture(pRenderer->dataPath + "grassPack.dds");
+
+	//load the grass drawing shader
+	grassShader = new CGrassShader();
+	grassShader->create(pRenderer->dataPath + "grass");
+	grassShader->getShaderHandles();
+	grassShader->setType(userShader);
+	pRenderer->shaderList.push_back(grassShader);
+
+	//load terrain surface point shader
+	terrainPointShader = new CTerrainPointShader();
+	terrainPointShader->feedbackVaryings[0] = "result";
+	pRenderer->shaderList.push_back(terrainPointShader);
+	terrainPointShader->load(vertex, pRenderer->dataPath + "terrainPoint.vert");
+	terrainPointShader->attach();
+	terrainPointShader->setFeedbackData(1);
+	terrainPointShader->link();
+	terrainPointShader->getShaderHandles();
+
+	//load heightpoint culling shader
+	char* feedbackStrs[1];
+	feedbackStrs[0] = "gl_Position";
+	cullPointsShader = pRenderer->createShader(pRenderer->dataPath + "cullPoints", feedbackStrs,1);
+	cullPointsShader->setType(userShader);
+
+	pRenderer->setShader(cullPointsShader);
+	hSampleOffset = cullPointsShader->getUniformHandle("sampleOffset");
+	hSampleScale = cullPointsShader->getUniformHandle("sampleScale");
+	hMode = cullPointsShader->getUniformHandle("mode");
 
 }
 
+float CGameTerrain::findTerrainHeight(glm::vec3& basePos) {
+	pRenderer->setShader(terrainPointShader);
+	float offsetScale = 1 / worldUnitsPerSampleUnit;
+	terrainPointShader->setOffsetScale(offsetScale);
+	vec3 startPos = basePos;
+	CBaseBuf* heightResultsBuf = pRenderer->createBuffer();
+	heightResultsBuf->setSize(sizeof(float) * findHeightVerts);
 
+	float* heightResults = new float[findHeightVerts];
+	float terrainHeight = 0;; const float MCvertexTest = 0.5f;
+
+	for (int step = 0; step < 100; step++) {
+		terrainPointShader->setSampleBase(startPos);
+		pRenderer->getGeometryFeedback(heightFinderBuf, drawPoints,(CBuf&) *heightResultsBuf, drawPoints);
+
+		heightResultsBuf->getData((unsigned char*)heightResults, sizeof(float) * findHeightVerts);
+		for (int r = 0; r < findHeightVerts; r++) {
+			if (heightResults[r] < MCvertexTest)
+				terrainHeight = startPos.y + (r * offsetScale);
+		}
+		startPos.y += findHeightVerts * offsetScale;
+	}
+	delete heightResults;
+	return terrainHeight;
+}
 
 CGameTerrain::~CGameTerrain() {
 	delete chunkCheckShader;

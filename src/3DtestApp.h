@@ -13,7 +13,7 @@
 #include "chunkShader.h"
 
 #include "terrain2texShader.h"
-#include "terrainPointShader.h"
+//#include "terrainPointShader.h"
 #include "findPointHeightShader.h"
 #include "grassShader.h"
 
@@ -39,23 +39,12 @@ public:
 	void advance(Tdirection direction);
 	void Update();
 	
-	void createChunkMesh(Chunk& chunk);
-	//bool superChunkIsEmpty(CSuperChunk& SC);
-	//bool chunkExists(glm::vec3& sampleCorner, int LoD);
-	//void initChunkShell();
-	void initChunkGrid(int cubesPerChunkEdge);
 	void initWireSCs();
 	void onTerrainAdvance(Tdirection direction);
 
 	void initHeightmapGUI();
 	void updateHeightmapImage();
 
-	void initHeightFinder();
-
-	void createTerrain(glm::vec2& centre);
-	float findTerrainHeight(glm::vec3 & basePos);
-	void initGrassFinding();
-	void findGrassPoints(Chunk& chunk);
 
 
 
@@ -117,8 +106,8 @@ public:
 
 	int SCpassed, SCrejected;
 
-	CTerrainPointShader* terrainPointShader;
-	CBuf heightFinderBuf;
+	//CTerrainPointShader* terrainPointShader;
+	//CBuf heightFinderBuf;
 
 	CBaseBuf* grassPoints; ///<A 2D buffer for potential grass placement.
 	unsigned int noGrassPoints;
@@ -142,7 +131,6 @@ const int chunksPerSuperChunkEdge = 4;// 4;//8;
 
 const int terrainNoAttribs = 3;
 
-const float findHeightVerts = 100; ///<Number of verts findTerrainHeight checks at a time. 
 
 //const unsigned int grassBufSize = 90000000;
 //TO DO: this is waaaaaaaaaaaaaay too big, set to this value
