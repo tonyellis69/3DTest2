@@ -121,22 +121,7 @@ void C3DtestApp::onStart() {
 	
 
 
-	terrain.chunkShader = new ChunkShader();
-	terrain.chunkShader->feedbackVaryings[0] = "gl_Position";
-	terrain.chunkShader->feedbackVaryings[1] = "normal";
-	Engine.Renderer.shaderList.push_back(terrain.chunkShader);
-	terrain.chunkShader->load(vertex, dataPath + "chunk.vert");
-	terrain.chunkShader->load(geometry, dataPath + "chunk.geom");
-	terrain.chunkShader->attach();
-	terrain.chunkShader->setFeedbackData(2);
-	terrain.chunkShader->link();
-
-	//Upload data texture for chunk shader
-	terrain.triTableTex = Engine.createDataTexture(intTex, 16, 256, &triTable);
-
-	Engine.Renderer.setShader(terrain.chunkShader);
-	terrain.chunkShader->getShaderHandles();
-	terrain.chunkShader->setChunkTriTable(*terrain.triTableTex);
+	
 
 	skyDome = Engine.createSkyDome();
 
@@ -189,7 +174,7 @@ void C3DtestApp::onStart() {
 	fractalTree.setNumBranches(4, 1);
 	fractalTree.setBranchAngle(40, 0.2f);
 	fractalTree.setStemRadius(0.5f);
-	fractalTree.setMaxStages(3);
+	fractalTree.setMaxStages(4);
 	fractalTree.setStemFaces(5);
 	fractalTree.setStageScale(0.6f);
 	fractalTree.setBranchType(split);
@@ -597,7 +582,7 @@ void C3DtestApp::draw() {
 	Engine.phongShaderInstanced->setMVP(mvp);
 
 	glEnable(GL_PRIMITIVE_RESTART);
-	Engine.drawModel(*terrain.tree);
+//	Engine.drawModel(*terrain.tree);
 	
 	
 	//tree->drawNew();////////////////////

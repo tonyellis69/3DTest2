@@ -127,8 +127,8 @@ bool CGameTerrain::superChunkIsEmpty(CSuperChunk & SC) {
 	pRenderer->setShader(chunkCheckShader);
 	float chunkSampleStep = SC.chunkSize / worldUnitsPerSampleUnit;
 	float LoDscale = (SC.sampleStep) / (cubesPerChunkEdge);
-	chunkCheckShader->setSampleCorner(SC.nwSamplePos);
-	chunkCheckShader->setLoDscale(LoDscale);
+	chunkCheckShader->setShaderValue(hNWsamplePos,SC.nwSamplePos);
+	chunkCheckShader->setShaderValue(hLoDscale,LoDscale);
 
 	//unsigned int primitives = Engine.drawModelCount(*chunkShell);
 
@@ -152,8 +152,8 @@ bool CGameTerrain::chunkExists(vec3& sampleCorner, int LoD) {
 	pRenderer->setShader(chunkCheckShader);
 	float LoDscale = LoD;
 	//load shader values
-	chunkCheckShader->setSampleCorner(sampleCorner);
-	chunkCheckShader->setLoDscale(LoDscale);
+	chunkCheckShader->setShaderValue(hNWsamplePos, sampleCorner);
+	chunkCheckShader->setShaderValue(hLoDscale, LoDscale);
 
 	//Draw check grid 
 	//unsigned int primitives = Engine.drawModelCount(*chunkShell);
@@ -174,20 +174,20 @@ void CGameTerrain::createChunkMesh(Chunk& chunk) {
 	
 
 	pRenderer->setShader(chunkShader);
-	chunkShader->setChunkCubeSize(chunk.cubeSize);
+	chunkShader->setShaderValue(hChunkCubeSize,chunk.cubeSize);
 
 
 	float LoDscale = float(1 << (chunk.LoD - 1));
-	chunkShader->setChunkLoDscale(LoDscale);
-	chunkShader->setChunkSamplePos(chunk.samplePos);
+	chunkShader->setShaderValue(hChunkLoDscale,LoDscale);
+	chunkShader->setShaderValue(hChunkSamplePos, chunk.samplePos);
 	//chunkShader->setSamplesPerCube(terrain->sampleScale);
 
 	float samplesPerCube = cubeSize / worldUnitsPerSampleUnit;
-	chunkShader->setSamplesPerCube(samplesPerCube);
+	chunkShader->setShaderValue(hSamplesPerCube, samplesPerCube);
 
 
-	chunkShader->setChunkTriTable(*triTableTex);
-	chunkShader->setChunkTerrainPos(chunk.terrainPos);
+	chunkShader->setShaderValue(hChunkTriTable, *triTableTex);
+	chunkShader->setShaderValue(hChunkTerrainPos, chunk.terrainPos);
 
 	int vertsPerPrimitive = 3 * chunk.noAttribs;
 	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
@@ -322,10 +322,10 @@ CBaseBuf* CGameTerrain::createSurfacePoints(CBaseBuf* xzPoints, Chunk& chunk) {
 	float chunkSize = LoD1cubeSize * cubesPerChunkEdge;
 
 	pRenderer->setShader(findPointHeightShader);
-	findPointHeightShader->setCurrentY(0);
-	findPointHeightShader->setSamplePosition(chunk.samplePos);
-	findPointHeightShader->setSampleScale(1.0f / worldUnitsPerSampleUnit);
-	findPointHeightShader->setChunkLocaliser(glm::vec3(0));
+	findPointHeightShader->setShaderValue(hCurrentY,0);
+	findPointHeightShader->setShaderValue(hChunkSamplePosition,chunk.samplePos);
+	findPointHeightShader->setShaderValue(hFPHSampleScale, 1.0f / worldUnitsPerSampleUnit);
+	findPointHeightShader->setShaderValue(hChunkLocaliser, glm::vec3(0));
 
 	//copy points
 	int noPoints = xzPoints->getNoVerts();
@@ -347,8 +347,8 @@ CBaseBuf* CGameTerrain::createSurfacePoints(CBaseBuf* xzPoints, Chunk& chunk) {
 	float stepHeight = chunkSize / 16;
 	for (int step = 1; step <= 16; step++) {
 		if (step == 16)
-			findPointHeightShader->setChunkLocaliser(chunk.terrainPos);
-		findPointHeightShader->setCurrentY(step * stepHeight);
+			findPointHeightShader->setShaderValue(hChunkLocaliser, chunk.terrainPos);
+		findPointHeightShader->setShaderValue(hCurrentY, step * stepHeight);
 		int noPrimitives = pRenderer->getGeometryFeedback((CBuf&)*srcBuf, drawPoints, (CBuf&)*destBuf, drawPoints);
 		//feed points back into shader
 		swapBuf = srcBuf;
@@ -398,20 +398,46 @@ void CGameTerrain::initHeightFinder() {
 }
 
 void CGameTerrain::loadShaders() {
-	//load chunkCheck shader
-	chunkCheckShader = new ChunkCheckShader();
-	chunkCheckShader->create(pRenderer->dataPath + "chunkCheck");
-	chunkCheckShader->getShaderHandles();
+	//load chunk shader
+	char* chunkFeedbackStrs[2];
+	chunkFeedbackStrs[0] = "gl_Position";
+	chunkFeedbackStrs[1] = "normal";
+	chunkShader = pRenderer->createShader(pRenderer->dataPath + "chunk", chunkFeedbackStrs, 2);
+	chunkShader->setType(userShader);
 
-	//load the point finding shader
-	findPointHeightShader = new CFindPointHeightShader();
-	findPointHeightShader->feedbackVaryings[0] = "newPoint";
-	pRenderer->shaderList.push_back(findPointHeightShader);
-	findPointHeightShader->load(vertex, pRenderer->dataPath + "findPointHeight.vert");
-	findPointHeightShader->attach();
-	findPointHeightShader->setFeedbackData(1);
-	findPointHeightShader->link();
-	findPointHeightShader->getShaderHandles();
+	//Upload data texture for chunk shader
+	triTableTex = pRenderer->createDataTexture(intTex, 16, 256, &triTable);
+	pRenderer->setShader(chunkShader);
+	hChunkCubeSize = chunkShader->getUniformHandle("cubeSize");
+	hChunkLoDscale = chunkShader->getUniformHandle("LoDscale");
+	hChunkSamplePos = chunkShader->getUniformHandle("samplePos");
+	hChunkTriTable = chunkShader->getUniformHandle("triTableTex");
+	hChunkTerrainPos = chunkShader->getUniformHandle("terrainPos");
+	hSamplesPerCube = chunkShader->getUniformHandle("samplesPerCube");
+	chunkShader->setShaderValue(hChunkTriTable, *triTableTex);
+
+	//load chunkCheck shader
+	//chunkCheckShader = new ChunkCheckShader();
+	//chunkCheckShader->create(pRenderer->dataPath + "chunkCheck");
+	//chunkCheckShader->getShaderHandles();
+
+	chunkCheckShader = pRenderer->createShader(pRenderer->dataPath + "chunkCheck");
+	pRenderer->setShader(chunkCheckShader);
+	hNWsamplePos = chunkCheckShader->getUniformHandle("nwSamplePos");
+	hLoDscale = chunkCheckShader->getUniformHandle("LoDscale");
+
+
+
+	//load te point finding shader
+	char* fPointFeedbackStrs[1];
+	fPointFeedbackStrs[0] = "newPoint";
+	findPointHeightShader = pRenderer->createShader(pRenderer->dataPath + "findPointHeight", fPointFeedbackStrs, 1);
+	hCurrentY = findPointHeightShader->getUniformHandle("currentY");
+	hChunkSamplePosition = findPointHeightShader->getUniformHandle("chunkSamplePosition");
+	hFPHSampleScale = findPointHeightShader->getUniformHandle("sampleScale");
+	hChunkLocaliser = findPointHeightShader->getUniformHandle("chunkLocaliser");
+
+
 
 	grassTex = pRenderer->textureManager.getTexture(pRenderer->dataPath + "grassPack.dds");
 
@@ -472,7 +498,7 @@ float CGameTerrain::findTerrainHeight(glm::vec3& basePos) {
 }
 
 CGameTerrain::~CGameTerrain() {
-	delete chunkCheckShader;
+//	delete chunkCheckShader;
 	delete chunkShell;
 
 }
