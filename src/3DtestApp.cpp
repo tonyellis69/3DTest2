@@ -31,7 +31,6 @@ C3DtestApp::C3DtestApp() {
 	tmpSCno = 0;
 	tmp = false;
 	physCube = NULL;
-	dummy2 = NULL;
 }
 
 void C3DtestApp::onStart() {
@@ -570,16 +569,16 @@ void C3DtestApp::draw() {
 	//draw grass
 	Engine.Renderer.setShader(terrain.grassShader);
 	Engine.Renderer.attachTexture(0, *terrain.grassTex);
-	terrain.grassShader->setTextureUnit(0);
-	terrain.grassShader->setTime(Time);
-	terrain.grassShader->setMVP(mvp);
+	terrain.grassShader->setTextureUnit(0, terrain.hGrassTexure);
+	terrain.grassShader->setShaderValue(terrain.hGrassTime,(float)Time);
+	terrain.grassShader->setShaderValue(terrain.hGrassMVP,mvp);
 	terrain.drawGrass(mvp, terrain.visibleSClist);
 
 
 	//draw trees
-	Engine.Renderer.setShader(Engine.phongShaderInstanced);
-	Engine.phongShaderInstanced->setNormalModelToCameraMatrix(tmp); 
-	Engine.phongShaderInstanced->setMVP(mvp);
+	Engine.Renderer.setShader(Engine.Renderer.phongShaderInstanced);
+	Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstNormalModelToCameraMatrix,tmp);
+	Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstMVP,mvp);
 
 	glEnable(GL_PRIMITIVE_RESTART);
 //	Engine.drawModel(*terrain.tree);
@@ -602,7 +601,7 @@ void C3DtestApp::draw() {
 		CSuperChunk* sc;
 		vec4 colour = vec4(0, 0, 0, 1);
 		vec3 cornerAdjust, opCornerAdjust;
-		Engine.Renderer.setShader(Engine.wireBoxShader);
+		Engine.Renderer.setShader(terrain.wireBoxShader);
 		for (int l = terrain.layers.size()-1; l > -1; l--) {
 			vBuf::T3DnormVert box[2000]; //should be enough
 			int index = 0;
@@ -624,12 +623,12 @@ void C3DtestApp::draw() {
 			wireSCs->storeVertexes(box, sizeof(vBuf::T3DnormVert) , index);
 			wireSCs->storeLayout(3, 3, 0, 0);
 			mvp = Engine.getCurrentCamera()->clipMatrix * wireSCs->worldMatrix;
-			Engine.wireBoxShader->setMVP(mvp);
+			terrain.wireBoxShader->setShaderValue(terrain.hBoxMVP,mvp);
 			
 			colour[component++] = 0.8f;
 			if (component > 2)
 				component = 0;
-			Engine.wireBoxShader->setColour(colour);
+			terrain.wireBoxShader->setShaderValue(terrain.hBoxColour,colour);
 			wireSCs->drawNew();
 		}
 		
@@ -796,7 +795,7 @@ void C3DtestApp::initWireSCs() {
 	wireSCs = Engine.createModel();
 	
 	wireSCs->drawMode = GL_POINTS;
-	wireSCs->getMaterial()->setShader(Engine.wireBoxShader);
+	wireSCs->getMaterial()->setShader(terrain.wireBoxShader);
 
 	wireSCs->setPos(vec3(0));
 
@@ -820,15 +819,22 @@ void C3DtestApp::initHeightmapGUI() {
 	heightmapTex = Engine.Renderer.textureManager.createEmptyTexture(500, 500);
 	heightmapImage->setTexture(*heightmapTex);
 	
-	
 	heightmapImage->visible = false;
 
 	//set up shader(s)
-	terrain2texShader = new CTerrain2texShader();
-	terrain2texShader->create(dataPath + "terrain2tex");
-	terrain2texShader->getShaderHandles();
+	//terrain2texShader = new CTerrain2texShader();
+	//terrain2texShader->create(dataPath + "terrain2tex");
+	//terrain2texShader->getShaderHandles();
+	//terrain2texShader->setType(userShader);
+	//Engine.Renderer.shaderList.push_back(terrain2texShader);
+
+	terrain2texShader = Engine.Renderer.createShader(dataPath + "terrain2tex");
 	terrain2texShader->setType(userShader);
-	Engine.Renderer.shaderList.push_back(terrain2texShader);
+	Engine.Renderer.setShader(terrain2texShader);
+	hTer2TexNwSampleCorner = terrain2texShader->getUniformHandle("nwSampleCorner");
+	hTer2TexPixelScale = terrain2texShader->getUniformHandle("pixelScale");
+	
+
 }
 
 /** Render the current terrain shader to our heightmap image. */
@@ -841,12 +847,14 @@ void C3DtestApp::updateHeightmapImage() {
 	heightmapImage->setTexture(*heightmapTex);
 	Engine.Renderer.setShader(terrain2texShader);
 	vec3 sampleCorner = terrain.layers[0].nwSampleCorner;
-	terrain2texShader->setNwSampleCorner(vec2(sampleCorner.x,sampleCorner.z));
+	//terrain2texShader->setNwSampleCorner(vec2(sampleCorner.x,sampleCorner.z));
+	terrain2texShader->setShaderValue(hTer2TexNwSampleCorner, vec2(sampleCorner.x, sampleCorner.z));
 
 	//calculate scaling
 	float scale = (terrain.worldSize.x / terrain.worldUnitsPerSampleUnit) / heightmapTex->width;
 
-	terrain2texShader->setPixelScale(scale);
+	//terrain2texShader->setPixelScale(scale);
+	terrain2texShader->setShaderValue(hTer2TexPixelScale, scale);
 
 	Engine.Renderer.renderToTextureQuad(*heightmapTex);
 

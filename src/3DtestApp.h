@@ -10,12 +10,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
-#include "terrain2texShader.h"
-//#include "terrainPointShader.h"
-//#include "findPointHeightShader.h"
-#include "grassShader.h"
-
 #include "playerObj.h"
 
 #include "UI\GUIimage.h"
@@ -101,7 +95,9 @@ public:
 	CGUIimage* heightmapImage;
 	CBaseTexture* heightmapTex;
 
-	CTerrain2texShader* terrain2texShader; 
+	CShader* terrain2texShader; 
+	unsigned int hTer2TexNwSampleCorner;
+	unsigned int hTer2TexPixelScale;
 
 	int SCpassed, SCrejected;
 
@@ -114,9 +110,7 @@ public:
 
 //	CFindPointHeightShader* findPointHeightShader;
 
-	CGrassShader* grassShader;
-	CBaseTexture* grassTex;
-	CBaseBuf* dummy2;
+
 
 
 	

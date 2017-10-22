@@ -5,8 +5,8 @@
 //#include "chunkCheckShader.h"
 //#include "chunkShader.h"
 //#include "findPointHeightShader.h"
-#include "grassShader.h"
-#include "terrainPointShader.h"
+//#include "grassShader.h"
+
 
 /** A subclass of CTerrain for creating this game's terrain. */
 
@@ -65,12 +65,17 @@ public:
 
 
 
-	CGrassShader* grassShader;
+	CShader* grassShader;
+	unsigned int hGrassMVP;
+	unsigned int hGrassTexure;
+	unsigned int hGrassTime;
 	CBaseTexture* grassTex;
 
 	CModel* tree;
 
-	CTerrainPointShader* terrainPointShader;
+	CShader* terrainPointShader;
+	unsigned int hPointSampleBase;
+	unsigned int hPointOffsetScale;
 	CBuf heightFinderBuf;
 
 
@@ -87,6 +92,9 @@ public:
 	unsigned int hChunkTerrainPos;
 	unsigned int hSamplesPerCube;
 
+	CShader* wireBoxShader;
+	unsigned int hBoxMVP;
+	unsigned int hBoxColour;
 };
 
 const float cubeSize = 2.5f;// 2.5;// 1;//  2.5f; ///<Size of cubes in worldspace.

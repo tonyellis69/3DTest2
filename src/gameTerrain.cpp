@@ -417,16 +417,10 @@ void CGameTerrain::loadShaders() {
 	chunkShader->setShaderValue(hChunkTriTable, *triTableTex);
 
 	//load chunkCheck shader
-	//chunkCheckShader = new ChunkCheckShader();
-	//chunkCheckShader->create(pRenderer->dataPath + "chunkCheck");
-	//chunkCheckShader->getShaderHandles();
-
 	chunkCheckShader = pRenderer->createShader(pRenderer->dataPath + "chunkCheck");
 	pRenderer->setShader(chunkCheckShader);
 	hNWsamplePos = chunkCheckShader->getUniformHandle("nwSamplePos");
 	hLoDscale = chunkCheckShader->getUniformHandle("LoDscale");
-
-
 
 	//load te point finding shader
 	char* fPointFeedbackStrs[1];
@@ -442,39 +436,51 @@ void CGameTerrain::loadShaders() {
 	grassTex = pRenderer->textureManager.getTexture(pRenderer->dataPath + "grassPack.dds");
 
 	//load the grass drawing shader
-	grassShader = new CGrassShader();
-	grassShader->create(pRenderer->dataPath + "grass");
-	grassShader->getShaderHandles();
-	grassShader->setType(userShader);
-	pRenderer->shaderList.push_back(grassShader);
+	grassShader = pRenderer->createShader(pRenderer->dataPath + "grass");
+	hGrassMVP = grassShader->getUniformHandle("mvpMatrix");
+	hGrassTexure = grassShader->getUniformHandle("grassTex");
+	hGrassTime = grassShader->getUniformHandle("time");
+
 
 	//load terrain surface point shader
-	terrainPointShader = new CTerrainPointShader();
+/*	terrainPointShader = new CTerrainPointShader();
 	terrainPointShader->feedbackVaryings[0] = "result";
 	pRenderer->shaderList.push_back(terrainPointShader);
 	terrainPointShader->load(vertex, pRenderer->dataPath + "terrainPoint.vert");
 	terrainPointShader->attach();
 	terrainPointShader->setFeedbackData(1);
 	terrainPointShader->link();
-	terrainPointShader->getShaderHandles();
+	terrainPointShader->getShaderHandles(); */
+
+	char* pointFeedbackStrs[1];
+	pointFeedbackStrs[0] = "result";
+	terrainPointShader = pRenderer->createShader(pRenderer->dataPath + "terrainPoint", pointFeedbackStrs, 1);
+	terrainPointShader->setType(userShader);
+	pRenderer->setShader(terrainPointShader);
+	hPointSampleBase = terrainPointShader->getUniformHandle("sampleBase");
+	hPointOffsetScale = terrainPointShader->getUniformHandle("offsetScale");
+
 
 	//load heightpoint culling shader
 	char* feedbackStrs[1];
 	feedbackStrs[0] = "gl_Position";
 	cullPointsShader = pRenderer->createShader(pRenderer->dataPath + "cullPoints", feedbackStrs,1);
 	cullPointsShader->setType(userShader);
-
 	pRenderer->setShader(cullPointsShader);
 	hSampleOffset = cullPointsShader->getUniformHandle("sampleOffset");
 	hSampleScale = cullPointsShader->getUniformHandle("sampleScale");
 	hMode = cullPointsShader->getUniformHandle("mode");
 
+	wireBoxShader = pRenderer->createShader(pRenderer->dataPath + "wireBox");
+	wireBoxShader->setType(userShader);
+	hBoxColour = wireBoxShader->getUniformHandle("colour");
+	hBoxMVP = wireBoxShader->getUniformHandle("mvpMatrix");
 }
 
 float CGameTerrain::findTerrainHeight(glm::vec3& basePos) {
 	pRenderer->setShader(terrainPointShader);
 	float offsetScale = 1 / worldUnitsPerSampleUnit;
-	terrainPointShader->setOffsetScale(offsetScale);
+	terrainPointShader->setShaderValue(hPointOffsetScale,offsetScale);
 	vec3 startPos = basePos;
 	CBaseBuf* heightResultsBuf = pRenderer->createBuffer();
 	heightResultsBuf->setSize(sizeof(float) * findHeightVerts);
@@ -483,7 +489,7 @@ float CGameTerrain::findTerrainHeight(glm::vec3& basePos) {
 	float terrainHeight = 0;; const float MCvertexTest = 0.5f;
 
 	for (int step = 0; step < 100; step++) {
-		terrainPointShader->setSampleBase(startPos);
+		terrainPointShader->setShaderValue(hPointSampleBase, startPos);
 		pRenderer->getGeometryFeedback(heightFinderBuf, drawPoints,(CBuf&) *heightResultsBuf, drawPoints);
 
 		heightResultsBuf->getData((unsigned char*)heightResults, sizeof(float) * findHeightVerts);
