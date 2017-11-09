@@ -4,12 +4,15 @@
 
 #include "poisson.h"
 
+#include <iostream>
+
 using namespace glm;
 
 CGameTerrain::CGameTerrain() {
 	loadShaders();
 
-	
+	totalScs = 0;
+	passedSCs = 0;
 
 	tempFeedbackBuf = pRenderer->createBuffer();
 	tempFeedbackBuf->setSize(1000000);
@@ -111,9 +114,7 @@ void CGameTerrain::initChunkGrid(int cubesPerChunkEdge) {
 
 	shaderChunkGrid->setDrawMode(drawLinesAdjacency);
 
-	//Engine.(&shaderChunkGrid,shaderChunkVerts,index);
-	//Engine.setVertexDetails(shaderChunkGrid, 1, noIndices, noVerts);
-	//Engine.storeIndexedModel(shaderChunkGrid,shaderChunkVerts,noVerts, index);
+
 
 	shaderChunkGrid->storeVertexes(shaderChunkVerts, sizeof(vec3), noVerts);
 	shaderChunkGrid->storeIndex(index, noIndices);
@@ -124,6 +125,8 @@ void CGameTerrain::initChunkGrid(int cubesPerChunkEdge) {
 }
 
 bool CGameTerrain::superChunkIsEmpty(CSuperChunk & SC) {
+	totalScs++;
+	//return false;
 	pRenderer->setShader(chunkCheckShader);
 	float chunkSampleStep = SC.chunkSize / worldUnitsPerSampleUnit;
 	float LoDscale = (SC.sampleStep) / (cubesPerChunkEdge);
@@ -137,17 +140,19 @@ bool CGameTerrain::superChunkIsEmpty(CSuperChunk & SC) {
 	unsigned int primitives = pRenderer->query();
 
 	//TO DO: chunkshell is coarse, create a SCshell with more points
-	if ((primitives == 0)) { // ||  (primitives == shellTotalVerts * 3)) {
+	if ((primitives == 0)  ||  (primitives == shellTotalVerts ) ) {
 		return true; //outside surface
 	}
-	SC.tmp = true;
+	SC.nonEmpty = true;
+	passedSCs++;
 	return false;
 
 }
 
+//TO DO: currently we don't call this at all
 /** Return false if no side of this potential chunk is penetratedby the isosurface.*/
 bool CGameTerrain::chunkExists(vec3& sampleCorner, int LoD) {
-	return true;
+//	return true;
 	//change to chunk test shader
 	pRenderer->setShader(chunkCheckShader);
 	float LoDscale = LoD;
@@ -164,8 +169,9 @@ bool CGameTerrain::chunkExists(vec3& sampleCorner, int LoD) {
 
 	if (primitives == 0)
 		return false;
-	if (primitives == shellTotalVerts * 3)
-		return false; //outside surface
+	//if (primitives == shellTotalVerts * 3)
+	//	return false; //outside surface
+	std::cerr << "\n" << primitives;
 	return true;
 }
 
@@ -217,8 +223,8 @@ void CGameTerrain::createChunkMesh(Chunk& chunk) {
 		details->colour = chunk.colour;
 
 		if (chunk.LoD == 1) {
-			findTreePoints(chunk);
-			findGrassPoints(chunk);
+		//	findTreePoints(chunk);
+		//	findGrassPoints(chunk);
 		}
 	}
 	else
@@ -443,14 +449,7 @@ void CGameTerrain::loadShaders() {
 
 
 	//load terrain surface point shader
-/*	terrainPointShader = new CTerrainPointShader();
-	terrainPointShader->feedbackVaryings[0] = "result";
-	pRenderer->shaderList.push_back(terrainPointShader);
-	terrainPointShader->load(vertex, pRenderer->dataPath + "terrainPoint.vert");
-	terrainPointShader->attach();
-	terrainPointShader->setFeedbackData(1);
-	terrainPointShader->link();
-	terrainPointShader->getShaderHandles(); */
+
 
 	char* pointFeedbackStrs[1];
 	pointFeedbackStrs[0] = "result";

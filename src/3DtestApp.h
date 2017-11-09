@@ -18,6 +18,9 @@
 
 extern CSuperChunk* dbgSC;
 
+extern float xAdj;
+extern float yAdj;
+
 class C3DtestApp : public  CBaseApp {
 public:
 	C3DtestApp();
@@ -115,6 +118,8 @@ public:
 
 	
 	CModel* tree;
+
+	CGUIlabel2* label;
 
 };
 

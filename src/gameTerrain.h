@@ -95,6 +95,8 @@ public:
 	CShader* wireBoxShader;
 	unsigned int hBoxMVP;
 	unsigned int hBoxColour;
+
+	
 };
 
 const float cubeSize = 2.5f;// 2.5;// 1;//  2.5f; ///<Size of cubes in worldspace.

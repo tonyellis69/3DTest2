@@ -57,6 +57,10 @@ void C3DtestApp::onStart() {
 	Engine.getCurrentCamera()->setPos(vec3(0.499624, 6.46961, 21.5411));
 	Engine.getCurrentCamera()->lookAt(vec3(0.0130739, -0.0538602, -0.998463));
 
+	//pulled back view
+	Engine.getCurrentCamera()->setPos(vec3(-1510.24, 2833.93, 3682.67));
+	Engine.getCurrentCamera()->lookAt(vec3(0.31595, -0.609743, -0.726901));
+
 
 	//Position FPS camera
 	fpsCam.setPos(vec3(0, 180, 0));
@@ -71,20 +75,21 @@ void C3DtestApp::onStart() {
 	terrainPhysObj->setCollides(false);
 	Engine.physObjManager.addPhysObj(terrainPhysObj);
 	
-	
+	//
 	
 	
 	CBaseBuf* terrainBuf = &terrain.multiBuf; //TO DO: ugh, make a setter
 	//((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
+	
 	terrainBuf->setSize(175000000);
-
+	
 	terrainBuf->storeLayout(3, 3, 0, 0);
-
+	
 	tempFeedbackBuf = Engine.createBuffer();
 	tempFeedbackBuf->setSize(1000000);
 
 	terrain.EXTfreeChunkModel.Set(&Engine, &CEngine::freeModel);
-
+	//
 
 	terrain.chunkDrawShader = Engine.Renderer.phongShader;
 
@@ -115,6 +120,8 @@ void C3DtestApp::onStart() {
 	SCpassed = SCrejected = 0;
 
 	terrain.createAllChunks();
+
+	
 
 	t = Engine.Time.milliseconds() - t;
 	
@@ -186,6 +193,15 @@ void C3DtestApp::onStart() {
 
 	terrain.initTreeFinding();
 	terrain.initGrassFinding();
+
+	
+	 label = new CGUIlabel2(400, 400, 400, 40);
+
+	label->setFont(*Engine.CurrentFont);
+	label->setTextColour(UIwhite);
+	label->setText("etext some text");
+	GUIroot.Add(label);
+
 	
 	return;
 }
@@ -199,6 +215,7 @@ void C3DtestApp::onStart() {
 void C3DtestApp::keyCheck() {
 	CCamera* currentCamera = Engine.getCurrentCamera();
 	float moveInc = float( dT * 1000.0); // 0.05125f;
+
 
 	if (KeyDown['R']) {
 		//cube->rotate(rot, glm::vec3(0, 0, 1));
@@ -563,9 +580,6 @@ void C3DtestApp::draw() {
 	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP, mvp);
 	terrain.drawVisibleChunks();/////////////////////////////
 	
-
-	
-
 	//draw grass
 	Engine.Renderer.setShader(terrain.grassShader);
 	Engine.Renderer.attachTexture(0, *terrain.grassTex);
@@ -607,7 +621,7 @@ void C3DtestApp::draw() {
 			int index = 0;
 			for (int s = 0; s < terrain.layers[l].superChunks.size(); s++) {
 				sc = terrain.layers[l].superChunks[s];
-				//if (sc->tmp) 
+				if (sc->nonEmpty) 
 				{
 					box[index].v = sc->nwWorldPos + terrain.layers[l].nwLayerPos;
 					cornerAdjust = vec3(sc->faceBoundary[west], sc->faceBoundary[down], sc->faceBoundary[north]);
@@ -641,6 +655,8 @@ void C3DtestApp::draw() {
 		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP,mvp);
 		playerObject.pModel->drawNew();
 	}
+
+	watch::watch1 << "text";
 
 
 }
@@ -820,13 +836,6 @@ void C3DtestApp::initHeightmapGUI() {
 	heightmapImage->setTexture(*heightmapTex);
 	
 	heightmapImage->visible = false;
-
-	//set up shader(s)
-	//terrain2texShader = new CTerrain2texShader();
-	//terrain2texShader->create(dataPath + "terrain2tex");
-	//terrain2texShader->getShaderHandles();
-	//terrain2texShader->setType(userShader);
-	//Engine.Renderer.shaderList.push_back(terrain2texShader);
 
 	terrain2texShader = Engine.Renderer.createShader(dataPath + "terrain2tex");
 	terrain2texShader->setType(userShader);

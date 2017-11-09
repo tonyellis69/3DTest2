@@ -1,4 +1,34 @@
+#line 2
 const int realmSize = 4;
+const float mazeSize = 2;
+const int mazeSteps = 9;
+/*
+float maze[81] = float[](	0.0,0.0,0.0,0.0,0.0,0.0,0.0,1,0.0,
+							0.0,1,0.0,1,1,1,0.0,1,0.0,
+							0.0,1,0.0,0.0,0.0,1,0.0,1,0.0,
+							0.0,1,1,1,1,1,1,1,0.0,
+							0.0,1,0.0,1,0.0,0.0,0.0,0.0,0.0,
+							0.0,1,0.0,1,0.0,1,1,1,1,
+							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+							0.0,1,0.0,1,1,1,0.0,1,1,
+							0.0,1,0.0,0.0,0.0,1,0.0,0.0,0.0);
+							
+							
+*/							
+float maze[81] = float[](	0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+							0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);							
+							
+							
+					
+							
+const float cellSize = mazeSize / mazeSteps;
 
 // Modulo 289 without a division (only multiplications)
 vec3 mod289(vec3 x) {
@@ -328,51 +358,63 @@ float terrace(float noise, int steps) {
 	return round(noise * steps) / steps;
 }
 
+float getMazeValue(vec2 positionInMaze) {
+
+	ivec2 mazeCell = ivec2(positionInMaze / cellSize);
+	if (mazeCell.x < 0 || mazeCell.y < 0)
+		return 0;
+	if (mazeCell.x > 8 || mazeCell.y > 8)
+		return 0;
+	
+	
+	
+	int cell = (mazeCell.y * mazeSteps) + mazeCell.x;
+	if (cell > 80)
+		return 0;
+	return maze[cell];
+}
+
+
 
 float terrainValue (  int octaves,   vec3 xyz ) {
-	float baseNoise = 0; float noise = 0;
 	vec2 xy = vec2(xyz.xz);
 	
-		
-		
-	//baseNoise = grandCanyon(5,    xy) ;
+	vec2 epiCentre = (floor(xy / realmSize) * realmSize) + realmSize/2;
+	vec2 nwMazeCorner = epiCentre - vec2(mazeSize/2.0);
+	vec2 positionInMaze =  xy - vec2(nwMazeCorner);
+	
+	//find 4 nearest cell centres
+	vec2 nearestNWcorner =  (floor(positionInMaze / cellSize) * cellSize);
+	float halfCell = cellSize/2.0;
+	vec2 A = nearestNWcorner + vec2(-halfCell,-halfCell);
+	vec2 B = nearestNWcorner + vec2(halfCell,-halfCell);
+	vec2 C = nearestNWcorner + vec2(-halfCell,halfCell);
+	vec2 D = nearestNWcorner + vec2(halfCell,halfCell);
+	
+	vec2 displacement = (positionInMaze - A) / cellSize ;
+
+	float AB = mix(getMazeValue(A),getMazeValue(B),displacement.x);  //0 = none of second part
+	float CD = mix(getMazeValue(C),getMazeValue(D),displacement.x);
+	
+	float height = mix(AB,CD,displacement.y);
+	//height = displacement.y;
+	height *= 0.5;
 	
 
 	
-	//baseNoise += noise3D ;
+	
+	float value = xyz.y - height; //clip 2D height value against 3D position
+	
+	
+	//float noise = fbm3D(5,xyz ) * 0.15;
 	
 
-
-	//noise = fbm2D(5, xy * 2) * 0.1; //good standard (busy, varied)
+	//baseNoise += noise;
 	
-	//noise = fbm2D(4, xy ) * 0.05; //sand dunes
-
-	//noise = turbulence(4, xy) * 0.15;
-	
-	//noise = ridgedMF(4,xy ) * 0.1;
-	
-	baseNoise = distantMountains(5,xy) * 0.3;
-	
-//	baseNoise = fbm2D(5, xy * 2) * 0.1;
-	//float mask = blobbyMask(1,xy * 0.5);
-	
-	//baseNoise = fbm2D(5, xy * 2) * 0.1; //standard
-//	baseNoise = max(0,baseNoise);
-	
-	//noise =  ridgedMF(4,xy ) * 0.1;
-	
-	//baseNoise += noise * mask;
-	
-	baseNoise = xyz.y - baseNoise ; //clip 2D height value against 3D position
-	
-	noise = fbm3D(5,xyz ) * 0.15;
-	
-	
-	
-	baseNoise += noise;
+	//value += noise;
 	
 
-	
-	return baseNoise ;
-
+	return value;
 }
+
+

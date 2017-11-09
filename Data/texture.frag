@@ -18,5 +18,5 @@ void main()
 	
 	
 	colour = colour1;
-	
+	//colour = vec4(1,0,0,1);
 };

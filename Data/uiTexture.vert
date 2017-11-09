@@ -10,8 +10,7 @@ uniform mat4 orthoMatrix;
 
 void main()
 {
-	gl_Position = orthoMatrix * vec4(vertex.xy,0,1);
-	
+	gl_Position = orthoMatrix * vec4(vertex,0,1);
 	texCoordFrag = texCoord;
 	
 };
