@@ -195,11 +195,11 @@ void C3DtestApp::onStart() {
 	terrain.initGrassFinding();
 
 	
-	 label = new CGUIlabel2(400, 400, 400, 40);
+	 label = new CGUIlabel2(400, 400, 200, 100);
 
 	label->setFont(*Engine.CurrentFont);
 	label->setTextColour(UIwhite);
-	label->setText("etext some text");
+	label->setText("Enough text to wrap around to at least the next line, and maybe one more for good luck");
 	GUIroot.Add(label);
 
 	
