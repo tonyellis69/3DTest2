@@ -1,5 +1,5 @@
-#version 330
-#include noise.lib
+#version 440
+//#include noise.lib
 
 smooth in vec4 worldPos; 
 smooth in vec4 fragColour;

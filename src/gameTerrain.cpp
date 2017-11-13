@@ -216,14 +216,13 @@ void CGameTerrain::createChunkMesh(Chunk& chunk) {
 		terrainBuf->copyBuf(*tempFeedbackBuf, outSize);
 
 		chunk.id = terrainBuf->getLastId();
-		//terrainBuf->setBlockColour(chunk.id, (tmpRGBAtype&)chunk.colour);
-
+		
 		TDrawDetails* details = &chunk.drawDetails;
 		terrainBuf->getElementData(chunk.id, details->vertStart, details->vertCount, details->childBufNo);
 		details->colour = chunk.colour;
 
 		if (chunk.LoD == 1) {
-		//	findTreePoints(chunk);
+			findTreePoints(chunk);
 		//	findGrassPoints(chunk);
 		}
 	}
@@ -296,7 +295,7 @@ CBaseBuf* CGameTerrain::createHeightPoints(float proximity) {
 
 /**	Create a selection of points on the terrain surface of this chunk where trees can be drawn. */
 void CGameTerrain::findTreePoints(Chunk & chunk) {
-	CBaseBuf* mappedPoints = createSurfacePoints(treePoints, chunk);
+	CBaseBuf* mappedPoints = createChunkSurfacePoints(treePoints, chunk);
 
 	mappedPoints = cullPoints(mappedPoints, chunk, 1);
 
@@ -309,7 +308,7 @@ void CGameTerrain::findTreePoints(Chunk & chunk) {
 
 /**	Create a selection of points on the terrain surface of this chunk where grass can be drawn. */
 void CGameTerrain::findGrassPoints(Chunk & chunk) {
-	CBaseBuf* mappedPoints = createSurfacePoints(grassPoints, chunk);
+	CBaseBuf* mappedPoints = createChunkSurfacePoints(grassPoints, chunk);
 
 	mappedPoints = cullPoints(mappedPoints, chunk, 2);
 
@@ -324,7 +323,7 @@ void CGameTerrain::findGrassPoints(Chunk & chunk) {
 
 
 /** Return a buffer of the given xz points, elevated to the surface of the given chunk. */
-CBaseBuf* CGameTerrain::createSurfacePoints(CBaseBuf* xzPoints, Chunk& chunk) {
+CBaseBuf* CGameTerrain::createChunkSurfacePoints(CBaseBuf* xzPoints, Chunk& chunk) {
 	float chunkSize = LoD1cubeSize * cubesPerChunkEdge;
 
 	pRenderer->setShader(findPointHeightShader);
@@ -384,7 +383,9 @@ CBaseBuf * CGameTerrain::cullPoints(CBaseBuf * points, Chunk & chunk, int mode) 
 
 	//draw chunk using transform feedback
 	int nPoints = pRenderer->getGeometryFeedback((CBuf&)*points, drawLines, (CBuf&)*outBuf, drawPoints);
-
+	//NB can't reset actual size of the buffer as this will erase data
+	outBuf->reduceReportedSize(nPoints * sizeof(glm::vec3));
+	outBuf->setNoVerts(nPoints);
 
 	return outBuf;
 }

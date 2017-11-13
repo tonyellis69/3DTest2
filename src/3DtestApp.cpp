@@ -200,7 +200,7 @@ void C3DtestApp::onStart() {
 	label->setFont(*Engine.CurrentFont);
 	label->setTextColour(UIwhite);
 	label->setText("Enough text to wrap around to at least the next line, and maybe one more for good luck");
-	GUIroot.Add(label);
+	//GUIroot.Add(label);
 
 	
 	return;
@@ -566,6 +566,7 @@ void C3DtestApp::onResize(int width, int height) {
 
 
 void C3DtestApp::draw() {
+
 	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
 	terrain.updateVisibleSClist(fpsCam);
 
@@ -605,7 +606,6 @@ void C3DtestApp::draw() {
 	glDisable(GL_PRIMITIVE_RESTART);
 
 	t = Engine.Time.milliseconds() - t;
-
 
 
 	//wireframe drawing:
@@ -655,6 +655,12 @@ void C3DtestApp::draw() {
 		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP,mvp);
 		playerObject.pModel->drawNew();
 	}
+	//Engine.Renderer.setShader(Engine.Renderer.phongShader);
+	//playerObject.pModel->material->assign();
+	//Engine.Renderer.drawModel((CRenderModel&)playerObject.pModel);
+	//Engine.Renderer.setVAO(0);
+	//playerObject.pModel->material->unAssign();	//playerObject.pModel->drawNew();
+
 
 	watch::watch1 << "text";
 

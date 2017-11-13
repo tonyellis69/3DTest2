@@ -1,8 +1,8 @@
 #line 2
 const int realmSize = 4;
-const float mazeSize = 2;
+const float mazeSize = 3;
 const int mazeSteps = 9;
-/*
+
 float maze[81] = float[](	0.0,0.0,0.0,0.0,0.0,0.0,0.0,1,0.0,
 							0.0,1,0.0,1,1,1,0.0,1,0.0,
 							0.0,1,0.0,0.0,0.0,1,0.0,1,0.0,
@@ -13,8 +13,8 @@ float maze[81] = float[](	0.0,0.0,0.0,0.0,0.0,0.0,0.0,1,0.0,
 							0.0,1,0.0,1,1,1,0.0,1,1,
 							0.0,1,0.0,0.0,0.0,1,0.0,0.0,0.0);
 							
-							
-*/							
+						
+/*					
 float maze[81] = float[](	0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
 							0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
 							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
@@ -25,8 +25,8 @@ float maze[81] = float[](	0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
 							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
 							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);							
 							
-							
-					
+						
+		*/			
 							
 const float cellSize = mazeSize / mazeSteps;
 
@@ -374,44 +374,57 @@ float getMazeValue(vec2 positionInMaze) {
 	return maze[cell];
 }
 
+float       interpolate(float a, float b, float x)
+{
+  float     pi_mod;
+  float     f_unk;
+
+  pi_mod = x * 3.1415927;
+  f_unk = (1 - cos(pi_mod)) * 0.5;
+  return (a * (1 - f_unk) + b * x);
+}
+
 
 
 float terrainValue (  int octaves,   vec3 xyz ) {
-	vec2 xy = vec2(xyz.xz);
+	vec2 xy = xyz.xz;
 	
-	vec2 epiCentre = (floor(xy / realmSize) * realmSize) + realmSize/2;
+	vec2 epiCentre = (floor(xy / realmSize) * realmSize) + realmSize/2.0;
 	vec2 nwMazeCorner = epiCentre - vec2(mazeSize/2.0);
-	vec2 positionInMaze =  xy - vec2(nwMazeCorner);
+	vec2 positionInMaze;
+	positionInMaze =  xy - nwMazeCorner;
+
 	
 	//find 4 nearest cell centres
-	vec2 nearestNWcorner =  (floor(positionInMaze / cellSize) * cellSize);
 	float halfCell = cellSize/2.0;
-	vec2 A = nearestNWcorner + vec2(-halfCell,-halfCell);
-	vec2 B = nearestNWcorner + vec2(halfCell,-halfCell);
-	vec2 C = nearestNWcorner + vec2(-halfCell,halfCell);
-	vec2 D = nearestNWcorner + vec2(halfCell,halfCell);
+	vec2 nearestNWcentre =  floor(  (positionInMaze + vec2(halfCell)) / cellSize ) * cellSize;
+	
+	nearestNWcentre -= vec2(halfCell);
+	
+	vec2 A = nearestNWcentre;
+	vec2 B = nearestNWcentre + vec2(cellSize,0);
+	vec2 C = nearestNWcentre + vec2(0,cellSize);
+	vec2 D = nearestNWcentre + vec2(cellSize,cellSize);
 	
 	vec2 displacement = (positionInMaze - A) / cellSize ;
 
-	float AB = mix(getMazeValue(A),getMazeValue(B),displacement.x);  //0 = none of second part
-	float CD = mix(getMazeValue(C),getMazeValue(D),displacement.x);
+
+	float AB = interpolate(getMazeValue(A),getMazeValue(B),displacement.x);  //0 = none of second part
+	float CD = interpolate(getMazeValue(C),getMazeValue(D),displacement.x);
 	
-	float height = mix(AB,CD,displacement.y);
-	//height = displacement.y;
-	height *= 0.5;
+	float height = interpolate(AB,CD,displacement.y) ;
+	
+	
+	
+	height *= 0.3f;
 	
 
-	
 	
 	float value = xyz.y - height; //clip 2D height value against 3D position
 	
 	
-	//float noise = fbm3D(5,xyz ) * 0.15;
-	
-
-	//baseNoise += noise;
-	
-	//value += noise;
+	float noise = fbm3D(5,xyz ) * 0.15;
+	value += noise;
 	
 
 	return value;

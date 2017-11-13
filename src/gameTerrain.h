@@ -27,7 +27,7 @@ public:
 
 	void findGrassPoints(Chunk & chunk);
 
-	CBaseBuf * createSurfacePoints(CBaseBuf * xzPoints, Chunk& chunk);
+	CBaseBuf * createChunkSurfacePoints(CBaseBuf * xzPoints, Chunk& chunk);
 	CBaseBuf * cullPoints(CBaseBuf * points, Chunk& chunk, int mode);
 
 
@@ -106,7 +106,7 @@ const unsigned int grassBufSize = 90000000;
 
 const float findHeightVerts = 100; ///<Number of verts findTerrainHeight checks at a time. 
 
-CBaseBuf * createSurfacePoints(CBaseBuf * xzPoints, glm::vec3 & terrainPos);
+CBaseBuf * createChunkSurfacePoints(CBaseBuf * xzPoints, glm::vec3 & terrainPos);
 
 
 static const int triTable[256][16] =
