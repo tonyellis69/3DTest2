@@ -17,6 +17,7 @@
 #include "watch.h"
 
 #include "UI\GUIimage.h"
+#include "UI\GUIbutton2.h"
 
 #include "plants\fractalTree.h"
 
@@ -197,11 +198,16 @@ void C3DtestApp::onStart() {
 	
 	 label = new CGUIlabel2(400, 400, 200, 100);
 
-	label->setFont(*Engine.CurrentFont);
+	label->setFont(sysFont);
 	label->setTextColour(UIwhite);
+	label->setMultiLine(true);
 	label->setText("Enough text to wrap around to at least the next line, and maybe one more for good luck");
 	//GUIroot.Add(label);
 
+
+	CGUIbutton2* button = new CGUIbutton2(800, 700, 100, 50);
+	//button->SetText("Test text");
+	GUIroot.Add(button);
 	
 	return;
 }
@@ -539,9 +545,9 @@ void C3DtestApp::keyCheck() {
 	}
 
 	if (KeyDown['H']) {
-		heightmapImage->visible = !heightmapImage->visible;
-		if (heightmapImage->visible)
-			updateHeightmapImage();
+		heightmapImage->setVisible(!heightmapImage->getVisible());
+		if (heightmapImage->getVisible())
+			 updateHeightmapImage();
 		EatKeys();
 	}
 
@@ -841,7 +847,8 @@ void C3DtestApp::initHeightmapGUI() {
 	heightmapTex = Engine.Renderer.textureManager.createEmptyTexture(500, 500);
 	heightmapImage->setTexture(*heightmapTex);
 	
-	heightmapImage->visible = false;
+	//heightmapImage->visible = false;
+	heightmapImage->setVisible(false);
 
 	terrain2texShader = Engine.Renderer.createShader(dataPath + "terrain2tex");
 	terrain2texShader->setType(userShader);
