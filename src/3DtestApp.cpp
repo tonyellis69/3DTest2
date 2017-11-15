@@ -18,6 +18,7 @@
 
 #include "UI\GUIimage.h"
 #include "UI\GUIbutton2.h"
+#include "UI\GUIcheckButton.h"
 
 #include "plants\fractalTree.h"
 
@@ -205,9 +206,12 @@ void C3DtestApp::onStart() {
 	//GUIroot.Add(label);
 
 
-	CGUIbutton2* button = new CGUIbutton2(800, 700, 100, 50);
+	CGUIbutton2* button = new CGUIbutton2(800, 700, 100, 30);
 	//button->SetText("Test text");
-	GUIroot.Add(button);
+	//GUIroot.Add(button);
+
+	CGUIcheckButton* chk = new CGUIcheckButton(800, 700, 110, 50);
+	GUIroot.Add(chk);
 	
 	return;
 }
