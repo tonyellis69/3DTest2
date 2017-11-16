@@ -19,6 +19,7 @@
 #include "UI\GUIimage.h"
 #include "UI\GUIbutton2.h"
 #include "UI\GUIcheckButton.h"
+#include "UI\GUIdlg.h"
 
 #include "plants\fractalTree.h"
 
@@ -199,19 +200,21 @@ void C3DtestApp::onStart() {
 	
 	 label = new CGUIlabel2(400, 400, 200, 100);
 
-	label->setFont(sysFont);
-	label->setTextColour(UIwhite);
-	label->setMultiLine(true);
-	label->setText("Enough text to wrap around to at least the next line, and maybe one more for good luck");
+	//label->setFont(sysFont);
+	//label->setTextColour(UIwhite);
+	//label->setMultiLine(true);
+	//label->setText("Enough text to wrap around to at least the next line, and maybe one more for good luck");
 	//GUIroot.Add(label);
 
 
-	CGUIbutton2* button = new CGUIbutton2(800, 700, 100, 30);
+	//CGUIbutton2* button = new CGUIbutton2(800, 700, 100, 30);
 	//button->SetText("Test text");
 	//GUIroot.Add(button);
 
-	CGUIcheckButton* chk = new CGUIcheckButton(800, 700, 110, 50);
-	GUIroot.Add(chk);
+	 CGUIokDlg* dlg = new CGUIokDlg(400,400);
+
+	GUIroot.Add(dlg);
+
 	
 	return;
 }

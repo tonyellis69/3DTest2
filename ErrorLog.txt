@@ -11,7 +11,8 @@ Error creating framebuffer.
 Error creating framebuffer.
 Error creating framebuffer.
 Total SCs 680
-Passed SCs 191
+Passed SCs 162
+Error creating framebuffer.
 Error creating framebuffer.
 Error creating framebuffer.
 Error creating framebuffer.

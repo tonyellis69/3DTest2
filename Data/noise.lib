@@ -1,6 +1,6 @@
 #line 2
 const int realmSize = 4;
-const float mazeSize = 3;
+const float mazeSize =  0.03125;// 0.0625;// 0.25;//3;
 const int mazeSteps = 9;
 
 float maze[81] = float[](	0.0,0.0,0.0,0.0,0.0,0.0,0.0,1,0.0,
@@ -416,7 +416,7 @@ float terrainValue (  int octaves,   vec3 xyz ) {
 	
 	
 	
-	height *= 0.3f;
+	height *= 0.2f * mazeSize;
 	
 
 	
