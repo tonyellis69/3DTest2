@@ -21,6 +21,7 @@
 #include "UI\GUIcheckButton.h"
 #include "UI\GUIdlg.h"
 #include "UI\GUItextbox2.h"
+#include "UI\GUInumeric2.h"
 
 #include "plants\fractalTree.h"
 
@@ -199,20 +200,10 @@ void C3DtestApp::onStart() {
 	terrain.initGrassFinding();
 
 	
-	 label = new CGUIlabel2(400, 400, 300, 300);
 
-	//label->setFont(sysFont);
-	//label->setTextColour(UIwhite);
-	//label->setMultiLine(true);
-	label->setText("Text");
-	//GUIroot.Add(label);
+	CGUInumeric2* grp = new CGUInumeric2(600, 300, 300, 0);
+	//CGUItextbox2* grp = new CGUItextbox2(600, 300, 300,50);
 
-
-	//CGUIbutton2* button = new CGUIbutton2(800, 700, 100, 30);
-	//button->SetText("Test text");
-	//GUIroot.Add(button);
-
-	 CGUItextbox2* grp = new CGUItextbox2(600, 300, 300, 50);
 	 GUIroot.Add(grp);
 	return;
 }
