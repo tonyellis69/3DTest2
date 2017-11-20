@@ -1,6 +1,6 @@
 #line 2
 const int realmSize = 4;
-const float mazeSize =  0.03125;// 0.0625;// 0.25;//3;
+const float mazeSize =  3;//0.03125;// 0.0625;// 0.25;//3;
 const int mazeSteps = 9;
 
 float maze[81] = float[](	0.0,0.0,0.0,0.0,0.0,0.0,0.0,1,0.0,
@@ -407,6 +407,8 @@ float terrainValue (  int octaves,   vec3 xyz ) {
 	vec2 D = nearestNWcentre + vec2(cellSize,cellSize);
 	
 	vec2 displacement = (positionInMaze - A) / cellSize ;
+	
+
 
 
 	float AB = interpolate(getMazeValue(A),getMazeValue(B),displacement.x);  //0 = none of second part
@@ -414,17 +416,17 @@ float terrainValue (  int octaves,   vec3 xyz ) {
 	
 	float height = interpolate(AB,CD,displacement.y) ;
 	
+	height *= getMazeValue(positionInMaze);
 	
-	
-	height *= 0.2f * mazeSize;
+	height *= 0.1f * mazeSize;
 	
 
 	
 	float value = xyz.y - height; //clip 2D height value against 3D position
 	
 	
-	float noise = fbm3D(5,xyz ) * 0.15;
-	value += noise;
+	//float noise = fbm3D(5,xyz ) * 0.15;
+	//value += noise;
 	
 
 	return value;

@@ -20,6 +20,7 @@
 #include "UI\GUIbutton2.h"
 #include "UI\GUIcheckButton.h"
 #include "UI\GUIdlg.h"
+#include "UI\GUItextbox2.h"
 
 #include "plants\fractalTree.h"
 
@@ -198,12 +199,12 @@ void C3DtestApp::onStart() {
 	terrain.initGrassFinding();
 
 	
-	 label = new CGUIlabel2(400, 400, 200, 100);
+	 label = new CGUIlabel2(400, 400, 300, 300);
 
 	//label->setFont(sysFont);
 	//label->setTextColour(UIwhite);
 	//label->setMultiLine(true);
-	//label->setText("Enough text to wrap around to at least the next line, and maybe one more for good luck");
+	label->setText("Text");
 	//GUIroot.Add(label);
 
 
@@ -211,11 +212,8 @@ void C3DtestApp::onStart() {
 	//button->SetText("Test text");
 	//GUIroot.Add(button);
 
-	 CGUIokDlg* dlg = new CGUIokDlg(400,400);
-
-	GUIroot.Add(dlg);
-
-	
+	 CGUItextbox2* grp = new CGUItextbox2(600, 300, 300, 50);
+	 GUIroot.Add(grp);
 	return;
 }
 
@@ -600,7 +598,7 @@ void C3DtestApp::draw() {
 	terrain.grassShader->setTextureUnit(0, terrain.hGrassTexure);
 	terrain.grassShader->setShaderValue(terrain.hGrassTime,(float)Time);
 	terrain.grassShader->setShaderValue(terrain.hGrassMVP,mvp);
-	terrain.drawGrass(mvp, terrain.visibleSClist);
+	//terrain.drawGrass(mvp, terrain.visibleSClist);
 
 
 	//draw trees
@@ -609,13 +607,9 @@ void C3DtestApp::draw() {
 	Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstMVP,mvp);
 
 	glEnable(GL_PRIMITIVE_RESTART);
-//	Engine.drawModel(*terrain.tree);
 	
-	
-	//tree->drawNew();////////////////////
-	
-	terrain.drawTrees(mvp, terrain.visibleSClist);
-	//drawGrass(mvp, terrain->visibleSClist);
+	//terrain.drawTrees(mvp, terrain.visibleSClist);
+
 	glDisable(GL_PRIMITIVE_RESTART);
 
 	t = Engine.Time.milliseconds() - t;

@@ -2,17 +2,16 @@
 BaseApp constructor.
 
 Using GLEW 1.12.0
-OpenGL version: 4.5.0 NVIDIA 382.53
+OpenGL version: 4.6.0 NVIDIA 388.13
 Has NPOT
-glsl version: 4.50 NVIDIA
+glsl version: 4.60 NVIDIA
 
 Error creating framebuffer.
 Error creating framebuffer.
 Error creating framebuffer.
 Error creating framebuffer.
 Total SCs 680
-Passed SCs 162
+Passed SCs 121
 Error creating framebuffer.
-Error creating framebuffer.
-Error creating framebuffer.
+Attempt to render to textbuffer before font assigned.
 Error creating framebuffer.
