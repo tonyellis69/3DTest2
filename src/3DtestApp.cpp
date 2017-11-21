@@ -17,11 +17,7 @@
 #include "watch.h"
 
 #include "UI\GUIimage.h"
-#include "UI\GUIbutton2.h"
-#include "UI\GUIcheckButton.h"
-#include "UI\GUIdlg.h"
-#include "UI\GUItextbox2.h"
-#include "UI\GUInumeric2.h"
+
 
 #include "plants\fractalTree.h"
 
@@ -199,12 +195,7 @@ void C3DtestApp::onStart() {
 	terrain.initTreeFinding();
 	terrain.initGrassFinding();
 
-	
 
-	CGUInumeric2* grp = new CGUInumeric2(600, 300, 300, 0);
-	//CGUItextbox2* grp = new CGUItextbox2(600, 300, 300,50);
-
-	 GUIroot.Add(grp);
 	return;
 }
 
@@ -653,16 +644,8 @@ void C3DtestApp::draw() {
 		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP,mvp);
 		playerObject.pModel->drawNew();
 	}
-	//Engine.Renderer.setShader(Engine.Renderer.phongShader);
-	//playerObject.pModel->material->assign();
-	//Engine.Renderer.drawModel((CRenderModel&)playerObject.pModel);
-	//Engine.Renderer.setVAO(0);
-	//playerObject.pModel->material->unAssign();	//playerObject.pModel->drawNew();
 
-
-	watch::watch1 << "text";
-
-
+	///watch::watch1 << "text";
 }
 
 
