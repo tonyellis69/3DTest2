@@ -1,18 +1,19 @@
 #pragma once
 
 #include "BaseApp.h"
-#include "superChunk.h" //TO replace with terrain.h
-#include "terrain.h"
+
 #include "gameTerrain.h"
-#include "direction.h"
+
 #include <glew.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "playerObj.h"
-
+#include "..\VMtest\src\vm.h"
 #include "UI\GUIimage.h"
+
+#include "UI\GUIconsole.h"
 
 #include "poisson.h"
 
@@ -41,6 +42,11 @@ public:
 	void initHeightmapGUI();
 	void updateHeightmapImage();
 
+	void initTextWindow();
+
+	void vmMessage(TVMmsg msg);
+	void vmUpdate();
+	void showChoice();
 
 
 
@@ -119,7 +125,8 @@ public:
 	
 	CModel* tree;
 
-	CGUIlabel2* label;
+	CGUIconsole* textWindow;
+	bool shownChoice; ///<True if we've displayed the user's choices in the console.
 
 };
 

@@ -32,6 +32,7 @@ C3DtestApp::C3DtestApp() {
 	tmpSCno = 0;
 	tmp = false;
 	physCube = NULL;
+	shownChoice = false;
 }
 
 void C3DtestApp::onStart() {
@@ -195,6 +196,10 @@ void C3DtestApp::onStart() {
 	terrain.initTreeFinding();
 	terrain.initGrassFinding();
 
+	initTextWindow();
+
+	vm.loadProgFile(dataPath + "story.tig");
+	//vm.execute();
 
 	return;
 }
@@ -208,6 +213,20 @@ void C3DtestApp::onStart() {
 void C3DtestApp::keyCheck() {
 	CCamera* currentCamera = Engine.getCurrentCamera();
 	float moveInc = float( dT * 1000.0); // 0.05125f;
+
+
+	if (KeyDown['1'] || KeyDown['2'] || KeyDown['3']) {
+		int num = 0;
+		if (KeyDown['2'])
+			num = 1;
+		if (KeyDown['3'])
+			num = 2;
+		shownChoice = false;
+		TVMmsg msg;
+		msg.type = vmMsgChoice;
+		msg.integer = num;
+		vm.sendMessage(msg);
+	}
 
 
 	if (KeyDown['R']) {
@@ -713,7 +732,7 @@ void C3DtestApp::advance(Tdirection direction) {
 
 /** Called every frame. Mainly use this to scroll terrain if we're moving in first-person mode*/
 void C3DtestApp::Update() {
-	//float move = dT * 0.00005;
+	vmUpdate();
 
 	if (skyDome)
 		skyDome->update(dT);
@@ -856,6 +875,63 @@ void C3DtestApp::updateHeightmapImage() {
 	Engine.Renderer.renderToTextureQuad(*heightmapTex);
 
 	
+}
+
+void C3DtestApp::initTextWindow() {
+	textWindow = new CGUIconsole(200, 50, 800, 300);
+	textWindow->setFont(sysFont);
+	textWindow->setTextColour(UIwhite);
+	textWindow->hFormat = hCentre;
+	textWindow->borderOn(true);
+	textWindow->setMultiLine(true);
+	//textWindow->setText("Some sample text.");
+	GUIroot.Add(textWindow);
+
+}
+
+/** Handle messages from the virtual machine. */
+void C3DtestApp::vmMessage(TVMmsg msg) {
+	if (msg.type == vmMsgString) {
+		textWindow->appendText(msg.text);
+
+	}
+}
+
+/** Carry out any processing demanded by the virtual machine. */
+void C3DtestApp::vmUpdate() {
+
+	if (vm.getStatus() == vmAwaitChoice && !shownChoice) {
+		showChoice();
+		//getChoice(vm);
+	}
+	if (vm.getStatus() == vmAwaitString) {
+		//getString(vm);
+	}
+	
+}
+
+/** Write the user's choices to the console. */
+void C3DtestApp::showChoice() {
+	int choice = 1;
+	std::vector<std::string> optionStrs;
+	std::stringstream ss;
+	vm.getOptionStrs(optionStrs);
+	for (auto optionStr : optionStrs) {
+		ss << "\n" << choice << ": " << optionStr;
+		choice++;
+	}
+	ss << "\n?";
+
+	textWindow->appendText(ss.str());
+
+/*	TVMmsg msg;
+	msg.type = vmMsgChoice;
+	std::cin >> msg.integer;
+	msg.integer--;
+	vm->sendMessage(msg);
+*/
+
+	shownChoice = true;
 }
 
 
