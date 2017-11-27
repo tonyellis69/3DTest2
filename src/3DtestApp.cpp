@@ -18,6 +18,10 @@
 
 #include "UI\GUIimage.h"
 
+#include "UI\GUInumeric2.h"
+#include "UI\GUItextbox2.h"
+#include "UI\GUIscrollbar.h"
+
 
 #include "plants\fractalTree.h"
 
@@ -201,6 +205,12 @@ void C3DtestApp::onStart() {
 	vm.loadProgFile(dataPath + "story.tig");
 	//vm.execute();
 
+	CGUIscrollbar* num = new CGUIscrollbar(vertical,400, 400,  200);
+//	GUIroot.Add(num);
+
+	//CGUItextbox2* num = new CGUItextbox2(400, 400, 200, 50);
+	GUIroot.Add(num);
+
 	return;
 }
 
@@ -236,6 +246,8 @@ void C3DtestApp::keyCheck() {
 		EatKeys();
 	}
 
+
+	
 	if (!fpsOn) {
 
 		if (keyNow('E')) {
@@ -314,7 +326,7 @@ void C3DtestApp::keyCheck() {
 				EatKeys();
 
 			}
-			if (keyNow('S')) {
+			if (KeyDown['S']) {
 				flip.y = -eyeLine.y;
 				flip.x = -eyeLine.x;
 				flip.z = -eyeLine.z;
@@ -329,7 +341,7 @@ void C3DtestApp::keyCheck() {
 				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
 				playerPhys->velocity += moveDir * 0.4f;
 			}
-			if (keyNow('D')) {
+			if (KeyDown['D']) {
 				flip.x = -eyeLine.z;
 				flip.z = eyeLine.x;
 				moveDir = cross(flip, groundNormal) / length(groundNormal);
@@ -343,7 +355,7 @@ void C3DtestApp::keyCheck() {
 	}
 
 	
-
+	
 	if (mouseKey == MK_LBUTTON)
 	{
 		if (!mouseLook) {
@@ -353,8 +365,8 @@ void C3DtestApp::keyCheck() {
 			oldMousePos = vec2(mouseX, mouseY);
 			showMouse(false);
 			//centre mouse
-			setMousePos(-1, -1);
-
+			//setMousePos(-1, -1);
+			setMousePos(viewWidth / 2, viewHeight / 2);
 		}
 		else {
 			//find mouse movement
@@ -367,7 +379,8 @@ void C3DtestApp::keyCheck() {
 			vec3 perp = normalize(vec3(mousePos.y, -mousePos.x, 0));
 			currentCamera->freeRotate(perp, angle);
 
-			setMousePos(-1, -1);
+			//setMousePos(-1, -1);
+			setMousePos(viewWidth / 2, viewHeight / 2);
 		}
 
 	}
@@ -381,6 +394,7 @@ void C3DtestApp::keyCheck() {
 		}
 
 	}
+	
 
 	if (keyNow('8')) {
 		advance(north);
@@ -561,9 +575,8 @@ void C3DtestApp::keyCheck() {
 
 }
 
+/** Triggered *when* a key is pressed, not while it is held down. This is not 'whileKeyDown. */
 void C3DtestApp::OnKeyDown(unsigned int wParam, long lParam) {
-
-
 
 };
 
@@ -572,10 +585,10 @@ void C3DtestApp::OnKeyDown(unsigned int wParam, long lParam) {
 void C3DtestApp::mouseMove(int x, int y, int key) {
 }
 
-
+/*
 void C3DtestApp::onResize(int width, int height) {
 }
-
+*/
 
 void C3DtestApp::draw() {
 

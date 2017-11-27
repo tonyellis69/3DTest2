@@ -4,7 +4,7 @@
 
 #include "gameTerrain.h"
 
-#include <glew.h>
+
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -31,7 +31,7 @@ public:
 	void keyCheck();
 	void mouseMove(int x, int y, int key);
 	void OnKeyDown(unsigned int wParam, long lParam);
-	void onResize(int width, int height);
+	//void onResize(int width, int height);
 	void draw();
 	void advance(Tdirection direction);
 	void Update();
