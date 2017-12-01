@@ -14,6 +14,7 @@
 #include "UI\GUIimage.h"
 
 #include "UI\GUIconsole.h"
+#include "UI\GUImenu.h"
 
 #include "poisson.h"
 
@@ -30,7 +31,7 @@ public:
 
 	void keyCheck();
 	void mouseMove(int x, int y, int key);
-	void OnKeyDown(unsigned int wParam, long lParam);
+	void onKeyDown( int key, long mod);
 	//void onResize(int width, int height);
 	void draw();
 	void advance(Tdirection direction);
@@ -47,7 +48,7 @@ public:
 	void vmMessage(TVMmsg msg);
 	void vmUpdate();
 	void showChoice();
-
+	void HandleUImsg(CGUIbase& Control, CMessage& Message);
 
 
 	string dataPath; ///<Filepath to the Data folder
@@ -127,6 +128,8 @@ public:
 
 	CGUIconsole* textWindow;
 	bool shownChoice; ///<True if we've displayed the user's choices in the console.
+	unsigned int menuID; ///<Identifies the choice menu control.
+	CGUImenu* choiceMenu;
 
 };
 

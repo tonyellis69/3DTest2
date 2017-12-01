@@ -17,10 +17,9 @@
 #include "watch.h"
 
 #include "UI\GUIimage.h"
+#include "UI\GUIlabel2.h"
 
-#include "UI\GUInumeric2.h"
-#include "UI\GUItextbox2.h"
-#include "UI\GUIscrollbar.h"
+
 
 
 #include "plants\fractalTree.h"
@@ -202,14 +201,17 @@ void C3DtestApp::onStart() {
 
 	initTextWindow();
 
-	vm.loadProgFile(dataPath + "story.tig");
-	//vm.execute();
+	//vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
+	vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
 
-	CGUIscrollbar* num = new CGUIscrollbar(vertical,400, 400,  200);
-//	GUIroot.Add(num);
 
-	//CGUItextbox2* num = new CGUItextbox2(400, 400, 200, 50);
-	GUIroot.Add(num);
+	CGUIlabel2* lbl = new CGUIlabel2(300, 290, 300, 80);
+	lbl->setFont(&sysFont);
+	lbl->setTextColour(UIwhite);
+	lbl->setText("A line that runs on long enough to need wrapping, possibly onto a third line.");
+	lbl->setMultiLine(true);
+	lbl->borderOn(true);
+	GUIroot.Add(lbl);
 
 	return;
 }
@@ -219,35 +221,11 @@ void C3DtestApp::onStart() {
 
 
 
-
+/** Called every frame, provides a place for the user to check input where constant feedback is required. */
 void C3DtestApp::keyCheck() {
 	CCamera* currentCamera = Engine.getCurrentCamera();
 	float moveInc = float( dT * 1000.0); // 0.05125f;
 
-
-	if (KeyDown['1'] || KeyDown['2'] || KeyDown['3']) {
-		int num = 0;
-		if (KeyDown['2'])
-			num = 1;
-		if (KeyDown['3'])
-			num = 2;
-		shownChoice = false;
-		TVMmsg msg;
-		msg.type = vmMsgChoice;
-		msg.integer = num;
-		vm.sendMessage(msg);
-	}
-
-
-	if (KeyDown['R']) {
-		//cube->rotate(rot, glm::vec3(0, 0, 1));
-		//chunkShader->recompile();
-		terrain.grassShader->recompile();
-		EatKeys();
-	}
-
-
-	
 	if (!fpsOn) {
 
 		if (keyNow('E')) {
@@ -270,24 +248,24 @@ void C3DtestApp::keyCheck() {
 		if (keyNow('S')) {
 			currentCamera->dolly(-moveInc);
 		}
-		if (KeyDown[VK_SPACE]) {
-			;// currentCamera->elevate(moveInc);
+		if (keyNow(' ')) {
+			 currentCamera->elevate(moveInc);
 		}
 
 
-		if (KeyDown['E']) {
+		if (keyNow('E')) {
 			currentCamera->yaw(float(yawAng * dT));
 		}
 
-		if (KeyDown['T']) {
+		if (keyNow('T')) {
 			currentCamera->yaw(float(-yawAng *dT));
 		}
 
 		float rot = dT * 200.0f;
-		if (KeyDown['P']) {
+		if (keyNow('P')) {
 			cube->rotate(rot, glm::vec3(1, 0, 0));
 		}
-		if (KeyDown['Y']) {
+		if (keyNow('Y')) {
 			cube->rotate(rot, glm::vec3(0, 1, 0));
 		}
 		
@@ -306,7 +284,7 @@ void C3DtestApp::keyCheck() {
 			vec3 eyeLine = playerObject.povCam.getTargetDir();
 			vec3 flip;
 
-			if (KeyDown[VK_SPACE] && physCube == NULL) {
+			if (keyNow(' ') && physCube == NULL) {
 				playerPhys->velocity.y += 20;
 				playerPhys->velocity.x *= 2.5f;
 				playerPhys->velocity.z *= 2.5f;
@@ -323,10 +301,10 @@ void C3DtestApp::keyCheck() {
 				//probably doesn't even need fixing as those aren't realistic conditions
 				//*Setting y=0 fixed it... look into scrapping the whole velocity-parallel-to-the-ground thing
 
-				EatKeys();
+		
 
 			}
-			if (KeyDown['S']) {
+			if (keyNow('S')) {
 				flip.y = -eyeLine.y;
 				flip.x = -eyeLine.x;
 				flip.z = -eyeLine.z;
@@ -341,7 +319,7 @@ void C3DtestApp::keyCheck() {
 				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
 				playerPhys->velocity += moveDir * 0.4f;
 			}
-			if (KeyDown['D']) {
+			if (keyNow('D')) {
 				flip.x = -eyeLine.z;
 				flip.z = eyeLine.x;
 				moveDir = cross(flip, groundNormal) / length(groundNormal);
@@ -419,7 +397,38 @@ void C3DtestApp::keyCheck() {
 		advance(down);
 	}
 
-	if (KeyDown['1']) {
+
+
+
+
+	selectChk = glm::mod(vec3(selectChk), vec3(15, 5, 15));
+
+}
+
+/** Triggered *when* a key is pressed, not while it is held down. This is not 'whileKeyDown'. */
+void C3DtestApp::onKeyDown( int key, long mod) {
+	if (key == '1' || key == '2' || key == '3') {
+		int num = 0;
+		if (key == '2')
+			num = 1;
+		if (key == '3')
+			num = 2;
+		shownChoice = false;
+		TVMmsg msg;
+		msg.type = vmMsgChoice;
+		msg.integer = num;
+		vm.sendMessage(msg);
+	}
+
+
+	if (key == 'R') {
+		//cube->rotate(rot, glm::vec3(0, 0, 1));
+		//chunkShader->recompile();
+		terrain.grassShader->recompile();
+		//EatKeys();
+	}
+
+	if (key == '1') {
 		fpsOn = !fpsOn;
 		if (fpsOn) {
 			//Engine.setCurrentCamera(&fpsCam);
@@ -428,155 +437,67 @@ void C3DtestApp::keyCheck() {
 		}
 		else
 			Engine.setCurrentCamera(Engine.defaultCamera);
-		EatKeys();
-
-	}
-
-
-	if (KeyDown['K']) {
-		//A is player direction
-		//B is the normal of the plane they're standing on
-		// A projected onto the plane is:  B ×(A×B / |B | ) / |B |
-		vec3 groundNormal = physCube->currentContactNormal;
-		if (length(groundNormal) <= 0) {
-			return;
-		}
-		vec3 eyeLine = vec3(0, 0, -1); // playerObject.povCam.getTargetDir();
-
-		vec3 moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
-		moveDir = cross(groundNormal, moveDir) / length(groundNormal);
-
-		physCube->velocity += moveDir * 0.4f;
-
-		cerr << "\nmoveDir of " << moveDir.x << " " << moveDir.y << " " << moveDir.z;
-		if (!tmp) {
-			cerr << "\n!!!!Sideways push started!";
-			tmp = true;
-		}
 		//EatKeys();
-	}
-	if (KeyDown['J']) {
-		physCube->pModel->translate(vec3(0,0,0.05f));
-		if (!tmp) {
-			cerr << "\n!!!!Sideways push started!";
-			tmp = true;
-		}
-	}
-	if (KeyDown['I']) {
-		physCube->pModel->translate(vec3(-0.05f,0,0));
-	}
-	
-	if (KeyDown['M']) {
-		physCube->pModel->translate(vec3(0.05f, 0, 0));
+
 	}
 
-	if (KeyDown['N']) {
-		vec3 camPos = physCube->position;
-		cerr << "\ncube pos " << camPos.x << " " << camPos.y << " " << camPos.z;
-		
-		EatKeys();
-	}
-
-	if (physCube != NULL)
-		if  (KeyDown[VK_SPACE]) {
-		physCube->velocity.y += 20;
-		physCube->velocity.z *= 2;
-		physCube->velocity.x *= 2;
-
-		cerr << "\nJumping!!!";
-		EatKeys();
-	}
-
-
-
-
-	if (KeyDown['Z']) {
-		advance(north);
-		advance(west);
-		EatKeys();
-	}
-
-	if (KeyDown['X']) {
-	/*	terrain->clear();
+	if (key == 'X') {
+		/*	terrain->clear();
 		chunkShader->recompile();
 		terrain2texShader->recompile();
 		terrain->createAllChunks();
 		updateHeightmapImage();
 		*/
-		for (int s = 0; s  < terrain.layers[3].superChunks.size(); s++) {
+		for (int s = 0; s < terrain.layers[3].superChunks.size(); s++) {
 			CSuperChunk* sc = terrain.layers[3].superChunks[s];
-			if (sc->tmpIndex == i32vec3(2,1,1)) {
+			if (sc->tmpIndex == i32vec3(2, 1, 1)) {
 				sc->removeAllChunks();
 
 			}
 		}
-		EatKeys();
+		//EatKeys();
 	}
 
-	if (KeyDown['C']) {
-	/*	vec3 pos = currentCamera->getPos();
+	if (key == 'C') {
+		/*	vec3 pos = currentCamera->getPos();
 		pos = pos + currentCamera->getTargetDir() * 200.0f;
 		CModel* cube = Engine.createCube(pos, vec3(40));
 		physCube = Engine.addPhysics(cube);
 		physCube->setMass(10);
 		physCube->bSphere.setRadius(35);
 		physCube->AABB.setSize(40, 40);*/
-		
+
 		terrain.createAllChunks();
 
-		EatKeys();
+		//EatKeys();
 	}
 
-	if (KeyDown['V']) {
-	
-
-		vec3 pos = currentCamera->getPos();
-		//pos = vec3(293.96, 198.179, -82.5066);
-		
-		pos = pos + currentCamera->getTargetDir() * 30.0f;
-		//pos = vec3(-3.6289, 335.689, -8.32864);
-		CModel* cube = Engine.createCube(pos, vec3(5));
-		Engine.modelDrawList.push_back(cube);
-		physCube = Engine.addPhysics(cube);
-		physCube->setMass(10);
-		physCube->bSphere.setRadius(2);
-		physCube->AABB.setSize(5, 5);
-	
-
-		EatKeys();
-	}
-
-	if (KeyDown['B']) {
-		vec3 camPos = currentCamera->getPos();
+	if (key == 'B') {
+		vec3 camPos = Engine.getCurrentCamera()->getPos();
 		//camPos = physCube->getModel()->getPos();
 		cerr << "\ncam pos " << camPos.x << " " << camPos.y << " " << camPos.z;
-		vec3 camTarg = currentCamera->getTargetDir();
+		vec3 camTarg = Engine.getCurrentCamera()->getTargetDir();
 		cerr << "\ncam target " << camTarg.x << " " << camTarg.y << " " << camTarg.z;
-		
 
-		EatKeys();
+
+		//EatKeys();
 	}
-
+	
 
 	//if (keyNow('U') )
-	if (KeyDown['U']) {
+	if (key == 'U') {
 		supWire = !supWire;
-		EatKeys();
+		//EatKeys();
 	}
 
-	if (KeyDown['H']) {
+	if (key == 'H') {
 		heightmapImage->setVisible(!heightmapImage->getVisible());
 		if (heightmapImage->getVisible())
-			 updateHeightmapImage();
-		EatKeys();
+			updateHeightmapImage();
+		//EatKeys();
 	}
 
-	selectChk = glm::mod(vec3(selectChk), vec3(15, 5, 15));
 
-}
-
-/** Triggered *when* a key is pressed, not while it is held down. This is not 'whileKeyDown. */
-void C3DtestApp::OnKeyDown(unsigned int wParam, long lParam) {
 
 };
 
@@ -891,15 +812,21 @@ void C3DtestApp::updateHeightmapImage() {
 }
 
 void C3DtestApp::initTextWindow() {
-	textWindow = new CGUIconsole(200, 50, 800, 300);
-	textWindow->setFont(sysFont);
+	textWindow = new CGUIconsole(200, 50, 800, 175);
+	textWindow->setFont(&sysFont);
 	textWindow->setTextColour(UIwhite);
 	textWindow->hFormat = hCentre;
-	textWindow->borderOn(true);
+	textWindow->borderOn(false);
 	textWindow->setMultiLine(true);
-	//textWindow->setText("Some sample text.");
 	GUIroot.Add(textWindow);
 
+	choiceMenu = new CGUImenu(300, 400, 500, 200);
+	GUIroot.Add(choiceMenu);
+	choiceMenu->setFont(&sysFont);
+	choiceMenu->setTextColour(UIwhite);
+	GUIroot.setFocus(choiceMenu);
+	menuID = choiceMenu->getID();
+	choiceMenu->setVisible(false);
 }
 
 /** Handle messages from the virtual machine. */
@@ -920,34 +847,40 @@ void C3DtestApp::vmUpdate() {
 	if (vm.getStatus() == vmAwaitString) {
 		//getString(vm);
 	}
+	if (vm.getStatus() == vmExecuting) {
+		vm.execute();
+	}
 	
 }
 
-/** Write the user's choices to the console. */
+/** Write the user's choices to the choice menu. */
 void C3DtestApp::showChoice() {
-	int choice = 1;
+	choiceMenu->clear();
 	std::vector<std::string> optionStrs;
-	std::stringstream ss;
 	vm.getOptionStrs(optionStrs);
 	for (auto optionStr : optionStrs) {
-		ss << "\n" << choice << ": " << optionStr;
-		choice++;
+		choiceMenu->addItem(optionStr);
 	}
-	ss << "\n?";
-
-	textWindow->appendText(ss.str());
-
-/*	TVMmsg msg;
-	msg.type = vmMsgChoice;
-	std::cin >> msg.integer;
-	msg.integer--;
-	vm->sendMessage(msg);
-*/
-
+	choiceMenu->setVisible(true);
 	shownChoice = true;
+	
 }
 
 
+void C3DtestApp::HandleUImsg(CGUIbase & Control, CMessage & Message) {
+	if (Control.getID() == menuID && Message.Msg == uiMsgLMdown) {
+		TVMmsg msg;
+		msg.type = vmMsgChoice;
+		msg.integer = Message.value;
+		shownChoice = false;
+		textWindow->appendText("\n\n");
+		std::vector<std::string> optionStrs;
+		vm.getOptionStrs(optionStrs);
+		textWindow->appendText(optionStrs[Message.value]);
+		textWindow->appendText("\n\n");
+		vm.sendMessage(msg);
+	}
+}
 
 
 

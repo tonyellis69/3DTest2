@@ -6,10 +6,5 @@ OpenGL version: 4.6.0 NVIDIA 388.13
 Has NPOT
 glsl version: 4.60 NVIDIA
 
-Error creating framebuffer.
-Error creating framebuffer.
-Error creating framebuffer.
-Error creating framebuffer.
 Total SCs 680
 Passed SCs 121
-Error creating framebuffer.
