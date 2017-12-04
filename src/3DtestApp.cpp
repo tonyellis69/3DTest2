@@ -18,6 +18,7 @@
 
 #include "UI\GUIimage.h"
 #include "UI\GUIlabel2.h"
+#include "UI\GUInumeric2.h"
 
 
 
@@ -212,6 +213,7 @@ void C3DtestApp::onStart() {
 	lbl->setMultiLine(true);
 	lbl->borderOn(true);
 	GUIroot.Add(lbl);
+
 
 	return;
 }
@@ -824,7 +826,7 @@ void C3DtestApp::initTextWindow() {
 	GUIroot.Add(choiceMenu);
 	choiceMenu->setFont(&sysFont);
 	choiceMenu->setTextColour(UIwhite);
-	GUIroot.setFocus(choiceMenu);
+	/////////////////////GUIroot.setFocus(choiceMenu);
 	menuID = choiceMenu->getID();
 	choiceMenu->setVisible(false);
 }
