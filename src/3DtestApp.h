@@ -13,7 +13,7 @@
 #include "..\VMtest\src\vm.h"
 #include "UI\GUIimage.h"
 
-#include "UI\GUIconsole.h"
+#include "UI\GUIrichText.h"
 #include "UI\GUImenu.h"
 
 #include "poisson.h"
@@ -126,7 +126,7 @@ public:
 	
 	CModel* tree;
 
-	CGUIconsole* textWindow;
+	CGUIrichText* textWindow;
 	bool shownChoice; ///<True if we've displayed the user's choices in the console.
 	unsigned int menuID; ///<Identifies the choice menu control.
 	CGUImenu* choiceMenu;

@@ -5,7 +5,7 @@ out vec4 colour;
 
 uniform sampler2D textureUnit;
 uniform vec2 tile;
-uniform vec2 offset;
+
 
 void main()
 {

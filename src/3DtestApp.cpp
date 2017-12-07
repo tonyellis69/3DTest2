@@ -18,7 +18,7 @@
 
 #include "UI\GUIimage.h"
 #include "UI\GUIlabel2.h"
-#include "UI\GUInumeric2.h"
+#include "UI\GUIcheckButton.h"
 
 
 
@@ -213,6 +213,7 @@ void C3DtestApp::onStart() {
 	lbl->setMultiLine(true);
 	lbl->borderOn(true);
 	GUIroot.Add(lbl);
+
 
 
 	return;
@@ -814,7 +815,7 @@ void C3DtestApp::updateHeightmapImage() {
 }
 
 void C3DtestApp::initTextWindow() {
-	textWindow = new CGUIconsole(200, 50, 800, 175);
+	textWindow = new CGUIrichText(200, 50, 800, 175);
 	textWindow->setFont(&sysFont);
 	textWindow->setTextColour(UIwhite);
 	textWindow->hFormat = hCentre;
