@@ -815,13 +815,20 @@ void C3DtestApp::updateHeightmapImage() {
 }
 
 void C3DtestApp::initTextWindow() {
-	textWindow = new CGUIrichText(200, 50, 800, 175);
+	CGUIpanel* backPanel = new CGUIpanel(200, 50, 800, 175);
+	UIcolour tint = { 0,0,0,0.2f };
+	backPanel->setBackColour1(tint);
+	backPanel->setBackColour2(tint);
+	backPanel->borderOn(false);
+	GUIroot.Add(backPanel);
+
+	textWindow = new CGUIrichText(10, 10, 780, 155);
 	textWindow->setFont(&sysFont);
 	textWindow->setTextColour(UIwhite);
 	textWindow->hFormat = hCentre;
 	textWindow->borderOn(false);
 	textWindow->setMultiLine(true);
-	GUIroot.Add(textWindow);
+	backPanel->Add(textWindow);
 
 	choiceMenu = new CGUImenu(300, 400, 500, 200);
 	GUIroot.Add(choiceMenu);
@@ -866,7 +873,6 @@ void C3DtestApp::showChoice() {
 	}
 	choiceMenu->setVisible(true);
 	shownChoice = true;
-	
 }
 
 
@@ -876,11 +882,21 @@ void C3DtestApp::HandleUImsg(CGUIbase & Control, CMessage & Message) {
 		msg.type = vmMsgChoice;
 		msg.integer = Message.value;
 		shownChoice = false;
-		textWindow->appendText("\n\n");
+
+	//	textWindow->setTextColour(UIblue);
+	//	textWindow->appendText(" Tacked-on text.");
+
+	//	textWindow->appendText("\n\n");
+	//	textWindow->appendText(" ** ");
+		textWindow->setTextColour(UIred);
+	
 		std::vector<std::string> optionStrs;
 		vm.getOptionStrs(optionStrs);
 		textWindow->appendText(optionStrs[Message.value]);
-		textWindow->appendText("\n\n");
+	//	textWindow->appendText("\n\n");
+	//	textWindow->appendText(" ** ");
+		textWindow->setTextColour(UIwhite);
+
 		vm.sendMessage(msg);
 	}
 }
