@@ -886,14 +886,14 @@ void C3DtestApp::HandleUImsg(CGUIbase & Control, CMessage & Message) {
 	//	textWindow->setTextColour(UIblue);
 	//	textWindow->appendText(" Tacked-on text.");
 
-	//	textWindow->appendText("\n\n");
+		textWindow->appendText("\n\n");
 	//	textWindow->appendText(" ** ");
 		textWindow->setTextColour(UIred);
 	
 		std::vector<std::string> optionStrs;
 		vm.getOptionStrs(optionStrs);
 		textWindow->appendText(optionStrs[Message.value]);
-	//	textWindow->appendText("\n\n");
+		textWindow->appendText("\n\n");
 	//	textWindow->appendText(" ** ");
 		textWindow->setTextColour(UIwhite);
 
