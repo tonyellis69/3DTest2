@@ -829,6 +829,7 @@ void C3DtestApp::initTextWindow() {
 	textWindow->borderOn(false);
 	textWindow->setMultiLine(true);
 	backPanel->Add(textWindow);
+	textWindowID = textWindow->getID();
 
 	choiceMenu = new CGUImenu(300, 400, 500, 200);
 	GUIroot.Add(choiceMenu);
@@ -866,35 +867,55 @@ void C3DtestApp::vmUpdate() {
 /** Write the user's choices to the choice menu. */
 void C3DtestApp::showChoice() {
 	choiceMenu->clear();
+	textWindow->appendText("\n");
 	std::vector<std::string> optionStrs;
+	int optionNo = optionOffset;
 	vm.getOptionStrs(optionStrs);
 	for (auto optionStr : optionStrs) {
-		choiceMenu->addItem(optionStr);
+		choiceMenu->addItem(optionStr );
+		textWindow->appendHotText("\n" + optionStr , optionNo++);
 	}
 	choiceMenu->setVisible(true);
 	shownChoice = true;
 }
 
 
-void C3DtestApp::HandleUImsg(CGUIbase & Control, CMessage & Message) {
-	if (Control.getID() == menuID && Message.Msg == uiMsgLMdown) {
+void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
+	if (control.getID() == menuID && Message.Msg == uiMsgLMdown) {
 		TVMmsg msg;
 		msg.type = vmMsgChoice;
 		msg.integer = Message.value;
 		shownChoice = false;
 
-	//	textWindow->setTextColour(UIblue);
-	//	textWindow->appendText(" Tacked-on text.");
 
 		textWindow->appendText("\n\n");
-	//	textWindow->appendText(" ** ");
 		textWindow->setTextColour(UIred);
 	
 		std::vector<std::string> optionStrs;
 		vm.getOptionStrs(optionStrs);
 		textWindow->appendText(optionStrs[Message.value]);
 		textWindow->appendText("\n\n");
-	//	textWindow->appendText(" ** ");
+
+		textWindow->setTextColour(UIwhite);
+
+		vm.sendMessage(msg);
+	}
+
+	if (control.getID() == textWindowID && Message.Msg == uiMsgHotTextClick) {
+		int option = Message.value - optionOffset;
+
+		TVMmsg msg;
+		msg.type = vmMsgChoice;
+		msg.integer = option;
+		shownChoice = false;
+
+		textWindow->appendText("\n\n");
+		textWindow->setTextColour(UIred);
+
+		std::vector<std::string> optionStrs;
+		vm.getOptionStrs(optionStrs);
+		textWindow->appendText(optionStrs[option]);
+		textWindow->appendText("\n\n");
 		textWindow->setTextColour(UIwhite);
 
 		vm.sendMessage(msg);

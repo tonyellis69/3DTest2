@@ -130,6 +130,8 @@ public:
 	bool shownChoice; ///<True if we've displayed the user's choices in the console.
 	unsigned int menuID; ///<Identifies the choice menu control.
 	CGUImenu* choiceMenu;
+	unsigned int textWindowID;
+	const int optionOffset = 100;
 
 };
 
