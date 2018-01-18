@@ -206,15 +206,6 @@ void C3DtestApp::onStart() {
 	vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
 
 
-	CGUIlabel2* lbl = new CGUIlabel2(300, 290, 300, 80);
-	lbl->setFont(&sysFont);
-	lbl->setTextColour(UIwhite);
-	lbl->setText("A line that runs on long enough to need wrapping, possibly onto a third line.");
-	lbl->setMultiLine(true);
-	lbl->borderOn(true);
-	GUIroot.Add(lbl);
-
-
 
 	return;
 }
@@ -815,7 +806,7 @@ void C3DtestApp::updateHeightmapImage() {
 }
 
 void C3DtestApp::initTextWindow() {
-	CGUIpanel* backPanel = new CGUIpanel(200, 50, 800, 175);
+	CGUIpanel* backPanel = new CGUIpanel(200, 50, 800, 200);
 	UIcolour tint = { 0,0,0,0.2f };
 	backPanel->setBackColour1(tint);
 	backPanel->setBackColour2(tint);
@@ -831,13 +822,6 @@ void C3DtestApp::initTextWindow() {
 	backPanel->Add(textWindow);
 	textWindowID = textWindow->getID();
 
-	choiceMenu = new CGUImenu(300, 400, 500, 200);
-	GUIroot.Add(choiceMenu);
-	choiceMenu->setFont(&sysFont);
-	choiceMenu->setTextColour(UIwhite);
-	/////////////////////GUIroot.setFocus(choiceMenu);
-	menuID = choiceMenu->getID();
-	choiceMenu->setVisible(false);
 }
 
 /** Handle messages from the virtual machine. */
@@ -866,50 +850,29 @@ void C3DtestApp::vmUpdate() {
 
 /** Write the user's choices to the choice menu. */
 void C3DtestApp::showChoice() {
-	choiceMenu->clear();
 	textWindow->appendText("\n");
 	std::vector<std::string> optionStrs;
-	int optionNo = optionOffset;
+	int optionNo = optionHotText;
 	vm.getOptionStrs(optionStrs);
 	for (auto optionStr : optionStrs) {
-		choiceMenu->addItem(optionStr );
 		textWindow->appendHotText("\n" + optionStr , optionNo++);
 	}
-	choiceMenu->setVisible(true);
 	shownChoice = true;
 }
 
 
 void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
-	if (control.getID() == menuID && Message.Msg == uiMsgLMdown) {
-		TVMmsg msg;
-		msg.type = vmMsgChoice;
-		msg.integer = Message.value;
-		shownChoice = false;
-
-
-		textWindow->appendText("\n\n");
-		textWindow->setTextColour(UIred);
-	
-		std::vector<std::string> optionStrs;
-		vm.getOptionStrs(optionStrs);
-		textWindow->appendText(optionStrs[Message.value]);
-		textWindow->appendText("\n\n");
-
-		textWindow->setTextColour(UIwhite);
-
-		vm.sendMessage(msg);
-	}
-
 	if (control.getID() == textWindowID && Message.Msg == uiMsgHotTextClick) {
-		int option = Message.value - optionOffset;
+		int option = Message.value - optionHotText;
 
 		TVMmsg msg;
 		msg.type = vmMsgChoice;
 		msg.integer = option;
 		shownChoice = false;
 
-		textWindow->appendText("\n\n");
+		removeChoices();
+
+		textWindow->appendText("\n");
 		textWindow->setTextColour(UIred);
 
 		std::vector<std::string> optionStrs;
@@ -922,7 +885,10 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	}
 }
 
-
+/** Remove the menu of options from the text window. */
+void C3DtestApp::removeChoices() {
+	textWindow->removeHotText(optionHotText);
+}
 
 
 

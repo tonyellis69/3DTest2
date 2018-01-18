@@ -49,6 +49,7 @@ public:
 	void vmUpdate();
 	void showChoice();
 	void HandleUImsg(CGUIbase& Control, CMessage& Message);
+	void removeChoices();
 
 
 	string dataPath; ///<Filepath to the Data folder
@@ -128,10 +129,9 @@ public:
 
 	CGUIrichText* textWindow;
 	bool shownChoice; ///<True if we've displayed the user's choices in the console.
-	unsigned int menuID; ///<Identifies the choice menu control.
-	CGUImenu* choiceMenu;
+
 	unsigned int textWindowID;
-	const int optionOffset = 100;
+	const int optionHotText = 0x10;
 
 };
 
