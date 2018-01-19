@@ -806,14 +806,14 @@ void C3DtestApp::updateHeightmapImage() {
 }
 
 void C3DtestApp::initTextWindow() {
-	CGUIpanel* backPanel = new CGUIpanel(200, 50, 800, 200);
+	CGUIpanel* backPanel = new CGUIpanel(200, 50, 800, 175);   //(200, 50, 800, 175);
 	UIcolour tint = { 0,0,0,0.2f };
 	backPanel->setBackColour1(tint);
 	backPanel->setBackColour2(tint);
 	backPanel->borderOn(false);
 	GUIroot.Add(backPanel);
 
-	textWindow = new CGUIrichText(10, 10, 780, 155);
+	textWindow = new CGUIrichText(0, 0, 780, 175);  //(10, 10, 780, 155);
 	textWindow->setFont(&sysFont);
 	textWindow->setTextColour(UIwhite);
 	textWindow->hFormat = hCentre;
@@ -882,6 +882,12 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 		textWindow->setTextColour(UIwhite);
 
 		vm.sendMessage(msg);
+	}
+
+	if (control.getID() == textWindowID && Message.Msg == uiMsgRMouseUp) {
+		textWindow->scrollUp();
+	//	textWindow->scroll(-1);
+
 	}
 }
 
