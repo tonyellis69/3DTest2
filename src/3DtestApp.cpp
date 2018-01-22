@@ -661,6 +661,7 @@ void C3DtestApp::advance(Tdirection direction) {
 /** Called every frame. Mainly use this to scroll terrain if we're moving in first-person mode*/
 void C3DtestApp::Update() {
 	vmUpdate();
+	textWindow->update(dT);
 
 	if (skyDome)
 		skyDome->update(dT);
