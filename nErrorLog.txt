@@ -1,0 +1,90 @@
+
+BaseApp constructor.
+
+Using GLEW 1.12.0
+OpenGL version: 4.6.0 NVIDIA 388.59
+Has NPOT
+glsl version: 4.60 NVIDIA
+
+Total SCs 680
+Passed SCs 121
+appending text
+appending text
+appending hot text
+appending hot text
+appending hot text
+choices shown.
+option chosen.
+removing  hot text
+appending text
+appending text
+appending text
+appending text
+appending text
+appending hot text
+appending hot text
+choices shown.
+option chosen.
+removing  hot text
+appending text
+appending text
+appending text
+appending text
+appending text
+appending hot text
+appending hot text
+choices shown.
+trigger correction****************************************************
+cache glFinished.
+smoothscrolling, yPixelOffset at -8
+overrun, nanoseconds taken 88064 ms: 0.088064
+cache glFinished.
+smoothscrolling, yPixelOffset at -16
+overrun, nanoseconds taken 91136 ms: 0.091136
+cache glFinished.
+scrolling down
+smoothscrolling, yPixelOffset at 0
+overrun, nanoseconds taken 178176 ms: 0.178176
+cache glFinished.
+smoothscrolling, yPixelOffset at -8
+overrun, nanoseconds taken 91136 ms: 0.091136
+cache glFinished.
+smoothscrolling, yPixelOffset at -16
+overrun, nanoseconds taken 91136 ms: 0.091136
+cache glFinished.
+scrolling down
+smoothscrolling, yPixelOffset at 0
+overrun, nanoseconds taken 178176 ms: 0.178176
+cache glFinished.
+smoothscrolling, yPixelOffset at -8
+overrun, nanoseconds taken 104448 ms: 0.104448
+cache glFinished.
+smoothscrolling, yPixelOffset at -16
+overrun, nanoseconds taken 104448 ms: 0.104448
+cache glFinished.
+scrolling down
+smoothscrolling, yPixelOffset at 0
+overrun, nanoseconds taken 195584 ms: 0.195584
+cache glFinished.
+smoothscrolling, yPixelOffset at -8
+overrun, nanoseconds taken 114688 ms: 0.114688
+cache glFinished.
+smoothscrolling, yPixelOffset at -16
+overrun, nanoseconds taken 113664 ms: 0.113664
+cache glFinished.
+scrolling down
+smoothscrolling, yPixelOffset at 0
+overrun, nanoseconds taken 207872 ms: 0.207872
+cache glFinished.
+smoothscrolling, yPixelOffset at -8
+overrun, nanoseconds taken 105472 ms: 0.105472
+cache glFinished.
+smoothscrolling, yPixelOffset at -16
+overrun, nanoseconds taken 106496 ms: 0.106496
+cache glFinished.
+scrolling down
+smoothscrolling, yPixelOffset at 0
+overrun, nanoseconds taken 204800 ms: 0.2048
+cache glFinished.
+smoothscrolling, yPixelOffset at -8
+overrun, nanoseconds taken 101376 ms: 0.101376
