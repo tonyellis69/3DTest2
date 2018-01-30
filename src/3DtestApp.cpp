@@ -401,18 +401,7 @@ void C3DtestApp::keyCheck() {
 
 /** Triggered *when* a key is pressed, not while it is held down. This is not 'whileKeyDown'. */
 void C3DtestApp::onKeyDown( int key, long mod) {
-	if (key == '1' || key == '2' || key == '3') {
-		int num = 0;
-		if (key == '2')
-			num = 1;
-		if (key == '3')
-			num = 2;
-		shownChoice = false;
-		TVMmsg msg;
-		msg.type = vmMsgChoice;
-		msg.integer = num;
-		vm.sendMessage(msg);
-	}
+	
 
 
 	if (key == 'R') {
@@ -526,7 +515,7 @@ void C3DtestApp::draw() {
 	terrain.grassShader->setTextureUnit(0, terrain.hGrassTexure);
 	terrain.grassShader->setShaderValue(terrain.hGrassTime,(float)Time);
 	terrain.grassShader->setShaderValue(terrain.hGrassMVP,mvp);
-	//terrain.drawGrass(mvp, terrain.visibleSClist);
+//	terrain.drawGrass(mvp, terrain.visibleSClist);
 
 
 	//draw trees
@@ -536,7 +525,7 @@ void C3DtestApp::draw() {
 
 	glEnable(GL_PRIMITIVE_RESTART);
 	
-	//terrain.drawTrees(mvp, terrain.visibleSClist);
+//	terrain.drawTrees(mvp, terrain.visibleSClist);
 
 	glDisable(GL_PRIMITIVE_RESTART);
 
@@ -806,21 +795,28 @@ void C3DtestApp::updateHeightmapImage() {
 }
 
 void C3DtestApp::initTextWindow() {
-	CGUIpanel* backPanel = new CGUIpanel(200, 50, 800, 175);   //(200, 50, 800, 175);
-	UIcolour tint = { 0,0,0,0.2f };
+	CGUIpanel* backPanel = new CGUIpanel(200, 50, 800, 195);   //(200, 50, 800, 175);
+	UIcolour tint = { 0,0,0,0.3f };
 	backPanel->setBackColour1(tint);
 	backPanel->setBackColour2(tint);
 	backPanel->borderOn(false);
+	backPanel->hFormat = hCentre;
 	GUIroot.Add(backPanel);
 
-	textWindow = new CGUIrichText(0, 0, 780, 175);  //(10, 10, 780, 155);
+
+	textWindow = new CGUIrichText(10, 10, 780, 175);  //(10, 10, 780, 155);
 	textWindow->setFont(&sysFont);
 	textWindow->setTextColour(UIwhite);
 	textWindow->hFormat = hCentre;
 	textWindow->borderOn(false);
 	textWindow->setMultiLine(true);
+	//textWindow->setHotTextColour(0.87, 0.87, 0.68, 1);
+	//textWindow->setHotTextHighlightColour(0.64, 0.73, 0.82, 1);
+	textWindow->setHotTextColour(0.92, 0.92, 0.73, 1);
+	textWindow->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
 	backPanel->Add(textWindow);
 	textWindowID = textWindow->getID();
+	//GUIroot.setFocus(textWindow);
 
 }
 
@@ -857,6 +853,7 @@ void C3DtestApp::showChoice() {
 	for (auto optionStr : optionStrs) {
 		textWindow->appendHotText("\n" + optionStr , optionNo++);
 	}
+	textWindow->selectTopHotText();
 	shownChoice = true;
 }
 
@@ -877,7 +874,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 		removeChoices();
 
 		textWindow->appendText("\n");
-		textWindow->setTextColour(UIred);
+		//textWindow->setTextColour(UIred);
 
 		std::vector<std::string> optionStrs;
 		vm.getOptionStrs(optionStrs);
@@ -925,8 +922,15 @@ void C3DtestApp::removeChoices() {
 	textWindow->removeHotText(optionHotText);
 }
 
-
-
+/** Trap mousewheel events for our own use. */
+void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
+	int x, y;
+	win.getMousePos(x, y);
+	int delta = yoffset;
+	int keyState = 0; //can get key state if ever needed
+	if (GUIroot.IsOnControl(GUIroot, x, y)) //checks that the mouse isn't outside our app altogether
+		textWindow->MouseWheelMsg(x, y, delta, keyState);
+}
 
 C3DtestApp::~C3DtestApp() {
 	

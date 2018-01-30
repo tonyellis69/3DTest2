@@ -8,6 +8,3 @@ glsl version: 4.60 NVIDIA
 
 Total SCs 680
 Passed SCs 121
-Hot text id of zero reported!
-Hot text id of zero reported!
-Hot text id of zero reported!

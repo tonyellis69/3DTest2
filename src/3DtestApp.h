@@ -26,6 +26,7 @@ extern float yAdj;
 class C3DtestApp : public  CBaseApp {
 public:
 	C3DtestApp();
+	void OnMouseWheelMsg(float xoffset, float yoffset);
 	~C3DtestApp();
 	void onStart();
 
@@ -132,7 +133,6 @@ public:
 
 	unsigned int textWindowID;
 	const int optionHotText = 0x10;
-
 };
 
 const float yawAng = 0.22f;
