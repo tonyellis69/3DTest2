@@ -887,32 +887,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
 	if (control.getID() == textWindowID && Message.Msg == uiMsgRMouseUp) {
 
-		textWindow->overrunCorrect = true;
-		cerr << "\ntrigger correction****************************************************";
-		//textWindow->renderText();
-		return;
-
-		int option =  0;
-
-		TVMmsg msg;
-		msg.type = vmMsgChoice;
-		msg.integer = option;
-		shownChoice = false;
-
-		cerr << "\noption chosen.";
-
-		removeChoices();
-
-		textWindow->appendText("\n");
-		textWindow->setTextColour(UIred);
-
-		std::vector<std::string> optionStrs;
-		vm.getOptionStrs(optionStrs);
-		textWindow->appendText(optionStrs[option]);
-		textWindow->appendText("\n\n");
-		textWindow->setTextColour(UIwhite);
-
-		vm.sendMessage(msg);
+	
 
 	}
 }
