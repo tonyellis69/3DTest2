@@ -18,6 +18,8 @@
 
 #include "poisson.h"
 
+#include "worldUI.h"
+
 extern CSuperChunk* dbgSC;
 
 extern float xAdj;
@@ -133,6 +135,8 @@ public:
 
 	unsigned int textWindowID;
 	const int optionHotText = 0x10;
+
+	CWorldUI worldUI;
 };
 
 const float yawAng = 0.22f;

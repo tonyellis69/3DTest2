@@ -202,10 +202,12 @@ void C3DtestApp::onStart() {
 
 	initTextWindow();
 
-	//vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
-	vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
+	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
+	//vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
 
-
+	worldUI.setVM(&vm);
+	worldUI.init();
+	worldUI.start();
 
 	return;
 }

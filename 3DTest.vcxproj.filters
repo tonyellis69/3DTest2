@@ -24,12 +24,18 @@
     <ClCompile Include="src\gameTerrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\worldUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gameTerrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\worldUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
