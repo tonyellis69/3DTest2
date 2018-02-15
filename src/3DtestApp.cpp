@@ -823,10 +823,13 @@ void C3DtestApp::initTextWindow() {
 }
 
 /** Handle messages from the virtual machine. */
-void C3DtestApp::vmMessage(TVMmsg msg) {
-	if (msg.type == vmMsgString) {
+void C3DtestApp::vmMessage(TvmAppMsg msg) {
+	if (msg.type == appWriteText) {
 		textWindow->appendText(msg.text);
+	}
 
+	if (msg.type == appWriteBold) {
+		textWindow->setAppendStyleBold((bool)msg.integer);
 	}
 }
 

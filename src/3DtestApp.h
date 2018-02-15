@@ -48,7 +48,7 @@ public:
 
 	void initTextWindow();
 
-	void vmMessage(TVMmsg msg);
+	void vmMessage(TvmAppMsg msg);
 	void vmUpdate();
 	void showChoice();
 	void HandleUImsg(CGUIbase& Control, CMessage& Message);
