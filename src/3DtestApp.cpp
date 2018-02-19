@@ -825,12 +825,12 @@ void C3DtestApp::initTextWindow() {
 /** Handle messages from the virtual machine. */
 void C3DtestApp::vmMessage(TvmAppMsg msg) {
 	if (msg.type == appWriteText) {
-		textWindow->appendText(msg.text);
+		processText(msg.text);
+	}
+	if (msg.type == appHotText) {
+		worldUI.addHotText(msg.text,msg.integer);
 	}
 
-	if (msg.type == appWriteBold) {
-		textWindow->setAppendStyleBold((bool)msg.integer);
-	}
 }
 
 /** Carry out any processing demanded by the virtual machine. */
@@ -910,6 +910,38 @@ void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	int keyState = 0; //can get key state if ever needed
 	if (GUIroot.IsOnControl(GUIroot, x, y)) //checks that the mouse isn't outside our app altogether
 		textWindow->MouseWheelMsg(x, y, delta, keyState);
+}
+
+
+void C3DtestApp::processText(string& text) {
+	TvmAppMsg msg;
+	bool bold = false;
+	enum TStyleChange { styleNone, styleBold };
+
+	std::string writeTxt = text;
+	std::string remainingTxt = text;
+	TStyleChange styleChange;
+	while (remainingTxt.size()) {
+		styleChange = styleNone;
+		size_t found = remainingTxt.find('\\');
+		if (found != std::string::npos) {
+			if (remainingTxt[found + 1] == 'b') {
+				styleChange = styleBold;
+				bold = !bold;
+			}
+			//other markup checks here
+		}
+
+		writeTxt = remainingTxt.substr(0, found);
+		remainingTxt = remainingTxt.substr(writeTxt.size());
+
+		textWindow->appendText(writeTxt);
+
+		if (styleChange == styleBold)
+			textWindow->setAppendStyleBold(bold);
+	}
+
+
 }
 
 C3DtestApp::~C3DtestApp() {

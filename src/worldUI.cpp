@@ -22,3 +22,11 @@ void CWorldUI::roomDescription() {
 void CWorldUI::start() {
 	roomDescription();
 }
+
+/** Add this as a recognised hot text word. */
+void CWorldUI::addHotText(std::string & text, int memberId) {
+	THotTextRec hotText;
+	hotText.text = text;
+	hotText.memberId = memberId;
+	hotTextList.push_back(hotText);
+}

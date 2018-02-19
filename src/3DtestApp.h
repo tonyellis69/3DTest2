@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseApp.h"
+#include "..\3DEngine\src\BaseApp.h"
 
 #include "gameTerrain.h"
 
@@ -29,6 +29,7 @@ class C3DtestApp : public  CBaseApp {
 public:
 	C3DtestApp();
 	void OnMouseWheelMsg(float xoffset, float yoffset);
+	void processText(string & text);
 	~C3DtestApp();
 	void onStart();
 
