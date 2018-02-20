@@ -25,11 +25,13 @@ extern CSuperChunk* dbgSC;
 extern float xAdj;
 extern float yAdj;
 
+
+
 class C3DtestApp : public  CBaseApp {
 public:
 	C3DtestApp();
 	void OnMouseWheelMsg(float xoffset, float yoffset);
-	void processText(string & text);
+	
 	~C3DtestApp();
 	void onStart();
 
@@ -55,7 +57,7 @@ public:
 	void HandleUImsg(CGUIbase& Control, CMessage& Message);
 	void removeChoices();
 
-
+	
 	string dataPath; ///<Filepath to the Data folder
 	
 	CModel* cube; //TO DO: get rid of this
@@ -138,6 +140,7 @@ public:
 	const int optionHotText = 0x10;
 
 	CWorldUI worldUI;
+
 };
 
 const float yawAng = 0.22f;
