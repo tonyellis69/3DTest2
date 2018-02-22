@@ -1,5 +1,7 @@
 #include "worldUI.h"
 
+#include <ctype.h>
+
 void CWorldUI::setVM(CTigVM * vm) {
 	pVM = vm;
 }
@@ -15,6 +17,22 @@ void CWorldUI::init() {
 		std::cerr << "\nStart room not found!";
 		return;
 	}
+	findMoveToIds();
+}
+
+void CWorldUI::findMoveToIds() {
+	moveToIds[moveNorth] = pVM->getMemberId("northTo");
+	moveToIds[moveNE] = pVM->getMemberId("neTo");
+	moveToIds[moveEast] = pVM->getMemberId("eastTo");
+	moveToIds[moveSE] = pVM->getMemberId("seTo");
+	moveToIds[moveSouth] = pVM->getMemberId("northTo");
+	moveToIds[moveSW] = pVM->getMemberId("swTo");
+	moveToIds[moveWest] = pVM->getMemberId("westTo");
+	moveToIds[moveNW] = pVM->getMemberId("nwTo");
+	moveToIds[moveUp] = pVM->getMemberId("upTo");
+	moveToIds[moveDown] = pVM->getMemberId("downTo");
+	moveToIds[moveIn] = pVM->getMemberId("inTo");
+	moveToIds[moveOut] = pVM->getMemberId("outTo");
 }
 
 /** Execute the current room's description member. */
@@ -95,11 +113,35 @@ void CWorldUI::processText(string& text) {
 void CWorldUI::markupHotText(std::string & text) {
 	for (auto hotText : hotTextList) {
 		size_t found = text.find(hotText.text);
-		if (found != std::string::npos) {
-			std::string tag = "\\h{" + std::to_string(hotText.memberId) + "}";
-			text.insert(found, tag);
-			text.insert(found + tag.size() + hotText.text.size(), "\\h");
+		while (found != std::string::npos) {
+			if ((found > 0 && !isalnum(text[found - 1])) &&
+				(!isalnum(text[found + hotText.text.size()]))) {
+				std::string tag = "\\h{" + std::to_string(hotText.memberId) + "}";
+				text.insert(found, tag);
+				text.insert(found + tag.size() + hotText.text.size(), "\\h");
+				found += tag.size() + 2;
+			}
+			found = text.find( hotText.text, found + hotText.text.size());
 		}
 	}
 
+}
+
+/** Handle the player clicking on a piece of hot text. */
+void CWorldUI::hotTextClick(int messageId) {
+	//is this a move command?
+	for (int dir = 0; dir < 12; dir++) {
+		if (messageId == moveToIds[dir]) {
+			moveTo(messageId);
+		}
+	}
+}
+
+void CWorldUI::moveTo(int moveId) {
+	CTigVar member = pVM->getMember(currentRoom, moveId);
+	if (member.type == tigObj) {
+		currentRoom = member;
+		pTextWindow->appendText("\n\n");
+		roomDescription();
+	}
 }

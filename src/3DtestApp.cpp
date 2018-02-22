@@ -870,25 +870,32 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 			cerr << "\nHot text id of zero reported!";
 			return;
 		}
-		int option = Message.value - optionHotText;
+		if (Message.value < memberIdStart) { //TO DO: tidy this shit
+			int option = Message.value - optionHotText;
 
-		TVMmsg msg;
-		msg.type = vmMsgChoice;
-		msg.integer = option;
-		shownChoice = false;
+			TVMmsg msg;
+			msg.type = vmMsgChoice;
+			msg.integer = option;
+			shownChoice = false;
 
-		removeChoices();
+			removeChoices();
 
-		textWindow->appendText("\n");
-		//textWindow->setTextColour(UIred);
+			textWindow->appendText("\n");
+			//textWindow->setTextColour(UIred);
 
-		std::vector<std::string> optionStrs;
-		vm.getOptionStrs(optionStrs);
-		textWindow->appendText(optionStrs[option]);
-		textWindow->appendText("\n\n");
-		textWindow->setTextColour(UIwhite);
+			std::vector<std::string> optionStrs;
+			vm.getOptionStrs(optionStrs);
+			textWindow->appendText(optionStrs[option]);
+			textWindow->appendText("\n\n");
+			textWindow->setTextColour(UIwhite);
 
-		vm.sendMessage(msg);
+			vm.sendMessage(msg);
+			return;
+		}
+
+		//so the tag represents a vm member. 
+		worldUI.hotTextClick(Message.value);
+		return;
 	}
 
 	if (control.getID() == textWindowID && Message.Msg == uiMsgRMouseUp) {
