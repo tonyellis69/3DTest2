@@ -141,6 +141,7 @@ void CWorldUI::moveTo(int moveId) {
 	CTigVar member = pVM->getMember(currentRoom, moveId);
 	if (member.type == tigObj) {
 		currentRoom = member;
+		pTextWindow->purgeHotText();
 		pTextWindow->appendText("\n\n");
 		roomDescription();
 	}
