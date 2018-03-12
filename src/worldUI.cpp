@@ -17,7 +17,9 @@ void CWorldUI::init() {
 		std::cerr << "\nStart room not found!";
 		return;
 	}
+	currentRoomNo = currentRoom.getObjId();
 	findMoveToIds();
+	findTreeIds();
 }
 
 void CWorldUI::findMoveToIds() {
@@ -35,9 +37,31 @@ void CWorldUI::findMoveToIds() {
 	moveToIds[moveOut] = pVM->getMemberId("outTo");
 }
 
+void CWorldUI::findTreeIds() {
+	parentId = pVM->getMemberId("parent");
+	childId = pVM->getMemberId("child");
+	siblingId = pVM->getMemberId("sibling");
+}
+
 /** Execute the current room's description member. */
 void CWorldUI::roomDescription() {
 	pVM->ObjMessage(currentRoom, "description");
+
+	//List any contents
+	int item = child(currentRoomNo);
+	if (!item)
+		return;
+	processText(std::string("\n\nI could see "));
+	do {
+		pVM->ObjMessage(item, "description");
+		if (sibling(item)) {
+			if (sibling(sibling(item)))
+				processText(std::string(", "));
+			else
+				processText(std::string(" and "));
+		}
+	} while (objectInLoop(currentRoomNo, item));
+	processText(std::string(" here."));
 }
 
 /** Start a game session. */
@@ -137,12 +161,38 @@ void CWorldUI::hotTextClick(int messageId) {
 	}
 }
 
+/** Change current room. */
 void CWorldUI::moveTo(int moveId) {
 	CTigVar member = pVM->getMember(currentRoom, moveId);
 	if (member.type == tigObj) {
 		currentRoom = member;
+		currentRoomNo = member.getObjId();
 		pTextWindow->purgeHotText();
 		pTextWindow->appendText("\n\n");
 		roomDescription();
 	}
+}
+
+/** Return the index of first child of the given parent, if any. */
+int CWorldUI::child(int parent) {
+	return pVM->getMemberValue(parent, childId);
+}
+
+/** Return index of sibling of given object, if any. */
+int CWorldUI::sibling(int object) {
+	return pVM->getMemberValue(object, siblingId);
+}
+
+/** Return index of parent of given object, if any. */
+int CWorldUI::parent(int childNo) {
+	return pVM->getMemberValue(childNo, parentId);
+}
+
+/** Return true while parent has a descendant and child = 0 or a decendant with a sibling .*/
+bool CWorldUI::objectInLoop(int parent, int& childNo) {
+	if (childNo == 0) 
+		childNo = child(parent);
+	else
+		childNo = sibling(childNo);
+	return (bool)childNo;
 }
