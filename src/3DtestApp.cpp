@@ -870,7 +870,11 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 			cerr << "\nHot text id of zero reported!";
 			return;
 		}
-		if (Message.value < memberIdStart) { //TO DO: tidy this shit
+
+
+
+
+		if (Message.value < memberIdStart && Message.value >= optionHotText ) { //TO DO: tidy this shit
 			int option = Message.value - optionHotText;
 
 			TVMmsg msg;

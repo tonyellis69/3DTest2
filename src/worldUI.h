@@ -5,8 +5,10 @@
 
 struct THotTextRec {
 	std::string text;
-	int memberId;
+	int id;
 };
+
+
 
 enum TMoveDir {moveNorth, moveNE, moveEast, moveSE, moveSouth, moveSW, moveWest,
 	moveNW, moveUp, moveDown, moveIn, moveOut };
@@ -23,12 +25,14 @@ public:
 	void findTreeIds();
 	void roomDescription();
 	void start();
-	void addHotText(std::string& text, int memberId);
-	void processText(string & text);
+	void addHotText(std::string& text, int id);
+	void processText(string  text);
 	void markupHotText(std::string& text);
 	void hotTextClick(int messageId);
 
-	void moveTo(int direction);
+	void changeRoom(int direction);
+
+	void take(int itemId);
 
 	int child(int parent);
 
@@ -38,17 +42,22 @@ public:
 
 	bool objectInLoop(int parent, int & child);
 
+	void move(int obj, int dest);
+
 private:
 	CTigVM* pVM;
 	CGUIrichText* pTextWindow;
 
 	CTigVar currentRoom; ///<Always stores the address of the room the player is in.
 	int currentRoomNo; ///<Always stores the object index of the room the player is in.
+	int playerId; ///<Id of the player object.
 
 	std::vector<THotTextRec> hotTextList;
 
 	int moveToIds[12]; ///Convenient store for movement member ids.
 	int parentId, childId, siblingId; ///<Tree member ids;
+
+	std::vector<int> roomItems; ///<Ids of any items, for hot text crosschecking.
 };
 
 

@@ -12,12 +12,9 @@ void CWorldUI::setTextWindow(CGUIrichText * txtWin) {
 
 void CWorldUI::init() {
 	pVM->execute();
-	currentRoom = pVM->getGlobalVar("startRoom");
-	if (currentRoom.type != tigObj) {
-		std::cerr << "\nStart room not found!";
-		return;
-	}
+	currentRoom = pVM->getGlobalVar("startRoom"); //TO DO: scrap
 	currentRoomNo = currentRoom.getObjId();
+	playerId = pVM->getGlobalVar("playerObj").getObjId();
 	findMoveToIds();
 	findTreeIds();
 }
@@ -48,20 +45,25 @@ void CWorldUI::roomDescription() {
 	pVM->ObjMessage(currentRoom, "description");
 
 	//List any contents
+	roomItems.clear();
 	int item = child(currentRoomNo);
 	if (!item)
 		return;
-	processText(std::string("\n\nI could see "));
+	processText("\n\nI could see");
 	do {
-		pVM->ObjMessage(item, "description");
+		roomItems.push_back(item);
+		processText("\\h{" + std::to_string(roomItems.size()) + "}");
+		processText(" a ");
+		pVM->ObjMessage(item, "name");
+		processText("\\h");
 		if (sibling(item)) {
 			if (sibling(sibling(item)))
-				processText(std::string(", "));
+				processText(",");
 			else
-				processText(std::string(" and "));
+				processText(" and");
 		}
 	} while (objectInLoop(currentRoomNo, item));
-	processText(std::string(" here."));
+	processText(" here.");
 }
 
 /** Start a game session. */
@@ -71,16 +73,19 @@ void CWorldUI::start() {
 
 
 /** Add this as a recognised hot text expression. */
-void CWorldUI::addHotText(std::string & text, int memberId) {
+void CWorldUI::addHotText(std::string & text, int id) {
 	THotTextRec hotText;
 	hotText.text = text;
-	hotText.memberId = memberId;
+	hotText.id = id;
 	hotTextList.push_back(hotText);
 }
 
 /** Checking for hot text and style markups, turn the given text into one or more rich-text
 	instructions sent to the text control. */
-void CWorldUI::processText(string& text) {
+void CWorldUI::processText(string text) {
+	//are we in item list mode?
+	//if so, can write text directly as hot text
+
 	markupHotText(text);
 
 	bool bold = false; bool hot = false;
@@ -133,14 +138,14 @@ void CWorldUI::processText(string& text) {
 	}
 }
 
-/** If any hot text is found in the given text, mark it up for further processing.*/
+/** If any registered hot text is found in the given text, mark it up for further processing.*/
 void CWorldUI::markupHotText(std::string & text) {
 	for (auto hotText : hotTextList) {
 		size_t found = text.find(hotText.text);
 		while (found != std::string::npos) {
 			if ((found > 0 && !isalnum(text[found - 1])) &&
 				(!isalnum(text[found + hotText.text.size()]))) {
-				std::string tag = "\\h{" + std::to_string(hotText.memberId) + "}";
+				std::string tag = "\\h{" + std::to_string(hotText.id) + "}";
 				text.insert(found, tag);
 				text.insert(found + tag.size() + hotText.text.size(), "\\h");
 				found += tag.size() + 2;
@@ -148,21 +153,25 @@ void CWorldUI::markupHotText(std::string & text) {
 			found = text.find( hotText.text, found + hotText.text.size());
 		}
 	}
-
 }
 
 /** Handle the player clicking on a piece of hot text. */
-void CWorldUI::hotTextClick(int messageId) {
+void CWorldUI::hotTextClick(int hotId) {
 	//is this a move command?
 	for (int dir = 0; dir < 12; dir++) {
-		if (messageId == moveToIds[dir]) {
-			moveTo(messageId);
+		if (hotId == moveToIds[dir]) {
+			changeRoom(hotId);
+			return;
 		}
 	}
+
+	//is it a click on an item in the room description? check range
+	take(hotId-1);
+	
 }
 
 /** Change current room. */
-void CWorldUI::moveTo(int moveId) {
+void CWorldUI::changeRoom(int moveId) {
 	CTigVar member = pVM->getMember(currentRoom, moveId);
 	if (member.type == tigObj) {
 		currentRoom = member;
@@ -171,6 +180,18 @@ void CWorldUI::moveTo(int moveId) {
 		pTextWindow->appendText("\n\n");
 		roomDescription();
 	}
+}
+
+
+
+/** Pick up this object. */
+void CWorldUI::take(int itemIndex) {
+	int itemId = roomItems[itemIndex];
+	pTextWindow->purgeHotText(itemIndex+1);
+	processText("\n\nI picked up the ");
+	pVM->ObjMessage(itemId, "name");
+	roomItems[itemIndex] = 0;
+	move(itemId, playerId);
 }
 
 /** Return the index of first child of the given parent, if any. */
@@ -196,3 +217,25 @@ bool CWorldUI::objectInLoop(int parent, int& childNo) {
 		childNo = sibling(childNo);
 	return (bool)childNo;
 }
+
+/** Make the given object a child of the destination object. */
+void CWorldUI::move(int obj, int dest) {
+	int parentObj = parent(obj);
+	int childObj = child(parentObj); int siblingObj = 0;
+	while (childObj != obj) {
+		siblingObj = childObj;
+		childObj = sibling(childObj);
+	}
+	if (siblingObj)
+		pVM->objects[siblingObj].members[siblingId].setObjId(sibling(obj));
+	else
+		pVM->objects[parentObj].members[childId].setObjId(sibling(obj));
+
+	int destChild = child(dest);
+	if (destChild) {
+		pVM->objects[obj].members[siblingId].setObjId(destChild);
+	}
+	pVM->objects[dest].members[childId].setObjId(obj);
+	pVM->objects[obj].members[parentId].setObjId(dest);
+}
+
