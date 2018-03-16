@@ -10,6 +10,14 @@ void CWorldUI::setTextWindow(CGUIrichText * txtWin) {
 	pTextWindow = txtWin;
 }
 
+void CWorldUI::setInventoryWindow(CGUIrichText * invWin) {
+	pInvWindow = invWin;
+}
+
+void CWorldUI::setCurrentWindow(CGUIrichText * pWin) {
+	currentTextWindow = pWin;
+}
+
 void CWorldUI::init() {
 	pVM->execute();
 	currentRoom = pVM->getGlobalVar("startRoom"); //TO DO: scrap
@@ -42,6 +50,7 @@ void CWorldUI::findTreeIds() {
 
 /** Execute the current room's description member. */
 void CWorldUI::roomDescription() {
+	setCurrentWindow(pTextWindow);
 	pVM->ObjMessage(currentRoom, "description");
 
 	//List any contents
@@ -83,19 +92,21 @@ void CWorldUI::addHotText(std::string & text, int id) {
 /** Checking for hot text and style markups, turn the given text into one or more rich-text
 	instructions sent to the text control. */
 void CWorldUI::processText(string text) {
-	//are we in item list mode?
-	//if so, can write text directly as hot text
-
 	markupHotText(text);
+	writeRichText(text, currentTextWindow);
+}
 
+
+
+void CWorldUI::writeRichText(string text, CGUIrichText* pWin) {
 	bool bold = false; bool hot = false;
-	enum TStyleChange { styleNone, styleBold,styleHot };
+	enum TStyleChange { styleNone, styleBold, styleHot };
 
 	std::string writeTxt = text;
 	std::string remainingTxt = text;
 	TStyleChange styleChange;
 	while (remainingTxt.size()) {
-		styleChange = styleNone; 
+		styleChange = styleNone;
 		int cut = 0; int tagId = 0;
 		size_t found = remainingTxt.find('\\');
 		if (found != std::string::npos) {
@@ -105,13 +116,13 @@ void CWorldUI::processText(string text) {
 				bold = !bold;
 				cut = 2;
 			}
-			
+
 			if (remainingTxt[found + 1] == 'h') {
 				hot = !hot;
 				styleChange = styleHot;
 				if (remainingTxt[found + 2] == '{') {
-					size_t end = remainingTxt.find("}",found);
-					std::string id = remainingTxt.substr(found + 3, end - (found +3));
+					size_t end = remainingTxt.find("}", found);
+					std::string id = remainingTxt.substr(found + 3, end - (found + 3));
 					tagId = std::stoi(id);
 					cut = 4 + id.size();
 				}
@@ -128,12 +139,12 @@ void CWorldUI::processText(string text) {
 		writeTxt = remainingTxt.substr(0, found);
 		remainingTxt = remainingTxt.substr(writeTxt.size() + cut, std::string::npos);
 
-		pTextWindow->appendText(writeTxt);
+		pWin->appendText(writeTxt);
 
 		if (styleChange == styleBold)
-			pTextWindow->setAppendStyleBold(bold);
+			pWin->setAppendStyleBold(bold);
 		if (styleChange == styleHot)
-			pTextWindow->setAppendStyleHot(hot,tagId);
+			pWin->setAppendStyleHot(hot, tagId);
 
 	}
 }
@@ -170,6 +181,11 @@ void CWorldUI::hotTextClick(int hotId) {
 	
 }
 
+/** Handle a click on an inventory window item with the given object id. */
+void CWorldUI::inventoryClick(int hotId) {
+	drop(hotId);
+}
+
 /** Change current room. */
 void CWorldUI::changeRoom(int moveId) {
 	CTigVar member = pVM->getMember(currentRoom, moveId);
@@ -188,10 +204,21 @@ void CWorldUI::changeRoom(int moveId) {
 void CWorldUI::take(int itemIndex) {
 	int itemId = roomItems[itemIndex];
 	pTextWindow->purgeHotText(itemIndex+1);
-	processText("\n\nI picked up the ");
+	processText("\nI picked up the ");
 	pVM->ObjMessage(itemId, "name");
+	processText(".");
 	roomItems[itemIndex] = 0;
 	move(itemId, playerId);
+	refreshInvWindow();
+}
+
+/** Drop this object. */
+void CWorldUI::drop(int itemId) {
+	move(itemId, currentRoomNo);
+	refreshInvWindow();
+	processText("\nI dropped the ");
+	pVM->ObjMessage(itemId, "name");
+	processText(".");
 }
 
 /** Return the index of first child of the given parent, if any. */
@@ -234,8 +261,26 @@ void CWorldUI::move(int obj, int dest) {
 	int destChild = child(dest);
 	if (destChild) {
 		pVM->objects[obj].members[siblingId].setObjId(destChild);
-	}
+	} else
+		pVM->objects[obj].members[siblingId].setObjId(0);
 	pVM->objects[dest].members[childId].setObjId(obj);
 	pVM->objects[obj].members[parentId].setObjId(dest);
+}
+
+/** Ensure inventory window shows the latest player contents. */
+void CWorldUI::refreshInvWindow() {
+	pInvWindow->clear();
+	setCurrentWindow(pInvWindow);
+	processText("Inventory:\n");
+
+	int item = child(playerId);
+	if (item)
+		do {
+			processText("\\h{" + std::to_string(item) + "}");
+			processText("\nA ");
+			pVM->ObjMessage(item, "name");
+			processText("\\h");
+		} while (objectInLoop(playerId, item));
+	setCurrentWindow(pTextWindow);
 }
 

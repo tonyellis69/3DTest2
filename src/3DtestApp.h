@@ -50,6 +50,7 @@ public:
 	void updateHeightmapImage();
 
 	void initTextWindow();
+	void initInventoryWindow();
 
 	void vmMessage(TvmAppMsg msg);
 	void vmUpdate();
@@ -138,6 +139,9 @@ public:
 
 	unsigned int textWindowID;
 	const int optionHotText = 0x10;
+
+	CGUIrichText* invWindow;
+	unsigned int invWindowID;
 
 	CWorldUI worldUI;
 

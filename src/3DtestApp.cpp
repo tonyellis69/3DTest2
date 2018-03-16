@@ -200,13 +200,16 @@ void C3DtestApp::onStart() {
 	terrain.initTreeFinding();
 	terrain.initGrassFinding();
 
+	GUIroot.borderWidth = 10;
 	initTextWindow();
+	initInventoryWindow();
 
 	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
 	//vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
 
 	worldUI.setVM(&vm);
 	worldUI.setTextWindow(textWindow);
+	worldUI.setInventoryWindow(invWindow);
 	worldUI.init();
 	worldUI.start();
 
@@ -807,21 +810,42 @@ void C3DtestApp::initTextWindow() {
 	GUIroot.Add(backPanel);
 
 
-	textWindow = new CGUIrichText(10, 10, 780, 175);  //(10, 10, 780, 155);
+	textWindow = new CGUIrichText(10, 10, 780, 175); 
 	textWindow->setFont(&sysFont);
 	textWindow->setTextColour(UIwhite);
 	textWindow->hFormat = hCentre;
 	textWindow->borderOn(false);
 	textWindow->setMultiLine(true);
-	//textWindow->setHotTextColour(0.87, 0.87, 0.68, 1);
-	//textWindow->setHotTextHighlightColour(0.64, 0.73, 0.82, 1);
 	textWindow->setHotTextColour(0.92, 0.92, 0.73, 1);
 	textWindow->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
 	backPanel->Add(textWindow);
 	textWindowID = textWindow->getID();
 	//GUIroot.setFocus(textWindow);
-
 }
+
+void C3DtestApp::initInventoryWindow() {
+	CGUIpanel* backPanel = new CGUIpanel(1100, 120, 180, 300);   //(200, 50, 800, 175);
+	UIcolour tint = { 0,0,0,0.3f };
+	backPanel->setBackColour1(tint);
+	backPanel->setBackColour2(tint);
+	backPanel->borderOn(false);
+	backPanel->hFormat = hRight;
+	GUIroot.Add(backPanel);
+
+	invWindow = new CGUIrichText(10, 10, 160, 280);
+	invWindow->setFont(&sysFont);
+	invWindow->setTextColour(UIwhite);
+	invWindow->hFormat = hCentre;
+	invWindow->borderOn(false);
+	invWindow->setMultiLine(true);
+	invWindow->setHotTextColour(0.92, 0.92, 0.73, 1);
+	invWindow->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
+	backPanel->Add(invWindow);
+	invWindowID = invWindow->getID();
+	invWindow->appendText("Inventory:\n\n");
+}
+
+
 
 /** Handle messages from the virtual machine. */
 void C3DtestApp::vmMessage(TvmAppMsg msg) {
@@ -871,9 +895,6 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 			return;
 		}
 
-
-
-
 		if (Message.value < memberIdStart && Message.value >= optionHotText ) { //TO DO: tidy this shit
 			int option = Message.value - optionHotText;
 
@@ -897,16 +918,17 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 			return;
 		}
 
-		//so the tag represents a vm member. 
 		worldUI.hotTextClick(Message.value);
 		return;
 	}
 
 	if (control.getID() == textWindowID && Message.Msg == uiMsgRMouseUp) {
-
-	
-
 	}
+
+	if (control.getID() == invWindowID && Message.Msg == uiMsgHotTextClick) {
+		worldUI.inventoryClick(Message.value);
+	}
+
 }
 
 /** Remove the menu of options from the text window. */
