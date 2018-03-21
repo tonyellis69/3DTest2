@@ -19,6 +19,7 @@ void CWorldUI::setCurrentWindow(CGUIrichText * pWin) {
 }
 
 void CWorldUI::init() {
+	setCurrentWindow(pTextWindow);
 	pVM->execute();
 	currentRoom = pVM->getGlobalVar("startRoom"); //TO DO: scrap
 	currentRoomNo = currentRoom.getObjId();
