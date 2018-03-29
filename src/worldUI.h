@@ -2,6 +2,7 @@
 
 #include "vm.h"
 #include "UI\GUIrichText.h"
+#include "localHotList.h"
 
 struct THotTextRec {
 	std::string text;
@@ -43,6 +44,9 @@ public:
 	bool objectInLoop(int parent, int & child);
 	void move(int obj, int dest);
 	void refreshInvWindow();
+	void refreshLocalList();
+	void objectClick(int objId);
+	std::string makeHotText(std::string text, int idNo);
 
 private:
 	CTigVM* pVM;
@@ -59,7 +63,8 @@ private:
 	int moveToIds[12]; ///Convenient store for movement member ids.
 	int parentId, childId, siblingId; ///<Tree member ids;
 
-	std::vector<int> roomItems; ///<Ids of any items, for hot text crosschecking.
+	CLocalHotList localHotList; ///<Tracks hot text for objects currently in scope.
+	int clickedHotText; ///<Id of currently clicked hot text.
 };
 
 

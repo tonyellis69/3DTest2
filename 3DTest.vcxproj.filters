@@ -27,6 +27,9 @@
     <ClCompile Include="src\worldUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\localHotList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -37,6 +40,9 @@
     </ClInclude>
     <ClInclude Include="src\worldUI.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\localHotList.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

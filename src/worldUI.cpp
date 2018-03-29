@@ -26,6 +26,7 @@ void CWorldUI::init() {
 	playerId = pVM->getGlobalVar("playerObj").getObjId();
 	findMoveToIds();
 	findTreeIds();
+	clickedHotText = 0;
 }
 
 void CWorldUI::findMoveToIds() {
@@ -49,31 +50,30 @@ void CWorldUI::findTreeIds() {
 	siblingId = pVM->getMemberId("sibling");
 }
 
-/** Execute the current room's description member. */
+/** Compiles the current room's description and sends it for display. */
 void CWorldUI::roomDescription() {
 	setCurrentWindow(pTextWindow);
-	pVM->ObjMessage(currentRoom, "description");
+	CTigVar result = pVM->ObjMessage(currentRoom, "description");
+	processText(result.getStringValue());
 
 	//List any contents
-	roomItems.clear();
+	refreshLocalList();
+	refreshInvWindow();
 	int item = child(currentRoomNo);
 	if (!item)
 		return;
-	processText("\n\nI could see");
+	std::string itemsText("\n\nI could see");
 	do {
-		roomItems.push_back(item);
-		processText("\\h{" + std::to_string(roomItems.size()) + "}");
-		processText(" a ");
-		pVM->ObjMessage(item, "name");
-		processText("\\h");
+		int localId = localHotList.addObject(item);
+		itemsText += makeHotText(" a " + pVM->ObjMessage(item, "name").getStringValue(), localId);
 		if (sibling(item)) {
 			if (sibling(sibling(item)))
-				processText(",");
+				itemsText +=  ",";
 			else
-				processText(" and");
+				itemsText += " and";
 		}
 	} while (objectInLoop(currentRoomNo, item));
-	processText(" here.");
+	processText(itemsText + " here.");
 }
 
 /** Start a game session. */
@@ -157,10 +157,12 @@ void CWorldUI::markupHotText(std::string & text) {
 		while (found != std::string::npos) {
 			if ((found > 0 && !isalnum(text[found - 1])) &&
 				(!isalnum(text[found + hotText.text.size()]))) {
-				std::string tag = "\\h{" + std::to_string(hotText.id) + "}";
-				text.insert(found, tag);
-				text.insert(found + tag.size() + hotText.text.size(), "\\h");
-				found += tag.size() + 2;
+				//std::string tag = "\\h{" + std::to_string(hotText.id) + "}";
+				//text.insert(found, tag);
+				//text.insert(found + tag.size() + hotText.text.size(), "\\h");
+				std::string tag = makeHotText(hotText.text, hotText.id);
+				text.replace(found, hotText.text.size(), tag);
+				found += tag.size();
 			}
 			found = text.find( hotText.text, found + hotText.text.size());
 		}
@@ -169,6 +171,7 @@ void CWorldUI::markupHotText(std::string & text) {
 
 /** Handle the player clicking on a piece of hot text. */
 void CWorldUI::hotTextClick(int hotId) {
+	clickedHotText = hotId;
 	//is this a move command?
 	for (int dir = 0; dir < 12; dir++) {
 		if (hotId == moveToIds[dir]) {
@@ -178,13 +181,18 @@ void CWorldUI::hotTextClick(int hotId) {
 	}
 
 	//is it a click on an item in the room description? check range
-	take(hotId-1);
+	//take(hotId-1);
+	if (hotId < memberIdStart) {
+		int objId = localHotList.getObjectId(hotId);
+		objectClick(objId);
+	}
 	
 }
 
 /** Handle a click on an inventory window item with the given object id. */
 void CWorldUI::inventoryClick(int hotId) {
-	drop(hotId);
+	int objId = localHotList.getObjectId(hotId);
+	drop(objId);
 }
 
 /** Change current room. */
@@ -202,24 +210,22 @@ void CWorldUI::changeRoom(int moveId) {
 
 
 /** Pick up this object. */
-void CWorldUI::take(int itemIndex) {
-	int itemId = roomItems[itemIndex];
-	pTextWindow->purgeHotText(itemIndex+1);
-	processText("\nI picked up the ");
-	pVM->ObjMessage(itemId, "name");
-	processText(".");
-	roomItems[itemIndex] = 0;
-	move(itemId, playerId);
+void CWorldUI::take(int objId) {
+	pTextWindow->purgeHotText(clickedHotText);
+	std::string takeText = "\nI picked up the ";
+	takeText += makeHotText(pVM->ObjMessage(objId, "name").getStringValue(),clickedHotText);
+	processText(takeText + ".");
+	move(objId, playerId);
 	refreshInvWindow();
 }
 
 /** Drop this object. */
-void CWorldUI::drop(int itemId) {
-	move(itemId, currentRoomNo);
+void CWorldUI::drop(int objId) {
+	move(objId, currentRoomNo);
 	refreshInvWindow();
-	processText("\nI dropped the ");
-	pVM->ObjMessage(itemId, "name");
-	processText(".");
+	std::string dropText = "\nI dropped the ";
+	dropText += makeHotText(pVM->ObjMessage(objId, "name").getStringValue(), clickedHotText);
+	processText(dropText + ".");
 }
 
 /** Return the index of first child of the given parent, if any. */
@@ -273,15 +279,50 @@ void CWorldUI::refreshInvWindow() {
 	pInvWindow->clear();
 	setCurrentWindow(pInvWindow);
 	processText("Inventory:\n");
+	std::string invText;
+	int item = child(playerId);
+	if (item) {
+		do {
+			int localId = localHotList.getLocalId(item);
+			//invText += "\\h{" + std::to_string(localId) + "}";
+			//invText += "\nA ";
+			//invText += pVM->ObjMessage(item, "name").getStringValue();
+			//invText += "\\h";
+			invText += makeHotText("\nA " + pVM->ObjMessage(item, "name").getStringValue(), localId);
+		} while (objectInLoop(playerId, item));
+		processText(invText);
+	}
+	setCurrentWindow(pTextWindow);
+}
 
+/** Clear the local list and repopulate it with items the player is carrying. */
+void CWorldUI::refreshLocalList() {
+	localHotList.clear();
 	int item = child(playerId);
 	if (item)
 		do {
-			processText("\\h{" + std::to_string(item) + "}");
-			processText("\nA ");
-			pVM->ObjMessage(item, "name");
-			processText("\\h");
+			localHotList.addObject(item);
 		} while (objectInLoop(playerId, item));
-	setCurrentWindow(pTextWindow);
+}
+
+/** Handle a user-click on this object. */
+void CWorldUI::objectClick(int objId) {
+
+	//is it in player? Drop it
+	if (parent(objId) == playerId) {
+		drop(objId);
+		return;
+	}
+	//is it on the ground? Take it
+	if (parent(objId) == currentRoomNo) {
+		take(objId);
+		return;
+	}
+}
+
+std::string CWorldUI::makeHotText(std::string text, int idNo) {
+	std::string hotStr = "\\h{" + std::to_string(idNo) + "}";
+	hotStr += text + "\\h";
+	return hotStr;
 }
 
