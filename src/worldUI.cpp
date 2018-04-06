@@ -18,6 +18,11 @@ void CWorldUI::setCurrentWindow(CGUIrichText * pWin) {
 	currentTextWindow = pWin;
 }
 
+void CWorldUI::setPopupWindow(CGUIpopMenu * popMenu) {
+	pPopMenu = popMenu;
+}
+
+
 void CWorldUI::init() {
 	setCurrentWindow(pTextWindow);
 	pVM->execute();
@@ -170,7 +175,7 @@ void CWorldUI::markupHotText(std::string & text) {
 }
 
 /** Handle the player clicking on a piece of hot text. */
-void CWorldUI::hotTextClick(int hotId) {
+void CWorldUI::hotTextClick(int hotId, glm::i32vec2 mousePos) {
 	clickedHotText = hotId;
 	//is this a move command?
 	for (int dir = 0; dir < 12; dir++) {
@@ -184,7 +189,7 @@ void CWorldUI::hotTextClick(int hotId) {
 	//take(hotId-1);
 	if (hotId < memberIdStart) {
 		int objId = localHotList.getObjectId(hotId);
-		objectClick(objId);
+		objectClick(objId,mousePos);
 	}
 	
 }
@@ -306,7 +311,24 @@ void CWorldUI::refreshLocalList() {
 }
 
 /** Handle a user-click on this object. */
-void CWorldUI::objectClick(int objId) {
+void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
+	popChoices.clear();
+	//acquire the different options available
+	popChoices.push_back("Do nothing");
+	//is it on the ground? We can take it
+	if (parent(objId) == currentRoomNo)
+		popChoices.push_back("Take");
+	popChoices.push_back("Examine");
+
+	showPopupMenu(mousePos);
+/*	vector<string> choices;
+	choices.push_back("Item 1");
+	choices.push_back("Item 2");
+	choices.push_back("Item 3");
+	choices.push_back("Item 4");
+	showPopupMenu(500, 400, choices); */
+
+
 
 	//is it in player? Drop it
 	if (parent(objId) == playerId) {
@@ -318,6 +340,17 @@ void CWorldUI::objectClick(int objId) {
 		take(objId);
 		return;
 	}
+}
+
+void CWorldUI::showPopupMenu(const glm::i32vec2& mousePos) {
+	pPopMenu->setPos(mousePos.x, mousePos.y);
+	for (auto item : popChoices) {
+		pPopMenu->addItem(item);
+	}
+	pPopMenu->setVisible(true);
+	pPopMenu->makeModal(pPopMenu);
+
+
 }
 
 std::string CWorldUI::makeHotText(std::string text, int idNo) {

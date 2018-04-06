@@ -203,6 +203,7 @@ void C3DtestApp::onStart() {
 	GUIroot.borderWidth = 10;
 	initTextWindow();
 	initInventoryWindow();
+	initPopupMenu();
 
 	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
 	//vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
@@ -210,8 +211,12 @@ void C3DtestApp::onStart() {
 	worldUI.setVM(&vm);
 	worldUI.setTextWindow(textWindow);
 	worldUI.setInventoryWindow(invWindow);
+	worldUI.setPopupWindow(popupMenu);
 	worldUI.init();
 	worldUI.start();
+
+
+
 
 	return;
 }
@@ -845,6 +850,30 @@ void C3DtestApp::initInventoryWindow() {
 	invWindow->appendText("Inventory:\n\n");
 }
 
+/** Create a multi-use popup menu. */
+void C3DtestApp::initPopupMenu() {
+	popupMenu = new CGUIpopMenu(10, 10, 200, 50);
+	popupMenu->setFont(&sysFont);
+	UIcolour tint = { 0,0,0,0.3f };
+	popupMenu->setBackColour1(tint);
+	popupMenu->setBackColour2(tint);
+	popupMenu->setTextColour(UIwhite);
+	UIcolour selectedColour = { 0.69, 0.78, 0.87, 1 };
+	popupMenu->setSelectedColour(selectedColour);
+	popupMenu->setVisible(false);
+	popupMenuID = popupMenu->getID();
+	GUIroot.Add(popupMenu);
+}
+
+/** Display the popup menu with the given choices. */
+void C3DtestApp::showPopupMenu(int x, int y, std::vector<std::string>& choices) {
+	popupMenu->setPos(x, y);
+	for (auto item : choices) {
+		popupMenu->addItem(item);
+	}
+	popupMenu->setVisible(true);
+	GUIroot.makeModal(popupMenu);
+}
 
 
 /** Handle messages from the virtual machine. */
@@ -918,7 +947,8 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 			return;
 		}
 
-		worldUI.hotTextClick(Message.value);
+		glm::i32vec2 mousePos = textWindow->getScreenCoords(Message.x, Message.y);
+		worldUI.hotTextClick(Message.value,mousePos);
 		return;
 	}
 
@@ -927,8 +957,13 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
 	if (control.getID() == invWindowID && Message.Msg == uiMsgHotTextClick) {
 		worldUI.inventoryClick(Message.value);
+		return;
 	}
 
+	if (control.getID() == popupMenuID && Message.Msg == uiMsgLMouseUp) {
+		int choice = Message.value;
+
+	}
 }
 
 /** Remove the menu of options from the text window. */
@@ -942,8 +977,12 @@ void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	win.getMousePos(x, y);
 	int delta = yoffset;
 	int keyState = 0; //can get key state if ever needed
-	if (GUIroot.IsOnControl(GUIroot, x, y)) //checks that the mouse isn't outside our app altogether
-		textWindow->MouseWheelMsg(x, y, delta, keyState);
+	if (GUIroot.IsOnControl(GUIroot, x, y)) {//checks that the mouse isn't outside our app altogether
+		if (popupMenu->getVisible() == true) 
+			popupMenu->MouseWheelMsg(x, y, delta, keyState);
+		else
+			textWindow->MouseWheelMsg(x, y, delta, keyState);
+	}
 }
 
 
