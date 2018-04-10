@@ -312,50 +312,42 @@ void CWorldUI::refreshLocalList() {
 
 /** Handle a user-click on this object. */
 void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
+	clickedObj = objId;
 	popChoices.clear();
 	//acquire the different options available
-	popChoices.push_back("Do nothing");
+	popChoices.push_back({ "Do nothing",popDoNothing });
 	//is it on the ground? We can take it
 	if (parent(objId) == currentRoomNo)
-		popChoices.push_back("Take");
-	popChoices.push_back("Examine");
+		popChoices.push_back({ "Take", popTake });
+	if (parent(objId) == playerId)
+		popChoices.push_back({ "Drop", popDrop });
+	popChoices.push_back({ "Examine", popExamine });
 
 	showPopupMenu(mousePos);
-/*	vector<string> choices;
-	choices.push_back("Item 1");
-	choices.push_back("Item 2");
-	choices.push_back("Item 3");
-	choices.push_back("Item 4");
-	showPopupMenu(500, 400, choices); */
-
-
-
-	//is it in player? Drop it
-	if (parent(objId) == playerId) {
-		drop(objId);
-		return;
-	}
-	//is it on the ground? Take it
-	if (parent(objId) == currentRoomNo) {
-		take(objId);
-		return;
-	}
 }
 
 void CWorldUI::showPopupMenu(const glm::i32vec2& mousePos) {
+	pPopMenu->clear();
 	pPopMenu->setPos(mousePos.x, mousePos.y);
 	for (auto item : popChoices) {
-		pPopMenu->addItem(item);
+		pPopMenu->addItem(item.actionText);
 	}
 	pPopMenu->setVisible(true);
 	pPopMenu->makeModal(pPopMenu);
-
-
 }
 
 std::string CWorldUI::makeHotText(std::string text, int idNo) {
 	std::string hotStr = "\\h{" + std::to_string(idNo) + "}";
 	hotStr += text + "\\h";
 	return hotStr;
+}
+
+/** Respond to the user selecting an item from the popup menu. */
+void CWorldUI::popupSelection(int choice) {
+	TPopAction action = popChoices[choice].action;
+	if (action == popTake)
+		take(clickedObj);
+	if (action == popDrop)
+		drop(clickedObj);
 }
 

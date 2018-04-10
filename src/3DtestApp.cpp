@@ -339,7 +339,7 @@ void C3DtestApp::keyCheck() {
 
 	
 	
-	if (mouseKey == MK_LBUTTON)
+	if (mouseKey == MK_LBUTTON && !popupMenu->getVisible() ) //TO DO: make less kludgy 
 	{
 		if (!mouseLook) {
 			mouseLook = true;
@@ -854,7 +854,7 @@ void C3DtestApp::initInventoryWindow() {
 void C3DtestApp::initPopupMenu() {
 	popupMenu = new CGUIpopMenu(10, 10, 200, 50);
 	popupMenu->setFont(&sysFont);
-	UIcolour tint = { 0,0,0,0.3f };
+	UIcolour tint = { 0,0,0,0.3f }; tint = { 0,0,0,1.0f };
 	popupMenu->setBackColour1(tint);
 	popupMenu->setBackColour2(tint);
 	popupMenu->setTextColour(UIwhite);
@@ -961,8 +961,10 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	}
 
 	if (control.getID() == popupMenuID && Message.Msg == uiMsgLMouseUp) {
+		popupMenu->makeModal(NULL);
+		popupMenu->setVisible(false);
 		int choice = Message.value;
-
+		worldUI.popupSelection(choice);
 	}
 }
 

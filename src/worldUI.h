@@ -10,6 +10,12 @@ struct THotTextRec {
 	int id;
 };
 
+enum TPopAction { popDoNothing, popTake, popDrop, popExamine };
+struct TPopChoice {
+	std::string actionText;
+	TPopAction action;
+};
+ 
 
 
 enum TMoveDir {moveNorth, moveNE, moveEast, moveSE, moveSouth, moveSW, moveWest,
@@ -50,6 +56,7 @@ public:
 	void objectClick(int objId, const glm::i32vec2& mousePos);
 	void showPopupMenu(const glm::i32vec2& mousePos);
 	std::string makeHotText(std::string text, int idNo);
+	void popupSelection(int choice);
 
 private:
 	CTigVM* pVM;
@@ -70,8 +77,8 @@ private:
 
 	CLocalHotList localHotList; ///<Tracks hot text for objects currently in scope.
 	int clickedHotText; ///<Id of currently clicked hot text.
-
-	std::vector<std::string> popChoices; ///<Tracks choices available on the popup meny.
+	int clickedObj; ///<Id of currently clicked object;
+	std::vector<TPopChoice> popChoices; ///<Tracks choices available on the popup meny.
 };
 
 
