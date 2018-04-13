@@ -195,9 +195,10 @@ void CWorldUI::hotTextClick(int hotId, glm::i32vec2 mousePos) {
 }
 
 /** Handle a click on an inventory window item with the given object id. */
-void CWorldUI::inventoryClick(int hotId) {
+void CWorldUI::inventoryClick(int hotId, const glm::i32vec2& mousePos) {
 	int objId = localHotList.getObjectId(hotId);
-	drop(objId);
+	//drop(objId);
+	objectClick(objId, mousePos);
 }
 
 /** Change current room. */
@@ -218,7 +219,7 @@ void CWorldUI::changeRoom(int moveId) {
 void CWorldUI::take(int objId) {
 	pTextWindow->purgeHotText(clickedHotText);
 	std::string takeText = "\nI picked up the ";
-	takeText += makeHotText(pVM->ObjMessage(objId, "name").getStringValue(),clickedHotText);
+	takeText += makeHotText(pVM->ObjMessage(objId, "name").getStringValue(), localHotList.getLocalId(objId));
 	processText(takeText + ".");
 	move(objId, playerId);
 	refreshInvWindow();
@@ -226,10 +227,12 @@ void CWorldUI::take(int objId) {
 
 /** Drop this object. */
 void CWorldUI::drop(int objId) {
+	int localId = localHotList.getLocalId(objId);
+	pTextWindow->purgeHotText(localId);
 	move(objId, currentRoomNo);
 	refreshInvWindow();
 	std::string dropText = "\nI dropped the ";
-	dropText += makeHotText(pVM->ObjMessage(objId, "name").getStringValue(), clickedHotText);
+	dropText += makeHotText(pVM->ObjMessage(objId, "name").getStringValue(), localId);
 	processText(dropText + ".");
 }
 
@@ -328,12 +331,17 @@ void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 
 void CWorldUI::showPopupMenu(const glm::i32vec2& mousePos) {
 	pPopMenu->clear();
-	pPopMenu->setPos(mousePos.x, mousePos.y);
+	int menuOffset = pTextWindow->getFont()->lineHeight;
 	for (auto item : popChoices) {
 		pPopMenu->addItem(item.actionText);
 	}
+	if (mousePos.x + menuOffset + pPopMenu->itemWidth > pPopMenu->parent->width)
+		pPopMenu->setPos(mousePos.x - pPopMenu->itemWidth, mousePos.y + menuOffset);
+	else
+		pPopMenu->setPos(mousePos.x + menuOffset, mousePos.y + menuOffset);
 	pPopMenu->setVisible(true);
 	pPopMenu->makeModal(pPopMenu);
+
 }
 
 std::string CWorldUI::makeHotText(std::string text, int idNo) {

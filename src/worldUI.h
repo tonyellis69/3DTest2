@@ -41,7 +41,7 @@ public:
 	void writeRichText(string text, CGUIrichText * pWin);
 	void markupHotText(std::string& text);
 	void hotTextClick(int messageId, glm::i32vec2 mousePos);
-	void inventoryClick(int messageId);
+	void inventoryClick(int messageId, const glm::i32vec2& mousePos);
 
 	void changeRoom(int direction);
 	void take(int itemId);

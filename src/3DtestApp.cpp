@@ -200,7 +200,7 @@ void C3DtestApp::onStart() {
 	terrain.initTreeFinding();
 	terrain.initGrassFinding();
 
-	GUIroot.borderWidth = 10;
+	//GUIroot.borderWidth = 10;
 	initTextWindow();
 	initInventoryWindow();
 	initPopupMenu();
@@ -829,15 +829,21 @@ void C3DtestApp::initTextWindow() {
 }
 
 void C3DtestApp::initInventoryWindow() {
-	CGUIpanel* backPanel = new CGUIpanel(1100, 120, 180, 300);   //(200, 50, 800, 175);
+//	CGUIpanel* frame = new CGUIpanel(1100, 120, 180, 300); //180
+//	frame->anchorRight = 10;
+//	frame->hFormat = hRight;
+//	GUIroot.Add(frame);
+
+	CGUIpanel* backPanel = new CGUIpanel(1100, 120, 180, 300);   //1100, 120, 180, 300
 	UIcolour tint = { 0,0,0,0.3f };
 	backPanel->setBackColour1(tint);
 	backPanel->setBackColour2(tint);
 	backPanel->borderOn(false);
+	backPanel->anchorRight = 10;
 	backPanel->hFormat = hRight;
 	GUIroot.Add(backPanel);
 
-	invWindow = new CGUIrichText(10, 10, 160, 280);
+	invWindow = new CGUIrichText(10, 10, 160, 180); //was 160 280
 	invWindow->setFont(&sysFont);
 	invWindow->setTextColour(UIwhite);
 	invWindow->hFormat = hCentre;
@@ -956,13 +962,16 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	}
 
 	if (control.getID() == invWindowID && Message.Msg == uiMsgHotTextClick) {
-		worldUI.inventoryClick(Message.value);
+		glm::i32vec2 mousePos = invWindow->getScreenCoords(Message.x, Message.y);
+		worldUI.inventoryClick(Message.value,mousePos);
 		return;
 	}
 
-	if (control.getID() == popupMenuID && Message.Msg == uiMsgLMouseUp) {
+	if (control.getID() == popupMenuID && (Message.Msg == uiMsgLMouseUp || Message.Msg == uiClick) ) {
 		popupMenu->makeModal(NULL);
 		popupMenu->setVisible(false);
+		textWindow->clearSelection();
+		invWindow->clearSelection();
 		int choice = Message.value;
 		worldUI.popupSelection(choice);
 	}
