@@ -15,6 +15,7 @@
 
 #include "UI\GUIrichText.h"
 #include "UI\GUIpopMenu.h"
+#include "UI\GUIrichTextPanel.h"
 
 #include "poisson.h"
 
@@ -52,8 +53,7 @@ public:
 	void initTextWindow();
 	void initInventoryWindow();
 
-	void initPopupMenu();
-	void showPopupMenu(int x, int y, std::vector<std::string>& choices);
+	void initPopupText();
 
 	void vmMessage(TvmAppMsg msg);
 	void vmUpdate();
@@ -147,8 +147,10 @@ public:
 	unsigned int invWindowID;
 
 	CWorldUI worldUI;
-	CGUIpopMenu* popupMenu;
-	unsigned int popupMenuID;
+
+	CGUIrichTextPanel* popupPanel;
+	unsigned int popupPanelID;
+
 };
 
 const float yawAng = 0.22f;

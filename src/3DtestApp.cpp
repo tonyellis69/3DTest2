@@ -203,7 +203,8 @@ void C3DtestApp::onStart() {
 	//GUIroot.borderWidth = 10;
 	initTextWindow();
 	initInventoryWindow();
-	initPopupMenu();
+	initPopupText();
+
 
 	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
 	//vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
@@ -211,7 +212,7 @@ void C3DtestApp::onStart() {
 	worldUI.setVM(&vm);
 	worldUI.setTextWindow(textWindow);
 	worldUI.setInventoryWindow(invWindow);
-	worldUI.setPopupWindow(popupMenu);
+	worldUI.setPopupTextWindow(popupPanel);
 	worldUI.init();
 	worldUI.start();
 
@@ -339,7 +340,7 @@ void C3DtestApp::keyCheck() {
 
 	
 	
-	if (mouseKey == MK_LBUTTON && !popupMenu->getVisible() ) //TO DO: make less kludgy 
+	if (mouseKey == MK_LBUTTON && !popupPanel->getVisible() ) //TO DO: make less kludgy 
 	{
 		if (!mouseLook) {
 			mouseLook = true;
@@ -806,7 +807,7 @@ void C3DtestApp::updateHeightmapImage() {
 }
 
 void C3DtestApp::initTextWindow() {
-	CGUIpanel* backPanel = new CGUIpanel(200, 50, 800, 195);   //(200, 50, 800, 175);
+	CGUIpanel* backPanel = new CGUIpanel(200, 50, 800, 700);   //(200, 50, 800, 175);
 	UIcolour tint = { 0,0,0,0.3f };
 	backPanel->setBackColour1(tint);
 	backPanel->setBackColour2(tint);
@@ -814,14 +815,13 @@ void C3DtestApp::initTextWindow() {
 	backPanel->hFormat = hCentre;
 	GUIroot.Add(backPanel);
 
-
-	textWindow = new CGUIrichText(10, 10, 780, 175); 
+	textWindow = new CGUIrichText(10, 10, 780, 680); 
 	textWindow->setFont(&sysFont);
 	textWindow->setTextColour(UIwhite);
 	textWindow->hFormat = hCentre;
 	textWindow->borderOn(false);
 	textWindow->setMultiLine(true);
-	textWindow->setHotTextColour(0.92, 0.92, 0.73, 1);
+	textWindow->setHotTextColour(0.72, 0.72, 0.53, 1);
 	textWindow->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
 	backPanel->Add(textWindow);
 	textWindowID = textWindow->getID();
@@ -857,29 +857,20 @@ void C3DtestApp::initInventoryWindow() {
 }
 
 /** Create a multi-use popup menu. */
-void C3DtestApp::initPopupMenu() {
-	popupMenu = new CGUIpopMenu(10, 10, 200, 50);
-	popupMenu->setFont(&sysFont);
-	UIcolour tint = { 0,0,0,0.3f }; tint = { 0,0,0,1.0f };
-	popupMenu->setBackColour1(tint);
-	popupMenu->setBackColour2(tint);
-	popupMenu->setTextColour(UIwhite);
-	UIcolour selectedColour = { 0.69, 0.78, 0.87, 1 };
-	popupMenu->setSelectedColour(selectedColour);
-	popupMenu->setVisible(false);
-	popupMenuID = popupMenu->getID();
-	GUIroot.Add(popupMenu);
+void C3DtestApp::initPopupText() {
+	UIcolour tint = { 0,0,0,0.7f };
+	popupPanel = new CGUIrichTextPanel(300, 200, 300, 300);
+	popupPanel->setBackColour1(tint);
+	popupPanel->setBackColour2(tint);
+	popupPanel->setFont(&sysFont);
+	popupPanel->setTextColour(UIwhite);
+	popupPanel->setHotTextColour(0.92, 0.92, 0.73, 1);
+	popupPanel->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
+	popupPanelID = popupPanel->getRichTextID();
+	popupPanel->setVisible(false);
+	GUIroot.Add(popupPanel);
 }
 
-/** Display the popup menu with the given choices. */
-void C3DtestApp::showPopupMenu(int x, int y, std::vector<std::string>& choices) {
-	popupMenu->setPos(x, y);
-	for (auto item : choices) {
-		popupMenu->addItem(item);
-	}
-	popupMenu->setVisible(true);
-	GUIroot.makeModal(popupMenu);
-}
 
 
 /** Handle messages from the virtual machine. */
@@ -967,13 +958,16 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 		return;
 	}
 
-	if (control.getID() == popupMenuID && (Message.Msg == uiMsgLMouseUp || Message.Msg == uiClick) ) {
-		popupMenu->makeModal(NULL);
-		popupMenu->setVisible(false);
+
+
+	if (control.getID() == popupPanelID && Message.Msg == uiMsgHotTextClick) {
+		popupPanel->makeModal(NULL);
+		popupPanel->setVisible(false);
 		textWindow->clearSelection();
 		invWindow->clearSelection();
 		int choice = Message.value;
 		worldUI.popupSelection(choice);
+
 	}
 }
 
@@ -989,8 +983,8 @@ void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	int delta = yoffset;
 	int keyState = 0; //can get key state if ever needed
 	if (GUIroot.IsOnControl(GUIroot, x, y)) {//checks that the mouse isn't outside our app altogether
-		if (popupMenu->getVisible() == true) 
-			popupMenu->MouseWheelMsg(x, y, delta, keyState);
+		if (popupPanel->getVisible() == true)
+			popupPanel->MouseWheelMsg(x, y, delta, keyState);
 		else
 			textWindow->MouseWheelMsg(x, y, delta, keyState);
 	}

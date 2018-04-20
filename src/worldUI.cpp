@@ -18,8 +18,9 @@ void CWorldUI::setCurrentWindow(CGUIrichText * pWin) {
 	currentTextWindow = pWin;
 }
 
-void CWorldUI::setPopupWindow(CGUIpopMenu * popMenu) {
-	pPopMenu = popMenu;
+
+void CWorldUI::setPopupTextWindow(CGUIrichTextPanel * pPopText) {
+	popControl = pPopText;
 }
 
 
@@ -57,9 +58,11 @@ void CWorldUI::findTreeIds() {
 
 /** Compiles the current room's description and sends it for display. */
 void CWorldUI::roomDescription() {
-	setCurrentWindow(pTextWindow);
-	CTigVar result = pVM->ObjMessage(currentRoom, "description");
-	processText(result.getStringValue());
+	//setCurrentWindow(pTextWindow); //TO DO: scrap
+	//CTigVar result = pVM->ObjMessage(currentRoom, "description");
+	std::string result = pVM->ObjMessage(currentRoom, "description").getStringValue();
+	result = markupHotText(result);
+	pTextWindow->appendMarkedUpText(result);
 
 	//List any contents
 	refreshLocalList();
@@ -78,7 +81,9 @@ void CWorldUI::roomDescription() {
 				itemsText += " and";
 		}
 	} while (objectInLoop(currentRoomNo, item));
-	processText(itemsText + " here.");
+	itemsText += " here.";
+	itemsText = markupHotText(itemsText);
+	pTextWindow->appendMarkedUpText(itemsText);
 }
 
 /** Start a game session. */
@@ -98,73 +103,18 @@ void CWorldUI::addHotText(std::string & text, int id) {
 /** Checking for hot text and style markups, turn the given text into one or more rich-text
 	instructions sent to the text control. */
 void CWorldUI::processText(string text) {
-	markupHotText(text);
-	writeRichText(text, currentTextWindow);
-}
-
-
-
-void CWorldUI::writeRichText(string text, CGUIrichText* pWin) {
-	bool bold = false; bool hot = false;
-	enum TStyleChange { styleNone, styleBold, styleHot };
-
-	std::string writeTxt = text;
-	std::string remainingTxt = text;
-	TStyleChange styleChange;
-	while (remainingTxt.size()) {
-		styleChange = styleNone;
-		int cut = 0; int tagId = 0;
-		size_t found = remainingTxt.find('\\');
-		if (found != std::string::npos) {
-			cut = 1;
-			if (remainingTxt[found + 1] == 'b') {
-				styleChange = styleBold;
-				bold = !bold;
-				cut = 2;
-			}
-
-			if (remainingTxt[found + 1] == 'h') {
-				hot = !hot;
-				styleChange = styleHot;
-				if (remainingTxt[found + 2] == '{') {
-					size_t end = remainingTxt.find("}", found);
-					std::string id = remainingTxt.substr(found + 3, end - (found + 3));
-					tagId = std::stoi(id);
-					cut = 4 + id.size();
-				}
-				else {
-					cut = 2;
-				}
-			}
-			//other markup checks here
-
-
-
-		}
-
-		writeTxt = remainingTxt.substr(0, found);
-		remainingTxt = remainingTxt.substr(writeTxt.size() + cut, std::string::npos);
-
-		pWin->appendText(writeTxt);
-
-		if (styleChange == styleBold)
-			pWin->setAppendStyleBold(bold);
-		if (styleChange == styleHot)
-			pWin->setAppendStyleHot(hot, tagId);
-
-	}
+	text = markupHotText(text);
+	currentTextWindow->appendMarkedUpText(text);
+	//writeRichText(text, currentTextWindow);
 }
 
 /** If any registered hot text is found in the given text, mark it up for further processing.*/
-void CWorldUI::markupHotText(std::string & text) {
+std::string CWorldUI::markupHotText(std::string & text) {
 	for (auto hotText : hotTextList) {
 		size_t found = text.find(hotText.text);
 		while (found != std::string::npos) {
 			if ((found > 0 && !isalnum(text[found - 1])) &&
 				(!isalnum(text[found + hotText.text.size()]))) {
-				//std::string tag = "\\h{" + std::to_string(hotText.id) + "}";
-				//text.insert(found, tag);
-				//text.insert(found + tag.size() + hotText.text.size(), "\\h");
 				std::string tag = makeHotText(hotText.text, hotText.id);
 				text.replace(found, hotText.text.size(), tag);
 				found += tag.size();
@@ -172,6 +122,7 @@ void CWorldUI::markupHotText(std::string & text) {
 			found = text.find( hotText.text, found + hotText.text.size());
 		}
 	}
+	return text;
 }
 
 /** Handle the player clicking on a piece of hot text. */
@@ -186,7 +137,6 @@ void CWorldUI::hotTextClick(int hotId, glm::i32vec2 mousePos) {
 	}
 
 	//is it a click on an item in the room description? check range
-	//take(hotId-1);
 	if (hotId < memberIdStart) {
 		int objId = localHotList.getObjectId(hotId);
 		objectClick(objId,mousePos);
@@ -197,7 +147,6 @@ void CWorldUI::hotTextClick(int hotId, glm::i32vec2 mousePos) {
 /** Handle a click on an inventory window item with the given object id. */
 void CWorldUI::inventoryClick(int hotId, const glm::i32vec2& mousePos) {
 	int objId = localHotList.getObjectId(hotId);
-	//drop(objId);
 	objectClick(objId, mousePos);
 }
 
@@ -214,13 +163,13 @@ void CWorldUI::changeRoom(int moveId) {
 }
 
 
-
 /** Pick up this object. */
 void CWorldUI::take(int objId) {
 	pTextWindow->purgeHotText(clickedHotText);
-	std::string takeText = "\nI picked up the ";
+	std::string takeText = "\n\nI picked up the ";
 	takeText += makeHotText(pVM->ObjMessage(objId, "name").getStringValue(), localHotList.getLocalId(objId));
-	processText(takeText + ".");
+	takeText = markupHotText(takeText + ".");
+	pTextWindow->appendMarkedUpText(takeText);
 	move(objId, playerId);
 	refreshInvWindow();
 }
@@ -231,9 +180,20 @@ void CWorldUI::drop(int objId) {
 	pTextWindow->purgeHotText(localId);
 	move(objId, currentRoomNo);
 	refreshInvWindow();
-	std::string dropText = "\nI dropped the ";
+	std::string dropText = "\n\nI dropped the ";
 	dropText += makeHotText(pVM->ObjMessage(objId, "name").getStringValue(), localId);
-	processText(dropText + ".");
+	dropText = markupHotText(dropText + ".");
+	pTextWindow->appendMarkedUpText(dropText);
+}
+
+void CWorldUI::examine(int objId) {
+	int localId = localHotList.getLocalId(objId);
+	pTextWindow->purgeHotText(localId);
+	std::string examText  = "\n\nI examined the " + makeHotText(pVM->ObjMessage(objId, "name").getStringValue(), localId)
+		+ ":\n";
+	examText += pVM->ObjMessage(objId, "description").getStringValue();
+	examText = markupHotText(examText);
+	pTextWindow->appendMarkedUpText(examText);
 }
 
 /** Return the index of first child of the given parent, if any. */
@@ -285,22 +245,17 @@ void CWorldUI::move(int obj, int dest) {
 /** Ensure inventory window shows the latest player contents. */
 void CWorldUI::refreshInvWindow() {
 	pInvWindow->clear();
-	setCurrentWindow(pInvWindow);
-	processText("Inventory:\n");
+	pInvWindow->appendMarkedUpText("Inventory:\n");
 	std::string invText;
 	int item = child(playerId);
 	if (item) {
 		do {
 			int localId = localHotList.getLocalId(item);
-			//invText += "\\h{" + std::to_string(localId) + "}";
-			//invText += "\nA ";
-			//invText += pVM->ObjMessage(item, "name").getStringValue();
-			//invText += "\\h";
 			invText += makeHotText("\nA " + pVM->ObjMessage(item, "name").getStringValue(), localId);
 		} while (objectInLoop(playerId, item));
-		processText(invText);
+		invText = markupHotText(invText);
+		pInvWindow->appendMarkedUpText(invText);
 	}
-	setCurrentWindow(pTextWindow);
 }
 
 /** Clear the local list and repopulate it with items the player is carrying. */
@@ -330,18 +285,24 @@ void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 }
 
 void CWorldUI::showPopupMenu(const glm::i32vec2& mousePos) {
-	pPopMenu->clear();
-	int menuOffset = pTextWindow->getFont()->lineHeight;
+	popControl->clear();
+	string popStr; int choiceNo = 1;
 	for (auto item : popChoices) {
-		pPopMenu->addItem(item.actionText);
+		popStr += makeHotText(item.actionText, choiceNo);
+		popStr += "\n";
+		choiceNo++;
 	}
-	if (mousePos.x + menuOffset + pPopMenu->itemWidth > pPopMenu->parent->width)
-		pPopMenu->setPos(mousePos.x - pPopMenu->itemWidth, mousePos.y + menuOffset);
-	else
-		pPopMenu->setPos(mousePos.x + menuOffset, mousePos.y + menuOffset);
-	pPopMenu->setVisible(true);
-	pPopMenu->makeModal(pPopMenu);
+	markupHotText(popStr);
+	popControl->appendMarkedUpText(popStr);
 
+	int menuOffset = pTextWindow->getFont()->lineHeight;
+	if (mousePos.x + menuOffset + popControl->getWidth() > popControl->parent->getWidth())
+		popControl->setPos(mousePos.x - popControl->getWidth(), mousePos.y + menuOffset);
+	else
+		popControl->setPos(mousePos.x + menuOffset, mousePos.y + menuOffset);
+
+	popControl->setVisible(true);
+	popControl->makeModal(popControl);
 }
 
 std::string CWorldUI::makeHotText(std::string text, int idNo) {
@@ -352,10 +313,13 @@ std::string CWorldUI::makeHotText(std::string text, int idNo) {
 
 /** Respond to the user selecting an item from the popup menu. */
 void CWorldUI::popupSelection(int choice) {
-	TPopAction action = popChoices[choice].action;
-	if (action == popTake)
-		take(clickedObj);
-	if (action == popDrop)
-		drop(clickedObj);
+	TPopAction action = popChoices[choice-1].action;
+	switch (action) {
+		case popTake: take(clickedObj); break;
+		case popDrop: drop(clickedObj); break;
+		case popExamine: examine(clickedObj); break;
+	}
+
+
 }
 
