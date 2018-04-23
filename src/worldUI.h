@@ -39,7 +39,6 @@ public:
 	void start();
 	void addHotText(std::string& text, int id);
 	void processText(string  text);
-	void writeRichText(string text, CGUIrichText * pWin);
 	std::string markupHotText(std::string& text);
 	void hotTextClick(int messageId, glm::i32vec2 mousePos);
 	void inventoryClick(int messageId, const glm::i32vec2& mousePos);

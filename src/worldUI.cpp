@@ -289,7 +289,8 @@ void CWorldUI::showPopupMenu(const glm::i32vec2& mousePos) {
 	string popStr; int choiceNo = 1;
 	for (auto item : popChoices) {
 		popStr += makeHotText(item.actionText, choiceNo);
-		popStr += "\n";
+		if (choiceNo < popChoices.size())
+			popStr += "\n";
 		choiceNo++;
 	}
 	markupHotText(popStr);

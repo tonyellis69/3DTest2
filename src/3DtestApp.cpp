@@ -859,13 +859,14 @@ void C3DtestApp::initInventoryWindow() {
 /** Create a multi-use popup menu. */
 void C3DtestApp::initPopupText() {
 	UIcolour tint = { 0,0,0,0.7f };
-	popupPanel = new CGUIrichTextPanel(300, 200, 300, 300);
+	popupPanel = new CGUIrichTextPanel(300, 200, 150, 50);
 	popupPanel->setBackColour1(tint);
 	popupPanel->setBackColour2(tint);
 	popupPanel->setFont(&sysFont);
 	popupPanel->setTextColour(UIwhite);
 	popupPanel->setHotTextColour(0.92, 0.92, 0.73, 1);
 	popupPanel->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
+	popupPanel->setResizeMode(true);
 	popupPanelID = popupPanel->getRichTextID();
 	popupPanel->setVisible(false);
 	GUIroot.Add(popupPanel);
