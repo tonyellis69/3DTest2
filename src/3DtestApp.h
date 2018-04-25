@@ -150,7 +150,10 @@ public:
 
 	CGUIrichTextPanel* popupPanel;
 	unsigned int popupPanelID;
+	unsigned int popupTextID;
 
+	CFont popFont;
+	CFont mainFont;
 };
 
 const float yawAng = 0.22f;

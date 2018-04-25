@@ -189,7 +189,7 @@ void CWorldUI::drop(int objId) {
 void CWorldUI::examine(int objId) {
 	int localId = localHotList.getLocalId(objId);
 	pTextWindow->purgeHotText(localId);
-	std::string examText  = "\n\nI examined the " + makeHotText(pVM->ObjMessage(objId, "name").getStringValue(), localId)
+	std::string examText  = "\n\nExamine " + makeHotText(pVM->ObjMessage(objId, "name").getStringValue(), localId)
 		+ ":\n";
 	examText += pVM->ObjMessage(objId, "description").getStringValue();
 	examText = markupHotText(examText);
@@ -271,21 +271,30 @@ void CWorldUI::refreshLocalList() {
 /** Handle a user-click on this object. */
 void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 	clickedObj = objId;
+	popControl->clear();
+	std::string examText = cap(pVM->ObjMessage(objId, "name").getStringValue() + "\n");
+	popControl->setTextColour(UIyellow);
+	popControl->appendMarkedUpText(examText);
+	popControl->setTextColour(UIwhite);
+	examText =	pVM->ObjMessage(objId, "description").getStringValue();
+	examText += "\n\n";
+
+	popControl->appendMarkedUpText(examText);
+	
+
 	popChoices.clear();
 	//acquire the different options available
-	popChoices.push_back({ "Do nothing",popDoNothing });
 	//is it on the ground? We can take it
 	if (parent(objId) == currentRoomNo)
 		popChoices.push_back({ "Take", popTake });
 	if (parent(objId) == playerId)
 		popChoices.push_back({ "Drop", popDrop });
 	popChoices.push_back({ "Examine", popExamine });
-
+	popChoices.push_back({ "Do nothing",popDoNothing });
 	showPopupMenu(mousePos);
 }
 
 void CWorldUI::showPopupMenu(const glm::i32vec2& mousePos) {
-	popControl->clear();
 	string popStr; int choiceNo = 1;
 	for (auto item : popChoices) {
 		popStr += makeHotText(item.actionText, choiceNo);
@@ -314,6 +323,8 @@ std::string CWorldUI::makeHotText(std::string text, int idNo) {
 
 /** Respond to the user selecting an item from the popup menu. */
 void CWorldUI::popupSelection(int choice) {
+	if (choice == -1)
+		return;
 	TPopAction action = popChoices[choice-1].action;
 	switch (action) {
 		case popTake: take(clickedObj); break;
@@ -322,5 +333,10 @@ void CWorldUI::popupSelection(int choice) {
 	}
 
 
+}
+
+std::string CWorldUI::cap(std::string text) {
+	text[0] = toupper(text[0]);
+	return text;
 }
 

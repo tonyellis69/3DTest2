@@ -58,6 +58,7 @@ public:
 	void showPopupMenu(const glm::i32vec2& mousePos);
 	std::string makeHotText(std::string text, int idNo);
 	void popupSelection(int choice);
+	std::string cap(std::string text);
 
 private:
 	CTigVM* pVM;

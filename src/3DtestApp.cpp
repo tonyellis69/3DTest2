@@ -201,6 +201,9 @@ void C3DtestApp::onStart() {
 	terrain.initGrassFinding();
 
 	//GUIroot.borderWidth = 10;
+	popFont.loadFromFile(dataPath + "Aeileron18.fnt");
+	//mainFont.loadFromFile(dataPath + "Aeileron20.fnt");
+	mainFont.loadFromFile(dataPath + "out40.fnt");
 	initTextWindow();
 	initInventoryWindow();
 	initPopupText();
@@ -765,9 +768,9 @@ void C3DtestApp::onTerrainAdvance(Tdirection direction) {
 
 /** Create the GUI and textures for displaying 2D terrain heightmaps. */
 void C3DtestApp::initHeightmapGUI() {
-	heightmapImage = new CGUIimage(10, 10, 500, 500);
+	heightmapImage = new CGUIimage(10, 10, 500, 500); // 500, 500);
 	GUIroot.Add(heightmapImage);
-	heightmapTex = Engine.Renderer.textureManager.createEmptyTexture(500, 500);
+	heightmapTex = Engine.Renderer.textureManager.createEmptyTexture(128, 221);// 500, 500);
 	heightmapImage->setTexture(*heightmapTex);
 	
 	//heightmapImage->visible = false;
@@ -786,7 +789,9 @@ void C3DtestApp::initHeightmapGUI() {
 void C3DtestApp::updateHeightmapImage() {
 	//activate the render-to-texture shader
 
-	heightmapImage->setTexture(*heightmapTex);
+	heightmapImage->setTexture((CBaseTexture&)mainFont.texture);
+
+	return;
 
 
 	heightmapImage->setTexture(*heightmapTex);
@@ -816,7 +821,7 @@ void C3DtestApp::initTextWindow() {
 	GUIroot.Add(backPanel);
 
 	textWindow = new CGUIrichText(10, 10, 780, 680); 
-	textWindow->setFont(&sysFont);
+	textWindow->setFont(&mainFont);
 	textWindow->setTextColour(UIwhite);
 	textWindow->hFormat = hCentre;
 	textWindow->borderOn(false);
@@ -859,15 +864,16 @@ void C3DtestApp::initInventoryWindow() {
 /** Create a multi-use popup menu. */
 void C3DtestApp::initPopupText() {
 	UIcolour tint = { 0,0,0,0.7f };
-	popupPanel = new CGUIrichTextPanel(300, 200, 150, 50);
+	popupPanel = new CGUIrichTextPanel(300, 200, 300, 20);
 	popupPanel->setBackColour1(tint);
 	popupPanel->setBackColour2(tint);
-	popupPanel->setFont(&sysFont);
+	popupPanel->setFont(&popFont);
 	popupPanel->setTextColour(UIwhite);
 	popupPanel->setHotTextColour(0.92, 0.92, 0.73, 1);
 	popupPanel->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
 	popupPanel->setResizeMode(true);
-	popupPanelID = popupPanel->getRichTextID();
+	popupTextID = popupPanel->getRichTextID();
+	popupPanelID = popupPanel->getID();
 	popupPanel->setVisible(false);
 	GUIroot.Add(popupPanel);
 }
@@ -961,15 +967,23 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
 
 
-	if (control.getID() == popupPanelID && Message.Msg == uiMsgHotTextClick) {
+	if (control.getID() == popupTextID && Message.Msg == uiMsgHotTextClick) {
 		popupPanel->makeModal(NULL);
 		popupPanel->setVisible(false);
 		textWindow->clearSelection();
 		invWindow->clearSelection();
 		int choice = Message.value;
 		worldUI.popupSelection(choice);
-
 	}
+
+
+	if (control.getID() == popupPanelID && Message.Msg == uiMsgHotTextClick) {
+		popupPanel->makeModal(NULL);
+		popupPanel->setVisible(false);
+		textWindow->clearSelection();
+		invWindow->clearSelection();
+	}
+
 }
 
 /** Remove the menu of options from the text window. */
