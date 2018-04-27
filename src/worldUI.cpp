@@ -188,12 +188,26 @@ void CWorldUI::drop(int objId) {
 
 void CWorldUI::examine(int objId) {
 	int localId = localHotList.getLocalId(objId);
-	pTextWindow->purgeHotText(localId);
-	std::string examText  = "\n\nExamine " + makeHotText(pVM->ObjMessage(objId, "name").getStringValue(), localId)
+	//pTextWindow->purgeHotText(localId);
+	int currentRextent = popControl->drawBox.pos.x + popControl->getWidth();
+	popControl->clear();
+	popControl->resize(200, 200);
+	popControl->setTextColour(UIyellow);
+	std::string examText  = cap(pVM->ObjMessage(objId, "name").getStringValue())
 		+ ":\n";
-	examText += pVM->ObjMessage(objId, "description").getStringValue();
 	examText = markupHotText(examText);
-	pTextWindow->appendMarkedUpText(examText);
+	popControl->appendMarkedUpText(examText);
+	popControl->setTextColour(UIwhite);
+	examText = pVM->ObjMessage(objId, "description").getStringValue();
+	examText = markupHotText(examText);
+	//pTextWindow->appendMarkedUpText(examText);
+	popControl->appendMarkedUpText(examText);
+	popControl->resizeToFit();
+
+	glm::i32vec2 cornerPos = popControl->drawBox.pos;
+	if (cornerPos.x + popControl->getWidth() > popControl->parent->getWidth())
+		cornerPos.x = currentRextent - popControl->getWidth();
+	showPopupMenu(cornerPos);
 }
 
 /** Return the index of first child of the given parent, if any. */
@@ -272,15 +286,6 @@ void CWorldUI::refreshLocalList() {
 void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 	clickedObj = objId;
 	popControl->clear();
-	std::string examText = cap(pVM->ObjMessage(objId, "name").getStringValue() + "\n");
-	popControl->setTextColour(UIyellow);
-	popControl->appendMarkedUpText(examText);
-	popControl->setTextColour(UIwhite);
-	examText =	pVM->ObjMessage(objId, "description").getStringValue();
-	examText += "\n\n";
-
-	popControl->appendMarkedUpText(examText);
-	
 
 	popChoices.clear();
 	//acquire the different options available
@@ -291,10 +296,8 @@ void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 		popChoices.push_back({ "Drop", popDrop });
 	popChoices.push_back({ "Examine", popExamine });
 	popChoices.push_back({ "Do nothing",popDoNothing });
-	showPopupMenu(mousePos);
-}
+	popControl->resize(200, 200);
 
-void CWorldUI::showPopupMenu(const glm::i32vec2& mousePos) {
 	string popStr; int choiceNo = 1;
 	for (auto item : popChoices) {
 		popStr += makeHotText(item.actionText, choiceNo);
@@ -304,13 +307,16 @@ void CWorldUI::showPopupMenu(const glm::i32vec2& mousePos) {
 	}
 	markupHotText(popStr);
 	popControl->appendMarkedUpText(popStr);
+	popControl->resizeToFit();
 
-	int menuOffset = pTextWindow->getFont()->lineHeight;
-	if (mousePos.x + menuOffset + popControl->getWidth() > popControl->parent->getWidth())
-		popControl->setPos(mousePos.x - popControl->getWidth(), mousePos.y + menuOffset);
-	else
-		popControl->setPos(mousePos.x + menuOffset, mousePos.y + menuOffset);
+	glm::i32vec2 cornerPos = mousePos + glm::i32vec2(0,pTextWindow->getFont()->lineHeight / 2);
+	if (cornerPos.x + popControl->getWidth() > popControl->parent->getWidth())
+		cornerPos.x = mousePos.x - popControl->getWidth();
+	showPopupMenu(cornerPos);
+}
 
+void CWorldUI::showPopupMenu(const glm::i32vec2& cornerPos) {
+	popControl->setPos(cornerPos.x,cornerPos.y);
 	popControl->setVisible(true);
 	popControl->makeModal(popControl);
 }
@@ -322,7 +328,8 @@ std::string CWorldUI::makeHotText(std::string text, int idNo) {
 }
 
 /** Respond to the user selecting an item from the popup menu. */
-void CWorldUI::popupSelection(int choice) {
+void CWorldUI::popupSelection(int choice, glm::i32vec2& mousePos) {
+	currentMousePos = mousePos;
 	if (choice == -1)
 		return;
 	TPopAction action = popChoices[choice-1].action;

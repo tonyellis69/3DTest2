@@ -201,9 +201,14 @@ void C3DtestApp::onStart() {
 	terrain.initGrassFinding();
 
 	//GUIroot.borderWidth = 10;
-	popFont.loadFromFile(dataPath + "Aeileron18.fnt");
+	//popFont.loadFromFile(dataPath + "Aeileron18.fnt");
+	popFont.loadFromFile(dataPath + "hotMed20.fnt");
+
 	//mainFont.loadFromFile(dataPath + "Aeileron20.fnt");
-	mainFont.loadFromFile(dataPath + "out40.fnt");
+	//mainFont.loadFromFile(dataPath + "out40.fnt");
+	mainFont.loadFromFile(dataPath + "hotMed26.fnt");
+	//mainFont.loadFromFile(dataPath + "pla26.fon");
+
 	initTextWindow();
 	initInventoryWindow();
 	initPopupText();
@@ -968,12 +973,13 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
 
 	if (control.getID() == popupTextID && Message.Msg == uiMsgHotTextClick) {
+		glm::i32vec2 mousePos = popupPanel->getScreenCoords(Message.x, Message.y);
 		popupPanel->makeModal(NULL);
 		popupPanel->setVisible(false);
 		textWindow->clearSelection();
 		invWindow->clearSelection();
 		int choice = Message.value;
-		worldUI.popupSelection(choice);
+		worldUI.popupSelection(choice,mousePos);
 	}
 
 

@@ -26,7 +26,7 @@ enum TMoveDir {moveNorth, moveNE, moveEast, moveSE, moveSouth, moveSW, moveWest,
 	Tig virtual machine. */
 class CWorldUI {
 public:
-	CWorldUI() {};
+	CWorldUI() { };
 	void setVM(CTigVM* vm);
 	void setTextWindow(CGUIrichText* txtWin);
 	void setInventoryWindow(CGUIrichText * invWin);
@@ -57,7 +57,7 @@ public:
 	void objectClick(int objId, const glm::i32vec2& mousePos);
 	void showPopupMenu(const glm::i32vec2& mousePos);
 	std::string makeHotText(std::string text, int idNo);
-	void popupSelection(int choice);
+	void popupSelection(int choice, glm::i32vec2& mousePos);
 	std::string cap(std::string text);
 
 private:
@@ -82,6 +82,7 @@ private:
 	int clickedHotText; ///<Id of currently clicked hot text.
 	int clickedObj; ///<Id of currently clicked object;
 	std::vector<TPopChoice> popChoices; ///<Tracks choices available on the popup meny.
+	glm::i32vec2 currentMousePos;
 };
 
 

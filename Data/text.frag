@@ -11,7 +11,9 @@ uniform vec4 textColour;
 void main()
 {
 	vec4 mask = texture2D(fontTexture, texCoord0.st );
-	//mask.rgb = 1 everywhere. mask.a = 1 on font, 0 outside, gradient in between.
+
+	mask.a = mask.r;
+	mask.rgb = vec3(1);
 	
 	colour = mask * textColour;
 	
