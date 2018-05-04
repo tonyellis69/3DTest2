@@ -191,17 +191,36 @@ void CWorldUI::examine(int objId) {
 	//pTextWindow->purgeHotText(localId);
 	int currentRextent = popControl->drawBox.pos.x + popControl->getWidth();
 	popControl->clear();
-	popControl->resize(200, 200);
-	popControl->setTextColour(UIyellow);
+	popControl->resize(250, 200);
+	popControl->setTextStyle(popHeaderStyle);
+	//popControl->setTextColour(UIhiGrey);
+
+
+
 	std::string examText  = cap(pVM->ObjMessage(objId, "name").getStringValue())
-		+ ":\n";
+		+ "\n";
 	examText = markupHotText(examText);
 	popControl->appendMarkedUpText(examText);
-	popControl->setTextColour(UIwhite);
+//	popControl->setFont(popBodyFont);
+//	popControl->setTextColour(UIwhite);
+	popControl->setTextStyle(popBodyStyle);
 	examText = pVM->ObjMessage(objId, "description").getStringValue();
 	examText = markupHotText(examText);
-	//pTextWindow->appendMarkedUpText(examText);
+
 	popControl->appendMarkedUpText(examText);
+	popControl->appendText("\n");
+
+	//add convenience options, ie, take/drop
+	popChoices.clear();
+	if (parent(objId) == currentRoomNo) {
+		popChoices.push_back({ "Take", popTake });
+	}
+	if (parent(objId) == playerId) {
+		popChoices.push_back({ "Drop", popDrop });
+	}
+	popChoices.push_back({ "Do nothing", popDoNothing });
+	appendChoicesToPopup();
+
 	popControl->resizeToFit();
 
 	glm::i32vec2 cornerPos = popControl->drawBox.pos;
@@ -288,16 +307,26 @@ void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 	popControl->clear();
 
 	popChoices.clear();
+	popControl->resize(200, 200);
 	//acquire the different options available
 	//is it on the ground? We can take it
 	if (parent(objId) == currentRoomNo)
 		popChoices.push_back({ "Take", popTake });
 	if (parent(objId) == playerId)
 		popChoices.push_back({ "Drop", popDrop });
-	popChoices.push_back({ "Examine", popExamine });
 	popChoices.push_back({ "Do nothing",popDoNothing });
-	popControl->resize(200, 200);
+	popChoices.insert(popChoices.end()-1,{ "Examine", popExamine });
+	appendChoicesToPopup();
 
+	popControl->resizeToFit();
+
+	glm::i32vec2 cornerPos = mousePos + glm::i32vec2(0,pTextWindow->getFont()->lineHeight / 2);
+	if (cornerPos.x + popControl->getWidth() > popControl->parent->getWidth())
+		cornerPos.x = mousePos.x - popControl->getWidth();
+	showPopupMenu(cornerPos);
+}
+
+void CWorldUI::appendChoicesToPopup() {
 	string popStr; int choiceNo = 1;
 	for (auto item : popChoices) {
 		popStr += makeHotText(item.actionText, choiceNo);
@@ -307,12 +336,6 @@ void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 	}
 	markupHotText(popStr);
 	popControl->appendMarkedUpText(popStr);
-	popControl->resizeToFit();
-
-	glm::i32vec2 cornerPos = mousePos + glm::i32vec2(0,pTextWindow->getFont()->lineHeight / 2);
-	if (cornerPos.x + popControl->getWidth() > popControl->parent->getWidth())
-		cornerPos.x = mousePos.x - popControl->getWidth();
-	showPopupMenu(cornerPos);
 }
 
 void CWorldUI::showPopupMenu(const glm::i32vec2& cornerPos) {
@@ -345,5 +368,26 @@ void CWorldUI::popupSelection(int choice, glm::i32vec2& mousePos) {
 std::string CWorldUI::cap(std::string text) {
 	text[0] = toupper(text[0]);
 	return text;
+}
+
+
+void CWorldUI::setMainBodyStyle( CFont& font, const glm::vec4& colour) {
+	mainBodyStyle = { &font,colour };
+	pTextWindow->setTextStyle(mainBodyStyle);
+}
+
+void CWorldUI::setInvBodyStyle(CFont & font, const glm::vec4 & colour) {
+	invBodyStyle = { &font,colour };
+	pInvWindow->setTextStyle(invBodyStyle);
+}
+
+void CWorldUI::setPopBodyStyle(CFont & font, const glm::vec4 & colour) {
+	popBodyStyle = { &font,colour };
+	popControl->setTextStyle(popBodyStyle);
+}
+
+void CWorldUI::setPopHeaderStyle(CFont & font, const glm::vec4 & colour) {
+	popHeaderStyle = { &font,colour };
+	popControl->setTextStyle(popHeaderStyle);
 }
 

@@ -55,10 +55,18 @@ public:
 	void refreshInvWindow();
 	void refreshLocalList();
 	void objectClick(int objId, const glm::i32vec2& mousePos);
+	void appendChoicesToPopup();
 	void showPopupMenu(const glm::i32vec2& mousePos);
 	std::string makeHotText(std::string text, int idNo);
 	void popupSelection(int choice, glm::i32vec2& mousePos);
 	std::string cap(std::string text);
+
+
+
+	void setMainBodyStyle( CFont& font, const glm::vec4& colour);
+	void setInvBodyStyle(CFont& font, const glm::vec4& colour);
+	void setPopBodyStyle(CFont& font, const glm::vec4& colour);
+	void setPopHeaderStyle(CFont& font, const glm::vec4& colour);
 
 private:
 	CTigVM* pVM;
@@ -67,7 +75,8 @@ private:
 	CGUIrichText* currentTextWindow;
 	CGUIrichTextPanel* popControl;
 
-
+	CFont* popHeaderFont;
+	CFont* popBodyFont;
 
 	CTigVar currentRoom; ///<Always stores the address of the room the player is in.
 	int currentRoomNo; ///<Always stores the object index of the room the player is in.
@@ -83,6 +92,14 @@ private:
 	int clickedObj; ///<Id of currently clicked object;
 	std::vector<TPopChoice> popChoices; ///<Tracks choices available on the popup meny.
 	glm::i32vec2 currentMousePos;
+
+	TtextStyle mainBodyStyle; ///<Text style for main window body text.
+	TtextStyle invBodyStyle;
+	TtextStyle popBodyStyle;
+	TtextStyle popHeaderStyle;
+
+	glm::vec4 hottextColour;
+	glm::vec4 hottextSelectedColour;
 };
 
 

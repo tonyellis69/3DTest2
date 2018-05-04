@@ -208,6 +208,7 @@ void C3DtestApp::onStart() {
 	//mainFont.loadFromFile(dataPath + "out40.fnt");
 	mainFont.loadFromFile(dataPath + "hotMed26.fnt");
 	//mainFont.loadFromFile(dataPath + "pla26.fon");
+	popHeadFont.loadFromFile(dataPath + "hotBold20.fnt");
 
 	initTextWindow();
 	initInventoryWindow();
@@ -222,6 +223,12 @@ void C3DtestApp::onStart() {
 	worldUI.setInventoryWindow(invWindow);
 	worldUI.setPopupTextWindow(popupPanel);
 	worldUI.init();
+
+	worldUI.setMainBodyStyle(mainFont, white);
+	worldUI.setInvBodyStyle(popFont, white);
+	worldUI.setPopBodyStyle(popFont, white);
+	worldUI.setPopHeaderStyle(popHeadFont, white);
+
 	worldUI.start();
 
 
@@ -515,6 +522,12 @@ void C3DtestApp::onResize(int width, int height) {
 */
 
 void C3DtestApp::draw() {
+	//Engine.Renderer.setBackColour((rgba&)UIwhite);
+	Engine.Renderer.clearFrame();
+
+	return;
+
+
 	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
 	terrain.updateVisibleSClist(fpsCam);
 
@@ -826,8 +839,8 @@ void C3DtestApp::initTextWindow() {
 	GUIroot.Add(backPanel);
 
 	textWindow = new CGUIrichText(10, 10, 780, 680); 
-	textWindow->setFont(&mainFont);
-	textWindow->setTextColour(UIwhite);
+	//textWindow->setFont(&mainFont);
+	//textWindow->setTextColour(UIwhite);
 	textWindow->hFormat = hCentre;
 	textWindow->borderOn(false);
 	textWindow->setMultiLine(true);
@@ -854,8 +867,8 @@ void C3DtestApp::initInventoryWindow() {
 	GUIroot.Add(backPanel);
 
 	invWindow = new CGUIrichText(10, 10, 160, 180); //was 160 280
-	invWindow->setFont(&sysFont);
-	invWindow->setTextColour(UIwhite);
+	//invWindow->setFont(&sysFont);
+	//invWindow->setTextColour(UIwhite);
 	invWindow->hFormat = hCentre;
 	invWindow->borderOn(false);
 	invWindow->setMultiLine(true);
@@ -863,7 +876,6 @@ void C3DtestApp::initInventoryWindow() {
 	invWindow->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
 	backPanel->Add(invWindow);
 	invWindowID = invWindow->getID();
-	invWindow->appendText("Inventory:\n\n");
 }
 
 /** Create a multi-use popup menu. */
