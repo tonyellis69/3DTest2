@@ -228,6 +228,8 @@ void C3DtestApp::onStart() {
 	worldUI.setInvBodyStyle(popFont, white);
 	worldUI.setPopBodyStyle(popFont, white);
 	worldUI.setPopHeaderStyle(popHeadFont, white);
+	worldUI.setHottextColour(hot);
+	worldUI.setHottextSelectColour(hotSelect);
 
 	worldUI.start();
 
@@ -522,10 +524,10 @@ void C3DtestApp::onResize(int width, int height) {
 */
 
 void C3DtestApp::draw() {
-	//Engine.Renderer.setBackColour((rgba&)UIwhite);
+	Engine.Renderer.setBackColour((rgba&)uiBlack);
 	Engine.Renderer.clearFrame();
 
-	return;
+	//return;
 
 
 	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
@@ -844,8 +846,8 @@ void C3DtestApp::initTextWindow() {
 	textWindow->hFormat = hCentre;
 	textWindow->borderOn(false);
 	textWindow->setMultiLine(true);
-	textWindow->setHotTextColour(0.72, 0.72, 0.53, 1);
-	textWindow->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
+	//textWindow->setHotTextColour(0.72, 0.72, 0.53, 1);
+//	textWindow->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
 	backPanel->Add(textWindow);
 	textWindowID = textWindow->getID();
 	//GUIroot.setFocus(textWindow);
@@ -872,8 +874,8 @@ void C3DtestApp::initInventoryWindow() {
 	invWindow->hFormat = hCentre;
 	invWindow->borderOn(false);
 	invWindow->setMultiLine(true);
-	invWindow->setHotTextColour(0.92, 0.92, 0.73, 1);
-	invWindow->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
+	//invWindow->setHotTextColour(0.92, 0.92, 0.73, 1);
+	//invWindow->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
 	backPanel->Add(invWindow);
 	invWindowID = invWindow->getID();
 }
@@ -886,8 +888,8 @@ void C3DtestApp::initPopupText() {
 	popupPanel->setBackColour2(tint);
 	popupPanel->setFont(&popFont);
 	popupPanel->setTextColour(UIwhite);
-	popupPanel->setHotTextColour(0.92, 0.92, 0.73, 1);
-	popupPanel->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
+	//popupPanel->setHotTextColour(0.92, 0.92, 0.73, 1);
+	//popupPanel->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
 	popupPanel->setResizeMode(true);
 	popupTextID = popupPanel->getRichTextID();
 	popupPanelID = popupPanel->getID();

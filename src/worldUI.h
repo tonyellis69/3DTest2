@@ -67,6 +67,8 @@ public:
 	void setInvBodyStyle(CFont& font, const glm::vec4& colour);
 	void setPopBodyStyle(CFont& font, const glm::vec4& colour);
 	void setPopHeaderStyle(CFont& font, const glm::vec4& colour);
+	void setHottextColour(const glm::vec4& colour);
+	void setHottextSelectColour(const glm::vec4& colour);
 
 private:
 	CTigVM* pVM;

@@ -391,3 +391,17 @@ void CWorldUI::setPopHeaderStyle(CFont & font, const glm::vec4 & colour) {
 	popControl->setTextStyle(popHeaderStyle);
 }
 
+void CWorldUI::setHottextColour(const glm::vec4 & colour) {
+	hottextColour = colour;
+	pTextWindow->setHotTextColour(hottextColour);
+	pInvWindow->setHotTextColour(hottextColour);
+	popControl->setHotTextColour(hottextColour);
+}
+
+void CWorldUI::setHottextSelectColour(const glm::vec4 & colour) {
+	hottextSelectedColour = colour;
+	pTextWindow->setHotTextHighlightColour(hottextSelectedColour);
+	pInvWindow->setHotTextHighlightColour(hottextSelectedColour);
+	popControl->setHotTextHighlightColour(hottextSelectedColour);
+}
+

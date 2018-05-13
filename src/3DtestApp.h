@@ -164,6 +164,8 @@ const int chunksPerSuperChunkEdge = 4;// 4;//8;
 const int terrainNoAttribs = 3;
 
 const glm::vec4 white(1, 1, 1, 1);
+const glm::vec4 hot(0.92, 0.92, 0.73, 1);
+const glm::vec4 hotSelect(0.69, 0.78, 0.87, 1);
 
 
 //const unsigned int grassBufSize = 90000000;
