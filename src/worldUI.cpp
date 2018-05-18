@@ -32,6 +32,7 @@ void CWorldUI::init() {
 	playerId = pVM->getGlobalVar("playerObj").getObjId();
 	findMoveToIds();
 	findTreeIds();
+	findLocationClassIds();
 	clickedHotText = 0;
 }
 
@@ -40,7 +41,7 @@ void CWorldUI::findMoveToIds() {
 	moveToIds[moveNE] = pVM->getMemberId("neTo");
 	moveToIds[moveEast] = pVM->getMemberId("eastTo");
 	moveToIds[moveSE] = pVM->getMemberId("seTo");
-	moveToIds[moveSouth] = pVM->getMemberId("northTo");
+	moveToIds[moveSouth] = pVM->getMemberId("southTo");
 	moveToIds[moveSW] = pVM->getMemberId("swTo");
 	moveToIds[moveWest] = pVM->getMemberId("westTo");
 	moveToIds[moveNW] = pVM->getMemberId("nwTo");
@@ -56,13 +57,20 @@ void CWorldUI::findTreeIds() {
 	siblingId = pVM->getMemberId("sibling");
 }
 
+void CWorldUI::findLocationClassIds() {
+	corridorClassId = pVM->getGlobalVar("corridorClassId").getIntValue();
+	roomClassId = pVM->getGlobalVar("roomClassId").getIntValue();
+}
+
 /** Compiles the current room's description and sends it for display. */
 void CWorldUI::roomDescription() {
-	//setCurrentWindow(pTextWindow); //TO DO: scrap
-	//CTigVar result = pVM->ObjMessage(currentRoom, "description");
-	std::string result = pVM->ObjMessage(currentRoom, "description").getStringValue();
-	result = markupHotText(result);
-	pTextWindow->appendMarkedUpText(result);
+	std::string description = pVM->objMessage(currentRoom, "description").getStringValue() + " ";
+	description = markupHotText(description);
+	pTextWindow->appendMarkedUpText(description);
+
+	description = getExitsText(currentRoomNo);
+	description = markupHotText(description);
+	pTextWindow->appendMarkedUpText(description);
 
 	//List any contents
 	refreshLocalList();
@@ -73,7 +81,7 @@ void CWorldUI::roomDescription() {
 	std::string itemsText("\n\nI could see");
 	do {
 		int localId = localHotList.addObject(item);
-		itemsText += makeHotText(" a " + pVM->ObjMessage(item, "name").getStringValue(), localId);
+		itemsText += makeHotText(" a " + pVM->objMessage(item, "name").getStringValue(), localId);
 		if (sibling(item)) {
 			if (sibling(sibling(item)))
 				itemsText +=  ",";
@@ -167,7 +175,7 @@ void CWorldUI::changeRoom(int moveId) {
 void CWorldUI::take(int objId) {
 	pTextWindow->purgeHotText(clickedHotText);
 	std::string takeText = "\n\nI picked up the ";
-	takeText += makeHotText(pVM->ObjMessage(objId, "name").getStringValue(), localHotList.getLocalId(objId));
+	takeText += makeHotText(pVM->objMessage(objId, "name").getStringValue(), localHotList.getLocalId(objId));
 	takeText = markupHotText(takeText + ".");
 	pTextWindow->appendMarkedUpText(takeText);
 	move(objId, playerId);
@@ -181,7 +189,7 @@ void CWorldUI::drop(int objId) {
 	move(objId, currentRoomNo);
 	refreshInvWindow();
 	std::string dropText = "\n\nI dropped the ";
-	dropText += makeHotText(pVM->ObjMessage(objId, "name").getStringValue(), localId);
+	dropText += makeHotText(pVM->objMessage(objId, "name").getStringValue(), localId);
 	dropText = markupHotText(dropText + ".");
 	pTextWindow->appendMarkedUpText(dropText);
 }
@@ -197,14 +205,14 @@ void CWorldUI::examine(int objId) {
 
 
 
-	std::string examText  = cap(pVM->ObjMessage(objId, "name").getStringValue())
+	std::string examText  = cap(pVM->objMessage(objId, "name").getStringValue())
 		+ "\n";
 	examText = markupHotText(examText);
 	popControl->appendMarkedUpText(examText);
 //	popControl->setFont(popBodyFont);
 //	popControl->setTextColour(UIwhite);
 	popControl->setTextStyle(popBodyStyle);
-	examText = pVM->ObjMessage(objId, "description").getStringValue();
+	examText = pVM->objMessage(objId, "description").getStringValue();
 	examText = markupHotText(examText);
 
 	popControl->appendMarkedUpText(examText);
@@ -284,7 +292,7 @@ void CWorldUI::refreshInvWindow() {
 	if (item) {
 		do {
 			int localId = localHotList.getLocalId(item);
-			invText += makeHotText("\nA " + pVM->ObjMessage(item, "name").getStringValue(), localId);
+			invText += makeHotText("\nA " + pVM->objMessage(item, "name").getStringValue(), localId);
 		} while (objectInLoop(playerId, item));
 		invText = markupHotText(invText);
 		pInvWindow->appendMarkedUpText(invText);
@@ -368,6 +376,58 @@ void CWorldUI::popupSelection(int choice, glm::i32vec2& mousePos) {
 std::string CWorldUI::cap(std::string text) {
 	text[0] = toupper(text[0]);
 	return text;
+}
+
+/** Return a string describing the exits from this room. */
+std::string CWorldUI::getExitsText(int roomNo) {
+	std::string exitsText; 
+	struct TExit {
+		int directionId;
+		int destination;
+		std::string directionStr;
+		std::string destinationStr;
+	};
+	std::vector < TExit> exits;
+	std::vector < TExit> corridors;
+
+	//loop through the exits, gathering information
+	for (int dir = moveNorth; dir <= moveOut; dir++) {
+		int destination = pVM->getMemberValue(roomNo, moveToIds[dir]);
+		if (!destination)
+			continue;
+		int directionId = moveToIds[dir];
+		std::string destinationStr = pVM->objMessage(destination, "shortName").getStringValue();
+		auto directionHottext = find_if(hotTextList.begin(), hotTextList.end(),
+			[&](THotTextRec& hotRec) { return hotRec.id == directionId; });
+		if (pVM->getClass(destination) == corridorClassId)
+			corridors.push_back({ directionId,destination,directionHottext->text,destinationStr });
+		else
+			exits.push_back({ directionId,destination,directionHottext->text,destinationStr });
+	}
+
+	int noCorridors = corridors.size();
+	if (noCorridors == 1)
+		exitsText = "A " + corridors[0].destinationStr + " led " + corridors[0].directionStr + ". ";
+	if (noCorridors > 1) {
+		exitsText = "Corridors led " + corridors[0].directionStr;
+		for (int corridorNo = 1; corridorNo < noCorridors - 2; corridorNo++) {
+			exitsText += ", " + corridors[corridorNo].directionStr;
+		}
+		exitsText += " and " + corridors[noCorridors - 1].directionStr + ". ";
+	}
+
+	int noExits = exits.size();
+	if (noExits == 1)
+		exitsText += "A doorway opened to the " + exits[0].directionStr + ". ";
+	if (noExits > 1) {
+		exitsText += "Doorways opened to the " + exits[0].directionStr;
+		for (int exitNo = 1; exitNo < noExits - 2; exitNo++) {
+			exitsText += ", " + exits[exitNo].directionStr;
+		}
+		exitsText += " and " + exits[noExits - 1].directionStr + ". ";
+	}
+
+	return exitsText;
 }
 
 

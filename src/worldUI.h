@@ -35,6 +35,7 @@ public:
 	void init();
 	void findMoveToIds();
 	void findTreeIds();
+	void findLocationClassIds();
 	void roomDescription();
 	void start();
 	void addHotText(std::string& text, int id);
@@ -60,6 +61,7 @@ public:
 	std::string makeHotText(std::string text, int idNo);
 	void popupSelection(int choice, glm::i32vec2& mousePos);
 	std::string cap(std::string text);
+	std::string getExitsText(int roomNo);
 
 
 
@@ -83,6 +85,9 @@ private:
 	CTigVar currentRoom; ///<Always stores the address of the room the player is in.
 	int currentRoomNo; ///<Always stores the object index of the room the player is in.
 	int playerId; ///<Id of the player object.
+
+	int corridorClassId;
+	int roomClassId;
 
 	std::vector<THotTextRec> hotTextList;
 

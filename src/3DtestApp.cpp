@@ -527,7 +527,7 @@ void C3DtestApp::draw() {
 	Engine.Renderer.setBackColour((rgba&)uiBlack);
 	Engine.Renderer.clearFrame();
 
-	//return;
+	return;
 
 
 	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
@@ -863,7 +863,7 @@ void C3DtestApp::initInventoryWindow() {
 	UIcolour tint = { 0,0,0,0.3f };
 	backPanel->setBackColour1(tint);
 	backPanel->setBackColour2(tint);
-	backPanel->borderOn(false);
+	backPanel->borderOn(true);
 	backPanel->anchorRight = 10;
 	backPanel->hFormat = hRight;
 	GUIroot.Add(backPanel);
