@@ -886,6 +886,7 @@ void C3DtestApp::initPopupText() {
 	popupPanel = new CGUIrichTextPanel(300, 200, 300, 20);
 	popupPanel->setBackColour1(tint);
 	popupPanel->setBackColour2(tint);
+	popupPanel->borderOn(true);
 	popupPanel->setFont(&popFont);
 	popupPanel->setTextColour(UIwhite);
 	//popupPanel->setHotTextColour(0.92, 0.92, 0.73, 1);

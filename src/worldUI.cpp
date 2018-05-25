@@ -34,9 +34,11 @@ void CWorldUI::init() {
 	findTreeIds();
 	findLocationClassIds();
 	clickedHotText = 0;
+	backDirection = moveNone;
 }
 
 void CWorldUI::findMoveToIds() {
+	moveToIds[moveNone] = 0;
 	moveToIds[moveNorth] = pVM->getMemberId("northTo");
 	moveToIds[moveNE] = pVM->getMemberId("neTo");
 	moveToIds[moveEast] = pVM->getMemberId("eastTo");
@@ -67,6 +69,10 @@ void CWorldUI::roomDescription() {
 	std::string description = pVM->objMessage(currentRoom, "description").getStringValue() + " ";
 	description = markupHotText(description);
 	pTextWindow->appendMarkedUpText(description);
+
+	for (int dir = moveNorth; dir <= moveOut; dir++) {
+		bodyListedExits[dir] = pTextWindow->isActiveHotText(moveToIds[dir]);
+	}
 
 	description = getExitsText(currentRoomNo);
 	description = markupHotText(description);
@@ -137,7 +143,7 @@ std::string CWorldUI::markupHotText(std::string & text) {
 void CWorldUI::hotTextClick(int hotId, glm::i32vec2 mousePos) {
 	clickedHotText = hotId;
 	//is this a move command?
-	for (int dir = 0; dir < 12; dir++) {
+	for (int dir = moveNorth; dir <= moveOut; dir++) {
 		if (hotId == moveToIds[dir]) {
 			changeRoom(hotId);
 			return;
@@ -162,12 +168,37 @@ void CWorldUI::inventoryClick(int hotId, const glm::i32vec2& mousePos) {
 void CWorldUI::changeRoom(int moveId) {
 	CTigVar member = pVM->getMember(currentRoom, moveId);
 	if (member.type == tigObj) {
+		backDirection = calcBackDirection(moveId);
 		currentRoom = member;
 		currentRoomNo = member.getObjId();
 		pTextWindow->purgeHotText();
 		pTextWindow->appendText("\n\n");
 		roomDescription();
 	}
+}
+
+/** Return the opposite direction. */
+TMoveDir CWorldUI::calcBackDirection(int moveId) {
+	int dir;
+	for ( dir = moveNorth; dir <= moveOut; dir++) {
+		if (moveToIds[dir] == moveId)
+			break;
+	}
+
+	if (dir < moveUp) {
+		dir += 4;
+		return static_cast<TMoveDir>(dir % 8);
+	}
+
+	switch (dir) {
+	case moveUp: return moveDown;
+	case moveDown: return moveUp;
+	case moveIn: return moveOut;
+	case moveOut: return moveIn;
+		}
+
+	
+
 }
 
 
@@ -195,7 +226,7 @@ void CWorldUI::drop(int objId) {
 }
 
 void CWorldUI::examine(int objId) {
-	int localId = localHotList.getLocalId(objId);
+	//int localId = localHotList.getLocalId(objId);
 	//pTextWindow->purgeHotText(localId);
 	int currentRextent = popControl->drawBox.pos.x + popControl->getWidth();
 	popControl->clear();
@@ -229,11 +260,11 @@ void CWorldUI::examine(int objId) {
 	popChoices.push_back({ "Do nothing", popDoNothing });
 	appendChoicesToPopup();
 
-	popControl->resizeToFit();
+	//popControl->resizeToFit();
 
 	glm::i32vec2 cornerPos = popControl->drawBox.pos;
-	if (cornerPos.x + popControl->getWidth() > popControl->parent->getWidth())
-		cornerPos.x = currentRextent - popControl->getWidth();
+//	if (cornerPos.x + popControl->getWidth() > popControl->parent->getWidth())
+	//	cornerPos.x = currentRextent - popControl->getWidth();
 	showPopupMenu(cornerPos);
 }
 
@@ -326,12 +357,8 @@ void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 	popChoices.insert(popChoices.end()-1,{ "Examine", popExamine });
 	appendChoicesToPopup();
 
-	popControl->resizeToFit();
-
-	glm::i32vec2 cornerPos = mousePos + glm::i32vec2(0,pTextWindow->getFont()->lineHeight / 2);
-	if (cornerPos.x + popControl->getWidth() > popControl->parent->getWidth())
-		cornerPos.x = mousePos.x - popControl->getWidth();
-	showPopupMenu(cornerPos);
+	
+	showPopupMenu(mousePos);
 }
 
 void CWorldUI::appendChoicesToPopup() {
@@ -346,8 +373,17 @@ void CWorldUI::appendChoicesToPopup() {
 	popControl->appendMarkedUpText(popStr);
 }
 
+/** Display the popup menu at the cursor position, adjusted for its dimensions and the screen edge. */
 void CWorldUI::showPopupMenu(const glm::i32vec2& cornerPos) {
-	popControl->setPos(cornerPos.x,cornerPos.y);
+	popControl->resizeToFit();
+	glm::i32vec2 newCornerPos = cornerPos + glm::i32vec2(0, pTextWindow->getFont()->lineHeight  );
+	int margin = 30;
+	if (newCornerPos.x + popControl->getWidth() > popControl->parent->getWidth())
+		newCornerPos.x = cornerPos.x - popControl->getWidth();
+	if (newCornerPos.y + popControl->getHeight() + margin > popControl->parent->getHeight())
+		newCornerPos.y -= (newCornerPos.y + popControl->getHeight() + margin) - popControl->parent->getHeight();
+
+	popControl->setPos(newCornerPos.x, newCornerPos.y);
 	popControl->setVisible(true);
 	popControl->makeModal(popControl);
 }
@@ -393,7 +429,7 @@ std::string CWorldUI::getExitsText(int roomNo) {
 	//loop through the exits, gathering information
 	for (int dir = moveNorth; dir <= moveOut; dir++) {
 		int destination = pVM->getMemberValue(roomNo, moveToIds[dir]);
-		if (!destination)
+		if (!destination || bodyListedExits[dir])
 			continue;
 		int directionId = moveToIds[dir];
 		std::string destinationStr = pVM->objMessage(destination, "shortName").getStringValue();
@@ -410,15 +446,20 @@ std::string CWorldUI::getExitsText(int roomNo) {
 		exitsText = "A " + corridors[0].destinationStr + " led " + corridors[0].directionStr + ". ";
 	if (noCorridors > 1) {
 		exitsText = "Corridors led " + corridors[0].directionStr;
-		for (int corridorNo = 1; corridorNo < noCorridors - 2; corridorNo++) {
+		for (int corridorNo = 1; corridorNo < noCorridors - 1; corridorNo++) {
 			exitsText += ", " + corridors[corridorNo].directionStr;
 		}
 		exitsText += " and " + corridors[noCorridors - 1].directionStr + ". ";
 	}
 
 	int noExits = exits.size();
-	if (noExits == 1)
-		exitsText += "A doorway opened to the " + exits[0].directionStr + ". ";
+	if (noExits == 1) {
+		if (exits[0].directionId == moveToIds[backDirection])
+			exitsText += "The way back led " + exits[0].directionStr + ". ";
+		else
+			exitsText += "A doorway opened to the " + exits[0].directionStr + ". ";
+	}
+
 	if (noExits > 1) {
 		exitsText += "Doorways opened to the " + exits[0].directionStr;
 		for (int exitNo = 1; exitNo < noExits - 2; exitNo++) {

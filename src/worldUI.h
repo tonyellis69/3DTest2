@@ -19,7 +19,7 @@ struct TPopChoice {
  
 
 
-enum TMoveDir {moveNorth, moveNE, moveEast, moveSE, moveSouth, moveSW, moveWest,
+enum TMoveDir {moveNone, moveNorth, moveNE, moveEast, moveSE, moveSouth, moveSW, moveWest,
 	moveNW, moveUp, moveDown, moveIn, moveOut };
 
 /** An interface between the player and a game world running on the 
@@ -45,6 +45,7 @@ public:
 	void inventoryClick(int messageId, const glm::i32vec2& mousePos);
 
 	void changeRoom(int direction);
+	TMoveDir calcBackDirection(int moveId);
 	void take(int itemId);
 	void drop(int item);
 	void examine(int objId);
@@ -91,10 +92,12 @@ private:
 
 	std::vector<THotTextRec> hotTextList;
 
-	int moveToIds[12]; ///Convenient store for movement member ids.
+	int moveToIds[13]; ///Convenient store for movement member ids.
 	int parentId, childId, siblingId; ///<Tree member ids;
 
 	CLocalHotList localHotList; ///<Tracks hot text for objects currently in scope.
+	bool bodyListedExits[13]; ///<Any exit directions listed in body copy.
+
 	int clickedHotText; ///<Id of currently clicked hot text.
 	int clickedObj; ///<Id of currently clicked object;
 	std::vector<TPopChoice> popChoices; ///<Tracks choices available on the popup meny.
@@ -107,6 +110,8 @@ private:
 
 	glm::vec4 hottextColour;
 	glm::vec4 hottextSelectedColour;
+
+	TMoveDir backDirection; ///<Direction the player came. 
 };
 
 
