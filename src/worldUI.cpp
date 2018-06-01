@@ -32,7 +32,7 @@ void CWorldUI::init() {
 	playerId = pVM->getGlobalVar("playerObj").getObjId();
 	findMoveToIds();
 	findTreeIds();
-	findLocationClassIds();
+	findClassIds();
 	clickedHotText = 0;
 	backDirection = moveNone;
 }
@@ -59,9 +59,10 @@ void CWorldUI::findTreeIds() {
 	siblingId = pVM->getMemberId("sibling");
 }
 
-void CWorldUI::findLocationClassIds() {
+void CWorldUI::findClassIds() {
 	corridorClassId = pVM->getGlobalVar("corridorClassId").getIntValue();
 	roomClassId = pVM->getGlobalVar("roomClassId").getIntValue();
+	staticClassId = pVM->getGlobalVar("staticClassId").getIntValue();
 }
 
 /** Compiles the current room's description and sends it for display. */
@@ -84,18 +85,30 @@ void CWorldUI::roomDescription() {
 	int item = child(currentRoomNo);
 	if (!item)
 		return;
-	std::string itemsText("\n\nI could see");
+	std::string itemsText;
+	std::vector<int> otherItems;
 	do {
-		int localId = localHotList.addObject(item);
-		itemsText += makeHotText(" a " + pVM->objMessage(item, "name").getStringValue(), localId);
-		if (sibling(item)) {
-			if (sibling(sibling(item)))
-				itemsText +=  ",";
-			else
+		if (pVM->getClass(item) == staticClassId) {
+			itemsText += pVM->objMessage(item, "initial").getStringValue();
+		}
+		else
+			otherItems.push_back(item);
+
+	} while (objectInLoop(currentRoomNo, item));
+
+	if (otherItems.size() > 0) {
+		itemsText += "\n\nI could also see";
+		for (unsigned int idx = 0; idx < otherItems.size(); idx++) {
+			int itemNo = otherItems[idx];
+			int localId = localHotList.addObject(itemNo);
+			itemsText += makeHotText(" a " + pVM->objMessage(itemNo, "name").getStringValue(), localId);
+			if (idx < otherItems.size() - 2)
+				itemsText += ",";
+			if (idx == otherItems.size() - 2)
 				itemsText += " and";
 		}
-	} while (objectInLoop(currentRoomNo, item));
-	itemsText += " here.";
+		itemsText += " here.";
+	}
 	itemsText = markupHotText(itemsText);
 	pTextWindow->appendMarkedUpText(itemsText);
 }
@@ -125,10 +138,15 @@ void CWorldUI::processText(string text) {
 /** If any registered hot text is found in the given text, mark it up for further processing.*/
 std::string CWorldUI::markupHotText(std::string & text) {
 	for (auto hotText : hotTextList) {
+		//if this is a direction, check we can actually go there:
+		if (hotText.id >= moveToIds[moveNorth] && hotText.id <= moveToIds[moveOut]
+			&& pVM->getMemberValue(currentRoomNo, hotText.id) == 0) {
+			continue;
+		}
 		size_t found = text.find(hotText.text);
 		while (found != std::string::npos) {
-			if ((found > 0 && !isalnum(text[found - 1])) &&
-				(!isalnum(text[found + hotText.text.size()]))) {
+		
+			if ((found > 0 && !isalnum(text[found - 1])) && (!isalnum(text[found + hotText.text.size()]))) {
 				std::string tag = makeHotText(hotText.text, hotText.id);
 				text.replace(found, hotText.text.size(), tag);
 				found += tag.size();
@@ -226,46 +244,35 @@ void CWorldUI::drop(int objId) {
 }
 
 void CWorldUI::examine(int objId) {
-	//int localId = localHotList.getLocalId(objId);
-	//pTextWindow->purgeHotText(localId);
 	int currentRextent = popControl->drawBox.pos.x + popControl->getWidth();
 	popControl->clear();
-	popControl->resize(250, 200);
+	popControl->resize(300, 200);
 	popControl->setTextStyle(popHeaderStyle);
-	//popControl->setTextColour(UIhiGrey);
-
-
-
+	
 	std::string examText  = cap(pVM->objMessage(objId, "name").getStringValue())
 		+ "\n";
 	examText = markupHotText(examText);
 	popControl->appendMarkedUpText(examText);
-//	popControl->setFont(popBodyFont);
-//	popControl->setTextColour(UIwhite);
 	popControl->setTextStyle(popBodyStyle);
 	examText = pVM->objMessage(objId, "description").getStringValue();
 	examText = markupHotText(examText);
 
 	popControl->appendMarkedUpText(examText);
-	popControl->appendText("\n");
+//	popControl->appendText("\n");
 
 	//add convenience options, ie, take/drop
 	popChoices.clear();
 	if (parent(objId) == currentRoomNo) {
-		popChoices.push_back({ "Take", popTake });
+		if (pVM->getClass(objId) != staticClassId)
+			popChoices.push_back({ "\nTake", popTake });
 	}
 	if (parent(objId) == playerId) {
-		popChoices.push_back({ "Drop", popDrop });
+		popChoices.push_back({ "\nDrop", popDrop });
 	}
-	popChoices.push_back({ "Do nothing", popDoNothing });
+	//popChoices.push_back({ "\nDo nothing", popDoNothing });
 	appendChoicesToPopup();
 
-	//popControl->resizeToFit();
-
-	glm::i32vec2 cornerPos = popControl->drawBox.pos;
-//	if (cornerPos.x + popControl->getWidth() > popControl->parent->getWidth())
-	//	cornerPos.x = currentRextent - popControl->getWidth();
-	showPopupMenu(cornerPos);
+	showPopupMenu(popControl->drawBox.pos);
 }
 
 /** Return the index of first child of the given parent, if any. */
@@ -349,12 +356,15 @@ void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 	popControl->resize(200, 200);
 	//acquire the different options available
 	//is it on the ground? We can take it
-	if (parent(objId) == currentRoomNo)
-		popChoices.push_back({ "Take", popTake });
+	popChoices.push_back({ "Examine", popExamine });
+	if (parent(objId) == currentRoomNo) {
+		if (pVM->getClass(objId) != staticClassId)
+			popChoices.push_back({ "\nTake", popTake });
+	}
 	if (parent(objId) == playerId)
-		popChoices.push_back({ "Drop", popDrop });
-	popChoices.push_back({ "Do nothing",popDoNothing });
-	popChoices.insert(popChoices.end()-1,{ "Examine", popExamine });
+		popChoices.push_back({ "\nDrop", popDrop });
+	//popChoices.push_back({ "\nDo nothing",popDoNothing });
+	
 	appendChoicesToPopup();
 
 	
@@ -365,8 +375,8 @@ void CWorldUI::appendChoicesToPopup() {
 	string popStr; int choiceNo = 1;
 	for (auto item : popChoices) {
 		popStr += makeHotText(item.actionText, choiceNo);
-		if (choiceNo < popChoices.size())
-			popStr += "\n";
+		//if (choiceNo < popChoices.size())
+		//	popStr += "\n";
 		choiceNo++;
 	}
 	markupHotText(popStr);
@@ -378,8 +388,11 @@ void CWorldUI::showPopupMenu(const glm::i32vec2& cornerPos) {
 	popControl->resizeToFit();
 	glm::i32vec2 newCornerPos = cornerPos + glm::i32vec2(0, pTextWindow->getFont()->lineHeight  );
 	int margin = 30;
-	if (newCornerPos.x + popControl->getWidth() > popControl->parent->getWidth())
-		newCornerPos.x = cornerPos.x - popControl->getWidth();
+	if (newCornerPos.x + popControl->getWidth() + margin > popControl->parent->getWidth())
+		//newCornerPos.x = cornerPos.x - popControl->getWidth();
+		newCornerPos.x -= (newCornerPos.x + popControl->getWidth() + margin) - popControl->parent->getWidth();
+
+
 	if (newCornerPos.y + popControl->getHeight() + margin > popControl->parent->getHeight())
 		newCornerPos.y -= (newCornerPos.y + popControl->getHeight() + margin) - popControl->parent->getHeight();
 

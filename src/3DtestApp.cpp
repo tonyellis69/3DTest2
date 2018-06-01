@@ -524,7 +524,7 @@ void C3DtestApp::onResize(int width, int height) {
 */
 
 void C3DtestApp::draw() {
-	Engine.Renderer.setBackColour((rgba&)uiBlack);
+	Engine.Renderer.setBackColour((rgba&)uialmostBlack);
 	Engine.Renderer.clearFrame();
 
 	return;
@@ -834,8 +834,8 @@ void C3DtestApp::updateHeightmapImage() {
 void C3DtestApp::initTextWindow() {
 	CGUIpanel* backPanel = new CGUIpanel(200, 50, 800, 700);   //(200, 50, 800, 175);
 	UIcolour tint = { 0,0,0,0.3f };
-	backPanel->setBackColour1(tint);
-	backPanel->setBackColour2(tint);
+	backPanel->setBackColour1(uialmostBlack);
+	backPanel->setBackColour2(uialmostBlack);
 	backPanel->borderOn(false);
 	backPanel->hFormat = hCentre;
 	GUIroot.Add(backPanel);

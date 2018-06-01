@@ -35,7 +35,7 @@ public:
 	void init();
 	void findMoveToIds();
 	void findTreeIds();
-	void findLocationClassIds();
+	void findClassIds();
 	void roomDescription();
 	void start();
 	void addHotText(std::string& text, int id);
@@ -89,6 +89,7 @@ private:
 
 	int corridorClassId;
 	int roomClassId;
+	int staticClassId;
 
 	std::vector<THotTextRec> hotTextList;
 

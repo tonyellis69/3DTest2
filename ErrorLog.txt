@@ -8,5 +8,3 @@ glsl version: 4.60 NVIDIA
 
 Total SCs 680
 Passed SCs 121
-Member inTo not found.
-Member outTo not found.
