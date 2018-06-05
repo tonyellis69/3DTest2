@@ -88,13 +88,13 @@ void CWorldUI::roomDescription() {
 	std::string itemsText;
 	std::vector<int> otherItems;
 	do {
-		if (pVM->getClass(item) == staticClassId) {
-			itemsText += pVM->objMessage(item, "initial").getStringValue();
+		if (pVM->getClass(item) == staticClassId || pVM->getMemberValue(item,"moved") == 0) {
+			itemsText += "\n\n" + markupInitialText(item);	
 		}
 		else
 			otherItems.push_back(item);
-
 	} while (objectInLoop(currentRoomNo, item));
+
 
 	if (otherItems.size() > 0) {
 		itemsText += "\n\nI could also see";
@@ -102,7 +102,7 @@ void CWorldUI::roomDescription() {
 			int itemNo = otherItems[idx];
 			int localId = localHotList.addObject(itemNo);
 			itemsText += makeHotText(" a " + pVM->objMessage(itemNo, "name").getStringValue(), localId);
-			if (idx < otherItems.size() - 2)
+			if (idx < otherItems.size() - 2 && idx > 0)
 				itemsText += ",";
 			if (idx == otherItems.size() - 2)
 				itemsText += " and";
@@ -111,6 +111,22 @@ void CWorldUI::roomDescription() {
 	}
 	itemsText = markupHotText(itemsText);
 	pTextWindow->appendMarkedUpText(itemsText);
+}
+
+/**Return the initial description of this object, with the name text marked up as hot text.*/
+std::string CWorldUI::markupInitialText(int objNo) {
+	std::string initialText = pVM->objMessage(objNo, "initial").getStringValue();
+	std::string nameText = pVM->objMessage(objNo, "name").getStringValue();
+	
+	size_t found = initialText.find(nameText);
+
+	if (found != string::npos) {
+		int localId = localHotList.addObject(objNo);
+		std::string hotText = makeHotText(nameText, localId);
+		initialText.replace(found, nameText.size(), hotText);
+	}
+	return initialText;
+	//TO DO: maybe check object for other instructions about hot text.
 }
 
 /** Start a game session. */
@@ -228,6 +244,7 @@ void CWorldUI::take(int objId) {
 	takeText = markupHotText(takeText + ".");
 	pTextWindow->appendMarkedUpText(takeText);
 	move(objId, playerId);
+	pVM->setMemberValue(objId, "moved", CTigVar(1));
 	refreshInvWindow();
 }
 

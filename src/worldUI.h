@@ -37,6 +37,7 @@ public:
 	void findTreeIds();
 	void findClassIds();
 	void roomDescription();
+	std::string markupInitialText(int objNo);
 	void start();
 	void addHotText(std::string& text, int id);
 	void processText(string  text);
