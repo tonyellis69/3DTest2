@@ -11,7 +11,8 @@ struct THotTextRec {
 	int id;
 };
 
-enum TPopAction { popDoNothing, popTake, popDrop, popExamine };
+enum TPopAction { popDoNothing, popTake, popDrop, popExamine,
+	popPush};
 struct TPopChoice {
 	std::string actionText;
 	TPopAction action;
@@ -50,6 +51,7 @@ public:
 	void take(int itemId);
 	void drop(int item);
 	void examine(int objId);
+	void push(int objId);
 	int child(int parent);
 	int sibling(int object);
 	int parent(int childNo);

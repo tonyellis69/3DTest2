@@ -292,6 +292,13 @@ void CWorldUI::examine(int objId) {
 	showPopupMenu(popControl->drawBox.pos);
 }
 
+void CWorldUI::push(int objId) {
+	std::string result = pVM->objMessage(objId, "push").getStringValue();
+	result = markupHotText(result);
+	pTextWindow->appendMarkedUpText(result);
+}
+
+
 /** Return the index of first child of the given parent, if any. */
 int CWorldUI::child(int parent) {
 	return pVM->getMemberValue(parent, childId);
@@ -381,6 +388,13 @@ void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 	if (parent(objId) == playerId)
 		popChoices.push_back({ "\nDrop", popDrop });
 	//popChoices.push_back({ "\nDo nothing",popDoNothing });
+
+	//check for additional properties, such as being pushable.
+	int pushId = pVM->getMemberId("push");
+	if (pVM->hasMember(objId, pushId)) {
+		popChoices.push_back({ "\nPush", popPush });
+	}
+
 	
 	appendChoicesToPopup();
 
@@ -434,6 +448,7 @@ void CWorldUI::popupSelection(int choice, glm::i32vec2& mousePos) {
 		case popTake: take(clickedObj); break;
 		case popDrop: drop(clickedObj); break;
 		case popExamine: examine(clickedObj); break;
+		case popPush: push(clickedObj); break;
 	}
 
 
