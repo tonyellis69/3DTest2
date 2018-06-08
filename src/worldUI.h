@@ -41,8 +41,7 @@ public:
 	std::string markupInitialText(int objNo);
 	void start();
 	void addHotText(std::string& text, int id);
-	void processText(string  text);
-	std::string markupHotText(std::string& text);
+	std::string markupExits(std::string& text);
 	void hotTextClick(int messageId, glm::i32vec2 mousePos);
 	void inventoryClick(int messageId, const glm::i32vec2& mousePos);
 
@@ -93,6 +92,7 @@ private:
 	int corridorClassId;
 	int roomClassId;
 	int staticClassId;
+	int sceneryClassId;
 
 	std::vector<THotTextRec> hotTextList;
 

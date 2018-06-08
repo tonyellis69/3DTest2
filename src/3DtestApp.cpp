@@ -902,9 +902,9 @@ void C3DtestApp::initPopupText() {
 
 /** Handle messages from the virtual machine. */
 void C3DtestApp::vmMessage(TvmAppMsg msg) {
-	if (msg.type == appWriteText) {
-		worldUI.processText(msg.text);
-	}
+//	if (msg.type == appWriteText) {
+//		worldUI.processText(msg.text);
+//	}
 	if (msg.type == appHotText) {
 		worldUI.addHotText(msg.text,msg.integer);
 	}

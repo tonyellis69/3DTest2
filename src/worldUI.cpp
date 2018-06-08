@@ -63,54 +63,67 @@ void CWorldUI::findClassIds() {
 	corridorClassId = pVM->getGlobalVar("corridorClassId").getIntValue();
 	roomClassId = pVM->getGlobalVar("roomClassId").getIntValue();
 	staticClassId = pVM->getGlobalVar("staticClassId").getIntValue();
+	sceneryClassId = pVM->getGlobalVar("sceneryClassId").getIntValue();
 }
 
 /** Compiles the current room's description and sends it for display. */
 void CWorldUI::roomDescription() {
-	std::string description = pVM->objMessage(currentRoom, "description").getStringValue() + " ";
-	description = markupHotText(description);
-	pTextWindow->appendMarkedUpText(description);
 
-	for (int dir = moveNorth; dir <= moveOut; dir++) {
-		bodyListedExits[dir] = pTextWindow->isActiveHotText(moveToIds[dir]);
-	}
-
-	description = getExitsText(currentRoomNo);
-	description = markupHotText(description);
-	pTextWindow->appendMarkedUpText(description);
-
-	//List any contents
 	refreshLocalList();
 	refreshInvWindow();
+
+	//go through room contents
 	int item = child(currentRoomNo);
-	if (!item)
-		return;
 	std::string itemsText;
-	std::vector<int> otherItems;
-	do {
-		if (pVM->getClass(item) == staticClassId || pVM->getMemberValue(item,"moved") == 0) {
-			itemsText += "\n\n" + markupInitialText(item);	
-		}
-		else
-			otherItems.push_back(item);
-	} while (objectInLoop(currentRoomNo, item));
+	std::vector<int> otherItems; auto sceneryStart = hotTextList.size();
+	if (item) {
+		do {
+			if (pVM->getClass(item) == sceneryClassId) {
+				//register the object's name as hot text
+				std::string name = pVM->objMessage(item, "name").getStringValue();
+				int localId = localHotList.addObject(item);
+				hotTextList.push_back({ name,localId });
+				continue;
+			}
+			if (pVM->getClass(item) == staticClassId || (pVM->getMemberValue(item, "moved") == 0)) {
+				itemsText += "\n\n" + markupInitialText(item);
+			}
+			else
+				otherItems.push_back(item);
+		} while (objectInLoop(currentRoomNo, item));
 
 
-	if (otherItems.size() > 0) {
-		itemsText += "\n\nI could also see";
-		for (unsigned int idx = 0; idx < otherItems.size(); idx++) {
-			int itemNo = otherItems[idx];
-			int localId = localHotList.addObject(itemNo);
-			itemsText += makeHotText(" a " + pVM->objMessage(itemNo, "name").getStringValue(), localId);
-			if (idx < otherItems.size() - 2 && idx > 0)
-				itemsText += ",";
-			if (idx == otherItems.size() - 2)
-				itemsText += " and";
+		if (otherItems.size() > 0) {
+			itemsText += "\n\nI could also see";
+			for (unsigned int idx = 0; idx < otherItems.size(); idx++) {
+				int itemNo = otherItems[idx];
+				int localId = localHotList.addObject(itemNo);
+				itemsText += makeHotText(" a " + pVM->objMessage(itemNo, "name").getStringValue(), localId);
+				if (idx < otherItems.size() - 2 && idx > 0)
+					itemsText += ",";
+				if (idx == otherItems.size() - 2)
+					itemsText += " and";
+			}
+			itemsText += " here.";
 		}
-		itemsText += " here.";
+		//itemsText = markupHotText(itemsText);
 	}
-	itemsText = markupHotText(itemsText);
+
+	std::string description = pVM->objMessage(currentRoom, "description").getStringValue() + " ";
+	description = markupExits(description);
+	pTextWindow->appendMarkedUpText(description);
+
+	for (int dir = moveNorth; dir <= moveOut; dir++) { //note any exits already mentioned in room description.
+		bodyListedExits[dir] = pTextWindow->isActiveHotText(moveToIds[dir]);
+	}
+	std::string exitsText = getExitsText(currentRoomNo);
+	exitsText = markupExits(exitsText);
+
+	pTextWindow->appendMarkedUpText(exitsText);
 	pTextWindow->appendMarkedUpText(itemsText);
+
+	if (hotTextList.size() > sceneryStart)
+		hotTextList.erase(hotTextList.begin() + sceneryStart, hotTextList.end());
 }
 
 /**Return the initial description of this object, with the name text marked up as hot text.*/
@@ -143,16 +156,9 @@ void CWorldUI::addHotText(std::string & text, int id) {
 	hotTextList.push_back(hotText);
 }
 
-/** Checking for hot text and style markups, turn the given text into one or more rich-text
-	instructions sent to the text control. */
-void CWorldUI::processText(string text) {
-	text = markupHotText(text);
-	currentTextWindow->appendMarkedUpText(text);
-	//writeRichText(text, currentTextWindow);
-}
 
 /** If any registered hot text is found in the given text, mark it up for further processing.*/
-std::string CWorldUI::markupHotText(std::string & text) {
+std::string CWorldUI::markupExits(std::string & text) {
 	for (auto hotText : hotTextList) {
 		//if this is a direction, check we can actually go there:
 		if (hotText.id >= moveToIds[moveNorth] && hotText.id <= moveToIds[moveOut]
@@ -160,9 +166,8 @@ std::string CWorldUI::markupHotText(std::string & text) {
 			continue;
 		}
 		size_t found = text.find(hotText.text);
-		while (found != std::string::npos) {
-		
-			if ((found > 0 && !isalnum(text[found - 1])) && (!isalnum(text[found + hotText.text.size()]))) {
+		while (found != std::string::npos) { //check found text isn't part of a bigger word:
+			if ((found == 0 || !isalnum(text[found - 1])) && !isalnum(text[found + hotText.text.size()]) ) {
 				std::string tag = makeHotText(hotText.text, hotText.id);
 				text.replace(found, hotText.text.size(), tag);
 				found += tag.size();
@@ -241,8 +246,8 @@ void CWorldUI::take(int objId) {
 	pTextWindow->purgeHotText(clickedHotText);
 	std::string takeText = "\n\nI picked up the ";
 	takeText += makeHotText(pVM->objMessage(objId, "name").getStringValue(), localHotList.getLocalId(objId));
-	takeText = markupHotText(takeText + ".");
-	pTextWindow->appendMarkedUpText(takeText);
+	//takeText = markupHotText(takeText + ".");
+	pTextWindow->appendMarkedUpText(takeText + ".");
 	move(objId, playerId);
 	pVM->setMemberValue(objId, "moved", CTigVar(1));
 	refreshInvWindow();
@@ -256,8 +261,8 @@ void CWorldUI::drop(int objId) {
 	refreshInvWindow();
 	std::string dropText = "\n\nI dropped the ";
 	dropText += makeHotText(pVM->objMessage(objId, "name").getStringValue(), localId);
-	dropText = markupHotText(dropText + ".");
-	pTextWindow->appendMarkedUpText(dropText);
+	//dropText = markupHotText(dropText + ".");
+	pTextWindow->appendMarkedUpText(dropText + ".");
 }
 
 void CWorldUI::examine(int objId) {
@@ -268,11 +273,11 @@ void CWorldUI::examine(int objId) {
 	
 	std::string examText  = cap(pVM->objMessage(objId, "name").getStringValue())
 		+ "\n";
-	examText = markupHotText(examText);
+	//examText = markupHotText(examText);
 	popControl->appendMarkedUpText(examText);
 	popControl->setTextStyle(popBodyStyle);
 	examText = pVM->objMessage(objId, "description").getStringValue();
-	examText = markupHotText(examText);
+	//examText = markupHotText(examText);
 
 	popControl->appendMarkedUpText(examText);
 //	popControl->appendText("\n");
@@ -280,7 +285,7 @@ void CWorldUI::examine(int objId) {
 	//add convenience options, ie, take/drop
 	popChoices.clear();
 	if (parent(objId) == currentRoomNo) {
-		if (pVM->getClass(objId) != staticClassId)
+		if (!pVM->inheritsFrom(objId, staticClassId))
 			popChoices.push_back({ "\nTake", popTake });
 	}
 	if (parent(objId) == playerId) {
@@ -294,7 +299,7 @@ void CWorldUI::examine(int objId) {
 
 void CWorldUI::push(int objId) {
 	std::string result = pVM->objMessage(objId, "push").getStringValue();
-	result = markupHotText(result);
+	//result = markupHotText(result);
 	pTextWindow->appendMarkedUpText(result);
 }
 
@@ -356,7 +361,7 @@ void CWorldUI::refreshInvWindow() {
 			int localId = localHotList.getLocalId(item);
 			invText += makeHotText("\nA " + pVM->objMessage(item, "name").getStringValue(), localId);
 		} while (objectInLoop(playerId, item));
-		invText = markupHotText(invText);
+		//invText = markupHotText(invText);
 		pInvWindow->appendMarkedUpText(invText);
 	}
 }
@@ -382,7 +387,8 @@ void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 	//is it on the ground? We can take it
 	popChoices.push_back({ "Examine", popExamine });
 	if (parent(objId) == currentRoomNo) {
-		if (pVM->getClass(objId) != staticClassId)
+		//if (pVM->getClass(objId) != staticClassId)
+		if (!pVM->inheritsFrom(objId,staticClassId) )
 			popChoices.push_back({ "\nTake", popTake });
 	}
 	if (parent(objId) == playerId)
@@ -410,7 +416,7 @@ void CWorldUI::appendChoicesToPopup() {
 		//	popStr += "\n";
 		choiceNo++;
 	}
-	markupHotText(popStr);
+	//markupHotText(popStr);
 	popControl->appendMarkedUpText(popStr);
 }
 
