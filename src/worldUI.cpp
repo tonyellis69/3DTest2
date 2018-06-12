@@ -30,6 +30,7 @@ void CWorldUI::init() {
 	currentRoom = pVM->getGlobalVar("startRoom"); //TO DO: scrap
 	currentRoomNo = currentRoom.getObjId();
 	playerId = pVM->getGlobalVar("playerObj").getObjId();
+	player = pVM->getObject(playerId);
 	findMoveToIds();
 	findTreeIds();
 	findClassIds();
@@ -309,9 +310,19 @@ int CWorldUI::child(int parent) {
 	return pVM->getMemberValue(parent, childId);
 }
 
+CObjInstance* CWorldUI::child(CObjInstance* parentObj) {
+	CTigVar result = parentObj->members[childId];
+	return pVM->getObject(result.getObjId());
+}
+
 /** Return index of sibling of given object, if any. */
 int CWorldUI::sibling(int object) {
 	return pVM->getMemberValue(object, siblingId);
+}
+
+CObjInstance* CWorldUI::sibling(CObjInstance* obj) {
+	CTigVar result = obj->members[siblingId];
+	return pVM->getObject(result.getObjId());
 }
 
 /** Return index of parent of given object, if any. */
@@ -326,6 +337,14 @@ bool CWorldUI::objectInLoop(int parent, int& childNo) {
 	else
 		childNo = sibling(childNo);
 	return (bool)childNo;
+}
+
+bool CWorldUI::objectInLoop(CObjInstance* parent, CObjInstance* childObj) {
+	if (childObj == NULL)
+		childObj = child(parent);
+	else
+		childObj = sibling(childObj);
+	return (bool)childObj->id;
 }
 
 /** Make the given object a child of the destination object. */
@@ -369,11 +388,17 @@ void CWorldUI::refreshInvWindow() {
 /** Clear the local list and repopulate it with items the player is carrying. */
 void CWorldUI::refreshLocalList() {
 	localHotList.clear();
-	int item = child(playerId);
-	if (item)
+//	int item = child(playerId);
+//	if (item)
+//		do {
+//			localHotList.addObject(item);
+//		} while (objectInLoop(playerId, item));
+
+	CObjInstance* item = child(player);
+	if (item->id != 0)
 		do {
-			localHotList.addObject(item);
-		} while (objectInLoop(playerId, item));
+			localHotList.addObject(pVM->getObjectId(item));
+		} while (objectInLoop(player, item));
 }
 
 /** Handle a user-click on this object. */

@@ -8,3 +8,4 @@ glsl version: 4.60 NVIDIA
 
 Total SCs 680
 Passed SCs 121
+Global variablesceneryClassId not found!

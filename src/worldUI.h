@@ -52,9 +52,12 @@ public:
 	void examine(int objId);
 	void push(int objId);
 	int child(int parent);
+	CObjInstance * child(CObjInstance * parentObj);
 	int sibling(int object);
+	CObjInstance * sibling(CObjInstance * obj);
 	int parent(int childNo);
 	bool objectInLoop(int parent, int & child);
+	bool objectInLoop(CObjInstance * parent, CObjInstance * childObj);
 	void move(int obj, int dest);
 	void refreshInvWindow();
 	void refreshLocalList();
@@ -86,6 +89,7 @@ private:
 	CFont* popBodyFont;
 
 	CTigVar currentRoom; ///<Always stores the address of the room the player is in.
+	CObjInstance* player;
 	int currentRoomNo; ///<Always stores the object index of the room the player is in.
 	int playerId; ///<Id of the player object.
 
