@@ -27,8 +27,8 @@ void CWorldUI::setPopupTextWindow(CGUIrichTextPanel * pPopText) {
 void CWorldUI::init() {
 	setCurrentWindow(pTextWindow);
 	pVM->execute();
-	currentRoom = pVM->getGlobalVar("startRoom"); //TO DO: scrap
-	currentRoomNo = currentRoom.getObjId();
+	currentRoomNo = pVM->getGlobalVar("startRoom").getObjId(); //TO DO: scrap
+	currentRoom = pVM->getObject(currentRoomNo);
 	playerId = pVM->getGlobalVar("playerObj").getObjId();
 	player = pVM->getObject(playerId);
 	findMoveToIds();
@@ -69,45 +69,43 @@ void CWorldUI::findClassIds() {
 
 /** Compiles the current room's description and sends it for display. */
 void CWorldUI::roomDescription() {
-
 	refreshLocalList();
 	refreshInvWindow();
 
 	//go through room contents
-	int item = child(currentRoomNo);
+	CObjInstance* item = child(currentRoom);
 	std::string itemsText;
-	std::vector<int> otherItems; auto sceneryStart = hotTextList.size();
+	std::vector<CObjInstance*> otherItems; auto sceneryStart = hotTextList.size();
 	if (item) {
 		do {
-			if (pVM->getClass(item) == sceneryClassId) {
+			if (item->classId == sceneryClassId) {
 				//register the object's name as hot text
-				std::string name = pVM->objMessage(item, "name").getStringValue();
+				std::string name = pVM->objMessage(item->id, "name").getStringValue();
 				int localId = localHotList.addObject(item);
 				hotTextList.push_back({ name,localId });
 				continue;
 			}
-			if (pVM->getClass(item) == staticClassId || (pVM->getMemberValue(item, "moved") == 0)) {
+			if (item->classId == staticClassId || (pVM->getMemberValue(item->id, "moved") == 0)) {
 				itemsText += "\n\n" + markupInitialText(item);
 			}
 			else
 				otherItems.push_back(item);
-		} while (objectInLoop(currentRoomNo, item));
+		} while (objectInLoop(currentRoom, item));
 
 
 		if (otherItems.size() > 0) {
 			itemsText += "\n\nI could also see";
 			for (unsigned int idx = 0; idx < otherItems.size(); idx++) {
-				int itemNo = otherItems[idx];
-				int localId = localHotList.addObject(itemNo);
-				itemsText += makeHotText(" a " + pVM->objMessage(itemNo, "name").getStringValue(), localId);
-				if (idx < otherItems.size() - 2 && idx > 0)
+				item = otherItems[idx];
+				int localId = localHotList.addObject(item);
+				itemsText += makeHotText(" a " + pVM->objMessage(item, "name").getStringValue(), localId);
+				if (idx < otherItems.size() - 2 && otherItems.size() > 1)
 					itemsText += ",";
 				if (idx == otherItems.size() - 2)
 					itemsText += " and";
 			}
 			itemsText += " here.";
 		}
-		//itemsText = markupHotText(itemsText);
 	}
 
 	std::string description = pVM->objMessage(currentRoom, "description").getStringValue() + " ";
@@ -117,7 +115,7 @@ void CWorldUI::roomDescription() {
 	for (int dir = moveNorth; dir <= moveOut; dir++) { //note any exits already mentioned in room description.
 		bodyListedExits[dir] = pTextWindow->isActiveHotText(moveToIds[dir]);
 	}
-	std::string exitsText = getExitsText(currentRoomNo);
+	std::string exitsText = getExitsText(currentRoom);
 	exitsText = markupExits(exitsText);
 
 	pTextWindow->appendMarkedUpText(exitsText);
@@ -128,14 +126,14 @@ void CWorldUI::roomDescription() {
 }
 
 /**Return the initial description of this object, with the name text marked up as hot text.*/
-std::string CWorldUI::markupInitialText(int objNo) {
-	std::string initialText = pVM->objMessage(objNo, "initial").getStringValue();
-	std::string nameText = pVM->objMessage(objNo, "name").getStringValue();
+std::string CWorldUI::markupInitialText(CObjInstance* obj) {
+	std::string initialText = pVM->objMessage(obj, "initial").getStringValue();
+	std::string nameText = pVM->objMessage(obj, "name").getStringValue();
 	
 	size_t found = initialText.find(nameText);
 
 	if (found != string::npos) {
-		int localId = localHotList.addObject(objNo);
+		int localId = localHotList.addObject(obj);
 		std::string hotText = makeHotText(nameText, localId);
 		initialText.replace(found, nameText.size(), hotText);
 	}
@@ -195,7 +193,6 @@ void CWorldUI::hotTextClick(int hotId, glm::i32vec2 mousePos) {
 		int objId = localHotList.getObjectId(hotId);
 		objectClick(objId,mousePos);
 	}
-	
 }
 
 /** Handle a click on an inventory window item with the given object id. */
@@ -209,8 +206,8 @@ void CWorldUI::changeRoom(int moveId) {
 	CTigVar member = pVM->getMember(currentRoom, moveId);
 	if (member.type == tigObj) {
 		backDirection = calcBackDirection(moveId);
-		currentRoom = member;
 		currentRoomNo = member.getObjId();
+		currentRoom = pVM->getObject(currentRoomNo);
 		pTextWindow->purgeHotText();
 		pTextWindow->appendText("\n\n");
 		roomDescription();
@@ -236,60 +233,56 @@ TMoveDir CWorldUI::calcBackDirection(int moveId) {
 	case moveIn: return moveOut;
 	case moveOut: return moveIn;
 		}
-
-	
-
 }
 
 
 /** Pick up this object. */
 void CWorldUI::take(int objId) {
+	CObjInstance* obj = pVM->getObject(objId);
 	pTextWindow->purgeHotText(clickedHotText);
 	std::string takeText = "\n\nI picked up the ";
-	takeText += makeHotText(pVM->objMessage(objId, "name").getStringValue(), localHotList.getLocalId(objId));
-	//takeText = markupHotText(takeText + ".");
+	takeText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), localHotList.getLocalId(obj));
 	pTextWindow->appendMarkedUpText(takeText + ".");
-	move(objId, playerId);
-	pVM->setMemberValue(objId, "moved", CTigVar(1));
+	move(obj, player);
+	pVM->setMemberValue(obj->id, "moved", CTigVar(1));
 	refreshInvWindow();
 }
 
 /** Drop this object. */
 void CWorldUI::drop(int objId) {
-	int localId = localHotList.getLocalId(objId);
+	CObjInstance* obj = pVM->getObject(objId);
+	int localId = localHotList.getLocalId(obj);
 	pTextWindow->purgeHotText(localId);
-	move(objId, currentRoomNo);
+	move(obj, currentRoom);
 	refreshInvWindow();
 	std::string dropText = "\n\nI dropped the ";
-	dropText += makeHotText(pVM->objMessage(objId, "name").getStringValue(), localId);
-	//dropText = markupHotText(dropText + ".");
+	dropText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), localId);
 	pTextWindow->appendMarkedUpText(dropText + ".");
 }
 
 void CWorldUI::examine(int objId) {
+	CObjInstance* obj = pVM->getObject(objId);
 	int currentRextent = popControl->drawBox.pos.x + popControl->getWidth();
 	popControl->clear();
 	popControl->resize(300, 200);
 	popControl->setTextStyle(popHeaderStyle);
 	
-	std::string examText  = cap(pVM->objMessage(objId, "name").getStringValue())
+	std::string examText  = cap(pVM->objMessage(obj, "name").getStringValue())
 		+ "\n";
-	//examText = markupHotText(examText);
 	popControl->appendMarkedUpText(examText);
 	popControl->setTextStyle(popBodyStyle);
-	examText = pVM->objMessage(objId, "description").getStringValue();
-	//examText = markupHotText(examText);
+	examText = pVM->objMessage(obj, "description").getStringValue();
 
 	popControl->appendMarkedUpText(examText);
-//	popControl->appendText("\n");
 
 	//add convenience options, ie, take/drop
 	popChoices.clear();
-	if (parent(objId) == currentRoomNo) {
-		if (!pVM->inheritsFrom(objId, staticClassId))
+	if (parent(obj) == currentRoom) {
+		CObjInstance* staticClass = pVM->getObject(staticClassId);
+		if (!pVM->inheritsFrom(obj, staticClass))
 			popChoices.push_back({ "\nTake", popTake });
 	}
-	if (parent(objId) == playerId) {
+	if (parent(obj) == player) {
 		popChoices.push_back({ "\nDrop", popDrop });
 	}
 	//popChoices.push_back({ "\nDo nothing", popDoNothing });
@@ -299,8 +292,8 @@ void CWorldUI::examine(int objId) {
 }
 
 void CWorldUI::push(int objId) {
-	std::string result = pVM->objMessage(objId, "push").getStringValue();
-	//result = markupHotText(result);
+	CObjInstance* obj = pVM->getObject(objId);
+	std::string result = pVM->objMessage(obj, "push").getStringValue();
 	pTextWindow->appendMarkedUpText(result);
 }
 
@@ -311,8 +304,11 @@ int CWorldUI::child(int parent) {
 }
 
 CObjInstance* CWorldUI::child(CObjInstance* parentObj) {
-	CTigVar result = parentObj->members[childId];
-	return pVM->getObject(result.getObjId());
+	int result = parentObj->members[childId].getObjId();
+	if (result)
+		return pVM->getObject(result);
+	else
+		return NULL;
 }
 
 /** Return index of sibling of given object, if any. */
@@ -321,13 +317,24 @@ int CWorldUI::sibling(int object) {
 }
 
 CObjInstance* CWorldUI::sibling(CObjInstance* obj) {
-	CTigVar result = obj->members[siblingId];
-	return pVM->getObject(result.getObjId());
+	int result = obj->members[siblingId].getObjId();
+	if (result)
+		return pVM->getObject(result);
+	else
+		return NULL;
 }
 
 /** Return index of parent of given object, if any. */
 int CWorldUI::parent(int childNo) {
 	return pVM->getMemberValue(childNo, parentId);
+}
+
+CObjInstance* CWorldUI::parent(CObjInstance* child) {
+	int result = child->members[parentId].getObjId();
+	if (result)
+		return pVM->getObject(result);
+	else
+		return NULL;
 }
 
 /** Return true while parent has a descendant and child = 0 or a decendant with a sibling .*/
@@ -339,34 +346,34 @@ bool CWorldUI::objectInLoop(int parent, int& childNo) {
 	return (bool)childNo;
 }
 
-bool CWorldUI::objectInLoop(CObjInstance* parent, CObjInstance* childObj) {
+bool CWorldUI::objectInLoop(CObjInstance* parent, CObjInstance* &childObj) {
 	if (childObj == NULL)
 		childObj = child(parent);
 	else
 		childObj = sibling(childObj);
-	return (bool)childObj->id;
+	return (bool)childObj;
 }
 
 /** Make the given object a child of the destination object. */
-void CWorldUI::move(int obj, int dest) {
-	int parentObj = parent(obj);
-	int childObj = child(parentObj); int siblingObj = 0;
+void CWorldUI::move(CObjInstance* obj, CObjInstance* dest) {
+	CObjInstance* parentObj = parent(obj);
+	CObjInstance* childObj = child(parentObj); CObjInstance* olderSibling = NULL;
 	while (childObj != obj) {
-		siblingObj = childObj;
+		olderSibling = childObj;
 		childObj = sibling(childObj);
 	}
-	if (siblingObj)
-		pVM->objects[siblingObj].members[siblingId].setObjId(sibling(obj));
+	if (olderSibling)
+		olderSibling->members[siblingId] = obj->members[siblingId];
 	else
-		pVM->objects[parentObj].members[childId].setObjId(sibling(obj));
+		parentObj->members[childId] = obj->members[siblingId];
 
-	int destChild = child(dest);
+	CObjInstance* destChild = child(dest);
 	if (destChild) {
-		pVM->objects[obj].members[siblingId].setObjId(destChild);
+		obj->members[siblingId].setObjId(destChild->id);
 	} else
-		pVM->objects[obj].members[siblingId].setObjId(0);
-	pVM->objects[dest].members[childId].setObjId(obj);
-	pVM->objects[obj].members[parentId].setObjId(dest);
+		obj->members[siblingId].setObjId(NULL);
+	dest->members[childId].setObjId(obj->id);
+	obj->members[parentId].setObjId(dest->id);
 }
 
 /** Ensure inventory window shows the latest player contents. */
@@ -374,13 +381,12 @@ void CWorldUI::refreshInvWindow() {
 	pInvWindow->clear();
 	pInvWindow->appendMarkedUpText("Inventory:\n");
 	std::string invText;
-	int item = child(playerId);
+	CObjInstance* item = child(player);
 	if (item) {
 		do {
 			int localId = localHotList.getLocalId(item);
 			invText += makeHotText("\nA " + pVM->objMessage(item, "name").getStringValue(), localId);
-		} while (objectInLoop(playerId, item));
-		//invText = markupHotText(invText);
+		} while (objectInLoop(player, item));
 		pInvWindow->appendMarkedUpText(invText);
 	}
 }
@@ -388,16 +394,10 @@ void CWorldUI::refreshInvWindow() {
 /** Clear the local list and repopulate it with items the player is carrying. */
 void CWorldUI::refreshLocalList() {
 	localHotList.clear();
-//	int item = child(playerId);
-//	if (item)
-//		do {
-//			localHotList.addObject(item);
-//		} while (objectInLoop(playerId, item));
-
 	CObjInstance* item = child(player);
-	if (item->id != 0)
+	if (item)
 		do {
-			localHotList.addObject(pVM->getObjectId(item));
+			localHotList.addObject(item);
 		} while (objectInLoop(player, item));
 }
 
@@ -405,31 +405,29 @@ void CWorldUI::refreshLocalList() {
 void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 	clickedObj = objId;
 	popControl->clear();
+	CObjInstance* obj = pVM->getObject(objId);
 
 	popChoices.clear();
 	popControl->resize(200, 200);
 	//acquire the different options available
 	//is it on the ground? We can take it
 	popChoices.push_back({ "Examine", popExamine });
-	if (parent(objId) == currentRoomNo) {
-		//if (pVM->getClass(objId) != staticClassId)
-		if (!pVM->inheritsFrom(objId,staticClassId) )
+	if (parent(obj) == currentRoom) {
+		CObjInstance* staticClass = pVM->getObject(staticClassId);
+		if (!pVM->inheritsFrom(obj,staticClass) )
 			popChoices.push_back({ "\nTake", popTake });
 	}
-	if (parent(objId) == playerId)
+	if (parent(obj) == player)
 		popChoices.push_back({ "\nDrop", popDrop });
 	//popChoices.push_back({ "\nDo nothing",popDoNothing });
 
 	//check for additional properties, such as being pushable.
 	int pushId = pVM->getMemberId("push");
-	if (pVM->hasMember(objId, pushId)) {
+	if (pVM->hasMember(obj, pushId)) {
 		popChoices.push_back({ "\nPush", popPush });
 	}
 
-	
-	appendChoicesToPopup();
-
-	
+	appendChoicesToPopup();	
 	showPopupMenu(mousePos);
 }
 
@@ -437,11 +435,8 @@ void CWorldUI::appendChoicesToPopup() {
 	string popStr; int choiceNo = 1;
 	for (auto item : popChoices) {
 		popStr += makeHotText(item.actionText, choiceNo);
-		//if (choiceNo < popChoices.size())
-		//	popStr += "\n";
 		choiceNo++;
 	}
-	//markupHotText(popStr);
 	popControl->appendMarkedUpText(popStr);
 }
 
@@ -453,7 +448,6 @@ void CWorldUI::showPopupMenu(const glm::i32vec2& cornerPos) {
 	if (newCornerPos.x + popControl->getWidth() + margin > popControl->parent->getWidth())
 		//newCornerPos.x = cornerPos.x - popControl->getWidth();
 		newCornerPos.x -= (newCornerPos.x + popControl->getWidth() + margin) - popControl->parent->getWidth();
-
 
 	if (newCornerPos.y + popControl->getHeight() + margin > popControl->parent->getHeight())
 		newCornerPos.y -= (newCornerPos.y + popControl->getHeight() + margin) - popControl->parent->getHeight();
@@ -491,7 +485,7 @@ std::string CWorldUI::cap(std::string text) {
 }
 
 /** Return a string describing the exits from this room. */
-std::string CWorldUI::getExitsText(int roomNo) {
+std::string CWorldUI::getExitsText(CObjInstance * roomObj) {
 	std::string exitsText; 
 	struct TExit {
 		int directionId;
@@ -504,7 +498,7 @@ std::string CWorldUI::getExitsText(int roomNo) {
 
 	//loop through the exits, gathering information
 	for (int dir = moveNorth; dir <= moveOut; dir++) {
-		int destination = pVM->getMemberValue(roomNo, moveToIds[dir]);
+		int destination = roomObj->members[moveToIds[dir]].getIntValue();// pVM->getMemberValue(room, moveToIds[dir]);
 		if (!destination || bodyListedExits[dir])
 			continue;
 		int directionId = moveToIds[dir];

@@ -38,7 +38,7 @@ public:
 	void findTreeIds();
 	void findClassIds();
 	void roomDescription();
-	std::string markupInitialText(int objNo);
+	std::string markupInitialText(CObjInstance* obj);
 	void start();
 	void addHotText(std::string& text, int id);
 	std::string markupExits(std::string& text);
@@ -56,8 +56,10 @@ public:
 	int sibling(int object);
 	CObjInstance * sibling(CObjInstance * obj);
 	int parent(int childNo);
+	CObjInstance * parent(CObjInstance * child);
 	bool objectInLoop(int parent, int & child);
-	bool objectInLoop(CObjInstance * parent, CObjInstance * childObj);
+	bool objectInLoop(CObjInstance * parent, CObjInstance * &childObj);
+	void move(CObjInstance * obj, CObjInstance * dest);
 	void move(int obj, int dest);
 	void refreshInvWindow();
 	void refreshLocalList();
@@ -67,7 +69,7 @@ public:
 	std::string makeHotText(std::string text, int idNo);
 	void popupSelection(int choice, glm::i32vec2& mousePos);
 	std::string cap(std::string text);
-	std::string getExitsText(int roomNo);
+	std::string getExitsText(CObjInstance * room);
 
 
 
@@ -88,7 +90,7 @@ private:
 	CFont* popHeaderFont;
 	CFont* popBodyFont;
 
-	CTigVar currentRoom; ///<Always stores the address of the room the player is in.
+	CObjInstance* currentRoom; ///<Always stores the address of the room the player is in.
 	CObjInstance* player;
 	int currentRoomNo; ///<Always stores the object index of the room the player is in.
 	int playerId; ///<Id of the player object.
