@@ -8,7 +8,8 @@
 
 struct THotTextRec {
 	std::string text;
-	int id;
+	int msgId;
+	int objId;
 };
 
 enum TPopAction { popDoNothing, popTake, popDrop, popExamine,
@@ -40,10 +41,10 @@ public:
 	void roomDescription();
 	std::string markupInitialText(CObjInstance* obj);
 	void start();
-	void addHotText(std::string& text, int id);
+	void addHotText(std::string& text, int msgId, int objId);
 	std::string markupExits(std::string& text);
-	void hotTextClick(int messageId, glm::i32vec2 mousePos);
-	void inventoryClick(int messageId, const glm::i32vec2& mousePos);
+	void hotTextClick(int msgId, int objId, glm::i32vec2 mousePos);
+	void inventoryClick(int msgId, int objId, const glm::i32vec2& mousePos);
 
 	void changeRoom(int direction);
 	TMoveDir calcBackDirection(int moveId);
@@ -64,10 +65,10 @@ public:
 	void refreshInvWindow();
 	void refreshLocalList();
 	void objectClick(int objId, const glm::i32vec2& mousePos);
-	void appendChoicesToPopup();
+	void appendChoicesToPopup(int objId);
 	void showPopupMenu(const glm::i32vec2& mousePos);
-	std::string makeHotText(std::string text, int idNo);
-	void popupSelection(int choice, glm::i32vec2& mousePos);
+	std::string makeHotText(std::string text, int msgId, int objId);
+	void popupSelection(int choice, int objId, glm::i32vec2& mousePos);
 	std::string cap(std::string text);
 	std::string getExitsText(CObjInstance * room);
 
@@ -109,7 +110,6 @@ private:
 	bool bodyListedExits[13]; ///<Any exit directions listed in body copy.
 
 	int clickedHotText; ///<Id of currently clicked hot text.
-	int clickedObj; ///<Id of currently clicked object;
 	std::vector<TPopChoice> popChoices; ///<Tracks choices available on the popup meny.
 	glm::i32vec2 currentMousePos;
 

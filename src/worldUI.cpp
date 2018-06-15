@@ -78,14 +78,14 @@ void CWorldUI::roomDescription() {
 	std::vector<CObjInstance*> otherItems; auto sceneryStart = hotTextList.size();
 	if (item) {
 		do {
-			if (item->classId == sceneryClassId) {
+			if (pVM->inheritsFrom(item->id, sceneryClassId)) {
 				//register the object's name as hot text
 				std::string name = pVM->objMessage(item->id, "name").getStringValue();
 				int localId = localHotList.addObject(item);
 				hotTextList.push_back({ name,localId });
 				continue;
 			}
-			if (item->classId == staticClassId || (pVM->getMemberValue(item->id, "moved") == 0)) {
+			if (pVM->inheritsFrom(item->id, staticClassId) || (pVM->getMemberValue(item->id, "moved") == 0)) {
 				itemsText += "\n\n" + markupInitialText(item);
 			}
 			else
@@ -98,7 +98,7 @@ void CWorldUI::roomDescription() {
 			for (unsigned int idx = 0; idx < otherItems.size(); idx++) {
 				item = otherItems[idx];
 				int localId = localHotList.addObject(item);
-				itemsText += makeHotText(" a " + pVM->objMessage(item, "name").getStringValue(), localId);
+				itemsText += makeHotText(" a " + pVM->objMessage(item, "name").getStringValue(), localId,item->id);
 				if (idx < otherItems.size() - 2 && otherItems.size() > 1)
 					itemsText += ",";
 				if (idx == otherItems.size() - 2)
@@ -134,7 +134,7 @@ std::string CWorldUI::markupInitialText(CObjInstance* obj) {
 
 	if (found != string::npos) {
 		int localId = localHotList.addObject(obj);
-		std::string hotText = makeHotText(nameText, localId);
+		std::string hotText = makeHotText(nameText, localId, obj->id);
 		initialText.replace(found, nameText.size(), hotText);
 	}
 	return initialText;
@@ -148,10 +148,11 @@ void CWorldUI::start() {
 
 
 /** Add this as a recognised hot text expression. */
-void CWorldUI::addHotText(std::string & text, int id) {
+void CWorldUI::addHotText(std::string & text, int msgId, int objId) {
 	THotTextRec hotText;
 	hotText.text = text;
-	hotText.id = id;
+	hotText.msgId = msgId;
+	hotText.objId = objId;
 	hotTextList.push_back(hotText);
 }
 
@@ -160,14 +161,14 @@ void CWorldUI::addHotText(std::string & text, int id) {
 std::string CWorldUI::markupExits(std::string & text) {
 	for (auto hotText : hotTextList) {
 		//if this is a direction, check we can actually go there:
-		if (hotText.id >= moveToIds[moveNorth] && hotText.id <= moveToIds[moveOut]
-			&& pVM->getMemberValue(currentRoomNo, hotText.id) == 0) {
+		if (hotText.msgId >= moveToIds[moveNorth] && hotText.msgId <= moveToIds[moveOut]
+			&& pVM->getMemberValue(currentRoomNo, hotText.msgId) == 0) {
 			continue;
 		}
 		size_t found = text.find(hotText.text);
 		while (found != std::string::npos) { //check found text isn't part of a bigger word:
 			if ((found == 0 || !isalnum(text[found - 1])) && !isalnum(text[found + hotText.text.size()]) ) {
-				std::string tag = makeHotText(hotText.text, hotText.id);
+				std::string tag = makeHotText(hotText.text, hotText.msgId, currentRoom->id);
 				text.replace(found, hotText.text.size(), tag);
 				found += tag.size();
 			}
@@ -178,26 +179,26 @@ std::string CWorldUI::markupExits(std::string & text) {
 }
 
 /** Handle the player clicking on a piece of hot text. */
-void CWorldUI::hotTextClick(int hotId, glm::i32vec2 mousePos) {
-	clickedHotText = hotId;
+void CWorldUI::hotTextClick(int msgId, int objId, glm::i32vec2 mousePos) {
+	clickedHotText = msgId;
 	//is this a move command?
 	for (int dir = moveNorth; dir <= moveOut; dir++) {
-		if (hotId == moveToIds[dir]) {
-			changeRoom(hotId);
+		if (msgId == moveToIds[dir]) {
+			changeRoom(msgId);
 			return;
 		}
 	}
 
 	//is it a click on an item in the room description? check range
-	if (hotId < memberIdStart) {
-		int objId = localHotList.getObjectId(hotId);
+	if (msgId < memberIdStart) {
+		//int obj = localHotList.getObjectId(msgId);
 		objectClick(objId,mousePos);
 	}
 }
 
 /** Handle a click on an inventory window item with the given object id. */
-void CWorldUI::inventoryClick(int hotId, const glm::i32vec2& mousePos) {
-	int objId = localHotList.getObjectId(hotId);
+void CWorldUI::inventoryClick(int msgId, int objId, const glm::i32vec2& mousePos) {
+//	int obj = localHotList.getObjectId(msgId);
 	objectClick(objId, mousePos);
 }
 
@@ -241,7 +242,7 @@ void CWorldUI::take(int objId) {
 	CObjInstance* obj = pVM->getObject(objId);
 	pTextWindow->purgeHotText(clickedHotText);
 	std::string takeText = "\n\nI picked up the ";
-	takeText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), localHotList.getLocalId(obj));
+	takeText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), localHotList.getLocalId(obj),obj->id);
 	pTextWindow->appendMarkedUpText(takeText + ".");
 	move(obj, player);
 	pVM->setMemberValue(obj->id, "moved", CTigVar(1));
@@ -256,7 +257,7 @@ void CWorldUI::drop(int objId) {
 	move(obj, currentRoom);
 	refreshInvWindow();
 	std::string dropText = "\n\nI dropped the ";
-	dropText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), localId);
+	dropText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), localId, obj->id);
 	pTextWindow->appendMarkedUpText(dropText + ".");
 }
 
@@ -286,7 +287,7 @@ void CWorldUI::examine(int objId) {
 		popChoices.push_back({ "\nDrop", popDrop });
 	}
 	//popChoices.push_back({ "\nDo nothing", popDoNothing });
-	appendChoicesToPopup();
+	appendChoicesToPopup(objId);
 
 	showPopupMenu(popControl->drawBox.pos);
 }
@@ -385,7 +386,7 @@ void CWorldUI::refreshInvWindow() {
 	if (item) {
 		do {
 			int localId = localHotList.getLocalId(item);
-			invText += makeHotText("\nA " + pVM->objMessage(item, "name").getStringValue(), localId);
+			invText += makeHotText("\nA " + pVM->objMessage(item, "name").getStringValue(), localId, item->id);
 		} while (objectInLoop(player, item));
 		pInvWindow->appendMarkedUpText(invText);
 	}
@@ -403,7 +404,6 @@ void CWorldUI::refreshLocalList() {
 
 /** Handle a user-click on this object. */
 void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
-	clickedObj = objId;
 	popControl->clear();
 	CObjInstance* obj = pVM->getObject(objId);
 
@@ -427,14 +427,14 @@ void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 		popChoices.push_back({ "\nPush", popPush });
 	}
 
-	appendChoicesToPopup();	
+	appendChoicesToPopup(objId);	
 	showPopupMenu(mousePos);
 }
 
-void CWorldUI::appendChoicesToPopup() {
+void CWorldUI::appendChoicesToPopup(int objId) {
 	string popStr; int choiceNo = 1;
 	for (auto item : popChoices) {
-		popStr += makeHotText(item.actionText, choiceNo);
+		popStr += makeHotText(item.actionText, choiceNo, objId);
 		choiceNo++;
 	}
 	popControl->appendMarkedUpText(popStr);
@@ -457,26 +457,24 @@ void CWorldUI::showPopupMenu(const glm::i32vec2& cornerPos) {
 	popControl->makeModal(popControl);
 }
 
-std::string CWorldUI::makeHotText(std::string text, int idNo) {
-	std::string hotStr = "\\h{" + std::to_string(idNo) + "}";
+std::string CWorldUI::makeHotText(std::string text, int msgId, int objId) {
+	std::string hotStr = "\\h{" + std::to_string(msgId) + '@' + std::to_string(objId) + "}";
 	hotStr += text + "\\h";
 	return hotStr;
 }
 
 /** Respond to the user selecting an item from the popup menu. */
-void CWorldUI::popupSelection(int choice, glm::i32vec2& mousePos) {
+void CWorldUI::popupSelection(int choice, int objId, glm::i32vec2& mousePos) {
 	currentMousePos = mousePos;
 	if (choice == -1)
 		return;
 	TPopAction action = popChoices[choice-1].action;
 	switch (action) {
-		case popTake: take(clickedObj); break;
-		case popDrop: drop(clickedObj); break;
-		case popExamine: examine(clickedObj); break;
-		case popPush: push(clickedObj); break;
+		case popTake: take(objId); break;
+		case popDrop: drop(objId); break;
+		case popExamine: examine(objId); break;
+		case popPush: push(objId); break;
 	}
-
-
 }
 
 std::string CWorldUI::cap(std::string text) {
@@ -504,7 +502,7 @@ std::string CWorldUI::getExitsText(CObjInstance * roomObj) {
 		int directionId = moveToIds[dir];
 		std::string destinationStr = pVM->objMessage(destination, "shortName").getStringValue();
 		auto directionHottext = find_if(hotTextList.begin(), hotTextList.end(),
-			[&](THotTextRec& hotRec) { return hotRec.id == directionId; });
+			[&](THotTextRec& hotRec) { return hotRec.msgId == directionId; });
 		if (pVM->getClass(destination) == corridorClassId)
 			corridors.push_back({ directionId,destination,directionHottext->text,destinationStr });
 		else

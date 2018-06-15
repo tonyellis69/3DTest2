@@ -906,7 +906,7 @@ void C3DtestApp::vmMessage(TvmAppMsg msg) {
 //		worldUI.processText(msg.text);
 //	}
 	if (msg.type == appHotText) {
-		worldUI.addHotText(msg.text,msg.integer);
+		worldUI.addHotText(msg.text,msg.integer,msg.integer2);
 	}
 
 }
@@ -928,13 +928,14 @@ void C3DtestApp::vmUpdate() {
 }
 
 /** Write the user's choices to the choice menu. */
+//TO DO: can probably scrap
 void C3DtestApp::showChoice() {
 	textWindow->appendText("\n");
 	std::vector<std::string> optionStrs;
 	int optionNo = optionHotText;
 	vm.getOptionStrs(optionStrs);
 	for (auto optionStr : optionStrs) {
-		textWindow->appendHotText("\n" + optionStr , optionNo++);
+		textWindow->appendHotText("\n" + optionStr , optionNo++, NULL);
 	}
 	textWindow->selectTopHotText();
 	shownChoice = true;
@@ -972,7 +973,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 		}
 
 		glm::i32vec2 mousePos = textWindow->getScreenCoords(Message.x, Message.y);
-		worldUI.hotTextClick(Message.value,mousePos);
+		worldUI.hotTextClick(Message.value,Message.value2, mousePos);
 		return;
 	}
 
@@ -981,7 +982,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
 	if (control.getID() == invWindowID && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = invWindow->getScreenCoords(Message.x, Message.y);
-		worldUI.inventoryClick(Message.value,mousePos);
+		worldUI.inventoryClick(Message.value,Message.value2,mousePos);
 		return;
 	}
 
@@ -993,11 +994,10 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 		popupPanel->setVisible(false);
 		textWindow->clearSelection();
 		invWindow->clearSelection();
-		int choice = Message.value;
-		worldUI.popupSelection(choice,mousePos);
+		worldUI.popupSelection(Message.value,Message.value2, mousePos);
 	}
 
-
+	//TO DO: do we still use this? Check!
 	if (control.getID() == popupPanelID && Message.Msg == uiMsgHotTextClick) {
 		popupPanel->makeModal(NULL);
 		popupPanel->setVisible(false);
