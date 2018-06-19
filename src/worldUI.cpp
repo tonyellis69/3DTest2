@@ -65,6 +65,7 @@ void CWorldUI::findClassIds() {
 	roomClassId = pVM->getGlobalVar("roomClassId").getIntValue();
 	staticClassId = pVM->getGlobalVar("staticClassId").getIntValue();
 	sceneryClassId = pVM->getGlobalVar("sceneryClassId").getIntValue();
+	supporterClassId = pVM->getGlobalVar("supporterClassId").getIntValue();
 }
 
 /** Compiles the current room's description and sends it for display. */
@@ -78,14 +79,14 @@ void CWorldUI::roomDescription() {
 	std::vector<CObjInstance*> otherItems; auto sceneryStart = hotTextList.size();
 	if (item) {
 		do {
-			if (pVM->inheritsFrom(item->id, sceneryClassId)) {
+			if (pVM->inheritsFrom(item, sceneryClassId)) {
 				//register the object's name as hot text
 				std::string name = pVM->objMessage(item->id, "name").getStringValue();
 				int localId = localHotList.addObject(item);
 				hotTextList.push_back({ name,localId });
 				continue;
 			}
-			if (pVM->inheritsFrom(item->id, staticClassId) || (pVM->getMemberValue(item->id, "moved") == 0)) {
+			if (pVM->inheritsFrom(item, staticClassId) || (pVM->getMemberValue(item->id, "moved") == 0)) {
 				itemsText += "\n\n" + markupInitialText(item);
 			}
 			else
@@ -273,6 +274,10 @@ void CWorldUI::examine(int objId) {
 	popControl->appendMarkedUpText(examText);
 	popControl->setTextStyle(popBodyStyle);
 	examText = pVM->objMessage(obj, "description").getStringValue();
+
+	if (pVM->inheritsFrom(obj, supporterClassId)) {
+		examText += " " + pVM->objMessage(obj, "search").getStringValue();
+	}
 
 	popControl->appendMarkedUpText(examText);
 

@@ -100,6 +100,7 @@ private:
 	int roomClassId;
 	int staticClassId;
 	int sceneryClassId;
+	int supporterClassId;
 
 	std::vector<THotTextRec> hotTextList;
 
