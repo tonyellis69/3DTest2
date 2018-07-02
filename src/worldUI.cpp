@@ -2,6 +2,8 @@
 
 #include <ctype.h>
 
+#include "3DtestApp.h"
+
 void CWorldUI::setVM(CTigVM * vm) {
 	pVM = vm;
 }
@@ -19,8 +21,10 @@ void CWorldUI::setCurrentWindow(CGUIrichText * pWin) {
 }
 
 
-void CWorldUI::setPopupTextWindow(CGUIrichTextPanel * pPopText) {
-	popControl = pPopText;
+
+
+void CWorldUI::setGameApp(C3DtestApp * app) {
+	pApp = app;
 }
 
 
@@ -34,6 +38,7 @@ void CWorldUI::init() {
 	findMoveToIds();
 	findTreeIds();
 	findClassIds();
+	findVerbIds();
 	clickedHotText = 0;
 	backDirection = moveNone;
 }
@@ -68,9 +73,16 @@ void CWorldUI::findClassIds() {
 	supporterClassId = pVM->getGlobalVar("supporterClassId").getIntValue();
 }
 
+void CWorldUI::findVerbIds() {
+	takeId = pVM->getMemberId("take");
+	dropId = pVM->getMemberId("drop");
+	examineId = pVM->getMemberId("examine");
+	pushId = pVM->getMemberId("push");
+}
+
 /** Compiles the current room's description and sends it for display. */
 void CWorldUI::roomDescription() {
-	refreshLocalList();
+//	refreshLocalList();
 	refreshInvWindow();
 
 	//go through room contents
@@ -82,8 +94,7 @@ void CWorldUI::roomDescription() {
 			if (pVM->inheritsFrom(item, sceneryClassId)) {
 				//register the object's name as hot text
 				std::string name = pVM->objMessage(item->id, "name").getStringValue();
-				int localId = localHotList.addObject(item);
-				hotTextList.push_back({ name,localId });
+				hotTextList.push_back({ name,NULL,item->id });
 				continue;
 			}
 			if (pVM->inheritsFrom(item, staticClassId) || (pVM->getMemberValue(item->id, "moved") == 0)) {
@@ -98,8 +109,8 @@ void CWorldUI::roomDescription() {
 			itemsText += "\n\nI could also see";
 			for (unsigned int idx = 0; idx < otherItems.size(); idx++) {
 				item = otherItems[idx];
-				int localId = localHotList.addObject(item);
-				itemsText += makeHotText(" a " + pVM->objMessage(item, "name").getStringValue(), localId,item->id);
+				//int localId = localHotList.addObject(item);
+				itemsText += makeHotText(" a " + pVM->objMessage(item, "name").getStringValue(), NULL,item->id);
 				if (idx < otherItems.size() - 2 && otherItems.size() > 1)
 					itemsText += ",";
 				if (idx == otherItems.size() - 2)
@@ -134,8 +145,9 @@ std::string CWorldUI::markupInitialText(CObjInstance* obj) {
 	size_t found = initialText.find(nameText);
 
 	if (found != string::npos) {
-		int localId = localHotList.addObject(obj);
-		std::string hotText = makeHotText(nameText, localId, obj->id);
+		//int localId = localHotList.addObject(obj);
+		//std::string hotText = makeHotText(nameText, localId, obj->id);
+		std::string hotText = makeHotText(nameText, NULL, obj->id);
 		initialText.replace(found, nameText.size(), hotText);
 	}
 	return initialText;
@@ -169,7 +181,10 @@ std::string CWorldUI::markupExits(std::string & text) {
 		size_t found = text.find(hotText.text);
 		while (found != std::string::npos) { //check found text isn't part of a bigger word:
 			if ((found == 0 || !isalnum(text[found - 1])) && !isalnum(text[found + hotText.text.size()]) ) {
-				std::string tag = makeHotText(hotText.text, hotText.msgId, currentRoom->id);
+				int objId = hotText.objId;
+				if (objId == NULL)
+					objId = currentRoomNo;
+				std::string tag = makeHotText(hotText.text, hotText.msgId, objId);
 				text.replace(found, hotText.text.size(), tag);
 				found += tag.size();
 			}
@@ -191,10 +206,10 @@ void CWorldUI::hotTextClick(int msgId, int objId, glm::i32vec2 mousePos) {
 	}
 
 	//is it a click on an item in the room description? check range
-	if (msgId < memberIdStart) {
+	//if (msgId < memberIdStart) {
 		//int obj = localHotList.getObjectId(msgId);
 		objectClick(objId,mousePos);
-	}
+	//}
 }
 
 /** Handle a click on an inventory window item with the given object id. */
@@ -241,9 +256,9 @@ TMoveDir CWorldUI::calcBackDirection(int moveId) {
 /** Pick up this object. */
 void CWorldUI::take(int objId) {
 	CObjInstance* obj = pVM->getObject(objId);
-	pTextWindow->purgeHotText(clickedHotText);
+	pTextWindow->purgeHotText(NULL, objId);
 	std::string takeText = "\n\nI picked up the ";
-	takeText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), localHotList.getLocalId(obj),obj->id);
+	takeText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), NULL,obj->id);
 	pTextWindow->appendMarkedUpText(takeText + ".");
 	move(obj, player);
 	pVM->setMemberValue(obj->id, "moved", CTigVar(1));
@@ -253,48 +268,54 @@ void CWorldUI::take(int objId) {
 /** Drop this object. */
 void CWorldUI::drop(int objId) {
 	CObjInstance* obj = pVM->getObject(objId);
-	int localId = localHotList.getLocalId(obj);
-	pTextWindow->purgeHotText(localId);
+	pTextWindow->purgeHotText(NULL,objId);
 	move(obj, currentRoom);
 	refreshInvWindow();
 	std::string dropText = "\n\nI dropped the ";
-	dropText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), localId, obj->id);
+	dropText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), NULL, obj->id);
 	pTextWindow->appendMarkedUpText(dropText + ".");
 }
 
 void CWorldUI::examine(int objId) {
 	CObjInstance* obj = pVM->getObject(objId);
-	int currentRextent = popControl->drawBox.pos.x + popControl->getWidth();
-	popControl->clear();
-	popControl->resize(300, 200);
-	popControl->setTextStyle(popHeaderStyle);
+	CGUIrichTextPanel* pop = pApp->spawnPopText();
+	pop->resize(300, 200);
+	//pop->setTextStyle(popHeaderStyle);
+	pop->setHotTextColour(hottextColour);
+	pop->setHotTextHighlightColour(hottextSelectedColour);
+	pop->id = popObjWin;
 	
-	std::string examText  = cap(pVM->objMessage(obj, "name").getStringValue())
+	fillObjectWindow(pop, obj);
+
+	showPopupMenu(pop,lastMenuCorner);
+	objWindows.push_back({ pop,obj });
+}
+
+void CWorldUI::fillObjectWindow(CGUIrichTextPanel* pop, CObjInstance* obj) {
+	pop->setTextStyle(popHeaderStyle);
+	std::string examText = cap(pVM->objMessage(obj, "name").getStringValue())
 		+ "\n";
-	popControl->appendMarkedUpText(examText);
-	popControl->setTextStyle(popBodyStyle);
+	pop->appendMarkedUpText(examText);
+	pop->setTextStyle(popBodyStyle);
 	examText = pVM->objMessage(obj, "description").getStringValue();
 
 	if (pVM->inheritsFrom(obj, supporterClassId)) {
 		examText += " " + pVM->objMessage(obj, "search").getStringValue();
 	}
 
-	popControl->appendMarkedUpText(examText);
+	pop->appendMarkedUpText(examText);
 
 	//add convenience options, ie, take/drop
 	popChoices.clear();
 	if (parent(obj) == currentRoom) {
 		CObjInstance* staticClass = pVM->getObject(staticClassId);
 		if (!pVM->inheritsFrom(obj, staticClass))
-			popChoices.push_back({ "\nTake", popTake });
+			popChoices.push_back({ "\nTake", takeId });
 	}
 	if (parent(obj) == player) {
-		popChoices.push_back({ "\nDrop", popDrop });
+		popChoices.push_back({ "\nDrop", dropId });
 	}
-	//popChoices.push_back({ "\nDo nothing", popDoNothing });
-	appendChoicesToPopup(objId);
-
-	showPopupMenu(popControl->drawBox.pos);
+	appendChoicesToPopup(pop, obj->id);
 }
 
 void CWorldUI::push(int objId) {
@@ -390,68 +411,58 @@ void CWorldUI::refreshInvWindow() {
 	CObjInstance* item = child(player);
 	if (item) {
 		do {
-			int localId = localHotList.getLocalId(item);
-			invText += makeHotText("\nA " + pVM->objMessage(item, "name").getStringValue(), localId, item->id);
+			invText += makeHotText("\nA " + pVM->objMessage(item, "name").getStringValue(), NULL, item->id);
 		} while (objectInLoop(player, item));
 		pInvWindow->appendMarkedUpText(invText);
 	}
 }
 
-/** Clear the local list and repopulate it with items the player is carrying. */
-void CWorldUI::refreshLocalList() {
-	localHotList.clear();
-	CObjInstance* item = child(player);
-	if (item)
-		do {
-			localHotList.addObject(item);
-		} while (objectInLoop(player, item));
-}
 
 /** Handle a user-click on this object. */
 void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
-	popControl->clear();
 	CObjInstance* obj = pVM->getObject(objId);
 
 	popChoices.clear();
-	popControl->resize(200, 200);
+	CGUIrichTextPanel* popControl = pApp->spawnPopText();
+	popControl->setTextStyle(popBodyStyle);
+	popControl->setHotTextColour(hottextColour);
+	popControl->setHotTextHighlightColour(hottextSelectedColour);
+	popControl->id = popMenu;
 	//acquire the different options available
 	//is it on the ground? We can take it
-	popChoices.push_back({ "Examine", popExamine });
-	if (parent(obj) == currentRoom) {
+	popChoices.push_back({ "Examine", examineId });
+	if (parent(obj) != player) {
 		CObjInstance* staticClass = pVM->getObject(staticClassId);
 		if (!pVM->inheritsFrom(obj,staticClass) )
-			popChoices.push_back({ "\nTake", popTake });
+			popChoices.push_back({ "\nTake", takeId });
 	}
 	if (parent(obj) == player)
-		popChoices.push_back({ "\nDrop", popDrop });
-	//popChoices.push_back({ "\nDo nothing",popDoNothing });
-
+		popChoices.push_back({ "\nDrop", dropId });
+	
 	//check for additional properties, such as being pushable.
-	int pushId = pVM->getMemberId("push");
 	if (pVM->hasMember(obj, pushId)) {
-		popChoices.push_back({ "\nPush", popPush });
+		popChoices.push_back({ "\nPush", pushId });
 	}
 
-	appendChoicesToPopup(objId);	
-	showPopupMenu(mousePos);
+	appendChoicesToPopup(popControl,objId);
+	showPopupMenu(popControl,mousePos);
 }
 
-void CWorldUI::appendChoicesToPopup(int objId) {
-	string popStr; int choiceNo = 1;
+void CWorldUI::appendChoicesToPopup(CGUIrichTextPanel* popControl, int objId) {
+	string popStr; 
 	for (auto item : popChoices) {
-		popStr += makeHotText(item.actionText, choiceNo, objId);
-		choiceNo++;
+		popStr += makeHotText(item.actionText, item.action, objId);
 	}
 	popControl->appendMarkedUpText(popStr);
 }
 
 /** Display the popup menu at the cursor position, adjusted for its dimensions and the screen edge. */
-void CWorldUI::showPopupMenu(const glm::i32vec2& cornerPos) {
+void CWorldUI::showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& cornerPos) {
+	lastMenuCorner = cornerPos;
 	popControl->resizeToFit();
 	glm::i32vec2 newCornerPos = cornerPos + glm::i32vec2(0, pTextWindow->getFont()->lineHeight  );
 	int margin = 30;
 	if (newCornerPos.x + popControl->getWidth() + margin > popControl->parent->getWidth())
-		//newCornerPos.x = cornerPos.x - popControl->getWidth();
 		newCornerPos.x -= (newCornerPos.x + popControl->getWidth() + margin) - popControl->parent->getWidth();
 
 	if (newCornerPos.y + popControl->getHeight() + margin > popControl->parent->getHeight())
@@ -459,7 +470,6 @@ void CWorldUI::showPopupMenu(const glm::i32vec2& cornerPos) {
 
 	popControl->setPos(newCornerPos.x, newCornerPos.y);
 	popControl->setVisible(true);
-	popControl->makeModal(popControl);
 }
 
 std::string CWorldUI::makeHotText(std::string text, int msgId, int objId) {
@@ -469,17 +479,32 @@ std::string CWorldUI::makeHotText(std::string text, int msgId, int objId) {
 }
 
 /** Respond to the user selecting an item from the popup menu. */
-void CWorldUI::popupSelection(int choice, int objId, glm::i32vec2& mousePos) {
+void CWorldUI::popupSelection(const int msgId, int objId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp) {
 	currentMousePos = mousePos;
-	if (choice == -1)
+	if (msgId == 0) { //clicked on an object in an object window, so don't automatically close it
+		objectClick(objId, mousePos);
 		return;
-	TPopAction action = popChoices[choice-1].action;
-	switch (action) {
-		case popTake: take(objId); break;
-		case popDrop: drop(objId); break;
-		case popExamine: examine(objId); break;
-		case popPush: push(objId); break;
 	}
+
+	if (msgId == takeId) 
+		take(objId); 
+	else if (msgId == dropId) 
+		drop(objId); 
+	else if (msgId == examineId)
+		examine(objId); 
+	else if (msgId == pushId)
+		push(objId); 
+	//if popup is an objWidow, pop the stack.
+	if (popUp->id == popObjWin)
+		objWindows.pop_back();
+	else if (objWindows.size() > 0 && msgId != examineId) {
+		//refresh current object window
+		objWindows.back().win->clear();
+		fillObjectWindow(objWindows.back().win, objWindows.back().obj);
+		objWindows.back().win->resizeToFit();
+
+	}
+	popUp->destroy(); //
 }
 
 std::string CWorldUI::cap(std::string text) {
@@ -557,25 +582,23 @@ void CWorldUI::setInvBodyStyle(CFont & font, const glm::vec4 & colour) {
 
 void CWorldUI::setPopBodyStyle(CFont & font, const glm::vec4 & colour) {
 	popBodyStyle = { &font,colour };
-	popControl->setTextStyle(popBodyStyle);
+
 }
 
 void CWorldUI::setPopHeaderStyle(CFont & font, const glm::vec4 & colour) {
 	popHeaderStyle = { &font,colour };
-	popControl->setTextStyle(popHeaderStyle);
+
 }
 
 void CWorldUI::setHottextColour(const glm::vec4 & colour) {
 	hottextColour = colour;
 	pTextWindow->setHotTextColour(hottextColour);
 	pInvWindow->setHotTextColour(hottextColour);
-	popControl->setHotTextColour(hottextColour);
 }
 
 void CWorldUI::setHottextSelectColour(const glm::vec4 & colour) {
 	hottextSelectedColour = colour;
 	pTextWindow->setHotTextHighlightColour(hottextSelectedColour);
-	pInvWindow->setHotTextHighlightColour(hottextSelectedColour);
-	popControl->setHotTextHighlightColour(hottextSelectedColour);
+	pInvWindow->setHotTextHighlightColour(hottextSelectedColour);;
 }
 

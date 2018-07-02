@@ -55,6 +55,10 @@ public:
 
 	void initPopupText();
 
+	CGUIrichTextPanel* spawnPopText();
+
+	void destroyPopText(CGUIrichTextPanel * popControl);
+
 	void vmMessage(TvmAppMsg msg);
 	void vmUpdate();
 	void showChoice();

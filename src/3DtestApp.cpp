@@ -100,11 +100,11 @@ void C3DtestApp::onStart() {
 	terrain.chunkDrawShader = Engine.Renderer.phongShader;
 
 	terrain.setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
-	//terrain->createLayers(5120, 320, 2); //1280 320
-	//terrain->createLayers(1280, 320, 0);
-	terrain.createLayers(10000, 320, 2);
-	//terrain->createLayers(1280, 320, 0);
-	//terrain->createLayers(8, 2, 2); //(8, 3, 2); //(4,2,1);
+	//terrain->createShells(5120, 320, 2); //1280 320
+	//terrain->createShells(1280, 320, 0);
+	terrain.createShells(10000, 320, 2);
+	//terrain->createShells(1280, 320, 0);
+	//terrain->createShells(8, 2, 2); //(8, 3, 2); //(4,2,1);
 
 	terrain.initChunkShell();
 	terrain.initChunkGrid(cubesPerChunkEdge);
@@ -218,10 +218,11 @@ void C3DtestApp::onStart() {
 	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
 	//vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
 
+	worldUI.setGameApp(this);
 	worldUI.setVM(&vm);
 	worldUI.setTextWindow(textWindow);
 	worldUI.setInventoryWindow(invWindow);
-	worldUI.setPopupTextWindow(popupPanel);
+	//worldUI.setPopupTextWindow(popupPanel);
 	worldUI.init();
 
 	worldUI.setMainBodyStyle(mainFont, white);
@@ -460,8 +461,8 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 		terrain->createAllChunks();
 		updateHeightmapImage();
 		*/
-		for (int s = 0; s < terrain.layers[3].superChunks.size(); s++) {
-			CSuperChunk* sc = terrain.layers[3].superChunks[s];
+		for (int s = 0; s < terrain.shells[3].superChunks.size(); s++) {
+			CSuperChunk* sc = terrain.shells[3].superChunks[s];
 			if (sc->tmpIndex == i32vec3(2, 1, 1)) {
 				sc->removeAllChunks();
 
@@ -524,10 +525,10 @@ void C3DtestApp::onResize(int width, int height) {
 */
 
 void C3DtestApp::draw() {
-	Engine.Renderer.setBackColour((rgba&)uialmostBlack);
-	Engine.Renderer.clearFrame();
+//	Engine.Renderer.setBackColour((rgba&)uialmostBlack);
+//	Engine.Renderer.clearFrame();
 
-	return;
+	//return;
 
 
 	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
@@ -575,14 +576,14 @@ void C3DtestApp::draw() {
 		vec4 colour = vec4(0, 0, 0, 1);
 		vec3 cornerAdjust, opCornerAdjust;
 		Engine.Renderer.setShader(terrain.wireBoxShader);
-		for (int l = terrain.layers.size()-1; l > -1; l--) {
+		for (int l = terrain.shells.size()-1; l > -1; l--) {
 			vBuf::T3DnormVert box[2000]; //should be enough
 			int index = 0;
-			for (int s = 0; s < terrain.layers[l].superChunks.size(); s++) {
-				sc = terrain.layers[l].superChunks[s];
+			for (int s = 0; s < terrain.shells[l].superChunks.size(); s++) {
+				sc = terrain.shells[l].superChunks[s];
 				if (sc->nonEmpty) 
 				{
-					box[index].v = sc->nwWorldPos + terrain.layers[l].nwLayerPos;
+					box[index].v = sc->nwWorldPos + terrain.shells[l].nwLayerPos;
 					cornerAdjust = vec3(sc->faceBoundary[west], sc->faceBoundary[down], sc->faceBoundary[north]);
 					box[index].v += cornerAdjust * sc->chunkSize;
 
@@ -816,7 +817,7 @@ void C3DtestApp::updateHeightmapImage() {
 
 	heightmapImage->setTexture(*heightmapTex);
 	Engine.Renderer.setShader(terrain2texShader);
-	vec3 sampleCorner = terrain.layers[0].nwSampleCorner;
+	vec3 sampleCorner = terrain.shells[0].nwSampleCorner;
 	//terrain2texShader->setNwSampleCorner(vec2(sampleCorner.x,sampleCorner.z));
 	terrain2texShader->setShaderValue(hTer2TexNwSampleCorner, vec2(sampleCorner.x, sampleCorner.z));
 
@@ -898,6 +899,27 @@ void C3DtestApp::initPopupText() {
 	GUIroot.Add(popupPanel);
 }
 
+CGUIrichTextPanel* C3DtestApp::spawnPopText() {
+	UIcolour tint = { 0,0,0,0.7f };
+	CGUIrichTextPanel* popupPanel = new CGUIrichTextPanel(0, 0, 100,100);
+	popupPanel->setBackColour1(tint);
+	popupPanel->setBackColour2(tint);
+	popupPanel->borderOn(true);
+	popupPanel->setFont(&popFont);
+	popupPanel->setTextColour(UIwhite);
+
+	popupPanel->setResizeMode(true);
+	popupTextID = popupPanel->getRichTextID();
+	popupPanelID = popupPanel->getID();
+	//popupPanel->setVisible(false);
+	GUIroot.addModal(popupPanel);
+	return popupPanel;
+}
+
+void C3DtestApp::destroyPopText(CGUIrichTextPanel* popControl) {
+	popControl->destroy();
+}
+
 
 
 /** Handle messages from the virtual machine. */
@@ -944,12 +966,9 @@ void C3DtestApp::showChoice() {
 
 void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	if (control.getID() == textWindowID && Message.Msg == uiMsgHotTextClick) {
-		if (Message.value == 0) {
-			cerr << "\nHot text id of zero reported!";
-			return;
-		}
+		
 
-		if (Message.value < memberIdStart && Message.value >= optionHotText ) { //TO DO: tidy this shit
+	/*	if (Message.value < memberIdStart && Message.value >= optionHotText ) { //TO DO: tidy this shit
 			int option = Message.value - optionHotText;
 
 			TVMmsg msg;
@@ -970,7 +989,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
 			vm.sendMessage(msg);
 			return;
-		}
+		} */
 
 		glm::i32vec2 mousePos = textWindow->getScreenCoords(Message.x, Message.y);
 		worldUI.hotTextClick(Message.value,Message.value2, mousePos);
@@ -986,25 +1005,24 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 		return;
 	}
 
-
-
-	if (control.getID() == popupTextID && Message.Msg == uiMsgHotTextClick) {
-		glm::i32vec2 mousePos = popupPanel->getScreenCoords(Message.x, Message.y);
-		popupPanel->makeModal(NULL);
-		popupPanel->setVisible(false);
+	//popup hot text click
+	if ((control.parent->id == popMenu || control.parent->id ==  popObjWin) && Message.Msg == uiMsgHotTextClick) {
+		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
 		textWindow->clearSelection();
 		invWindow->clearSelection();
-		worldUI.popupSelection(Message.value,Message.value2, mousePos);
+		static_cast<CGUIrichText*>(&control)->clearSelection();
+		worldUI.popupSelection(Message.value,Message.value2, mousePos, (CGUIrichTextPanel *)control.parent);
 	}
 
-	//TO DO: do we still use this? Check!
-	if (control.getID() == popupPanelID && Message.Msg == uiMsgHotTextClick) {
-		popupPanel->makeModal(NULL);
-		popupPanel->setVisible(false);
+	/*
+	//popup panel detected click
+	if ((control.id == popMenu) && Message.Msg == uiMsgHotTextClick) {
+		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
 		textWindow->clearSelection();
 		invWindow->clearSelection();
+		worldUI.popupSelection(Message.value, Message.value2, mousePos, (CGUIrichTextPanel *)&control);
 	}
-
+	*/
 }
 
 /** Remove the menu of options from the text window. */

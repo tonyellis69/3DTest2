@@ -1,5 +1,6 @@
 #pragma once
 
+//#include "3DtestApp.h"
 #include "vm.h"
 #include "UI\GUIrichText.h"
 #include "UI\GUIpopMenu.h"
@@ -16,13 +17,18 @@ enum TPopAction { popDoNothing, popTake, popDrop, popExamine,
 	popPush};
 struct TPopChoice {
 	std::string actionText;
-	TPopAction action;
+	int action;
 };
  
-
+struct TObjWindow {
+	CGUIrichTextPanel* win;
+	CObjInstance* obj;
+};
 
 enum TMoveDir {moveNone, moveNorth, moveNE, moveEast, moveSE, moveSouth, moveSW, moveWest,
 	moveNW, moveUp, moveDown, moveIn, moveOut };
+
+class C3DtestApp;
 
 /** An interface between the player and a game world running on the 
 	Tig virtual machine. */
@@ -34,10 +40,12 @@ public:
 	void setInventoryWindow(CGUIrichText * invWin);
 	void setCurrentWindow(CGUIrichText * pWin);
 	void setPopupTextWindow(CGUIrichTextPanel * pPopPanel);
+	void setGameApp(C3DtestApp* app);
 	void init();
 	void findMoveToIds();
 	void findTreeIds();
 	void findClassIds();
+	void findVerbIds();
 	void roomDescription();
 	std::string markupInitialText(CObjInstance* obj);
 	void start();
@@ -51,6 +59,7 @@ public:
 	void take(int itemId);
 	void drop(int item);
 	void examine(int objId);
+	void fillObjectWindow(CGUIrichTextPanel* pop, CObjInstance* obj);
 	void push(int objId);
 	int child(int parent);
 	CObjInstance * child(CObjInstance * parentObj);
@@ -63,12 +72,12 @@ public:
 	void move(CObjInstance * obj, CObjInstance * dest);
 	void move(int obj, int dest);
 	void refreshInvWindow();
-	void refreshLocalList();
+	//void refreshLocalList();
 	void objectClick(int objId, const glm::i32vec2& mousePos);
-	void appendChoicesToPopup(int objId);
-	void showPopupMenu(const glm::i32vec2& mousePos);
+	void appendChoicesToPopup(CGUIrichTextPanel* popControl, int objId);
+	void showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& mousePos);
 	std::string makeHotText(std::string text, int msgId, int objId);
-	void popupSelection(int choice, int objId, glm::i32vec2& mousePos);
+	void popupSelection(const int choice, int objId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp);
 	std::string cap(std::string text);
 	std::string getExitsText(CObjInstance * room);
 
@@ -86,7 +95,9 @@ private:
 	CGUIrichText* pTextWindow;
 	CGUIrichText* pInvWindow;
 	CGUIrichText* currentTextWindow;
-	CGUIrichTextPanel* popControl;
+	//CGUIrichTextPanel* popControl;
+
+	C3DtestApp* pApp;
 
 	CFont* popHeaderFont;
 	CFont* popBodyFont;
@@ -102,17 +113,23 @@ private:
 	int sceneryClassId;
 	int supporterClassId;
 
+	int takeId;
+	int dropId;
+	int examineId;
+	int pushId;
+
 	std::vector<THotTextRec> hotTextList;
 
 	int moveToIds[13]; ///Convenient store for movement member ids.
 	int parentId, childId, siblingId; ///<Tree member ids;
 
-	CLocalHotList localHotList; ///<Tracks hot text for objects currently in scope.
+	//CLocalHotList localHotList; ///<Tracks hot text for objects currently in scope.
 	bool bodyListedExits[13]; ///<Any exit directions listed in body copy.
 
 	int clickedHotText; ///<Id of currently clicked hot text.
 	std::vector<TPopChoice> popChoices; ///<Tracks choices available on the popup meny.
 	glm::i32vec2 currentMousePos;
+	glm::i32vec2 lastMenuCorner;
 
 	TtextStyle mainBodyStyle; ///<Text style for main window body text.
 	TtextStyle invBodyStyle;
@@ -123,6 +140,10 @@ private:
 	glm::vec4 hottextSelectedColour;
 
 	TMoveDir backDirection; ///<Direction the player came. 
+
+	std::vector<TObjWindow> objWindows;
 };
 
 
+const int popMenu = 5000;
+const int popObjWin = 5001;
