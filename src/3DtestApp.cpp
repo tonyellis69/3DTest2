@@ -924,13 +924,15 @@ void C3DtestApp::destroyPopText(CGUIrichTextPanel* popControl) {
 
 /** Handle messages from the virtual machine. */
 void C3DtestApp::vmMessage(TvmAppMsg msg) {
-//	if (msg.type == appWriteText) {
-//		worldUI.processText(msg.text);
-//	}
 	if (msg.type == appHotText) {
 		worldUI.addHotText(msg.text,msg.integer,msg.integer2);
 	}
-
+	if (msg.type == appPurge) {
+		worldUI.purge(msg.integer, msg.integer2);
+	}
+	if (msg.type == appWriteText) {
+		worldUI.appendText(msg.text, msg.integer);
+	}
 }
 
 /** Carry out any processing demanded by the virtual machine. */

@@ -78,11 +78,11 @@ void CWorldUI::findVerbIds() {
 	dropId = pVM->getMemberId("drop");
 	examineId = pVM->getMemberId("examine");
 	pushId = pVM->getMemberId("push");
+	climbId = pVM->getMemberId("climb");
 }
 
 /** Compiles the current room's description and sends it for display. */
 void CWorldUI::roomDescription() {
-//	refreshLocalList();
 	refreshInvWindow();
 
 	//go through room contents
@@ -109,7 +109,6 @@ void CWorldUI::roomDescription() {
 			itemsText += "\n\nI could also see";
 			for (unsigned int idx = 0; idx < otherItems.size(); idx++) {
 				item = otherItems[idx];
-				//int localId = localHotList.addObject(item);
 				itemsText += makeHotText(" a " + pVM->objMessage(item, "name").getStringValue(), NULL,item->id);
 				if (idx < otherItems.size() - 2 && otherItems.size() > 1)
 					itemsText += ",";
@@ -167,6 +166,10 @@ void CWorldUI::addHotText(std::string & text, int msgId, int objId) {
 	hotText.msgId = msgId;
 	hotText.objId = objId;
 	hotTextList.push_back(hotText);
+}
+
+void CWorldUI::appendText(std::string & text, int channel) {
+	pTextWindow->appendMarkedUpText(text);
 }
 
 
@@ -255,13 +258,21 @@ TMoveDir CWorldUI::calcBackDirection(int moveId) {
 
 /** Pick up this object. */
 void CWorldUI::take(int objId) {
-	CObjInstance* obj = pVM->getObject(objId);
-	pTextWindow->purgeHotText(NULL, objId);
-	std::string takeText = "\n\nI picked up the ";
-	takeText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), NULL,obj->id);
-	pTextWindow->appendMarkedUpText(takeText + ".");
-	move(obj, player);
-	pVM->setMemberValue(obj->id, "moved", CTigVar(1));
+	//CObjInstance* obj = pVM->getObject(objId);
+//	pTextWindow->purgeHotText(NULL, objId);
+
+	//std::string takeText = "\n\nI picked up the ";
+	//takeText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), NULL,obj->id);
+	//pTextWindow->appendMarkedUpText(takeText + ".");
+	
+	
+	//move(obj, player);
+	pVM->objMessage(objId, "take");
+	//pTextWindow->appendMarkedUpText(takeText);
+	
+	//pVM->setMemberValue(obj->id, "moved", CTigVar(1));
+
+
 	refreshInvWindow();
 }
 
@@ -322,6 +333,16 @@ void CWorldUI::push(int objId) {
 	CObjInstance* obj = pVM->getObject(objId);
 	std::string result = pVM->objMessage(obj, "push").getStringValue();
 	pTextWindow->appendMarkedUpText(result);
+}
+
+void CWorldUI::climb(int objId) {
+	CObjInstance* obj = pVM->getObject(objId);
+	std::string result = pVM->objMessage(obj, "climb").getStringValue();
+	pTextWindow->appendMarkedUpText(result);
+}
+
+void CWorldUI::purge(int memberId, int objId) {
+	pTextWindow->purgeHotText(memberId, objId);
 }
 
 
@@ -444,6 +465,10 @@ void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 		popChoices.push_back({ "\nPush", pushId });
 	}
 
+	if (pVM->hasMember(obj, climbId)) {
+		popChoices.push_back({ "\nClimb", climbId });
+	}
+
 	appendChoicesToPopup(popControl,objId);
 	showPopupMenu(popControl,mousePos);
 }
@@ -494,6 +519,8 @@ void CWorldUI::popupSelection(const int msgId, int objId, glm::i32vec2& mousePos
 		examine(objId); 
 	else if (msgId == pushId)
 		push(objId); 
+	else if (msgId == climbId)
+		climb(objId);
 	//if popup is an objWidow, pop the stack.
 	if (popUp->id == popObjWin)
 		objWindows.pop_back();

@@ -50,6 +50,7 @@ public:
 	std::string markupInitialText(CObjInstance* obj);
 	void start();
 	void addHotText(std::string& text, int msgId, int objId);
+	void appendText(std::string& text, int channel);
 	std::string markupExits(std::string& text);
 	void hotTextClick(int msgId, int objId, glm::i32vec2 mousePos);
 	void inventoryClick(int msgId, int objId, const glm::i32vec2& mousePos);
@@ -61,6 +62,9 @@ public:
 	void examine(int objId);
 	void fillObjectWindow(CGUIrichTextPanel* pop, CObjInstance* obj);
 	void push(int objId);
+	void climb(int objId);
+	void purge(int memberId, int objId);
+
 	int child(int parent);
 	CObjInstance * child(CObjInstance * parentObj);
 	int sibling(int object);
@@ -70,7 +74,7 @@ public:
 	bool objectInLoop(int parent, int & child);
 	bool objectInLoop(CObjInstance * parent, CObjInstance * &childObj);
 	void move(CObjInstance * obj, CObjInstance * dest);
-	void move(int obj, int dest);
+	//void move(int obj, int dest);
 	void refreshInvWindow();
 	//void refreshLocalList();
 	void objectClick(int objId, const glm::i32vec2& mousePos);
@@ -117,6 +121,7 @@ private:
 	int dropId;
 	int examineId;
 	int pushId;
+	int climbId;
 
 	std::vector<THotTextRec> hotTextList;
 
