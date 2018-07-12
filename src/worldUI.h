@@ -50,7 +50,7 @@ public:
 	std::string markupInitialText(CObjInstance* obj);
 	void start();
 	void addHotText(std::string& text, int msgId, int objId);
-	void appendText(std::string& text, int channel);
+	void appendText(std::string& text, int window);
 	std::string markupExits(std::string& text);
 	void hotTextClick(int msgId, int objId, glm::i32vec2 mousePos);
 	void inventoryClick(int msgId, int objId, const glm::i32vec2& mousePos);
@@ -64,6 +64,7 @@ public:
 	void push(int objId);
 	void climb(int objId);
 	void purge(int memberId, int objId);
+	void clearWindow(int window);
 
 	int child(int parent);
 	CObjInstance * child(CObjInstance * parentObj);
@@ -150,5 +151,8 @@ private:
 };
 
 
-const int popMenu = 5000;
-const int popObjWin = 5001;
+const int popMenuId = 5000;
+const int popObjWinId = 5001;
+
+const int mainWin = 0;
+const int invWin = 1;

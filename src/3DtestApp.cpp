@@ -933,6 +933,9 @@ void C3DtestApp::vmMessage(TvmAppMsg msg) {
 	if (msg.type == appWriteText) {
 		worldUI.appendText(msg.text, msg.integer);
 	}
+	if (msg.type == appClearWin) {
+		worldUI.clearWindow(msg.integer);
+	}
 }
 
 /** Carry out any processing demanded by the virtual machine. */
@@ -1008,7 +1011,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	}
 
 	//popup hot text click
-	if ((control.parent->id == popMenu || control.parent->id ==  popObjWin) && Message.Msg == uiMsgHotTextClick) {
+	if ((control.parent->id == popMenuId || control.parent->id ==  popObjWinId) && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
 		textWindow->clearSelection();
 		invWindow->clearSelection();
@@ -1018,7 +1021,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
 	/*
 	//popup panel detected click
-	if ((control.id == popMenu) && Message.Msg == uiMsgHotTextClick) {
+	if ((control.id == popMenuId) && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
 		textWindow->clearSelection();
 		invWindow->clearSelection();

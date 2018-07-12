@@ -168,8 +168,11 @@ void CWorldUI::addHotText(std::string & text, int msgId, int objId) {
 	hotTextList.push_back(hotText);
 }
 
-void CWorldUI::appendText(std::string & text, int channel) {
-	pTextWindow->appendMarkedUpText(text);
+void CWorldUI::appendText(std::string & text, int window) {
+	if (window == mainWin )
+		pTextWindow->appendMarkedUpText(text);
+	if (window == invWin)
+		pInvWindow->appendMarkedUpText(text);
 }
 
 
@@ -273,7 +276,7 @@ void CWorldUI::take(int objId) {
 	//pVM->setMemberValue(obj->id, "moved", CTigVar(1));
 
 
-	refreshInvWindow();
+	//refreshInvWindow();
 }
 
 /** Drop this object. */
@@ -294,7 +297,7 @@ void CWorldUI::examine(int objId) {
 	//pop->setTextStyle(popHeaderStyle);
 	pop->setHotTextColour(hottextColour);
 	pop->setHotTextHighlightColour(hottextSelectedColour);
-	pop->id = popObjWin;
+	pop->id = popObjWinId;
 	
 	fillObjectWindow(pop, obj);
 
@@ -343,6 +346,13 @@ void CWorldUI::climb(int objId) {
 
 void CWorldUI::purge(int memberId, int objId) {
 	pTextWindow->purgeHotText(memberId, objId);
+}
+
+void CWorldUI::clearWindow(int window) {
+	if (window == mainWin)
+		pTextWindow->clear();
+	if (window == invWin)
+		pInvWindow->clear();
 }
 
 
@@ -448,7 +458,7 @@ void CWorldUI::objectClick(int objId, const glm::i32vec2& mousePos) {
 	popControl->setTextStyle(popBodyStyle);
 	popControl->setHotTextColour(hottextColour);
 	popControl->setHotTextHighlightColour(hottextSelectedColour);
-	popControl->id = popMenu;
+	popControl->id = popMenuId;
 	//acquire the different options available
 	//is it on the ground? We can take it
 	popChoices.push_back({ "Examine", examineId });
@@ -522,7 +532,7 @@ void CWorldUI::popupSelection(const int msgId, int objId, glm::i32vec2& mousePos
 	else if (msgId == climbId)
 		climb(objId);
 	//if popup is an objWidow, pop the stack.
-	if (popUp->id == popObjWin)
+	if (popUp->id == popObjWinId)
 		objWindows.pop_back();
 	else if (objWindows.size() > 0 && msgId != examineId) {
 		//refresh current object window
