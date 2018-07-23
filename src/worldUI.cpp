@@ -41,6 +41,7 @@ void CWorldUI::init() {
 	findVerbIds();
 	clickedHotText = 0;
 	backDirection = moveNone;
+	player->members[parentId].setObjId(currentRoomNo);
 }
 
 void CWorldUI::findMoveToIds() {
@@ -89,6 +90,10 @@ void CWorldUI::roomDescription() {
 	CObjInstance* item = child(currentRoom);
 	std::string itemsText;
 	std::vector<CObjInstance*> otherItems; auto sceneryStart = hotTextList.size();
+
+	pVM->objMessage(currentRoom->id, "look");
+
+
 	if (item) {
 		do {
 			if (pVM->inheritsFrom(item, sceneryClassId)) {
@@ -119,9 +124,9 @@ void CWorldUI::roomDescription() {
 		}
 	}
 
-	std::string description = pVM->objMessage(currentRoom, "description").getStringValue() + " ";
-	description = markupExits(description);
-	pTextWindow->appendMarkedUpText(description);
+	//std::string description = pVM->objMessage(currentRoom, "description").getStringValue() + " ";
+//	description = markupExits(description);
+	//pTextWindow->appendMarkedUpText(description);
 
 	for (int dir = moveNorth; dir <= moveOut; dir++) { //note any exits already mentioned in room description.
 		bodyListedExits[dir] = pTextWindow->isActiveHotText(moveToIds[dir]);
@@ -233,6 +238,8 @@ void CWorldUI::changeRoom(int moveId) {
 		currentRoom = pVM->getObject(currentRoomNo);
 		pTextWindow->purgeHotText();
 		pTextWindow->appendText("\n\n");
+		player->members[parentId].setObjId(currentRoomNo);
+		//TO DO!!!!!!! player obj should become a proper child of the room
 		roomDescription();
 	}
 }
@@ -261,45 +268,26 @@ TMoveDir CWorldUI::calcBackDirection(int moveId) {
 
 /** Pick up this object. */
 void CWorldUI::take(int objId) {
-	//CObjInstance* obj = pVM->getObject(objId);
-//	pTextWindow->purgeHotText(NULL, objId);
-
-	//std::string takeText = "\n\nI picked up the ";
-	//takeText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), NULL,obj->id);
-	//pTextWindow->appendMarkedUpText(takeText + ".");
-	
-	
-	//move(obj, player);
 	pVM->objMessage(objId, "take");
-	//pTextWindow->appendMarkedUpText(takeText);
-	
-	//pVM->setMemberValue(obj->id, "moved", CTigVar(1));
-
-
-	//refreshInvWindow();
 }
 
 /** Drop this object. */
 void CWorldUI::drop(int objId) {
-	CObjInstance* obj = pVM->getObject(objId);
-	pTextWindow->purgeHotText(NULL,objId);
-	move(obj, currentRoom);
-	refreshInvWindow();
-	std::string dropText = "\n\nI dropped the ";
-	dropText += makeHotText(pVM->objMessage(obj, "name").getStringValue(), NULL, obj->id);
-	pTextWindow->appendMarkedUpText(dropText + ".");
+	pVM->objMessage(objId, "drop");
 }
 
 void CWorldUI::examine(int objId) {
 	CObjInstance* obj = pVM->getObject(objId);
 	CGUIrichTextPanel* pop = pApp->spawnPopText();
+	pop->addStyle(popHeaderStyle);
+	pop->addStyle(popBodyStyle);
 	pop->resize(300, 200);
-	//pop->setTextStyle(popHeaderStyle);
 	pop->setHotTextColour(hottextColour);
 	pop->setHotTextHighlightColour(hottextSelectedColour);
 	pop->id = popObjWinId;
 	
-	fillObjectWindow(pop, obj);
+	std::string exText = pVM->objMessage(objId, "examine").getStringValue();
+	pop->appendMarkedUpText(exText);
 
 	showPopupMenu(pop,lastMenuCorner);
 	objWindows.push_back({ pop,obj });
@@ -333,15 +321,11 @@ void CWorldUI::fillObjectWindow(CGUIrichTextPanel* pop, CObjInstance* obj) {
 }
 
 void CWorldUI::push(int objId) {
-	CObjInstance* obj = pVM->getObject(objId);
-	std::string result = pVM->objMessage(obj, "push").getStringValue();
-	pTextWindow->appendMarkedUpText(result);
+	pVM->objMessage(objId, "push");
 }
 
 void CWorldUI::climb(int objId) {
-	CObjInstance* obj = pVM->getObject(objId);
-	std::string result = pVM->objMessage(obj, "climb").getStringValue();
-	pTextWindow->appendMarkedUpText(result);
+	pVM->objMessage(objId, "climb");
 }
 
 void CWorldUI::purge(int memberId, int objId) {
@@ -608,22 +592,22 @@ std::string CWorldUI::getExitsText(CObjInstance * roomObj) {
 
 
 void CWorldUI::setMainBodyStyle( CFont& font, const glm::vec4& colour) {
-	mainBodyStyle = { &font,colour };
+	mainBodyStyle = { "mainBody",&font,colour };
 	pTextWindow->setTextStyle(mainBodyStyle);
 }
 
 void CWorldUI::setInvBodyStyle(CFont & font, const glm::vec4 & colour) {
-	invBodyStyle = { &font,colour };
+	invBodyStyle = {"invBody", &font,colour };
 	pInvWindow->setTextStyle(invBodyStyle);
 }
 
 void CWorldUI::setPopBodyStyle(CFont & font, const glm::vec4 & colour) {
-	popBodyStyle = { &font,colour };
+	popBodyStyle = {"popBody", &font,colour };
 
 }
 
 void CWorldUI::setPopHeaderStyle(CFont & font, const glm::vec4 & colour) {
-	popHeaderStyle = { &font,colour };
+	popHeaderStyle = {"popHeader", &font,colour };
 
 }
 

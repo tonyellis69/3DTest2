@@ -901,7 +901,7 @@ void C3DtestApp::initPopupText() {
 
 CGUIrichTextPanel* C3DtestApp::spawnPopText() {
 	UIcolour tint = { 0,0,0,0.7f };
-	CGUIrichTextPanel* popupPanel = new CGUIrichTextPanel(0, 0, 100,100);
+	CGUIrichTextPanel* popupPanel = new CGUIrichTextPanel(0, 0, 200,200);
 	popupPanel->setBackColour1(tint);
 	popupPanel->setBackColour2(tint);
 	popupPanel->borderOn(true);
@@ -971,31 +971,6 @@ void C3DtestApp::showChoice() {
 
 void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	if (control.getID() == textWindowID && Message.Msg == uiMsgHotTextClick) {
-		
-
-	/*	if (Message.value < memberIdStart && Message.value >= optionHotText ) { //TO DO: tidy this shit
-			int option = Message.value - optionHotText;
-
-			TVMmsg msg;
-			msg.type = vmMsgChoice;
-			msg.integer = option;
-			shownChoice = false;
-
-			removeChoices();
-
-			textWindow->appendText("\n");
-			//textWindow->setTextColour(UIred);
-
-			std::vector<std::string> optionStrs;
-			vm.getOptionStrs(optionStrs);
-			textWindow->appendText(optionStrs[option]);
-			textWindow->appendText("\n\n");
-			textWindow->setTextColour(UIwhite);
-
-			vm.sendMessage(msg);
-			return;
-		} */
-
 		glm::i32vec2 mousePos = textWindow->getScreenCoords(Message.x, Message.y);
 		worldUI.hotTextClick(Message.value,Message.value2, mousePos);
 		return;
