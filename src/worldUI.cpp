@@ -131,10 +131,10 @@ void CWorldUI::roomDescription() {
 	for (int dir = moveNorth; dir <= moveOut; dir++) { //note any exits already mentioned in room description.
 		bodyListedExits[dir] = pTextWindow->isActiveHotText(moveToIds[dir]);
 	}
-	std::string exitsText = getExitsText(currentRoom);
-	exitsText = markupExits(exitsText);
+//	std::string exitsText = getExitsText(currentRoom);
+//	exitsText = markupExits(exitsText);
 
-	pTextWindow->appendMarkedUpText(exitsText);
+//	pTextWindow->appendMarkedUpText(exitsText);
 	pTextWindow->appendMarkedUpText(itemsText);
 
 	if (hotTextList.size() > sceneryStart)
@@ -239,7 +239,7 @@ void CWorldUI::changeRoom(int moveId) {
 		pTextWindow->purgeHotText();
 		pTextWindow->appendText("\n\n");
 		player->members[parentId].setObjId(currentRoomNo);
-		//TO DO!!!!!!! player obj should become a proper child of the room
+
 		roomDescription();
 	}
 }
