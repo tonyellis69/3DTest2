@@ -93,9 +93,11 @@ void CWorldUI::roomDescription() {
 
 	pVM->objMessage(currentRoom->id, "look");
 
-
+	
 	if (item) {
 		do {
+			if (item->id == playerId)
+				continue;
 			if (pVM->inheritsFrom(item, sceneryClassId)) {
 				//register the object's name as hot text
 				std::string name = pVM->objMessage(item->id, "name").getStringValue();
@@ -109,6 +111,7 @@ void CWorldUI::roomDescription() {
 				otherItems.push_back(item);
 		} while (objectInLoop(currentRoom, item));
 
+	
 
 		if (otherItems.size() > 0) {
 			itemsText += "\n\nI could also see";
@@ -176,8 +179,19 @@ void CWorldUI::addHotText(std::string & text, int msgId, int objId) {
 void CWorldUI::appendText(std::string & text, int window) {
 	if (window == mainWin )
 		pTextWindow->appendMarkedUpText(text);
-	if (window == invWin)
+	else if (window == invWin)
 		pInvWindow->appendMarkedUpText(text);
+	else { //obj window
+		for (auto objWin : objWindows) {
+			if (objWin.obj->id == window) {
+				objWin.win->appendMarkedUpText(text);
+				if (!objWin.win->visible)
+					showPopupMenu(objWin.win, lastMenuCorner);
+				objWin.win->resizeToFit();
+				return;
+			}
+		}
+	}
 }
 
 
@@ -205,16 +219,25 @@ std::string CWorldUI::markupExits(std::string & text) {
 	return text;
 }
 
-/** Handle the player clicking on a piece of hot text. */
+/** Handle the player clicking on hot text. */
 void CWorldUI::hotTextClick(int msgId, int objId, glm::i32vec2 mousePos) {
+	//has the user clicked on hot text for player movement?
+	if (objId == currentRoom->id) {
+		pVM->callMember(playerId, "moveTo", { msgId });
+		//changeRoom(msgId);
+		return;
+	}
+
+
+
 	clickedHotText = msgId;
 	//is this a move command?
-	for (int dir = moveNorth; dir <= moveOut; dir++) {
-		if (msgId == moveToIds[dir]) {
-			changeRoom(msgId);
-			return;
-		}
-	}
+//	for (int dir = moveNorth; dir <= moveOut; dir++) {
+//		if (msgId == moveToIds[dir]) {
+		//	changeRoom(msgId);
+		//	return;
+	//	}
+//	}
 
 	//is it a click on an item in the room description? check range
 	//if (msgId < memberIdStart) {
@@ -230,8 +253,8 @@ void CWorldUI::inventoryClick(int msgId, int objId, const glm::i32vec2& mousePos
 }
 
 /** Change current room. */
-void CWorldUI::changeRoom(int moveId) {
-	CTigVar member = pVM->getMember(currentRoom, moveId);
+void CWorldUI::changeRoom(int roomId) {
+	/*CTigVar member = pVM->getMember(currentRoom, moveId);
 	if (member.type == tigObj) {
 		backDirection = calcBackDirection(moveId);
 		currentRoomNo = member.getObjId();
@@ -241,7 +264,9 @@ void CWorldUI::changeRoom(int moveId) {
 		player->members[parentId].setObjId(currentRoomNo);
 
 		roomDescription();
-	}
+	}*/
+	currentRoomNo = roomId;
+	currentRoom = pVM->getObject(currentRoomNo);
 }
 
 /** Return the opposite direction. */
@@ -276,7 +301,12 @@ void CWorldUI::drop(int objId) {
 	pVM->objMessage(objId, "drop");
 }
 
-void CWorldUI::examine(int objId) {
+void CWorldUI::openObjWindow(int objId) {
+	for (auto objWindow : objWindows) {
+		if (objWindow.obj->id == objId)
+			return;
+	}
+
 	CObjInstance* obj = pVM->getObject(objId);
 	CGUIrichTextPanel* pop = pApp->spawnPopText();
 	pop->addStyle(popHeaderStyle);
@@ -284,13 +314,13 @@ void CWorldUI::examine(int objId) {
 	pop->resize(300, 200);
 	pop->setHotTextColour(hottextColour);
 	pop->setHotTextHighlightColour(hottextSelectedColour);
+	pop->setResizeMode(resizeByRatioMode);
 	pop->id = popObjWinId;
-	
-	std::string exText = pVM->objMessage(objId, "examine").getStringValue();
-	pop->appendMarkedUpText(exText);
-
-	showPopupMenu(pop,lastMenuCorner);
+	//showPopupMenu(pop, lastMenuCorner);
 	objWindows.push_back({ pop,obj });
+	
+	
+
 }
 
 void CWorldUI::fillObjectWindow(CGUIrichTextPanel* pop, CObjInstance* obj) {
@@ -335,8 +365,16 @@ void CWorldUI::purge(int memberId, int objId) {
 void CWorldUI::clearWindow(int window) {
 	if (window == mainWin)
 		pTextWindow->clear();
-	if (window == invWin)
+	else if (window == invWin)
 		pInvWindow->clear();
+	else {
+		for (auto objWin : objWindows)
+			if (objWin.obj->id == window) {
+				objWin.win->clear();
+				return;
+			}
+
+	}
 }
 
 
@@ -509,8 +547,9 @@ void CWorldUI::popupSelection(const int msgId, int objId, glm::i32vec2& mousePos
 		take(objId); 
 	else if (msgId == dropId) 
 		drop(objId); 
-	else if (msgId == examineId)
-		examine(objId); 
+	else if (msgId == examineId) {
+		pVM->objMessage(objId, "examine");
+	}
 	else if (msgId == pushId)
 		push(objId); 
 	else if (msgId == climbId)
@@ -518,13 +557,13 @@ void CWorldUI::popupSelection(const int msgId, int objId, glm::i32vec2& mousePos
 	//if popup is an objWidow, pop the stack.
 	if (popUp->id == popObjWinId)
 		objWindows.pop_back();
-	else if (objWindows.size() > 0 && msgId != examineId) {
+	//else if (objWindows.size() > 0 && msgId != examineId) {
 		//refresh current object window
-		objWindows.back().win->clear();
-		fillObjectWindow(objWindows.back().win, objWindows.back().obj);
-		objWindows.back().win->resizeToFit();
+	//	objWindows.back().win->clear();
+	//	fillObjectWindow(objWindows.back().win, objWindows.back().obj);
+	//	objWindows.back().win->resizeToFit();
 
-	}
+	//}
 	popUp->destroy(); //
 }
 
@@ -621,5 +660,10 @@ void CWorldUI::setHottextSelectColour(const glm::vec4 & colour) {
 	hottextSelectedColour = colour;
 	pTextWindow->setHotTextHighlightColour(hottextSelectedColour);
 	pInvWindow->setHotTextHighlightColour(hottextSelectedColour);;
+}
+
+void CWorldUI::vmMessage(int p1, int p2) {
+	if (p1 == msgRoomChange)
+		changeRoom(p2);
 }
 

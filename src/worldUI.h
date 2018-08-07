@@ -59,7 +59,7 @@ public:
 	TMoveDir calcBackDirection(int moveId);
 	void take(int itemId);
 	void drop(int item);
-	void examine(int objId);
+	void openObjWindow(int objId);
 	void fillObjectWindow(CGUIrichTextPanel* pop, CObjInstance* obj);
 	void push(int objId);
 	void climb(int objId);
@@ -94,6 +94,8 @@ public:
 	void setPopHeaderStyle(CFont& font, const glm::vec4& colour);
 	void setHottextColour(const glm::vec4& colour);
 	void setHottextSelectColour(const glm::vec4& colour);
+
+	void vmMessage(int p1, int p2);
 
 private:
 	CTigVM* pVM;
@@ -154,5 +156,7 @@ private:
 const int popMenuId = 5000;
 const int popObjWinId = 5001;
 
+//tig script constants TO DO: can read these from the bytecode
 const int mainWin = 0;
 const int invWin = 1;
+const int msgRoomChange = 5000;

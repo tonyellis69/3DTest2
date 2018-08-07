@@ -870,13 +870,9 @@ void C3DtestApp::initInventoryWindow() {
 	GUIroot.Add(backPanel);
 
 	invWindow = new CGUIrichText(10, 10, 160, 180); //was 160 280
-	//invWindow->setFont(&sysFont);
-	//invWindow->setTextColour(UIwhite);
 	invWindow->hFormat = hCentre;
 	invWindow->borderOn(false);
 	invWindow->setMultiLine(true);
-	//invWindow->setHotTextColour(0.92, 0.92, 0.73, 1);
-	//invWindow->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
 	backPanel->Add(invWindow);
 	invWindowID = invWindow->getID();
 }
@@ -890,9 +886,7 @@ void C3DtestApp::initPopupText() {
 	popupPanel->borderOn(true);
 	popupPanel->setFont(&popFont);
 	popupPanel->setTextColour(UIwhite);
-	//popupPanel->setHotTextColour(0.92, 0.92, 0.73, 1);
-	//popupPanel->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
-	popupPanel->setResizeMode(true);
+	popupPanel->setResizeMode(resizeByWidthMode);
 	popupTextID = popupPanel->getRichTextID();
 	popupPanelID = popupPanel->getID();
 	popupPanel->setVisible(false);
@@ -907,11 +901,10 @@ CGUIrichTextPanel* C3DtestApp::spawnPopText() {
 	popupPanel->borderOn(true);
 	popupPanel->setFont(&popFont);
 	popupPanel->setTextColour(UIwhite);
-
-	popupPanel->setResizeMode(true);
+	popupPanel->setResizeMode(resizeByWidthMode);
 	popupTextID = popupPanel->getRichTextID();
 	popupPanelID = popupPanel->getID();
-	//popupPanel->setVisible(false);
+	popupPanel->setVisible(false);
 	GUIroot.addModal(popupPanel);
 	return popupPanel;
 }
@@ -935,6 +928,12 @@ void C3DtestApp::vmMessage(TvmAppMsg msg) {
 	}
 	if (msg.type == appClearWin) {
 		worldUI.clearWindow(msg.integer);
+	}
+	if (msg.type == appOpenWin) {
+		worldUI.openObjWindow(msg.integer);
+	}
+	if (msg.type == appMsg) {
+		worldUI.vmMessage(msg.integer,msg.integer2);
 	}
 }
 
@@ -994,15 +993,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 		worldUI.popupSelection(Message.value,Message.value2, mousePos, (CGUIrichTextPanel *)control.parent);
 	}
 
-	/*
-	//popup panel detected click
-	if ((control.id == popMenuId) && Message.Msg == uiMsgHotTextClick) {
-		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
-		textWindow->clearSelection();
-		invWindow->clearSelection();
-		worldUI.popupSelection(Message.value, Message.value2, mousePos, (CGUIrichTextPanel *)&control);
-	}
-	*/
+
 }
 
 /** Remove the menu of options from the text window. */
