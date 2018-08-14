@@ -895,7 +895,7 @@ void C3DtestApp::initPopupText() {
 
 CGUIrichTextPanel* C3DtestApp::spawnPopText() {
 	UIcolour tint = { 0,0,0,0.7f };
-	CGUIrichTextPanel* popupPanel = new CGUIrichTextPanel(0, 0, 200,200);
+	CGUIrichTextPanel* popupPanel = new CGUIrichTextPanel(0, 0, 300,300);
 	popupPanel->setBackColour1(tint);
 	popupPanel->setBackColour2(tint);
 	popupPanel->borderOn(true);
@@ -917,9 +917,9 @@ void C3DtestApp::destroyPopText(CGUIrichTextPanel* popControl) {
 
 /** Handle messages from the virtual machine. */
 void C3DtestApp::vmMessage(TvmAppMsg msg) {
-	if (msg.type == appHotText) {
-		worldUI.addHotText(msg.text,msg.integer,msg.integer2);
-	}
+	//if (msg.type == appHotText) {
+	//	worldUI.addHotText(msg.text,msg.integer,msg.integer2);
+	//}
 	if (msg.type == appPurge) {
 		worldUI.purge(msg.integer, msg.integer2);
 	}
@@ -930,7 +930,7 @@ void C3DtestApp::vmMessage(TvmAppMsg msg) {
 		worldUI.clearWindow(msg.integer);
 	}
 	if (msg.type == appOpenWin) {
-		worldUI.openObjWindow(msg.integer);
+		worldUI.openWindow(msg.integer);
 	}
 	if (msg.type == appMsg) {
 		worldUI.vmMessage(msg.integer,msg.integer2);
@@ -971,12 +971,11 @@ void C3DtestApp::showChoice() {
 void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	if (control.getID() == textWindowID && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = textWindow->getScreenCoords(Message.x, Message.y);
-		worldUI.hotTextClick(Message.value,Message.value2, mousePos);
+		worldUI.mainWindowClick(Message.value,Message.value2, mousePos);
 		return;
 	}
 
-	if (control.getID() == textWindowID && Message.Msg == uiMsgRMouseUp) {
-	}
+	//if (control.getID() == textWindowID && Message.Msg == uiMsgRMouseUp)
 
 	if (control.getID() == invWindowID && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = invWindow->getScreenCoords(Message.x, Message.y);
@@ -984,13 +983,17 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 		return;
 	}
 
-	//popup hot text click
-	if ((control.parent->id == popMenuId || control.parent->id ==  popObjWinId) && Message.Msg == uiMsgHotTextClick) {
+	//popup menu text click
+	if (control.parent->id == popMenuId && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
-		textWindow->clearSelection();
-		invWindow->clearSelection();
-		static_cast<CGUIrichText*>(&control)->clearSelection();
-		worldUI.popupSelection(Message.value,Message.value2, mousePos, (CGUIrichTextPanel *)control.parent);
+		worldUI.menuClick(Message.value,Message.value2, mousePos, (CGUIrichTextPanel *)control.parent);
+		return;
+	}
+
+	//object window click
+	if (control.parent->id == popObjWinId && Message.Msg == uiMsgHotTextClick) {
+		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
+		worldUI.objWindowClick(Message.value, Message.value2, mousePos, (CGUIrichTextPanel *)control.parent);
 	}
 
 
