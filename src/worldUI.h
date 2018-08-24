@@ -20,10 +20,8 @@ class C3DtestApp;
 	Tig virtual machine. */
 class CWorldUI {
 public:
-	CWorldUI() { };
+	CWorldUI();
 	void setVM(CTigVM* vm);
-	void setTextWindow(CGUIrichText* txtWin);
-	void setInventoryWindow(CGUIrichText * invWin);
 	void setGameApp(C3DtestApp* app);
 	void init();
 	void start();
@@ -43,20 +41,35 @@ public:
 	void objWindowClick(const int msgId, int objId, glm::i32vec2 & mousePos, CGUIrichTextPanel * popUp);
 	
 	
-
-
-	void setMainBodyStyle( CFont& font, const glm::vec4& colour);
-	void setInvBodyStyle(CFont& font, const glm::vec4& colour);
-	void setPopBodyStyle(CFont& font, const glm::vec4& colour);
-	void setPopHeaderStyle(CFont& font, const glm::vec4& colour);
 	void setHottextColour(const glm::vec4& colour);
 	void setHottextSelectColour(const glm::vec4& colour);
 
 	void vmMessage(int p1, int p2);
 
+	void createTextWindow();
+
+	void createInventoryWindow();
+
+	CGUIrichTextPanel * spawnPopText();
+
+	void createTextStyles();
+
+	//unsigned int textWindowID;
+	//CGUIrichText* textWindow;
+	CGUIrichTextPanel* mainTextPanel;
+	unsigned int mainTextWindowID;
+
+	//CGUIrichText* invWindow;
+	//unsigned int invWindowID;
+	CGUIrichTextPanel* invPanel;
+	unsigned int invPanelID;
+
+	CGUIrichTextPanel* popupPanel;
+	unsigned int popupPanelID;
+	unsigned int popupTextID;
+
 private:
 	CTigVM* pVM;
-	CGUIrichText* pTextWindow;
 	CGUIrichText* pInvWindow;
 	CGUIrichText* currentTextWindow;
 	CGUIrichTextPanel* pMenuWindow;
@@ -72,6 +85,7 @@ private:
 	glm::i32vec2 lastMenuCorner;
 
 	TtextStyle mainBodyStyle; ///<Text style for main window body text.
+	TtextStyle mainHeaderStyle;
 	TtextStyle invBodyStyle;
 	TtextStyle popBodyStyle;
 	TtextStyle popHeaderStyle;
@@ -80,6 +94,11 @@ private:
 	glm::vec4 hottextSelectedColour;
 
 	std::vector<TObjWindow> objWindows;
+
+
+	CFont mainFont;
+	CFont mainFontBold;
+
 };
 
 

@@ -10,18 +10,14 @@ uniform vec4 textColour;
 
 void main()
 {
-	vec4 mask = texture2D(fontTexture, texCoord0.st );
+	float alpha = texture2D(fontTexture, texCoord0).r;
+	//alpha = clamp(alpha * 0.8, 0.0, 1.0);
+	
+	
+	colour =  vec4(textColour.rgb, alpha * textColour.a );
+	
 
-	mask.a = mask.r;
-	mask.rgb = vec3(1);
-	
-	colour = mask * textColour;
-	
-	//problem seems to be with the tinted back panel. When it is totally transparent, blue font edges look fine
-	//somehow it's blending wrongly
-	
-	//it's something to do with the *number* of channels involved. With two on full - any two - the dark outline disappears.
-	//something to do with the blend formula? Investigate
+	//colour = vec4(1, 1, 1, texture2D(fontTexture, texCoord0).r) * textColour;
 	
 
 };

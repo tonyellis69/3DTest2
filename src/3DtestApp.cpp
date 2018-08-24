@@ -204,31 +204,57 @@ void C3DtestApp::onStart() {
 	//popFont.loadFromFile(dataPath + "Aeileron18.fnt");
 	popFont.loadFromFile(dataPath + "hotMed20.fnt");
 
-	//mainFont.loadFromFile(dataPath + "Aeileron20.fnt");
-	//mainFont.loadFromFile(dataPath + "out40.fnt");
-	mainFont.loadFromFile(dataPath + "hotMed26.fnt");
+
+
+
+	//mainFont.loadFromFile(dataPath + "hotMed26.fnt");
+	//mainFontBold.loadFromFile(dataPath + "hotMed26bold.fnt");
+	
+	//mainFont.loadFromFile(dataPath + "seg22sl.fnt"); ///curreny
+	////////mainFont.loadFromFile(dataPath + "robL24.fnt"); //segl24 uneven, better at 26, segsl24 doesn't have this but is a little heavy
+	//opl a little scratchy until you get to 24
+	//roboto thin s is mangled - vertical error? 
+	//roboto light is pretty good though
+	//mainFont.loadFromFile(dataPath + "rob22d.fnt");
+	mainFont.loadFromFile(dataPath + "merri16L.fnt"); //pretty good light font
+	//mainFont.loadFromFile(dataPath + "merri16.fnt"); //regular might be even better
+	///mainFont.loadFromFile(dataPath + "work18.fnt"); //too small at 16
+	//mainFont.loadFromFile(dataPath + "work18L.fnt"); //not quite... helvetica too old fashioned?
+
+	//mainFont.loadFromFile(dataPath + "rob16.fnt"); 
+
+	//mainFontBold.loadFromFile(dataPath + "rob22m.fnt");
+	mainFontBold.loadFromFile(dataPath + "merri16.fnt");
+	//mainFontBold.loadFromFile(dataPath + "robtest.fnt");
+
 	//mainFont.loadFromFile(dataPath + "pla26.fon");
 	popHeadFont.loadFromFile(dataPath + "hotBold20.fnt");
 
-	initTextWindow();
-	initInventoryWindow();
-	initPopupText();
 
+	renderer.fontManager.createFromFile("work16", dataPath + "work16.fnt");
+	renderer.fontManager.createFromFile("work16L", dataPath + "work16L.fnt");
 
 	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
 	//vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
 
 	worldUI.setGameApp(this);
 	worldUI.setVM(&vm);
-	worldUI.setTextWindow(textWindow);
-	worldUI.setInventoryWindow(invWindow);
+	//worldUI.setTextWindow(textWindow);
+	//worldUI.setInventoryWindow(invWindow);
 	//worldUI.setPopupTextWindow(popupPanel);
 	worldUI.init();
 
-	worldUI.setMainBodyStyle(mainFont, white);
-	worldUI.setInvBodyStyle(popFont, white);
-	worldUI.setPopBodyStyle(popFont, white);
-	worldUI.setPopHeaderStyle(popHeadFont, white);
+	//worldUI.setMainBodyStyle(mainFont, uiDarkGrey);
+	//worldUI.setMainHeaderStyle(mainFontBold, uiDarkGrey);
+
+//	worldUI.setMainBodyStyle(renderer.fontManager.getFont("work16L"), uiDarkGrey);
+//	worldUI.setMainHeaderStyle(renderer.fontManager.getFont("work16"), uiDarkGrey);
+
+
+
+//	worldUI.setInvBodyStyle(popFont, white);
+//	worldUI.setPopBodyStyle(popFont, white);
+//	worldUI.setPopHeaderStyle(popHeadFont, white);
 	worldUI.setHottextColour(hot);
 	worldUI.setHottextSelectColour(hotSelect);
 
@@ -358,7 +384,7 @@ void C3DtestApp::keyCheck() {
 
 	
 	
-	if (mouseKey == MK_LBUTTON && !popupPanel->getVisible() ) //TO DO: make less kludgy 
+	if (mouseKey == MK_LBUTTON /*&& !worldUI.popupPanel->getVisible()*/ ) //TO DO: make less kludgy 
 	{
 		if (!mouseLook) {
 			mouseLook = true;
@@ -526,9 +552,9 @@ void C3DtestApp::onResize(int width, int height) {
 
 void C3DtestApp::draw() {
 //	Engine.Renderer.setBackColour((rgba&)uialmostBlack);
-//	Engine.Renderer.clearFrame();
-
-	//return;
+	Engine.Renderer.setBackColour((rgba&)white);
+	Engine.Renderer.clearFrame();
+	return;
 
 
 	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
@@ -685,7 +711,7 @@ void C3DtestApp::advance(Tdirection direction) {
 /** Called every frame. Mainly use this to scroll terrain if we're moving in first-person mode*/
 void C3DtestApp::Update() {
 	vmUpdate();
-	textWindow->update(dT);
+	worldUI.mainTextPanel->update(dT); //TO DO:  update worldUI instead!
 
 	if (skyDome)
 		skyDome->update(dT);
@@ -832,82 +858,13 @@ void C3DtestApp::updateHeightmapImage() {
 	
 }
 
-void C3DtestApp::initTextWindow() {
-	CGUIpanel* backPanel = new CGUIpanel(200, 50, 800, 700);   //(200, 50, 800, 175);
-	UIcolour tint = { 0,0,0,0.3f };
-	backPanel->setBackColour1(uialmostBlack);
-	backPanel->setBackColour2(uialmostBlack);
-	backPanel->borderOn(false);
-	backPanel->hFormat = hCentre;
-	GUIroot.Add(backPanel);
 
-	textWindow = new CGUIrichText(10, 10, 780, 680); 
-	//textWindow->setFont(&mainFont);
-	//textWindow->setTextColour(UIwhite);
-	textWindow->hFormat = hCentre;
-	textWindow->borderOn(false);
-	textWindow->setMultiLine(true);
-	//textWindow->setHotTextColour(0.72, 0.72, 0.53, 1);
-//	textWindow->setHotTextHighlightColour(0.69, 0.78, 0.87, 1);
-	backPanel->Add(textWindow);
-	textWindowID = textWindow->getID();
-	//GUIroot.setFocus(textWindow);
-}
 
-void C3DtestApp::initInventoryWindow() {
-//	CGUIpanel* frame = new CGUIpanel(1100, 120, 180, 300); //180
-//	frame->anchorRight = 10;
-//	frame->hFormat = hRight;
-//	GUIroot.Add(frame);
 
-	CGUIpanel* backPanel = new CGUIpanel(1100, 120, 180, 300);   //1100, 120, 180, 300
-	UIcolour tint = { 0,0,0,0.3f };
-	backPanel->setBackColour1(tint);
-	backPanel->setBackColour2(tint);
-	backPanel->borderOn(true);
-	backPanel->anchorRight = 10;
-	backPanel->hFormat = hRight;
-	GUIroot.Add(backPanel);
 
-	invWindow = new CGUIrichText(10, 10, 160, 180); //was 160 280
-	invWindow->hFormat = hCentre;
-	invWindow->borderOn(false);
-	invWindow->setMultiLine(true);
-	backPanel->Add(invWindow);
-	invWindowID = invWindow->getID();
-}
 
-/** Create a multi-use popup menu. */
-void C3DtestApp::initPopupText() {
-	UIcolour tint = { 0,0,0,0.7f };
-	popupPanel = new CGUIrichTextPanel(300, 200, 300, 20);
-	popupPanel->setBackColour1(tint);
-	popupPanel->setBackColour2(tint);
-	popupPanel->borderOn(true);
-	popupPanel->setFont(&popFont);
-	popupPanel->setTextColour(UIwhite);
-	popupPanel->setResizeMode(resizeByWidthMode);
-	popupTextID = popupPanel->getRichTextID();
-	popupPanelID = popupPanel->getID();
-	popupPanel->setVisible(false);
-	GUIroot.Add(popupPanel);
-}
 
-CGUIrichTextPanel* C3DtestApp::spawnPopText() {
-	UIcolour tint = { 0,0,0,0.7f };
-	CGUIrichTextPanel* popupPanel = new CGUIrichTextPanel(0, 0, 300,300);
-	popupPanel->setBackColour1(tint);
-	popupPanel->setBackColour2(tint);
-	popupPanel->borderOn(true);
-	popupPanel->setFont(&popFont);
-	popupPanel->setTextColour(UIwhite);
-	popupPanel->setResizeMode(resizeByWidthMode);
-	popupTextID = popupPanel->getRichTextID();
-	popupPanelID = popupPanel->getID();
-	popupPanel->setVisible(false);
-	GUIroot.addModal(popupPanel);
-	return popupPanel;
-}
+
 
 void C3DtestApp::destroyPopText(CGUIrichTextPanel* popControl) {
 	popControl->destroy();
@@ -940,10 +897,10 @@ void C3DtestApp::vmMessage(TvmAppMsg msg) {
 /** Carry out any processing demanded by the virtual machine. */
 void C3DtestApp::vmUpdate() {
 
-	if (vm.getStatus() == vmAwaitChoice && !shownChoice) {
+	/*if (vm.getStatus() == vmAwaitChoice && !shownChoice) {
 		showChoice();
 		//getChoice(vm);
-	}
+	} */
 	if (vm.getStatus() == vmAwaitString) {
 		//getString(vm);
 	}
@@ -955,6 +912,7 @@ void C3DtestApp::vmUpdate() {
 
 /** Write the user's choices to the choice menu. */
 //TO DO: can probably scrap
+/*
 void C3DtestApp::showChoice() {
 	textWindow->appendText("\n");
 	std::vector<std::string> optionStrs;
@@ -965,20 +923,20 @@ void C3DtestApp::showChoice() {
 	}
 	textWindow->selectTopHotText();
 	shownChoice = true;
-}
+} */
 
 
 void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
-	if (control.getID() == textWindowID && Message.Msg == uiMsgHotTextClick) {
-		glm::i32vec2 mousePos = textWindow->getScreenCoords(Message.x, Message.y);
+	if (control.parent->getID() == worldUI.mainTextWindowID && Message.Msg == uiMsgHotTextClick) {
+		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
 		worldUI.mainWindowClick(Message.value,Message.value2, mousePos);
 		return;
 	}
 
 	//if (control.getID() == textWindowID && Message.Msg == uiMsgRMouseUp)
 
-	if (control.getID() == invWindowID && Message.Msg == uiMsgHotTextClick) {
-		glm::i32vec2 mousePos = invWindow->getScreenCoords(Message.x, Message.y);
+	if (control.parent->getID() == worldUI.invPanelID && Message.Msg == uiMsgHotTextClick) {
+		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
 		worldUI.inventoryClick(Message.value,Message.value2,mousePos);
 		return;
 	}
@@ -1000,9 +958,10 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 }
 
 /** Remove the menu of options from the text window. */
+/*
 void C3DtestApp::removeChoices() {
 	textWindow->removeHotText(optionHotText);
-}
+} */
 
 /** Trap mousewheel events for our own use. */
 void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
@@ -1011,10 +970,10 @@ void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	int delta = yoffset;
 	int keyState = 0; //can get key state if ever needed
 	if (GUIroot.IsOnControl(GUIroot, x, y)) {//checks that the mouse isn't outside our app altogether
-		if (popupPanel->getVisible() == true)
-			popupPanel->MouseWheelMsg(x, y, delta, keyState);
-		else
-			textWindow->MouseWheelMsg(x, y, delta, keyState);
+		//if (worldUI.popupPanel)
+		//	worldUI.popupPanel->MouseWheelMsg(x, y, delta, keyState);
+		//else
+			worldUI.mainTextPanel->MouseWheelMsg(x, y, delta, keyState);
 	}
 }
 

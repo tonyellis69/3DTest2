@@ -50,20 +50,15 @@ public:
 	void initHeightmapGUI();
 	void updateHeightmapImage();
 
-	void initTextWindow();
-	void initInventoryWindow();
-
-	void initPopupText();
-
-	CGUIrichTextPanel* spawnPopText();
+	
 
 	void destroyPopText(CGUIrichTextPanel * popControl);
 
 	void vmMessage(TvmAppMsg msg);
 	void vmUpdate();
-	void showChoice();
+	//void showChoice();
 	void HandleUImsg(CGUIbase& Control, CMessage& Message);
-	void removeChoices();
+//	void removeChoices();
 
 	
 	string dataPath; ///<Filepath to the Data folder
@@ -141,23 +136,21 @@ public:
 	
 	CModel* tree;
 
-	CGUIrichText* textWindow;
+//	CGUIrichText* textWindow;
 	bool shownChoice; ///<True if we've displayed the user's choices in the console.
 
-	unsigned int textWindowID;
+//	unsigned int textWindowID;
 	const int optionHotText = 0x10;
 
-	CGUIrichText* invWindow;
-	unsigned int invWindowID;
+
 
 	CWorldUI worldUI;
 
-	CGUIrichTextPanel* popupPanel;
-	unsigned int popupPanelID;
-	unsigned int popupTextID;
+
 
 	CFont popFont;
 	CFont mainFont;
+	CFont mainFontBold;
 	CFont popHeadFont;
 };
 
@@ -167,9 +160,11 @@ const int chunksPerSuperChunkEdge = 4;// 4;//8;
 
 const int terrainNoAttribs = 3;
 
+const glm::vec4 black(0, 0, 0, 1);
 const glm::vec4 white(1, 1, 1, 1);
-const glm::vec4 hot(0.92, 0.92, 0.73, 1);
-const glm::vec4 hotSelect(0.69, 0.78, 0.87, 1);
+const glm::vec4 blue(0.2, 0.2, 1, 1);
+const glm::vec4 hot(0.28, 0.28, 0.47, 1);
+const glm::vec4 hotSelect(1, 0.547, 0.0, 1);
 
 
 //const unsigned int grassBufSize = 90000000;
