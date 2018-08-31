@@ -4,6 +4,7 @@
 
 #include "3DtestApp.h"
 
+
 CWorldUI::CWorldUI() {
 }
 
@@ -25,18 +26,11 @@ void CWorldUI::init() {
 
 	createTextWindow();
 	createInventoryWindow();
-
-	//set styles here
-	mainTextPanel->addStyle(mainHeaderStyle);
-	mainTextPanel->addStyle(mainBodyStyle);
 }
 
 
 /** Start a game session. */
 void CWorldUI::start() {
-	
-
-
 	pVM->callMember(zeroObject, "init"); 	//execute Tig initialisation code
 	int currentRoomId = pVM->callMember(playerId, "parent").getObjId();
 	pVM->callMember(currentRoomId, "look");
@@ -103,9 +97,9 @@ void CWorldUI::openWindow(int winId) {
 
 void CWorldUI::openMenuWindow(int winId) {
 	pMenuWindow = spawnPopText();
-	pMenuWindow->setTextStyle(popBodyStyle);
-	pMenuWindow->setHotTextColour(hottextColour);
-	pMenuWindow->setHotTextHighlightColour(hottextSelectedColour);
+	pMenuWindow->setTextStyle("small");
+//	pMenuWindow->setHotTextColour(hottextColour);
+//	pMenuWindow->setHotTextHighlightColour(hottextSelectedColour);
 	pMenuWindow->setResizeMode(resizeByWidthMode);
 	pMenuWindow->id = popMenuId;
 }
@@ -117,11 +111,9 @@ void CWorldUI::openObjWindow(int objId) {
 	}
 
 	CGUIrichTextPanel* pop = spawnPopText();
-	pop->addStyle(popHeaderStyle);
-	pop->addStyle(popBodyStyle);
 	pop->resize(300, 200);
-	pop->setHotTextColour(hottextColour);
-	pop->setHotTextHighlightColour(hottextSelectedColour);
+	//pop->setHotTextColour(hottextColour);
+	//pop->setHotTextHighlightColour(hottextSelectedColour);
 	pop->setResizeMode(resizeByRatioMode);
 	pop->id = popObjWinId;
 	objWindows.push_back({ pop,objId });
@@ -186,7 +178,7 @@ void CWorldUI::objWindowClick(const int msgId, int objId, glm::i32vec2& mousePos
 
 
 
-
+/*
 void CWorldUI::setHottextColour(const glm::vec4 & colour) {
 	hottextColour = colour;
 	mainTextPanel->setHotTextColour(hottextColour);
@@ -198,6 +190,7 @@ void CWorldUI::setHottextSelectColour(const glm::vec4 & colour) {
 	mainTextPanel->setHotTextHighlightColour(hottextSelectedColour);
 	invPanel->setHotTextHighlightColour(hottextSelectedColour);;
 }
+*/
 
 void CWorldUI::vmMessage(int p1, int p2) {
 	if (p1 == msgRoomChange)
@@ -213,58 +206,37 @@ void CWorldUI::createTextWindow() {
 	mainTextPanel->borderOn(true);
 	mainTextPanel->hFormat = hCentre;
 	mainTextPanel->setInset(40);
-	mainTextPanel->setFont(&pApp->popFont);
 	mainTextPanel->setTextColour(UIwhite);
 	mainTextPanel->setResizeMode(resizeByWidthMode);
-	//popupTextID = popupPanel->getRichTextID();
 	mainTextWindowID = mainTextPanel->getID();
-	
+	mainTextPanel->setTextStyles(&normalTheme.styles);
 	pApp->GUIroot.Add(mainTextPanel);
 }
 
 void CWorldUI::createInventoryWindow() {
-/*	CGUIpanel* backPanel = new CGUIpanel(1100, 120, 180, 300);   //1100, 120, 180, 300
-	UIcolour tint = { 0,0,0,0.3f };
-	backPanel->setBackColour1(tint);
-	backPanel->setBackColour2(tint);
-	backPanel->borderOn(true);
-	backPanel->anchorRight = 10;
-	backPanel->hFormat = hRight;
-	pApp->GUIroot.Add(backPanel);
-
-	invWindow = new CGUIrichText(10, 10, 160, 180); //was 160 280
-	invWindow->hFormat = hCentre;
-	invWindow->borderOn(false);
-	invWindow->setMultiLine(true);
-	backPanel->Add(invWindow);
-	invWindowID = invWindow->getID(); */
-
-
-
-
 	invPanel = new CGUIrichTextPanel(1100, 120, 180, 300);
-	UIcolour tint = { 0,0,0,0.3f };
-	invPanel->setBackColour1(tint);
-	invPanel->setBackColour2(tint);
+	invPanel->setBackColour1(white);
+	invPanel->setBackColour2(white);
 
 	invPanel->borderOn(true);
 	invPanel->anchorRight = 10;
 	invPanel->hFormat = hRight;
 	invPanel->setInset(10);
-	invPanel->setFont(&pApp->popFont);
+	//invPanel->setFont(&pApp->popFont);
 	invPanel->setTextColour(UIwhite);
 	invPanel->setResizeMode(resizeByWidthMode);
 	//popupTextID = popupPanel->getRichTextID();
 	invPanelID = invPanel->getID();
-
+	invPanel->setTextStyles(&smallNormalTheme.styles);
+	invPanel->setTextStyle("smallHeader");
+	invPanel->appendText("Inventory:");
 	pApp->GUIroot.Add(invPanel);
 }
 
 CGUIrichTextPanel* CWorldUI::spawnPopText() {
-	UIcolour tint = { 0,0,0,0.7f };
 	CGUIrichTextPanel* popupPanel = new CGUIrichTextPanel(0, 0, 300, 300);
-	popupPanel->setBackColour1(tint);
-	popupPanel->setBackColour2(tint);
+	popupPanel->setBackColour1(white);
+	popupPanel->setBackColour2(white);
 	popupPanel->borderOn(true);
 	popupPanel->setFont(&pApp->popFont);
 	popupPanel->setTextColour(UIwhite);
@@ -272,21 +244,27 @@ CGUIrichTextPanel* CWorldUI::spawnPopText() {
 	popupTextID = popupPanel->getRichTextID();
 	popupPanelID = popupPanel->getID();
 	popupPanel->setVisible(false);
+	popupPanel->setTextStyles(&smallNormalTheme.styles);
 	pApp->GUIroot.addModal(popupPanel);
 	return popupPanel;
 }
 
 /** Create the various text styles the various text controls use. */
 void CWorldUI::createTextStyles() {
-	glm::vec4 darkGray(0.25, 0.25, 0.25, 1);
+	darkGray = glm::vec4(0.25, 0.25, 0.25, 1);
+	white = glm::vec4(1);
+	hottextColour =  glm::vec4(0.28, 0.28, 0.47, 1);
+	hottextSelectedColour =  glm::vec4(1, 0.547, 0.0, 1);
 
-	//CFont* main = &pApp->renderer.fontManager.getFont("work16L");
-//	CFont* header = &pApp->renderer.fontManager.getFont("work16");
+	normalTheme.styles.push_back({ "mainBody", "main", darkGray });
+	normalTheme.styles.push_back({ "mainHeader","mainHeader",darkGray });
+	normalTheme.styles.push_back({ "hot", "main", hottextColour });
+	normalTheme.styles.push_back({ "hotSelected", "main", hottextSelectedColour });
 
-	mainBodyStyle = { "mainBody","work16L",darkGray };
-	mainHeaderStyle = { "mainHeader","work16",darkGray };
-	invBodyStyle = { "invBody","work16L",darkGray };
-	popBodyStyle = { "popBody", "work16L",darkGray };
-	popHeaderStyle = { "popHeader","work16",darkGray };
+	smallNormalTheme.styles.push_back({ "small","small",darkGray });
+	smallNormalTheme.styles.push_back({ "smallHeader","smallHeader",darkGray });
+	smallNormalTheme.styles.push_back({ "hot", "small", hottextColour });
+	smallNormalTheme.styles.push_back({ "hotSelected", "small", hottextSelectedColour });
+
 }
 

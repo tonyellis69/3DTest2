@@ -68,6 +68,9 @@ public:
 	unsigned int popupPanelID;
 	unsigned int popupTextID;
 
+	TtextTheme normalTheme; ///<Groups normal styles for rich text.
+	TtextTheme smallNormalTheme; ///<Groups normal styles for rich text, smaller font size.
+
 private:
 	CTigVM* pVM;
 	CGUIrichText* pInvWindow;
@@ -84,12 +87,10 @@ private:
 	glm::i32vec2 currentMousePos;
 	glm::i32vec2 lastMenuCorner;
 
-	TtextStyle mainBodyStyle; ///<Text style for main window body text.
-	TtextStyle mainHeaderStyle;
-	TtextStyle invBodyStyle;
-	TtextStyle popBodyStyle;
-	TtextStyle popHeaderStyle;
+	
 
+	glm::vec4 darkGray;
+	glm::vec4 white;
 	glm::vec4 hottextColour;
 	glm::vec4 hottextSelectedColour;
 

@@ -231,8 +231,11 @@ void C3DtestApp::onStart() {
 	popHeadFont.loadFromFile(dataPath + "hotBold20.fnt");
 
 
-	renderer.fontManager.createFromFile("work16", dataPath + "work16.fnt");
-	renderer.fontManager.createFromFile("work16L", dataPath + "work16L.fnt");
+	renderer.fontManager.createFromFile("mainHeader", dataPath + "merri16.fnt");
+	renderer.fontManager.createFromFile("main", dataPath + "merri16L.fnt");
+
+	renderer.fontManager.createFromFile("smallHeader", dataPath + "merri14.fnt");
+	renderer.fontManager.createFromFile("small", dataPath + "merri14L.fnt");
 
 	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
 	//vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
@@ -255,8 +258,8 @@ void C3DtestApp::onStart() {
 //	worldUI.setInvBodyStyle(popFont, white);
 //	worldUI.setPopBodyStyle(popFont, white);
 //	worldUI.setPopHeaderStyle(popHeadFont, white);
-	worldUI.setHottextColour(hot);
-	worldUI.setHottextSelectColour(hotSelect);
+	//worldUI.setHottextColour(hot);
+	//worldUI.setHottextSelectColour(hotSelect);
 
 	worldUI.start();
 
