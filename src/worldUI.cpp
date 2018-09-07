@@ -159,7 +159,7 @@ void CWorldUI::showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& 
 void CWorldUI::menuClick(const int msgId, int objId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp) {
 	currentMousePos = mousePos;
 	pVM->callMember(objId, msgId);
-	popUp->destroy();
+	delete popUp;
 }
 
 /** Respond to user clicking on an object window.*/
@@ -168,7 +168,7 @@ void CWorldUI::objWindowClick(const int msgId, int objId, glm::i32vec2& mousePos
 
 	if (msgId == -1) { //clicked outside window, so we want to dismiss this window
 		objWindows.pop_back();
-		popUp->destroy();
+		delete popUp;
 		return;
 	}
 

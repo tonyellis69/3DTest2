@@ -2,7 +2,7 @@
 BaseApp constructor.
 
 Using GLEW 1.12.0
-OpenGL version: 4.6.0 NVIDIA 388.59
+OpenGL version: 4.6.0 NVIDIA 399.07
 Has NPOT
 glsl version: 4.60 NVIDIA
 

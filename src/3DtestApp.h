@@ -22,6 +22,8 @@
 
 #include "worldUI.h"
 
+#include "texGen\compositor.h"
+
 extern CSuperChunk* dbgSC;
 
 extern float xAdj;
@@ -50,10 +52,6 @@ public:
 
 	void initHeightmapGUI();
 	void updateHeightmapImage();
-
-	
-
-	void destroyPopText(CGUIrichTextPanel * popControl);
 
 	void vmMessage(TvmAppMsg msg);
 	void vmUpdate();
@@ -153,6 +151,8 @@ public:
 	CFont mainFont;
 	CFont mainFontBold;
 	CFont popHeadFont;
+
+	Compositor texCompositor;
 };
 
 const float yawAng = 0.22f;

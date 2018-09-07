@@ -263,8 +263,8 @@ void C3DtestApp::onStart() {
 
 	worldUI.start();
 
-
-
+	texCompositor.init(this);
+	texCompositor.compose();
 
 	return;
 }
@@ -554,7 +554,7 @@ void C3DtestApp::onResize(int width, int height) {
 */
 
 void C3DtestApp::draw() {
-//	Engine.Renderer.setBackColour((rgba&)uialmostBlack);
+	Engine.Renderer.setBackColour((rgba&)uialmostBlack);
 	Engine.Renderer.setBackColour((rgba&)white);
 	Engine.Renderer.clearFrame();
 	return;
@@ -841,7 +841,7 @@ void C3DtestApp::updateHeightmapImage() {
 
 	heightmapImage->setTexture((CBaseTexture&)mainFont.texture);
 
-	return;
+	//return;
 
 
 	heightmapImage->setTexture(*heightmapTex);
@@ -861,17 +861,6 @@ void C3DtestApp::updateHeightmapImage() {
 	
 }
 
-
-
-
-
-
-
-
-
-void C3DtestApp::destroyPopText(CGUIrichTextPanel* popControl) {
-	popControl->destroy();
-}
 
 
 
