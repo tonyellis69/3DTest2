@@ -385,7 +385,7 @@ void C3DtestApp::keyCheck() {
 
 	}
 
-	
+	return;
 	
 	if (mouseKey == MK_LBUTTON /*&& !worldUI.popupPanel->getVisible()*/ ) //TO DO: make less kludgy 
 	{
@@ -426,7 +426,7 @@ void C3DtestApp::keyCheck() {
 
 	}
 	
-
+	
 	if (keyNow('8')) {
 		advance(north);
 		//	EatKeys();
@@ -841,7 +841,7 @@ void C3DtestApp::updateHeightmapImage() {
 
 	heightmapImage->setTexture((CBaseTexture&)mainFont.texture);
 
-	//return;
+	return;
 
 
 	heightmapImage->setTexture(*heightmapTex);
@@ -961,12 +961,10 @@ void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	win.getMousePos(x, y);
 	int delta = yoffset;
 	int keyState = 0; //can get key state if ever needed
-	if (GUIroot.IsOnControl(GUIroot, x, y)) {//checks that the mouse isn't outside our app altogether
-		//if (worldUI.popupPanel)
-		//	worldUI.popupPanel->MouseWheelMsg(x, y, delta, keyState);
-		//else
-			worldUI.mainTextPanel->MouseWheelMsg(x, y, delta, keyState);
-	}
+	//if (GUIroot.IsOnControl(GUIroot, x, y)) {//checks that the mouse isn't outside our app altogether
+	//		worldUI.mainTextPanel->MouseWheelMsg(x, y, delta, keyState);
+	//}
+	CBaseApp::OnMouseWheelMsg(xoffset, yoffset);
 }
 
 
