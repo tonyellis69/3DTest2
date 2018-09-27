@@ -3,7 +3,7 @@
 #include "..\3DEngine\src\BaseApp.h"
 
 #include "gameTerrain.h"
-
+#include "terrain/terrain2.h"
 
 
 #include <glm/glm.hpp>
@@ -69,7 +69,7 @@ public:
 
 
 	CGameTerrain terrain;
-	
+	CTerrain2 terrain2;
 	
 	double oldTime;
 

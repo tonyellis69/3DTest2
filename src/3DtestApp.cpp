@@ -112,11 +112,6 @@ void C3DtestApp::onStart() {
 	
 
 	terrain.initHeightFinder();
-
-	
-	
-	
-
 	terrain.createTerrain(vec2(6, 6)); //seem to get striations above 999
 
 	initHeightmapGUI();
@@ -127,14 +122,17 @@ void C3DtestApp::onStart() {
 
 	terrain.createAllChunks();
 
-	
+	////////////NEW TERRAIN STUFF
+	int LoD1shellSCs = 5;
+	terrain2.createLoD1shell(cubeSize, cubesPerChunkEdge, chunksPerSuperChunkEdge, LoD1shellSCs);
+
+
+
+
+
 
 	t = Engine.Time.milliseconds() - t;
 	
-
-
-	
-
 	skyDome = Engine.createSkyDome();
 
 	oldTime = Engine.Time.seconds();
