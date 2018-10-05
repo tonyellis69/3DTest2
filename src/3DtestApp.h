@@ -29,7 +29,7 @@ extern CSuperChunk* dbgSC;
 extern float xAdj;
 extern float yAdj;
 
-
+enum TAppMode {terrainMode, textMode, texGenMode};
 
 class C3DtestApp : public  CBaseApp {
 public:
@@ -153,6 +153,13 @@ public:
 	CFont popHeadFont;
 
 	Compositor texCompositor;
+
+	TAppMode appMode;
+	CBuf wireCube;
+	CShader* wire2Shader;
+	unsigned int hWireMVP;
+	unsigned int hWireColour;
+	std::vector<glm::vec3> wireCubeVerts;
 };
 
 const float yawAng = 0.22f;

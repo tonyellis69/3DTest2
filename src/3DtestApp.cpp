@@ -20,10 +20,9 @@
 #include "UI\GUIlabel2.h"
 #include "UI\GUIcheckButton.h"
 
-
-
-
 #include "plants\fractalTree.h"
+
+#include "shapes.h"
 
 using namespace watch;
 
@@ -40,7 +39,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	
+	appMode = texGenMode;// texGenMode;// terrainMode;
 	
 
 	chunkCall = 0;
@@ -125,7 +124,9 @@ void C3DtestApp::onStart() {
 	////////////NEW TERRAIN STUFF
 	int LoD1shellSCs = 5;
 	terrain2.createLoD1shell(cubeSize, cubesPerChunkEdge, chunksPerSuperChunkEdge, LoD1shellSCs);
-
+	terrain2.addShell(0);
+	terrain2.addShell(0);
+	terrain2.addShell(3);
 
 
 
@@ -264,6 +265,11 @@ void C3DtestApp::onStart() {
 	texCompositor.init(this);
 	texCompositor.compose();
 
+	if (appMode != texGenMode)
+		texCompositor.hide(true);
+	if (appMode != textMode)
+		worldUI.hide(true);
+
 	return;
 }
 
@@ -274,185 +280,194 @@ void C3DtestApp::onStart() {
 
 /** Called every frame, provides a place for the user to check input where constant feedback is required. */
 void C3DtestApp::keyCheck() {
-	CCamera* currentCamera = Engine.getCurrentCamera();
-	float moveInc = float( dT * 1000.0); // 0.05125f;
+	if (appMode == terrainMode) {
 
-	if (!fpsOn) {
+		CCamera* currentCamera = Engine.getCurrentCamera();
+		float moveInc = float(dT * 1000.0); // 0.05125f;
 
-		if (keyNow('E')) {
-			moveInc *= 0.1f;
-			currentCamera->dolly(moveInc);
-		}
+		if (!fpsOn) {
 
-		if (keyNow('A')) {
-			currentCamera->track(-moveInc);
-		}
+			if (keyNow('E')) {
+				moveInc *= 0.1f;
+				currentCamera->dolly(moveInc);
+			}
 
-		if (keyNow('D')) {
-			currentCamera->track(moveInc);
-		}
+			if (keyNow('A')) {
+				currentCamera->track(-moveInc);
+			}
 
-		if (keyNow('W')) {
-			currentCamera->dolly(moveInc);
-		}
-
-		if (keyNow('S')) {
-			currentCamera->dolly(-moveInc);
-		}
-		if (keyNow(' ')) {
-			 currentCamera->elevate(moveInc);
-		}
-
-
-		if (keyNow('E')) {
-			currentCamera->yaw(float(yawAng * dT));
-		}
-
-		if (keyNow('T')) {
-			currentCamera->yaw(float(-yawAng *dT));
-		}
-
-		float rot = dT * 200.0f;
-		if (keyNow('P')) {
-			cube->rotate(rot, glm::vec3(1, 0, 0));
-		}
-		if (keyNow('Y')) {
-			cube->rotate(rot, glm::vec3(0, 1, 0));
-		}
-		
-
-	}
-	else {
-		vec3 moveDir(0);
-		if (length(playerPhys->currentContactNormal) <= 0) {
-			cerr << "\nmove aborted";	
-		}
-		else {
-
-
-			vec3 dir = playerObject.povCam.getTargetDir();
-			vec3 groundNormal = playerPhys->currentContactNormal;
-			vec3 eyeLine = playerObject.povCam.getTargetDir();
-			vec3 flip;
-
-			if (keyNow(' ') && physCube == NULL) {
-				playerPhys->velocity.y += 20;
-				playerPhys->velocity.x *= 2.5f;
-				playerPhys->velocity.z *= 2.5f;
-
+			if (keyNow('D')) {
+				currentCamera->track(moveInc);
 			}
 
 			if (keyNow('W')) {
-				moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
-				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
-				moveDir.y = 0; //*
-				playerPhys->velocity += moveDir * 0.35f;// was 1.4f;   //0.03f safe but slow //0.2f formerly caused bounces
-
-				//TO DO: 0.35 causes bounce on steep ascent when looking up. 0.25f does not. 
-				//probably doesn't even need fixing as those aren't realistic conditions
-				//*Setting y=0 fixed it... look into scrapping the whole velocity-parallel-to-the-ground thing
-
-		
-
+				currentCamera->dolly(moveInc);
 			}
+
 			if (keyNow('S')) {
-				flip.y = -eyeLine.y;
-				flip.x = -eyeLine.x;
-				flip.z = -eyeLine.z;
-				moveDir = cross(flip, groundNormal) / length(groundNormal);
-				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
-				playerPhys->velocity += moveDir * 0.4f;
+				currentCamera->dolly(-moveInc);
 			}
-			if (keyNow('A')) {
-				flip.x = eyeLine.z;
-				flip.z = -eyeLine.x;
-				moveDir = cross(flip, groundNormal) / length(groundNormal);
-				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
-				playerPhys->velocity += moveDir * 0.4f;
-			}
-			if (keyNow('D')) {
-				flip.x = -eyeLine.z;
-				flip.z = eyeLine.x;
-				moveDir = cross(flip, groundNormal) / length(groundNormal);
-				moveDir = cross(groundNormal, moveDir) / length(groundNormal);
-				playerPhys->velocity += moveDir * 0.4f;
+			if (keyNow(' ')) {
+				currentCamera->elevate(moveInc);
 			}
 
-		}
+
+			if (keyNow('E')) {
+				currentCamera->yaw(float(yawAng * dT));
+			}
+
+			if (keyNow('T')) {
+				currentCamera->yaw(float(-yawAng * dT));
+			}
+
+			float rot = dT * 200.0f;
+			if (keyNow('P')) {
+				cube->rotate(rot, glm::vec3(1, 0, 0));
+			}
+			if (keyNow('Y')) {
+				cube->rotate(rot, glm::vec3(0, 1, 0));
+			}
 
 
-	}
-
-	return;
-	
-	if (mouseKey == MK_LBUTTON /*&& !worldUI.popupPanel->getVisible()*/ ) //TO DO: make less kludgy 
-	{
-		if (!mouseLook) {
-			mouseLook = true;
-			//mouse capture on
-			mouseCaptured(true);
-			oldMousePos = vec2(mouseX, mouseY);
-			showMouse(false);
-			//centre mouse
-			//setMousePos(-1, -1);
-			setMousePos(viewWidth / 2, viewHeight / 2);
 		}
 		else {
-			//find mouse movement
-			glm::vec2 mousePos((mouseX - (viewWidth / 2)), ((viewHeight / 2) - mouseY));
-			if (mousePos.x == 0 && mousePos.y == 0)
-				return;
-			float angle = (0.1f * length(mousePos));
+			vec3 moveDir(0);
+			if (length(playerPhys->currentContactNormal) <= 0) {
+				cerr << "\nmove aborted";
+			}
+			else {
 
-			//move camera
-			vec3 perp = normalize(vec3(mousePos.y, -mousePos.x, 0));
-			currentCamera->freeRotate(perp, angle);
 
-			//setMousePos(-1, -1);
-			setMousePos(viewWidth / 2, viewHeight / 2);
+				vec3 dir = playerObject.povCam.getTargetDir();
+				vec3 groundNormal = playerPhys->currentContactNormal;
+				vec3 eyeLine = playerObject.povCam.getTargetDir();
+				vec3 flip;
+
+				if (keyNow(' ') && physCube == NULL) {
+					playerPhys->velocity.y += 20;
+					playerPhys->velocity.x *= 2.5f;
+					playerPhys->velocity.z *= 2.5f;
+
+				}
+
+				if (keyNow('W')) {
+					moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
+					moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+					moveDir.y = 0; //*
+					playerPhys->velocity += moveDir * 0.35f;// was 1.4f;   //0.03f safe but slow //0.2f formerly caused bounces
+
+					//TO DO: 0.35 causes bounce on steep ascent when looking up. 0.25f does not. 
+					//probably doesn't even need fixing as those aren't realistic conditions
+					//*Setting y=0 fixed it... look into scrapping the whole velocity-parallel-to-the-ground thing
+
+
+
+				}
+				if (keyNow('S')) {
+					flip.y = -eyeLine.y;
+					flip.x = -eyeLine.x;
+					flip.z = -eyeLine.z;
+					moveDir = cross(flip, groundNormal) / length(groundNormal);
+					moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+					playerPhys->velocity += moveDir * 0.4f;
+				}
+				if (keyNow('A')) {
+					flip.x = eyeLine.z;
+					flip.z = -eyeLine.x;
+					moveDir = cross(flip, groundNormal) / length(groundNormal);
+					moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+					playerPhys->velocity += moveDir * 0.4f;
+				}
+				if (keyNow('D')) {
+					flip.x = -eyeLine.z;
+					flip.z = eyeLine.x;
+					moveDir = cross(flip, groundNormal) / length(groundNormal);
+					moveDir = cross(groundNormal, moveDir) / length(groundNormal);
+					playerPhys->velocity += moveDir * 0.4f;
+				}
+
+			}
+
+
+		}
+
+		if (keyNow('8')) {
+			advance(north);
+			//	EatKeys();
+		}
+		if (keyNow('2')) {
+			advance(south);
+			//EatKeys();
+		}
+		if (keyNow('6')) {
+			advance(east);
+			//EatKeys();
+		}
+		if (keyNow('4')) {
+			advance(west);
+			//EatKeys();
+		}
+		if (keyNow('5')) {
+			advance(up);
+		}
+		if (keyNow('0')) {
+			advance(down);
+		}
+
+		selectChk = glm::mod(vec3(selectChk), vec3(15, 5, 15));
+
+
+		if (mouseKey == MK_LBUTTON /*&& !worldUI.popupPanel->getVisible()*/) //TO DO: make less kludgy 
+		{
+			if (!mouseLook) {
+				mouseLook = true;
+				//mouse capture on
+				mouseCaptured(true);
+				oldMousePos = vec2(mouseX, mouseY);
+				showMouse(false);
+				//centre mouse
+				//setMousePos(-1, -1);
+				setMousePos(viewWidth / 2, viewHeight / 2);
+			}
+			else {
+				//find mouse movement
+				glm::vec2 mousePos((mouseX - (viewWidth / 2)), ((viewHeight / 2) - mouseY));
+				if (mousePos.x == 0 && mousePos.y == 0)
+					return;
+				float angle = (0.1f * length(mousePos));
+
+				//move camera
+				vec3 perp = normalize(vec3(mousePos.y, -mousePos.x, 0));
+				currentCamera->freeRotate(perp, angle);
+
+				//setMousePos(-1, -1);
+				setMousePos(viewWidth / 2, viewHeight / 2);
+			}
+
+		}
+		else { //mouselook key not down so
+			if (mouseLook) {
+				mouseCaptured(false);
+				mouseLook = false;
+				setMousePos((int)oldMousePos.x, (int)oldMousePos.y);
+				showMouse(true);
+
+			}
+
 		}
 
 	}
-	else { //mouselook key not down so
-		if (mouseLook) {
-			mouseCaptured(false);
-			mouseLook = false;
-			setMousePos(oldMousePos.x, oldMousePos.y);
-			showMouse(true);
+
+
+	if (appMode == texGenMode) {
+		if (keyNow('R')) {
+			texCompositor.compose();
 
 		}
 
+
 	}
 	
-	
-	if (keyNow('8')) {
-		advance(north);
-		//	EatKeys();
-	}
-	if (keyNow('2')) {
-		advance(south);
-		//EatKeys();
-	}
-	if (keyNow('6')) {
-		advance(east);
-		//EatKeys();
-	}
-	if (keyNow('4')) {
-		advance(west);
-		//EatKeys();
-	}
-	if (keyNow('5')) {
-		advance(up);
-	}
-	if (keyNow('0')) {
-		advance(down);
-	}
-
-
-
-
-
-	selectChk = glm::mod(vec3(selectChk), vec3(15, 5, 15));
 
 }
 
@@ -552,11 +567,12 @@ void C3DtestApp::onResize(int width, int height) {
 */
 
 void C3DtestApp::draw() {
-	Engine.Renderer.setBackColour((rgba&)uialmostBlack);
-	Engine.Renderer.setBackColour((rgba&)white);
-	Engine.Renderer.clearFrame();
-	return;
-
+	if (appMode != terrainMode) {
+		Engine.Renderer.setBackColour((rgba&)uialmostBlack);
+		Engine.Renderer.setBackColour((rgba&)white);
+		Engine.Renderer.clearFrame();
+		return;
+	}
 
 	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
 	terrain.updateVisibleSClist(fpsCam);
@@ -568,27 +584,27 @@ void C3DtestApp::draw() {
 	//draw chunks
 	mat3 tmp;
 	Engine.Renderer.setShader(Engine.Renderer.phongShader);
-	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hNormalModelToCameraMatrix,tmp); //why am I doing this?
+	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hNormalModelToCameraMatrix, tmp); //why am I doing this?
 	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP, mvp);
 	terrain.drawVisibleChunks();/////////////////////////////
-	
+
 	//draw grass
 	Engine.Renderer.setShader(terrain.grassShader);
 	Engine.Renderer.attachTexture(0, *terrain.grassTex);
 	terrain.grassShader->setTextureUnit(0, terrain.hGrassTexure);
-	terrain.grassShader->setShaderValue(terrain.hGrassTime,(float)Time);
-	terrain.grassShader->setShaderValue(terrain.hGrassMVP,mvp);
-//	terrain.drawGrass(mvp, terrain.visibleSClist);
+	terrain.grassShader->setShaderValue(terrain.hGrassTime, (float)Time);
+	terrain.grassShader->setShaderValue(terrain.hGrassMVP, mvp);
+	//	terrain.drawGrass(mvp, terrain.visibleSClist);
 
 
-	//draw trees
+		//draw trees
 	Engine.Renderer.setShader(Engine.Renderer.phongShaderInstanced);
-	Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstNormalModelToCameraMatrix,tmp);
-	Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstMVP,mvp);
+	Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstNormalModelToCameraMatrix, tmp);
+	Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstMVP, mvp);
 
 	glEnable(GL_PRIMITIVE_RESTART);
-	
-//	terrain.drawTrees(mvp, terrain.visibleSClist);
+
+	//	terrain.drawTrees(mvp, terrain.visibleSClist);
 
 	glDisable(GL_PRIMITIVE_RESTART);
 
@@ -603,12 +619,12 @@ void C3DtestApp::draw() {
 		vec4 colour = vec4(0, 0, 0, 1);
 		vec3 cornerAdjust, opCornerAdjust;
 		Engine.Renderer.setShader(terrain.wireBoxShader);
-		for (int l = terrain.shells.size()-1; l > -1; l--) {
+		for (int l = terrain.shells.size() - 1; l > -1; l--) {
 			vBuf::T3DnormVert box[2000]; //should be enough
 			int index = 0;
 			for (int s = 0; s < terrain.shells[l].superChunks.size(); s++) {
 				sc = terrain.shells[l].superChunks[s];
-				if (sc->nonEmpty) 
+				if (sc->nonEmpty)
 				{
 					box[index].v = sc->nwWorldPos + terrain.shells[l].nwLayerPos;
 					cornerAdjust = vec3(sc->faceBoundary[west], sc->faceBoundary[down], sc->faceBoundary[north]);
@@ -621,20 +637,29 @@ void C3DtestApp::draw() {
 					index++;
 				}
 			}
-			wireSCs->storeVertexes(box, sizeof(vBuf::T3DnormVert) , index);
+			wireSCs->storeVertexes(box, sizeof(vBuf::T3DnormVert), index);
 			wireSCs->storeLayout(3, 3, 0, 0);
 			mvp = Engine.getCurrentCamera()->clipMatrix * wireSCs->worldMatrix;
-			terrain.wireBoxShader->setShaderValue(terrain.hBoxMVP,mvp);
-			
+			terrain.wireBoxShader->setShaderValue(terrain.hBoxMVP, mvp);
+
 			colour[component++] = 0.8f;
 			if (component > 2)
 				component = 0;
-			terrain.wireBoxShader->setShaderValue(terrain.hBoxColour,colour);
+			terrain.wireBoxShader->setShaderValue(terrain.hBoxColour, colour);
 			wireSCs->drawNew();
 		}
-		
-	
 	}
+
+	renderer.setShader(wire2Shader);
+	for (int s = 0; s < terrain2.shells.size(); s++) {
+		float shellSize = terrain2.getShellSize(s);
+		glm::mat4 shape = glm::scale(glm::mat4(1), glm::vec3(shellSize));
+		glm::mat4 wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * shape;
+		wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
+		wire2Shader->setShaderValue(hWireColour, vec4(1, 0, 0, 1));
+		renderer.drawBuf(wireCube, drawLinesStrip);
+	}
+
 
 	if (!fpsOn) {
 		Engine.Renderer.setShader(Engine.Renderer.phongShader);
@@ -684,9 +709,9 @@ void C3DtestApp::advance(Tdirection direction) {
 	if (glm::any(outsideChunkBoundary)) {
 		vec3 posMod;
 		posMod = glm::mod(pos, vec3(chunkDist, chunkDist, chunkDist)); //glm::mod seems to turn negative remainders positive
-		posMod.x = fmod(pos.x, chunkDist);
-		posMod.y = fmod(pos.y, chunkDist);
-		posMod.z = fmod(pos.z, chunkDist);
+		posMod.x = (float)fmod(pos.x, chunkDist);
+		posMod.y = (float)fmod(pos.y, chunkDist);
+		posMod.z = (float)fmod(pos.z, chunkDist);
 		//	terrain->setPos(posMod ); //secretly move terrain back before scrolling to ensure it scrolls on the spot
 		//	terrain->chunkOrigin[3] = glm::vec4(posMod, 1);
 
@@ -801,8 +826,18 @@ void C3DtestApp::initWireSCs() {
 
 	wireSCs->setPos(vec3(0));
 
-
+	//create a cube to do the same thing for terrain2
+	std::vector<glm::vec3> verts;
+	shape::cubePoints(&verts, NULL);
+	unsigned int index[] = { 0,1,2,3,0,4,5,6,7,4,7,3,2,6,5,1};
+	wireCube.storeVertexes(verts.data(), 12 * verts.size(), verts.size());
+	wireCube.storeIndex(index, 16);
+	wireCube.storeLayout(3, 0, 0, 0);
 	
+	wire2Shader = renderer.createShader("wire2");
+	hWireMVP = wire2Shader->getUniformHandle("mvpMatrix");
+	hWireColour = wire2Shader->getUniformHandle("colour");
+	wireCubeVerts = verts;
 }
 
 /**	Called when terrain advances - ie, moves. */
@@ -900,20 +935,7 @@ void C3DtestApp::vmUpdate() {
 	
 }
 
-/** Write the user's choices to the choice menu. */
-//TO DO: can probably scrap
-/*
-void C3DtestApp::showChoice() {
-	textWindow->appendText("\n");
-	std::vector<std::string> optionStrs;
-	int optionNo = optionHotText;
-	vm.getOptionStrs(optionStrs);
-	for (auto optionStr : optionStrs) {
-		textWindow->appendHotText("\n" + optionStr , optionNo++, NULL);
-	}
-	textWindow->selectTopHotText();
-	shownChoice = true;
-} */
+
 
 
 void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {

@@ -268,3 +268,8 @@ void CWorldUI::createTextStyles() {
 
 }
 
+void CWorldUI::hide(bool onOff) {
+	invPanel->setVisible(!onOff);
+	mainTextPanel->setVisible(!onOff);
+}
+

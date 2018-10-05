@@ -316,6 +316,49 @@ float cnoise(vec3 P)
  // return 0;
 }
 
+vec2 fade2(vec2 t) {
+  return t*t*t*(t*(t*6.0-15.0)+10.0);
+}
+
+float cnoise2(vec2 P)
+{
+  vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);
+  vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);
+  Pi = mod289(Pi); // To avoid truncation effects in permutation
+  vec4 ix = Pi.xzxz;
+  vec4 iy = Pi.yyww;
+  vec4 fx = Pf.xzxz;
+  vec4 fy = Pf.yyww;
+
+  vec4 i = permute4(permute4(ix) + iy);
+
+  vec4 gx = fract(i * (1.0 / 41.0)) * 2.0 - 1.0 ;
+  vec4 gy = abs(gx) - 0.5 ;
+  vec4 tx = floor(gx + 0.5);
+  gx = gx - tx;
+
+  vec2 g00 = vec2(gx.x,gy.x);
+  vec2 g10 = vec2(gx.y,gy.y);
+  vec2 g01 = vec2(gx.z,gy.z);
+  vec2 g11 = vec2(gx.w,gy.w);
+
+  vec4 norm = taylorInvSqrt(vec4(dot(g00, g00), dot(g01, g01), dot(g10, g10), dot(g11, g11)));
+  g00 *= norm.x;  
+  g01 *= norm.y;  
+  g10 *= norm.z;  
+  g11 *= norm.w;  
+
+  float n00 = dot(g00, vec2(fx.x, fy.x));
+  float n10 = dot(g10, vec2(fx.y, fy.y));
+  float n01 = dot(g01, vec2(fx.z, fy.z));
+  float n11 = dot(g11, vec2(fx.w, fy.w));
+
+  vec2 fade_xy = fade2(Pf.xy);
+  vec2 n_x = mix(vec2(n00, n01), vec2(n10, n11), fade_xy.x);
+  float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
+  return 2.3 * n_xy;
+}
+
 
 
 float fbm2D( int octaves, vec2 xy) {
@@ -339,7 +382,7 @@ float fbm3D( int octaves, vec3 xyz) {
 	float persistence = 0.5;
 	float total = 0;
     for( int i=0; i < octaves; i++ ) {
-        total += snoise(xyz * frequency) * amplitude;
+        total += snoise(xyz.xy * frequency) * amplitude;
         frequency *= lacunarity;
         amplitude *= persistence;
     }
@@ -353,7 +396,35 @@ float fbm3Dclassic( int octaves, vec3 xyz) {
 	float persistence = 0.5;
 	float total = 0;
     for( int i=0; i < octaves; i++ ) {
-        total += cnoise(xyz * frequency) * amplitude;
+        total += cnoise(xyz* frequency) * amplitude;
+        frequency *= lacunarity;
+        amplitude *= persistence;
+    }
+    return total;
+}
+
+
+float fbm2Dclassic( int octaves, vec2 xy) {
+	float frequency = 1;
+	float lacunarity = 2;
+	float amplitude = 1;
+	float persistence = 0.5;
+	float total = 0;
+    for( int i=0; i < octaves; i++ ) {
+        total += cnoise2(xy* frequency) * amplitude;
+        frequency *= lacunarity;
+        amplitude *= persistence;
+    }
+    return total;
+}
+
+float fbm2DclassicFreq( int octaves, vec2 xy, float frequency) {
+	float lacunarity = 2;
+	float amplitude = 1;
+	float persistence = 0.5;
+	float total = 0;
+    for( int i=0; i < octaves; i++ ) {
+        total += cnoise2(xy* frequency) * amplitude;
         frequency *= lacunarity;
         amplitude *= persistence;
     }
@@ -378,28 +449,39 @@ float turbulence( int octaves,   vec2 xy) {
 
 float ridge ( float h, float offset) {
 	h = abs(h);     // create creases
-    h = offset - h; // invert so creases are at top
+    h = offset - h; // invert so (tips of) creases are at top
     h = h * h;      // sharpen creases
 	return h;
 }
 
-float ridgedMF ( int octaves, vec2 xy) {
-    float lacunarity = 2.0;
-    float offset = 0.9;  
-    float sum = 0.0;
-    float freq = 1, amp = 1;
-    float prev = 1.0;
-	float persistence = 0.5;
-    for(int i=0; i < octaves; i++) {
-        float n = ridge(snoise(xy*freq), offset);
-        sum += n*amp;
-        sum += n*amp*prev;  // scale by previous octave
-        prev = n;
-        freq *= lacunarity;
-        amp *= persistence;
+
+
+float ridgedMF(int octaves, vec2 xy)
+{
+	float gain = 2.0;
+	float offset = 1;
+	float lacunarity = 2.0;
+    float value = 0.0;
+    float freq = 1.0;
+	float weight = 1.0;
+    for(int i=0; i<octaves; i++) {
+		//float signal = ridge(cnoise(vec3(xy,0)*freq * 2), offset);  //does not work
+        float signal = ridge(cnoise2(xy*freq * 2), offset);  //works
+		//float signal = ridge(snoise(vec3(xy,0)*freq * 2), offset); //works
+		//float signal = ridge(snoise(xy*freq * 2), offset); //does not work
+		signal *= weight; 
+		weight = signal * gain;
+		weight = clamp(weight,0.0,1.0);
+		
+		value += signal * pow(freq, -1.0); // 1.0, 0.5, 0.25...
+		freq *= lacunarity; //1,2,4,8...
+		
     }
-    return sum;
+    return  (value * 1.25) - 1.0; //will tend to put it in the range -1 to 0.25 
 }
+
+
+
 
 float distantMountains(int octaves,   vec2 xy ) {
 	//round down to the nearest epiecentre

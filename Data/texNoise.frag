@@ -10,7 +10,7 @@ out vec4 FragColor;
 uniform int octaves;
 
 void main() {
-	float noise = fbm3Dclassic(octaves, vec3(samplePoint0,0));
+	float noise = fbm2Dclassic(octaves, samplePoint0);
 	noise = noise * 0.5 + 0.5;
 	FragColor = vec4(noise,noise,noise,1 );
 	

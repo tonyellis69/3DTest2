@@ -54,6 +54,8 @@ public:
 
 	void createTextStyles();
 
+	void hide(bool onOff);
+
 	//unsigned int textWindowID;
 	//CGUIrichText* textWindow;
 	CGUIrichTextPanel* mainTextPanel;
@@ -73,8 +75,8 @@ public:
 
 private:
 	CTigVM* pVM;
-	CGUIrichText* pInvWindow;
-	CGUIrichText* currentTextWindow;
+//	CGUIrichText* pInvWindow;
+//	CGUIrichText* currentTextWindow;
 	CGUIrichTextPanel* pMenuWindow;
 
 	C3DtestApp* pApp;
