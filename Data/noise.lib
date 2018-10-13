@@ -30,6 +30,11 @@ float maze[81] = float[](	0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
 							
 const float cellSize = mazeSize / mazeSteps;
 
+
+vec2 random2( vec2 p ) {
+    return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
+}
+
 // Modulo 289 without a division (only multiplications)
 vec3 mod289(vec3 x) {
   return x - floor(x * (1.0 / 289.0)) * 289.0;
@@ -101,6 +106,9 @@ vec2 cellular(vec2 P) {
 	d1.y = min(d1.y, d2.x); // F2 is in d1.y, we're done.
 	return sqrt(d1.xy);
 }
+
+
+
 
 
 
@@ -419,9 +427,9 @@ float fbm2Dclassic( int octaves, vec2 xy) {
 }
 
 float fbm2DclassicFreq( int octaves, vec2 xy, float frequency) {
-	float lacunarity = 2;
+	float lacunarity = 2.0;
 	float amplitude = 1;
-	float persistence = 0.5;
+	float persistence =  0.5;
 	float total = 0;
     for( int i=0; i < octaves; i++ ) {
         total += cnoise2(xy* frequency) * amplitude;
@@ -465,7 +473,7 @@ float ridgedMF(int octaves, vec2 xy)
     float freq = 1.0;
 	float weight = 1.0;
     for(int i=0; i<octaves; i++) {
-		//float signal = ridge(cnoise(vec3(xy,0)*freq * 2), offset);  //does not work
+		//float signal = ridge(cnoise(vec3(xy,0)*freq ), offset);  //does not work
         float signal = ridge(cnoise2(xy*freq * 2), offset);  //works
 		//float signal = ridge(snoise(vec3(xy,0)*freq * 2), offset); //works
 		//float signal = ridge(snoise(xy*freq * 2), offset); //does not work
@@ -477,7 +485,54 @@ float ridgedMF(int octaves, vec2 xy)
 		freq *= lacunarity; //1,2,4,8...
 		
     }
-    return  (value * 1.25) - 1.0; //will tend to put it in the range -1 to 0.25 
+    return  (value * 1.25) - 1.0; 
+}
+
+
+float billow2D(int octaves, vec2 xy, float frequency, float persistence) {
+	float amplitude = 1.0;
+	float lacunarity = 2.0;
+	float value = 0.0;
+   // Get the coherent-noise value from the input value and add it to the final result.
+	for (int i=0; i < octaves; i++) {
+		float signal = cnoise2(xy*frequency);
+		signal = 2.0 * abs(signal) - 1.0;
+		value += signal * amplitude;
+		frequency *= lacunarity;
+		amplitude *= persistence;
+	}
+	return value + 0.5;
+}
+
+
+float myVoronoi (vec2 pos) {
+	
+  int xInt = (pos.x > 0.0? int(pos.x): int(pos.x - 1.0));
+  int yInt = (pos.y > 0.0? int(pos.y): int(pos.y - 1.0));
+
+  vec2 candidate;
+  float minDist = 9999999.0;
+
+	for (int yCur = yInt - 2; yCur <= yInt + 2; yCur++) {
+		for (int xCur = xInt - 2; xCur <= xInt + 2; xCur++) {
+			vec2 seedPos = vec2(xCur,yCur) + random2(vec2(xCur,yCur));
+
+			float dist = distance(seedPos, pos);
+			 if (dist < minDist) {
+				// This seed point is closer to any others found so far, so record it.
+				minDist = dist;
+				candidate = seedPos;
+			}
+		}
+	}
+	
+	
+	
+	return minDist -0.5 + random2(floor(candidate)).x;
+		
+		
+		
+		
 }
 
 

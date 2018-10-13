@@ -16,7 +16,6 @@ out vec2 samplePoint0;
 
 void main()
 {
-	//gl_Position = orthoMatrix * vec4(position,0,1);
 	gl_Position = vec4(position,0,1);
 	texCoord0 = texCoord;
 	

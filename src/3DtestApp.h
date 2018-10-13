@@ -160,6 +160,8 @@ public:
 	unsigned int hWireMVP;
 	unsigned int hWireColour;
 	std::vector<glm::vec3> wireCubeVerts;
+
+	glm::vec3 oldPos;//<Temporary clunky way to track player movement for terrain2. Tidy!
 };
 
 const float yawAng = 0.22f;

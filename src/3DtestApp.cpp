@@ -36,6 +36,7 @@ C3DtestApp::C3DtestApp() {
 	tmp = false;
 	physCube = NULL;
 	shownChoice = false;
+	oldPos = vec3(0);
 }
 
 void C3DtestApp::onStart() {
@@ -269,6 +270,9 @@ void C3DtestApp::onStart() {
 		texCompositor.hide(true);
 	if (appMode != textMode)
 		worldUI.hide(true);
+
+
+	
 
 	return;
 }
@@ -732,6 +736,9 @@ void C3DtestApp::advance(Tdirection direction) {
 		terrain.advance(direction); 
 		onTerrainAdvance(direction);
 	}
+
+	///////////////////////////////////////////////////////////////////////////////////
+	terrain2.playerWalk(movement);
 }
 
 /** Called every frame. Mainly use this to scroll terrain if we're moving in first-person mode*/
@@ -761,6 +768,11 @@ void C3DtestApp::Update() {
 		vec3 pos;
 		pos = playerObject.getPos();
 		bvec3 outsideChunkBoundary = glm::greaterThan(glm::abs(pos), vec3(chunkDist));
+
+		/////////////////////////////////////////////////////////////
+		vec3 dPos = pos - oldPos;
+		oldPos = pos;
+		terrain2.playerWalk(dPos);
 
 
 		//has viewpoint moved beyond the length of one chunk?
