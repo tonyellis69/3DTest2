@@ -35,6 +35,15 @@ vec2 random2( vec2 p ) {
     return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
 }
 
+vec3 hash3( vec2 p ){
+    vec3 q = vec3( dot(p,vec2(127.1,311.7)), 
+				   dot(p,vec2(269.5,183.3)), 
+				   dot(p,vec2(419.2,371.9)) );
+	return fract(sin(q)*43758.5453);
+}
+
+
+
 // Modulo 289 without a division (only multiplications)
 vec3 mod289(vec3 x) {
   return x - floor(x * (1.0 / 289.0)) * 289.0;
@@ -505,19 +514,22 @@ float billow2D(int octaves, vec2 xy, float frequency, float persistence) {
 }
 
 
-float myVoronoi (vec2 pos) {
+vec3 myVoronoi (vec2 pos2) {
+
+	vec3 pos = vec3(pos2,0);
 	
   int xInt = (pos.x > 0.0? int(pos.x): int(pos.x - 1.0));
   int yInt = (pos.y > 0.0? int(pos.y): int(pos.y - 1.0));
+   int zInt = (pos.z > 0.0? int(pos.z): int(pos.z- 1.0));
 
-  vec2 candidate;
+  vec3 candidate;
   float minDist = 9999999.0;
-
+	for (int zCur = zInt - 2; zCur <= zInt + 2; zCur++) {
 	for (int yCur = yInt - 2; yCur <= yInt + 2; yCur++) {
 		for (int xCur = xInt - 2; xCur <= xInt + 2; xCur++) {
-			vec2 seedPos = vec2(xCur,yCur) + random2(vec2(xCur,yCur));
+			vec3 seedPos = vec3(xCur,yCur,zCur) + hash3(vec2(xCur,yCur));
 
-			float dist = distance(seedPos, pos);
+			float dist =   distance(seedPos, pos);
 			 if (dist < minDist) {
 				// This seed point is closer to any others found so far, so record it.
 				minDist = dist;
@@ -525,14 +537,17 @@ float myVoronoi (vec2 pos) {
 			}
 		}
 	}
+	}
 	
 	
+	vec3 result;
+	result.x = minDist ;
+	result.y =  random2(floor(candidate.xy)).x;
+	//result.z = something else
 	
-	return minDist -0.5 + random2(floor(candidate)).x;
+	return result;
 		
-		
-		
-		
+
 }
 
 

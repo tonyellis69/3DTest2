@@ -17,11 +17,15 @@ void main() {
 	src2 = src2 * 2.0 - 1.0;
 	
 	
-	float value = src1.r + src2.r;
-	
+	vec4 value = src1 + src2;
 	value = value * 0.5 + 0.5;
+	FragColour = value;
 	
-	FragColour = vec4(value,value,value,1);
+	//TO DO: should work, simpler form was:
+	
+	//float value = src1.r + src2.r;
+	//value = value * 0.5 + 0.5;
+	//FragColour = vec4(value,value,value,1);
 	
 };
 

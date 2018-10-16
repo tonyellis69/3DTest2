@@ -16,6 +16,7 @@ void main()
 	
 	vec2 unitPos = position * 0.5 + 0.5;
 	samplePoint0 = samplePos.xy + unitPos * sampleSize.xy;
+	//TO DO: remove samplePoint unless it can be found to be useful
 	
 	texCoord0 =  position * 0.5 + 0.5;
 }

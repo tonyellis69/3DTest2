@@ -9,20 +9,24 @@ out vec4 FragColour;
 
 uniform float frequency;
 
- 
+uniform bool distance;
+uniform bool randomHue;
 
 void main() {
 
-	//vec2 voronoi =  cellular(samplePoint0 * frequency);
+	vec3 result = myVoronoi(samplePoint0 * frequency);
 	
-	//float f1 = voronoi.x;
+	float colour = 0;
+	if (distance)
+		colour += result.x;
+	if (randomHue) {
+		colour += result.y;
+		if (distance)
+			colour -= 0.5; //value over 1.0 otherwise
+		
+	}
 	
-	
-	float f1 = myVoronoi(samplePoint0 * frequency);
-	
-	
-	//f1 = f1 * 0.5 + 0.5;
-	FragColour = vec4(f1,f1,f1,1 );
+	FragColour = vec4(colour,colour,colour,1 );
 	
 	
 };

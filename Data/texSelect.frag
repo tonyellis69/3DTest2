@@ -10,13 +10,13 @@ uniform sampler2D source2;
 uniform sampler2D map; 
 uniform float lowerBound;
 uniform float upperBound;
-uniform float falloff = 0.03;
+uniform float falloff = 0.5;
 
 void main() {
 	float mapValue = texture(map,texCoord0).r;
 	
 	float control =  smoothstep(lowerBound ,lowerBound + falloff,  mapValue); 
-	float control2 =  smoothstep(upperBound - falloff ,upperBound ,mapValue); 
+	float control2 =  smoothstep(upperBound  ,upperBound  + falloff,mapValue); 
 	control = control - control2;
 	
 	float colour2 = texture(source2,texCoord0).r;
