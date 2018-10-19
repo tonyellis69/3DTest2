@@ -263,11 +263,15 @@ void C3DtestApp::onStart() {
 
 	worldUI.start();
 
-	texCompositor.init(this);
-	texCompositor.compose();
+	//texCompositor.init(this);
+	//texCompositor.initTex();
+	//texCompositor.compose();
+	//texCompositor.colourise();
+	texGenUI.init(this);
+	texGenUI.compose();
 
 	if (appMode != texGenMode)
-		texCompositor.hide(true);
+		texGenUI.hide(true);
 	if (appMode != textMode)
 		worldUI.hide(true);
 

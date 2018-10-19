@@ -23,6 +23,7 @@
 #include "worldUI.h"
 
 #include "texGen\compositor.h"
+#include "texGen\texGenUI.h"
 
 extern CSuperChunk* dbgSC;
 
@@ -153,6 +154,7 @@ public:
 	CFont popHeadFont;
 
 	Compositor texCompositor;
+	CTexGenUI texGenUI;
 
 	TAppMode appMode;
 	CBuf wireCube;

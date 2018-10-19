@@ -19,8 +19,8 @@ void main() {
 	//perturb texcoords by small noise values
 	
 	vec2 distort;
-	distort.x = texCoord0.x + fbm2DclassicFreq(roughness,texCoord0 , frequency) * power;
-	distort.y = texCoord0.y + fbm2DclassicFreq(roughness,texCoord0  + vec2(4,4),frequency) * power;
+	distort.x = texCoord0.x + fbm2DclassicFreq(roughness,samplePoint0 , frequency) * power;
+	distort.y = texCoord0.y + fbm2DclassicFreq(roughness,samplePoint0  + vec2(4,4),frequency) * power;
 	
 	//use perturbed coordinates to look up source texture
 	vec4 colour = texture(source,distort);
