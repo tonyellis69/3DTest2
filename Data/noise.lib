@@ -471,27 +471,36 @@ float ridge ( float h, float offset) {
 	return h;
 }
 
+float spectralWeight(int octave, float lacunarity) {
+	float freq = 1.0;
+	float value = 0;
+	for (int i = 0; i < octave; i++) {
+		freq *= lacunarity;
+	}
+	return pow(freq, -1.0);
+}
 
 
-float ridgedMF(int octaves, vec2 xy)
+
+float ridgedMF(int octaves, vec2 xy, float frequency)
 {
 	float gain = 2.0;
 	float offset = 1;
-	float lacunarity = 2.0;
+	float lacunarity = 2.20703125;
     float value = 0.0;
-    float freq = 1.0;
 	float weight = 1.0;
     for(int i=0; i<octaves; i++) {
-		//float signal = ridge(cnoise(vec3(xy,0)*freq ), offset);  //does not work
-        float signal = ridge(cnoise2(xy*freq * 2), offset);  //works
-		//float signal = ridge(snoise(vec3(xy,0)*freq * 2), offset); //works
-		//float signal = ridge(snoise(xy*freq * 2), offset); //does not work
+		//float signal = ridge(cnoise(vec3(xy,0)*frequency ), offset);  //does not work
+		float signal = ridge(cnoise2(xy*frequency ), offset);  //works
+		//float signal = ridge(snoise(vec3(xy,0)*frequency ), offset); //works
+		//float signal = ridge(snoise(xy*frequency ), offset); //does not work
 		signal *= weight; 
 		weight = signal * gain;
 		weight = clamp(weight,0.0,1.0);
 		
-		value += signal * pow(freq, -1.0); // 1.0, 0.5, 0.25...
-		freq *= lacunarity; //1,2,4,8...
+		//value += signal * pow(frequency - 1 , -1.0); // 1.0, 0.5, 0.25...
+		value += signal * spectralWeight(i,lacunarity); 
+		frequency *= lacunarity; //1,2,4,8...
 		
     }
     return  (value * 1.25) - 1.0; 
