@@ -441,7 +441,9 @@ float fbm2DclassicFreq( int octaves, vec2 xy, float frequency) {
 	float persistence =  0.5;
 	float total = 0;
     for( int i=0; i < octaves; i++ ) {
-        total += cnoise2(xy* frequency) * amplitude;
+        total += cnoise2(xy* frequency ) * amplitude; //original, sharper, identical to libnoise
+		// total += cnoise(vec3(xy,0) * frequency ) * amplitude; //fail. too misty
+		//total += snoise(xy * frequency ) * amplitude; //fail, angular, unconventional
         frequency *= lacunarity;
         amplitude *= persistence;
     }

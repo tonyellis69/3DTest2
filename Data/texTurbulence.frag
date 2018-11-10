@@ -16,6 +16,10 @@ uniform int roughness;
 
 void main() {
 
+  vec2 adj1 = vec2(12414.0 / 65536.0,65124.0 / 65536.0);
+  vec2 adj2 = vec2(26519.0 / 65536.0, 18128.0 / 65536.0);
+
+
 	//perturb texcoords by small noise values
 	
 	vec2 distort;
@@ -23,6 +27,7 @@ void main() {
 	distort.y = texCoord0.y + fbm2DclassicFreq(roughness,samplePoint0  + vec2(4,4),frequency) * power;
 	
 	//use perturbed coordinates to look up source texture
+	distort = mod(distort,1.0);
 	vec4 colour = texture(source,distort);
 	
 	

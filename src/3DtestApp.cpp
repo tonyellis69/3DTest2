@@ -40,7 +40,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = texGenMode;// texGenMode;// terrainMode;
+	appMode = terrainMode;// texGenMode;// terrainMode;
 	
 
 	chunkCall = 0;
@@ -469,7 +469,7 @@ void C3DtestApp::keyCheck() {
 
 	if (appMode == texGenMode) {
 		if (keyNow('R')) {
-			texCompositor.compose();
+			texGenUI.compose();
 
 		}
 
