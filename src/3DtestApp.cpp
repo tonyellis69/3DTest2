@@ -40,7 +40,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = terrainMode;// texGenMode;// terrainMode;
+	appMode = texGenMode;// texGenMode;// terrainMode;
 	
 
 	chunkCall = 0;

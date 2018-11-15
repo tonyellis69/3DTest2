@@ -27,7 +27,7 @@ void main() {
 	distort.y = texCoord0.y + fbm2DclassicFreq(roughness,samplePoint0  + vec2(4,4),frequency) * power;
 	
 	//use perturbed coordinates to look up source texture
-	distort = mod(distort,1.0);
+	//distort = mod(distort,1.0);
 	vec4 colour = texture(source,distort);
 	
 	
