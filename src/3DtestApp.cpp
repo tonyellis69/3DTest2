@@ -129,6 +129,7 @@ void C3DtestApp::onStart() {
 	terrain2.addShell(0);
 	terrain2.addShell(3);
 
+	terrain2.fillShells();
 
 
 
@@ -658,16 +659,8 @@ void C3DtestApp::draw() {
 		}
 	}
 
-	renderer.setShader(wire2Shader);
-	for (int s = 0; s < terrain2.shells.size(); s++) {
-		float shellSize = terrain2.getShellSize(s);
-		glm::mat4 shape = glm::scale(glm::mat4(1), glm::vec3(shellSize));
-		glm::mat4 wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * shape;
-		wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
-		wire2Shader->setShaderValue(hWireColour, vec4(1, 0, 0, 1));
-		renderer.drawBuf(wireCube, drawLinesStrip);
-	}
 
+	terrain2TestDraw();
 
 	if (!fpsOn) {
 		Engine.Renderer.setShader(Engine.Renderer.phongShader);
@@ -678,6 +671,125 @@ void C3DtestApp::draw() {
 
 	///watch::watch1 << "text";
 }
+
+void C3DtestApp::terrain2TestDraw() {
+	
+	//draw shell wireframes
+
+	for (int shell = 0; shell < 2; shell++) {
+	//int shell = 0;
+		renderer.setShader(wire2Shader);
+		float shellSize = terrain2.getShellSize(shell);
+		glm::mat4 shape = glm::scale(glm::mat4(1), glm::vec3(shellSize));
+		glm::mat4 wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * shape;
+		wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
+		wire2Shader->setShaderValue(hWireColour, vec4(1, 0, 0, 1));
+		renderer.drawBuf(wireCube, drawLinesStrip);
+
+		//now draw boxes for each SC
+		float SCsize = terrain2.shells[shell].SCsize * 0.9f;
+		glm::mat4 SCshape = glm::scale(glm::mat4(1), glm::vec3(SCsize));
+		
+		//create world displacement matrix for each SC:
+		//find the centre point of the SC using x,y,z index * SCsize
+		//make it relative to the shell's origin
+		//that's our matrix
+		float scSize = terrain2.shells[shell].SCsize;
+		int numbShellSCs = terrain2.shells[shell].shellSCs;
+		vec3 shellPos = terrain2.shells[shell].worldSpacePos;
+		for (int x = 0; x < numbShellSCs; x+=2) {
+			for (int y = 0; y < numbShellSCs; y+=2) {
+				for (int z = 0; z < numbShellSCs; z+=2) {
+					i32vec3 origIndex = terrain2.shells[shell].scArray.element(x, y, z).origIndex;
+					vec3 SCorigin = vec3(origIndex) * scSize;
+					SCorigin += scSize * 0.5; //move orgin to centre of SC
+					SCorigin -= shellSize * 0.5; // and make relative to centre of shell
+					SCorigin += shellPos;
+					mat4 scM = translate(mat4(1), SCorigin);
+					wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
+					wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
+					wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(origIndex.x, origIndex.y, origIndex.z).colour);
+					renderer.drawBuf(wireCube, drawLinesStrip);
+				}
+
+			}
+
+		}
+
+		/*
+
+		wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * SCshape;
+		wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
+		wire2Shader->setShaderValue(hWireColour, vec4(1, 0, 0, 1));
+		renderer.drawBuf(wireCube, drawLinesStrip);
+		*/
+
+
+		//draw LoD1 chunk extent as a semi-solid boxs
+		//first, find our 6 planes
+		float n, e, s, w, u, d;
+
+		CShell* pLoD1Shell = &terrain2.shells[shell];
+		n = -pLoD1Shell->chunkExtent[0] * pLoD1Shell->chunkSize;
+		e = pLoD1Shell->chunkExtent[1] * pLoD1Shell->chunkSize;
+		s = pLoD1Shell->chunkExtent[2] * pLoD1Shell->chunkSize;
+		w = -pLoD1Shell->chunkExtent[3] * pLoD1Shell->chunkSize;
+		u = pLoD1Shell->chunkExtent[4] * pLoD1Shell->chunkSize;
+		d = -pLoD1Shell->chunkExtent[5] * pLoD1Shell->chunkSize;
+
+		//create the corner verts
+		vec3 A(w, u, s); //A
+		vec3 B(e, u, s); //B
+		vec3 C(e, d, s); //C
+		vec3 D(w, d, s); //D
+		vec3 E(w, u, n); //E
+		vec3 F(e, u, n); //F
+		vec3 G(e, d, n); //G
+		vec3 H(w, d, n); //H
+
+		vector<vec3> verts = { A, B, C, D, //front face
+			B, F, G, C, //right face
+			F, E, H, G, //back face
+			E, A, D, H, //left face
+			E, F, B, A, //top face
+			D, C, G, H }; //bottom face
+
+		vector<vec3> normals(24);
+		normals[0] = normals[1] = normals[2] = normals[3] = glm::vec3(0, 0, 1);
+		normals[4] = normals[5] = normals[6] = normals[7] = glm::vec3(1, 0, 0);
+		normals[8] = normals[9] = normals[10] = normals[11] = glm::vec3(0, 0, -1);
+		normals[12] = normals[13] = normals[14] = normals[15] = glm::vec3(-1, 0, 0);
+		normals[16] = normals[17] = normals[18] = normals[19] = glm::vec3(0, 1, 0);
+		normals[20] = normals[21] = normals[22] = normals[23] = glm::vec3(0, -1, 0);
+
+		//create index
+		vector<unsigned int> index = { 1, 0, 3, 1, 3, 2,
+				5, 4, 7, 5, 7, 6,
+				9, 8, 11, 9, 11, 10,
+				13, 12, 15, 13, 15, 14,
+				16, 19, 18, 18, 17, 16,
+				21, 20, 23, 21, 23, 22 };
+
+		CBuf box;
+
+		unsigned int nVerts = verts.size();
+		//	box.storeVertexes(verts.data(),sizeof(vec3) * nVerts, nVerts);
+		box.storeVertexes(verts, normals);
+		box.storeIndex(index.data(), index.size());
+		box.storeLayout(3, 3, 0, 0);
+
+		mat3 tmp;
+		mat4 mvp = Engine.getCurrentCamera()->clipMatrix;
+		Engine.Renderer.setShader(Engine.Renderer.phongShader);
+		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hNormalModelToCameraMatrix, tmp); //why am I doing this?
+		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP, mvp);
+		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hColour, vec4(1, 0, 0, 0.25));
+		Engine.Renderer.drawBuf(box, drawTris);
+	}
+}
+
+
+
 
 
 
@@ -701,7 +813,7 @@ void C3DtestApp::advance(Tdirection direction) {
 	}
 
 	//Move terrain in given direction
-	vec3 movement = dir *  float(10.0f);  //was 1
+	vec3 movement = dir *  float(1.0f);  //was 10
 	//terrain->translate(movement);
 	//vec3 pos = terrain->getPos();
 	//terrain->chunkOrigin[3] += vec4(movement, 0);
@@ -742,7 +854,8 @@ void C3DtestApp::advance(Tdirection direction) {
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
-	terrain2.playerWalk(movement);
+	vec3 playerMovement = dirToVec(direction) * 1.0f;  
+	terrain2.playerWalk(playerMovement);
 }
 
 /** Called every frame. Mainly use this to scroll terrain if we're moving in first-person mode*/
@@ -853,7 +966,7 @@ void C3DtestApp::initWireSCs() {
 	wire2Shader = renderer.createShader("wire2");
 	hWireMVP = wire2Shader->getUniformHandle("mvpMatrix");
 	hWireColour = wire2Shader->getUniformHandle("colour");
-	wireCubeVerts = verts;
+	//wireCubeVerts = verts;
 }
 
 /**	Called when terrain advances - ie, moves. */

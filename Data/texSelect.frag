@@ -19,11 +19,11 @@ void main() {
 	float control2 =  smoothstep(upperBound  ,upperBound  + falloff,mapValue); 
 	control = control - control2;
 	
-	float colour2 = texture(source2,texCoord0).r;
-	float colour1 = texture(source1,texCoord0).r;
+	vec4 colour2 = texture(source2,texCoord0);
+	vec4 colour1 = texture(source1,texCoord0);
 
-	float colour = mix(colour1,colour2,control);
+	vec4 colour = mix(colour1,colour2,control);
 	
-	FragColour = vec4(colour,colour,colour,1);	
+	FragColour = colour; //vec4(colour,colour,colour,1);	
 };
 

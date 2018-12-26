@@ -26,6 +26,14 @@ void main() {
 		
 	}
 	
+	//if (colour < 0.25)
+	//	colour = 1;
+	//else
+	//	colour = 0;
+	
+
+	
+	
 	FragColour = vec4(colour,colour,colour,1 );
 	
 	
