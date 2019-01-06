@@ -40,7 +40,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = texGenMode;// texGenMode;// terrainMode;
+	appMode = terrainMode;// texGenMode;// terrainMode;
 	
 
 	chunkCall = 0;
@@ -124,6 +124,8 @@ void C3DtestApp::onStart() {
 
 	////////////NEW TERRAIN STUFF
 	int LoD1shellSCs = 5;
+	terrain2.setSampleSpacePosition(terrain.sampleOffset);
+	terrain2.setWorldScale(2560);
 	terrain2.createLoD1shell(cubeSize, cubesPerChunkEdge, chunksPerSuperChunkEdge, LoD1shellSCs);
 	terrain2.addShell(0);
 	terrain2.addShell(0);
@@ -678,10 +680,12 @@ void C3DtestApp::terrain2TestDraw() {
 
 	for (int shell = 0; shell < 2; shell++) {
 	//int shell = 0;
+		vec3 shellWorldspacePos = terrain2.shells[shell].worldSpacePos;
 		renderer.setShader(wire2Shader);
 		float shellSize = terrain2.getShellSize(shell);
 		glm::mat4 shape = glm::scale(glm::mat4(1), glm::vec3(shellSize));
-		glm::mat4 wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * shape;
+		mat4 scM = translate(mat4(1), shellWorldspacePos);
+		glm::mat4 wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * shape;
 		wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 		wire2Shader->setShaderValue(hWireColour, vec4(1, 0, 0, 1));
 		renderer.drawBuf(wireCube, drawLinesStrip);
@@ -695,17 +699,16 @@ void C3DtestApp::terrain2TestDraw() {
 		//make it relative to the shell's origin
 		//that's our matrix
 		float scSize = terrain2.shells[shell].SCsize;
-		int numbShellSCs = terrain2.shells[shell].shellSCs;
-		vec3 shellPos = terrain2.shells[shell].worldSpacePos;
-		for (int x = 0; x < numbShellSCs; x+=2) {
-			for (int y = 0; y < numbShellSCs; y+=2) {
-				for (int z = 0; z < numbShellSCs; z+=2) {
+		int numbShellSCs = terrain2.shells[shell].shellSCs;	
+		for (int x = 0; x < numbShellSCs; x+=1) {
+			for (int y = 0; y < numbShellSCs; y+=1) {
+				for (int z = 0; z < numbShellSCs; z+=1) {
 					i32vec3 origIndex = terrain2.shells[shell].scArray.element(x, y, z).origIndex;
 					vec3 SCorigin = vec3(origIndex) * scSize;
 					SCorigin += scSize * 0.5; //move orgin to centre of SC
 					SCorigin -= shellSize * 0.5; // and make relative to centre of shell
-					SCorigin += shellPos;
-					mat4 scM = translate(mat4(1), SCorigin);
+					SCorigin += shellWorldspacePos; //and then relative to shell's worldspace position
+					scM = translate(mat4(1), SCorigin);
 					wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
 					wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 					wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(origIndex.x, origIndex.y, origIndex.z).colour);
@@ -780,11 +783,13 @@ void C3DtestApp::terrain2TestDraw() {
 
 		mat3 tmp;
 		mat4 mvp = Engine.getCurrentCamera()->clipMatrix;
+		scM = translate(mat4(1), shellWorldspacePos);
+		mvp = mvp * scM;
 		Engine.Renderer.setShader(Engine.Renderer.phongShader);
 		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hNormalModelToCameraMatrix, tmp); //why am I doing this?
 		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP, mvp);
 		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hColour, vec4(1, 0, 0, 0.25));
-		Engine.Renderer.drawBuf(box, drawTris);
+		//Engine.Renderer.drawBuf(box, drawTris);
 	}
 }
 

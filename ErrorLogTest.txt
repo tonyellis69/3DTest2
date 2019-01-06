@@ -1,0 +1,31 @@
+
+BaseApp constructor.
+
+Using GLEW 1.12.0
+OpenGL version: 4.6.0 NVIDIA 399.07
+Has NPOT
+glsl version: 4.60 NVIDIA
+
+Total SCs 680
+Passed SCs 121
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: adding to face layer.
+Advance shell 2: adding to face layer.
+Advance shell 3: adding to face layer.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+shell 0 normally returned to 0
+	shell 1 displaced
+	shell 2 displaced
+	shell 3 displaced
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: scrolling.
+shell 1 normally returned to 0 !!!!!!!!!!!!!!!needs to happen
+Advance shell 2: suffient terrain, returning.
