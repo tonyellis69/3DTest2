@@ -32,7 +32,7 @@ extern float yAdj;
 
 enum TAppMode {terrainMode, textMode, texGenMode};
 
-class C3DtestApp : public  CBaseApp {
+class C3DtestApp : public  CBaseApp , public ITerrainCallback {
 public:
 	C3DtestApp();
 	void OnMouseWheelMsg(float xoffset, float yoffset);
@@ -59,7 +59,8 @@ public:
 	void vmUpdate();
 	//void showChoice();
 	void HandleUImsg(CGUIbase& Control, CMessage& Message);
-//	void removeChoices();
+
+	bool scIntersectionCheckCallback(glm::vec3& pos, float scSize);
 
 	
 	string dataPath; ///<Filepath to the Data folder
@@ -165,6 +166,8 @@ public:
 	//std::vector<glm::vec3> wireCubeVerts;
 
 	glm::vec3 oldPos;//<Temporary clunky way to track player movement for terrain2. Tidy!
+
+	CModel2 tmpModel2;
 };
 
 const float yawAng = 0.22f;

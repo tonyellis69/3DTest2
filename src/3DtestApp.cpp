@@ -40,7 +40,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = terrainMode;// texGenMode;// terrainMode;
+	appMode = texGenMode;// texGenMode;// terrainMode;
 	
 
 	chunkCall = 0;
@@ -122,10 +122,13 @@ void C3DtestApp::onStart() {
 
 	terrain.createAllChunks();
 
+
 	////////////NEW TERRAIN STUFF
+	shellTotalVerts = terrain.shellTotalVerts;
 	int LoD1shellSCs = 5;
 	terrain2.setSampleSpacePosition(terrain.sampleOffset);
 	terrain2.setWorldScale(2560);
+	terrain2.setCallbackApp(this);
 	terrain2.createLoD1shell(cubeSize, cubesPerChunkEdge, chunksPerSuperChunkEdge, LoD1shellSCs);
 	terrain2.addShell(0);
 	terrain2.addShell(0);
@@ -278,8 +281,12 @@ void C3DtestApp::onStart() {
 	if (appMode != textMode)
 		worldUI.hide(true);
 
+	tmpModel2.loadMesh(shape::cubeMesh());
+	tmpModel2.setPos(vec3(0));
 
-	
+	tmpModel2.scale(vec3(3000, 3000, 3000));
+	tmpModel2.rotate(45, vec3(1, 0, 0));
+
 
 	return;
 }
@@ -578,12 +585,15 @@ void C3DtestApp::onResize(int width, int height) {
 */
 
 void C3DtestApp::draw() {
+	
 	if (appMode != terrainMode) {
 		Engine.Renderer.setBackColour((rgba&)uialmostBlack);
 		Engine.Renderer.setBackColour((rgba&)white);
 		Engine.Renderer.clearFrame();
 		return;
 	}
+
+	///////////////////////////tmpModel2.draw();
 
 	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
 	terrain.updateVisibleSClist(fpsCam);
@@ -703,6 +713,8 @@ void C3DtestApp::terrain2TestDraw() {
 		for (int x = 0; x < numbShellSCs; x+=1) {
 			for (int y = 0; y < numbShellSCs; y+=1) {
 				for (int z = 0; z < numbShellSCs; z+=1) {
+					if (terrain2.shells[shell].scArray.element(x, y, z).isEmpty)
+						continue;
 					i32vec3 origIndex = terrain2.shells[shell].scArray.element(x, y, z).origIndex;
 					vec3 SCorigin = vec3(origIndex) * scSize;
 					SCorigin += scSize * 0.5; //move orgin to centre of SC
@@ -1103,11 +1115,35 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
 }
 
-/** Remove the menu of options from the text window. */
-/*
-void C3DtestApp::removeChoices() {
-	textWindow->removeHotText(optionHotText);
-} */
+/** Returns true if terrain intersects the given cube. */
+bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & pos, float scSize) {
+	Engine.Renderer.setShader(terrain.chunkCheckShader);
+	//find nwcorner in sample space
+	vec3 nwSamplePos = pos;
+	float LoDscale = 0.00390625;// 0.007812500;// 0.00390625;// scSize / 2.0f; // 0.0312500000; //seems to be sample distance covered by a MC cube
+	LoDscale = scSize;
+	//float LoDscale = (SC.sampleStep) / (cubesPerChunkEdge);
+	terrain.chunkCheckShader->setShaderValue(terrain.hNWsamplePos, nwSamplePos);
+	terrain.chunkCheckShader->setShaderValue(terrain.hLoDscale, LoDscale);
+
+	//cerr << "\n" << SC.tmpIndex.x << " " << SC.tmpIndex.y << " " << SC.tmpIndex.z << " "
+	//	<< SC.nwSamplePos.x << " " << SC.nwSamplePos.y << " " << SC.nwSamplePos.z;
+
+
+
+	Engine.Renderer.initQuery();
+	terrain.chunkShell->drawNew();
+	unsigned int primitives = Engine.Renderer.query();
+
+	//TO DO: chunkshell is coarse, create a SCshell with more points
+	if ((primitives == 0) || (primitives == shellTotalVerts)) {
+		return true; //outside surface
+	}
+
+	return false;
+}
+
+
 
 /** Trap mousewheel events for our own use. */
 void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {

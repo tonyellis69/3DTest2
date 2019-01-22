@@ -133,6 +133,12 @@ bool CGameTerrain::superChunkIsEmpty(CSuperChunk & SC) {
 	chunkCheckShader->setShaderValue(hNWsamplePos,SC.nwSamplePos);
 	chunkCheckShader->setShaderValue(hLoDscale,LoDscale);
 
+	//cerr << "\nLoD " << SC.LoD << " SC sampleStep " << SC.sampleStep << " LoDscale " << LoDscale;
+
+	//if (SC.LoD == 1)
+	//	cerr << "\n" << SC.tmpIndex.x << " " << SC.tmpIndex.y << " " << SC.tmpIndex.z << " "
+	//	<< SC.nwSamplePos.x << " " << SC.nwSamplePos.y << " " << SC.nwSamplePos.z;
+
 	//unsigned int primitives = Engine.drawModelCount(*chunkShell);
 
 	pRenderer->initQuery();
@@ -141,10 +147,12 @@ bool CGameTerrain::superChunkIsEmpty(CSuperChunk & SC) {
 
 	//TO DO: chunkshell is coarse, create a SCshell with more points
 	if ((primitives == 0)  ||  (primitives == shellTotalVerts ) ) {
+	//	cerr << " is empty";
 		return true; //outside surface
 	}
 	SC.nonEmpty = true;
 	passedSCs++;
+	//cerr << "is full.";
 	return false;
 
 }

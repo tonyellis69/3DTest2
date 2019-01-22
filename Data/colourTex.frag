@@ -8,7 +8,7 @@ out vec4 FragColour;
 uniform sampler2D source; 
 uniform sampler1D palette; 
 uniform int selectedShade;
-float falloff = 0.05;
+uniform float selectionFalloff;
 
 void main() {
 	vec4 src = texture(source,texCoord0);
@@ -16,7 +16,7 @@ void main() {
 	
 	if (selectedShade != -1) {
 		float shade = float(selectedShade)/255.0;
-		if (src.r > shade -falloff && src.r < shade +falloff) {
+		if (src.r > shade -selectionFalloff && src.r < shade +selectionFalloff) {
 			colour = vec4(1.0 - colour.r, 1.0 - colour.g, 1.0 - colour.b,1);
 			//colour.r = 1.0;
 		}
