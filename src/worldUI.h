@@ -3,7 +3,7 @@
 //#include "3DtestApp.h"
 #include "vm.h"
 #include "UI\GUIrichText.h"
-#include "UI\GUIpopMenu.h"
+//#include "UI\GUIpopMenu.h"
 #include "UI\GUIrichTextPanel.h"
 #include "localHotList.h"
 
