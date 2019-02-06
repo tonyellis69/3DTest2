@@ -12,7 +12,7 @@ void main() {
 	vec4 src1 = texture(source,texCoord0);
 	vec4 src2 = texture(source2,texCoord0);
 	
-	vec4 blend = mix(src1,src2,src2.a);
+	vec4 blend = mix(src1,src2,src2.a - src1.a);
 	
 
 	FragColour = blend;

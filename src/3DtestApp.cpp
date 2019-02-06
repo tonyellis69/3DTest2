@@ -136,7 +136,7 @@ void C3DtestApp::onStart() {
 
 	terrain2.fillShells();
 
-
+	terrain2.getInnerBounds(1);
 
 
 	t = Engine.Time.milliseconds() - t;
@@ -1149,11 +1149,9 @@ bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & pos, float scSize) {
 void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	int x, y;
 	win.getMousePos(x, y);
-	int delta = yoffset;
+	int delta = int(yoffset);
 	int keyState = 0; //can get key state if ever needed
-	//if (GUIroot.IsOnControl(GUIroot, x, y)) {//checks that the mouse isn't outside our app altogether
-	//		worldUI.mainTextPanel->MouseWheelMsg(x, y, delta, keyState);
-	//}
+
 	CBaseApp::OnMouseWheelMsg(xoffset, yoffset);
 }
 
