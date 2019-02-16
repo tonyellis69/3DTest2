@@ -6,38 +6,901 @@ OpenGL version: 4.6.0 NVIDIA 399.07
 Has NPOT
 glsl version: 4.60 NVIDIA
 
+4 -1.35023 4
+4 -1.35023 4.5
+4 -1.35023 5
+4 -1.35023 5.5
+4 -1.35023 6
+4 -1.35023 6.5
+4 -1.35023 7
+4 -1.35023 7.5
+4 -0.850234 4
+4 -0.850234 4.5
+4 -0.850234 5
+4 -0.850234 5.5
+4 -0.850234 6
+4 -0.850234 6.5
+4 -0.850234 7
+4 -0.850234 7.5
+4 -0.350234 4
+4 -0.350234 4.5
+4 -0.350234 5
+4 -0.350234 5.5
+4 -0.350234 6
+4 -0.350234 6.5
+4 -0.350234 7
+4 -0.350234 7.5
+4 0.149766 4
+4 0.149766 4.5
+4 0.149766 5
+4 0.149766 5.5
+4 0.149766 6
+4 0.149766 6.5
+4 0.149766 7
+4 0.149766 7.5
+4 0.649766 4
+4 0.649766 4.5
+4 0.649766 5
+4 0.649766 5.5
+4 0.649766 6
+4 0.649766 6.5
+4 0.649766 7
+4 0.649766 7.5
+4 1.14977 4
+4 1.14977 4.5
+4 1.14977 5
+4 1.14977 5.5
+4 1.14977 6
+4 1.14977 6.5
+4 1.14977 7
+4 1.14977 7.5
+4 1.64977 4
+4 1.64977 4.5
+4 1.64977 5
+4 1.64977 5.5
+4 1.64977 6
+4 1.64977 6.5
+4 1.64977 7
+4 1.64977 7.5
+4 2.14977 4
+4 2.14977 4.5
+4 2.14977 5
+4 2.14977 5.5
+4 2.14977 6
+4 2.14977 6.5
+4 2.14977 7
+4 2.14977 7.5
+4.5 -1.35023 4
+4.5 -1.35023 4.5
+4.5 -1.35023 5
+4.5 -1.35023 5.5
+4.5 -1.35023 6
+4.5 -1.35023 6.5
+4.5 -1.35023 7
+4.5 -1.35023 7.5
+4.5 -0.850234 4
+4.5 -0.850234 4.5
+4.5 -0.850234 5
+4.5 -0.850234 5.5
+4.5 -0.850234 6
+4.5 -0.850234 6.5
+4.5 -0.850234 7
+4.5 -0.850234 7.5
+4.5 -0.350234 4
+4.5 -0.350234 4.5
+4.5 -0.350234 5
+4.5 -0.350234 5.5
+4.5 -0.350234 6
+4.5 -0.350234 6.5
+4.5 -0.350234 7
+4.5 -0.350234 7.5
+4.5 0.149766 4
+4.5 0.149766 4.5
+4.5 0.149766 5
+4.5 0.149766 5.5
+4.5 0.149766 6
+4.5 0.149766 6.5
+4.5 0.149766 7
+4.5 0.149766 7.5
+4.5 0.649766 4
+4.5 0.649766 4.5
+4.5 0.649766 5
+4.5 0.649766 5.5
+4.5 0.649766 6
+4.5 0.649766 6.5
+4.5 0.649766 7
+4.5 0.649766 7.5
+4.5 1.14977 4
+4.5 1.14977 4.5
+4.5 1.14977 5
+4.5 1.14977 5.5
+4.5 1.14977 6
+4.5 1.14977 6.5
+4.5 1.14977 7
+4.5 1.14977 7.5
+4.5 1.64977 4
+4.5 1.64977 4.5
+4.5 1.64977 5
+4.5 1.64977 5.5
+4.5 1.64977 6
+4.5 1.64977 6.5
+4.5 1.64977 7
+4.5 1.64977 7.5
+4.5 2.14977 4
+4.5 2.14977 4.5
+4.5 2.14977 5
+4.5 2.14977 5.5
+4.5 2.14977 6
+4.5 2.14977 6.5
+4.5 2.14977 7
+4.5 2.14977 7.5
+5 -1.35023 4
+5 -1.35023 4.5
+5 -1.35023 5
+5 -1.35023 5.5
+5 -1.35023 6
+5 -1.35023 6.5
+5 -1.35023 7
+5 -1.35023 7.5
+5 -0.850234 4
+5 -0.850234 4.5
+5 -0.850234 5
+5 -0.850234 5.5
+5 -0.850234 6
+5 -0.850234 6.5
+5 -0.850234 7
+5 -0.850234 7.5
+5 -0.350234 4
+5 -0.350234 4.5
+5 -0.350234 5
+5 -0.350234 5.5
+5 -0.350234 6
+5 -0.350234 6.5
+5 -0.350234 7
+5 -0.350234 7.5
+5 0.149766 4
+5 0.149766 4.5
+5 0.149766 5
+5 0.149766 5.5
+5 0.149766 6
+5 0.149766 6.5
+5 0.149766 7
+5 0.149766 7.5
+5 0.649766 4
+5 0.649766 4.5
+5 0.649766 5
+5 0.649766 5.5
+5 0.649766 6
+5 0.649766 6.5
+5 0.649766 7
+5 0.649766 7.5
+5 1.14977 4
+5 1.14977 4.5
+5 1.14977 5
+5 1.14977 5.5
+5 1.14977 6
+5 1.14977 6.5
+5 1.14977 7
+5 1.14977 7.5
+5 1.64977 4
+5 1.64977 4.5
+5 1.64977 5
+5 1.64977 5.5
+5 1.64977 6
+5 1.64977 6.5
+5 1.64977 7
+5 1.64977 7.5
+5 2.14977 4
+5 2.14977 4.5
+5 2.14977 5
+5 2.14977 5.5
+5 2.14977 6
+5 2.14977 6.5
+5 2.14977 7
+5 2.14977 7.5
+5.5 -1.35023 4
+5.5 -1.35023 4.5
+5.5 -1.35023 5
+5.5 -1.35023 5.5
+5.5 -1.35023 6
+5.5 -1.35023 6.5
+5.5 -1.35023 7
+5.5 -1.35023 7.5
+5.5 -0.850234 4
+5.5 -0.850234 4.5
+5.5 -0.850234 5
+5.5 -0.850234 5.5
+5.5 -0.850234 6
+5.5 -0.850234 6.5
+5.5 -0.850234 7
+5.5 -0.850234 7.5
+5.5 -0.350234 4
+5.5 -0.350234 4.5
+5.5 -0.350234 5
+5.5 -0.350234 5.5
+5.5 -0.350234 6
+5.5 -0.350234 6.5
+5.5 -0.350234 7
+5.5 -0.350234 7.5
+5.5 0.149766 4
+5.5 0.149766 4.5
+5.5 0.149766 5
+5.5 0.149766 6.5
+5.5 0.149766 7
+5.5 0.149766 7.5
+5.5 0.649766 4
+5.5 0.649766 4.5
+5.5 0.649766 5
+5.5 0.649766 6.5
+5.5 0.649766 7
+5.5 0.649766 7.5
+5.5 1.14977 4
+5.5 1.14977 4.5
+5.5 1.14977 5
+5.5 1.14977 5.5
+5.5 1.14977 6
+5.5 1.14977 6.5
+5.5 1.14977 7
+5.5 1.14977 7.5
+5.5 1.64977 4
+5.5 1.64977 4.5
+5.5 1.64977 5
+5.5 1.64977 5.5
+5.5 1.64977 6
+5.5 1.64977 6.5
+5.5 1.64977 7
+5.5 1.64977 7.5
+5.5 2.14977 4
+5.5 2.14977 4.5
+5.5 2.14977 5
+5.5 2.14977 5.5
+5.5 2.14977 6
+5.5 2.14977 6.5
+5.5 2.14977 7
+5.5 2.14977 7.5
+6 -1.35023 4
+6 -1.35023 4.5
+6 -1.35023 5
+6 -1.35023 5.5
+6 -1.35023 6
+6 -1.35023 6.5
+6 -1.35023 7
+6 -1.35023 7.5
+6 -0.850234 4
+6 -0.850234 4.5
+6 -0.850234 5
+6 -0.850234 5.5
+6 -0.850234 6
+6 -0.850234 6.5
+6 -0.850234 7
+6 -0.850234 7.5
+6 -0.350234 4
+6 -0.350234 4.5
+6 -0.350234 5
+6 -0.350234 5.5
+6 -0.350234 6
+6 -0.350234 6.5
+6 -0.350234 7
+6 -0.350234 7.5
+6 0.149766 4
+6 0.149766 4.5
+6 0.149766 5
+6 0.149766 6.5
+6 0.149766 7
+6 0.149766 7.5
+6 0.649766 4
+6 0.649766 4.5
+6 0.649766 5
+6 0.649766 6.5
+6 0.649766 7
+6 0.649766 7.5
+6 1.14977 4
+6 1.14977 4.5
+6 1.14977 5
+6 1.14977 5.5
+6 1.14977 6
+6 1.14977 6.5
+6 1.14977 7
+6 1.14977 7.5
+6 1.64977 4
+6 1.64977 4.5
+6 1.64977 5
+6 1.64977 5.5
+6 1.64977 6
+6 1.64977 6.5
+6 1.64977 7
+6 1.64977 7.5
+6 2.14977 4
+6 2.14977 4.5
+6 2.14977 5
+6 2.14977 5.5
+6 2.14977 6
+6 2.14977 6.5
+6 2.14977 7
+6 2.14977 7.5
+6.5 -1.35023 4
+6.5 -1.35023 4.5
+6.5 -1.35023 5
+6.5 -1.35023 5.5
+6.5 -1.35023 6
+6.5 -1.35023 6.5
+6.5 -1.35023 7
+6.5 -1.35023 7.5
+6.5 -0.850234 4
+6.5 -0.850234 4.5
+6.5 -0.850234 5
+6.5 -0.850234 5.5
+6.5 -0.850234 6
+6.5 -0.850234 6.5
+6.5 -0.850234 7
+6.5 -0.850234 7.5
+6.5 -0.350234 4
+6.5 -0.350234 4.5
+6.5 -0.350234 5
+6.5 -0.350234 5.5
+6.5 -0.350234 6
+6.5 -0.350234 6.5
+6.5 -0.350234 7
+6.5 -0.350234 7.5
+6.5 0.149766 4
+6.5 0.149766 4.5
+6.5 0.149766 5
+6.5 0.149766 5.5
+6.5 0.149766 6
+6.5 0.149766 6.5
+6.5 0.149766 7
+6.5 0.149766 7.5
+6.5 0.649766 4
+6.5 0.649766 4.5
+6.5 0.649766 5
+6.5 0.649766 5.5
+6.5 0.649766 6
+6.5 0.649766 6.5
+6.5 0.649766 7
+6.5 0.649766 7.5
+6.5 1.14977 4
+6.5 1.14977 4.5
+6.5 1.14977 5
+6.5 1.14977 5.5
+6.5 1.14977 6
+6.5 1.14977 6.5
+6.5 1.14977 7
+6.5 1.14977 7.5
+6.5 1.64977 4
+6.5 1.64977 4.5
+6.5 1.64977 5
+6.5 1.64977 5.5
+6.5 1.64977 6
+6.5 1.64977 6.5
+6.5 1.64977 7
+6.5 1.64977 7.5
+6.5 2.14977 4
+6.5 2.14977 4.5
+6.5 2.14977 5
+6.5 2.14977 5.5
+6.5 2.14977 6
+6.5 2.14977 6.5
+6.5 2.14977 7
+6.5 2.14977 7.5
+7 -1.35023 4
+7 -1.35023 4.5
+7 -1.35023 5
+7 -1.35023 5.5
+7 -1.35023 6
+7 -1.35023 6.5
+7 -1.35023 7
+7 -1.35023 7.5
+7 -0.850234 4
+7 -0.850234 4.5
+7 -0.850234 5
+7 -0.850234 5.5
+7 -0.850234 6
+7 -0.850234 6.5
+7 -0.850234 7
+7 -0.850234 7.5
+7 -0.350234 4
+7 -0.350234 4.5
+7 -0.350234 5
+7 -0.350234 5.5
+7 -0.350234 6
+7 -0.350234 6.5
+7 -0.350234 7
+7 -0.350234 7.5
+7 0.149766 4
+7 0.149766 4.5
+7 0.149766 5
+7 0.149766 5.5
+7 0.149766 6
+7 0.149766 6.5
+7 0.149766 7
+7 0.149766 7.5
+7 0.649766 4
+7 0.649766 4.5
+7 0.649766 5
+7 0.649766 5.5
+7 0.649766 6
+7 0.649766 6.5
+7 0.649766 7
+7 0.649766 7.5
+7 1.14977 4
+7 1.14977 4.5
+7 1.14977 5
+7 1.14977 5.5
+7 1.14977 6
+7 1.14977 6.5
+7 1.14977 7
+7 1.14977 7.5
+7 1.64977 4
+7 1.64977 4.5
+7 1.64977 5
+7 1.64977 5.5
+7 1.64977 6
+7 1.64977 6.5
+7 1.64977 7
+7 1.64977 7.5
+7 2.14977 4
+7 2.14977 4.5
+7 2.14977 5
+7 2.14977 5.5
+7 2.14977 6
+7 2.14977 6.5
+7 2.14977 7
+7 2.14977 7.5
+7.5 -1.35023 4
+7.5 -1.35023 4.5
+7.5 -1.35023 5
+7.5 -1.35023 5.5
+7.5 -1.35023 6
+7.5 -1.35023 6.5
+7.5 -1.35023 7
+7.5 -1.35023 7.5
+7.5 -0.850234 4
+7.5 -0.850234 4.5
+7.5 -0.850234 5
+7.5 -0.850234 5.5
+7.5 -0.850234 6
+7.5 -0.850234 6.5
+7.5 -0.850234 7
+7.5 -0.850234 7.5
+7.5 -0.350234 4
+7.5 -0.350234 4.5
+7.5 -0.350234 5
+7.5 -0.350234 5.5
+7.5 -0.350234 6
+7.5 -0.350234 6.5
+7.5 -0.350234 7
+7.5 -0.350234 7.5
+7.5 0.149766 4
+7.5 0.149766 4.5
+7.5 0.149766 5
+7.5 0.149766 5.5
+7.5 0.149766 6
+7.5 0.149766 6.5
+7.5 0.149766 7
+7.5 0.149766 7.5
+7.5 0.649766 4
+7.5 0.649766 4.5
+7.5 0.649766 5
+7.5 0.649766 5.5
+7.5 0.649766 6
+7.5 0.649766 6.5
+7.5 0.649766 7
+7.5 0.649766 7.5
+7.5 1.14977 4
+7.5 1.14977 4.5
+7.5 1.14977 5
+7.5 1.14977 5.5
+7.5 1.14977 6
+7.5 1.14977 6.5
+7.5 1.14977 7
+7.5 1.14977 7.5
+7.5 1.64977 4
+7.5 1.64977 4.5
+7.5 1.64977 5
+7.5 1.64977 5.5
+7.5 1.64977 6
+7.5 1.64977 6.5
+7.5 1.64977 7
+7.5 1.64977 7.5
+7.5 2.14977 4
+7.5 2.14977 4.5
+7.5 2.14977 5
+7.5 2.14977 5.5
+7.5 2.14977 6
+7.5 2.14977 6.5
+7.5 2.14977 7
+7.5 2.14977 7.5
+5.5 0.149766 5.5
+5.5 0.149766 5.75
+5.5 0.149766 6
+5.5 0.149766 6.25
+5.5 0.399766 5.5
+5.5 0.399766 5.75
+5.5 0.399766 6
+5.5 0.399766 6.25
+5.5 0.649766 5.5
+5.5 0.649766 5.75
+5.5 0.649766 6
+5.5 0.649766 6.25
+5.5 0.899766 5.5
+5.5 0.899766 5.75
+5.5 0.899766 6
+5.5 0.899766 6.25
+5.75 0.149766 5.5
+5.75 0.149766 5.75
+5.75 0.149766 6
+5.75 0.149766 6.25
+5.75 0.399766 5.5
+5.75 0.399766 6.25
+5.75 0.649766 5.5
+5.75 0.649766 6.25
+5.75 0.899766 5.5
+5.75 0.899766 5.75
+5.75 0.899766 6
+5.75 0.899766 6.25
+6 0.149766 5.5
+6 0.149766 5.75
+6 0.149766 6
+6 0.149766 6.25
+6 0.399766 5.5
+6 0.399766 6.25
+6 0.649766 5.5
+6 0.649766 6.25
+6 0.899766 5.5
+6 0.899766 5.75
+6 0.899766 6
+6 0.899766 6.25
+6.25 0.149766 5.5
+6.25 0.149766 5.75
+6.25 0.149766 6
+6.25 0.149766 6.25
+6.25 0.399766 5.5
+6.25 0.399766 5.75
+6.25 0.399766 6
+6.25 0.399766 6.25
+6.25 0.649766 5.5
+6.25 0.649766 5.75
+6.25 0.649766 6
+6.25 0.649766 6.25
+6.25 0.899766 5.5
+6.25 0.899766 5.75
+6.25 0.899766 6
+6.25 0.899766 6.25
+5.75 0.399766 5.75
+5.75 0.399766 5.875
+5.75 0.399766 6
+5.75 0.399766 6.125
+5.75 0.524766 5.75
+5.75 0.524766 5.875
+5.75 0.524766 6
+5.75 0.524766 6.125
+5.75 0.649766 5.75
+5.75 0.649766 5.875
+5.75 0.649766 6
+5.75 0.649766 6.125
+5.75 0.774766 5.75
+5.75 0.774766 5.875
+5.75 0.774766 6
+5.75 0.774766 6.125
+5.875 0.399766 5.75
+5.875 0.399766 5.875
+5.875 0.399766 6
+5.875 0.399766 6.125
+5.875 0.524766 5.75
+5.875 0.524766 6.125
+5.875 0.649766 5.75
+5.875 0.649766 6.125
+5.875 0.774766 5.75
+5.875 0.774766 5.875
+5.875 0.774766 6
+5.875 0.774766 6.125
+6 0.399766 5.75
+6 0.399766 5.875
+6 0.399766 6
+6 0.399766 6.125
+6 0.524766 5.75
+6 0.524766 6.125
+6 0.649766 5.75
+6 0.649766 6.125
+6 0.774766 5.75
+6 0.774766 5.875
+6 0.774766 6
+6 0.774766 6.125
+6.125 0.399766 5.75
+6.125 0.399766 5.875
+6.125 0.399766 6
+6.125 0.399766 6.125
+6.125 0.524766 5.75
+6.125 0.524766 5.875
+6.125 0.524766 6
+6.125 0.524766 6.125
+6.125 0.649766 5.75
+6.125 0.649766 5.875
+6.125 0.649766 6
+6.125 0.649766 6.125
+6.125 0.774766 5.75
+6.125 0.774766 5.875
+6.125 0.774766 6
+6.125 0.774766 6.125
+5.875 0.524766 5.875
+5.875 0.524766 5.9375
+5.875 0.524766 6
+5.875 0.524766 6.0625
+5.875 0.587266 5.875
+5.875 0.587266 5.9375
+5.875 0.587266 6
+5.875 0.587266 6.0625
+5.875 0.649766 5.875
+5.875 0.649766 5.9375
+5.875 0.649766 6
+5.875 0.649766 6.0625
+5.875 0.712266 5.875
+5.875 0.712266 5.9375
+5.875 0.712266 6
+5.875 0.712266 6.0625
+5.9375 0.524766 5.875
+5.9375 0.524766 5.9375
+5.9375 0.524766 6
+5.9375 0.524766 6.0625
+5.9375 0.587266 5.875
+5.9375 0.587266 5.9375
+5.9375 0.587266 6
+5.9375 0.587266 6.0625
+5.9375 0.649766 5.875
+5.9375 0.649766 5.9375
+5.9375 0.649766 6
+5.9375 0.649766 6.0625
+5.9375 0.712266 5.875
+5.9375 0.712266 5.9375
+5.9375 0.712266 6
+5.9375 0.712266 6.0625
+6 0.524766 5.875
+6 0.524766 5.9375
+6 0.524766 6
+6 0.524766 6.0625
+6 0.587266 5.875
+6 0.587266 5.9375
+6 0.587266 6
+6 0.587266 6.0625
+6 0.649766 5.875
+6 0.649766 5.9375
+6 0.649766 6
+6 0.649766 6.0625
+6 0.712266 5.875
+6 0.712266 5.9375
+6 0.712266 6
+6 0.712266 6.0625
+6.0625 0.524766 5.875
+6.0625 0.524766 5.9375
+6.0625 0.524766 6
+6.0625 0.524766 6.0625
+6.0625 0.587266 5.875
+6.0625 0.587266 5.9375
+6.0625 0.587266 6
+6.0625 0.587266 6.0625
+6.0625 0.649766 5.875
+6.0625 0.649766 5.9375
+6.0625 0.649766 6
+6.0625 0.649766 6.0625
+6.0625 0.712266 5.875
+6.0625 0.712266 5.9375
+6.0625 0.712266 6
+6.0625 0.712266 6.0625
 Total SCs 680
-Passed SCs 121
-cam pos -1510.24 2833.93 3682.67
-cam target 0.315951 -0.609744 -0.726902
-Total SCs 1360
-Passed SCs 242
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 382 called message 5 value 0
-Object with unique id 394 called message 5 value 0
-Object with unique id 394 called message 5 value 0
-Object with unique id 394 called message 5 value 0
-Object with unique id 394 called message 5 value 0
-Object with unique id 394 called message 5 value 0
-Object with unique id 394 called message 5 value 0
-Object with unique id 394 called message 5 value 0
-Object with unique id 394 called message 5 value 0
-Object with unique id 394 called message 5 value 0
-Object with unique id 394 called message 5 value 0
-Object with unique id 394 called message 5 value 0
+Passed SCs 163
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: adding to face layer.
+Advance shell 2: adding to face layer.
+Advance shell 3: adding to face layer.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: adding to face layer.
+Advance shell 2: adding to face layer.
+Advance shell 3: adding to face layer.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: adding to face layer.
+Advance shell 2: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: scrolling.
+Advance shell 2: adding to face layer.
+Advance shell 3: adding to face layer.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: adding to face layer.
+Advance shell 2: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: scrolling.
+Advance shell 2: scrolling.
+Advance shell 3: adding to face layer.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: adding to face layer.
+Advance shell 2: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: scrolling.
+Advance shell 2: adding to face layer.
+Advance shell 3: scrolling.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: adding to face layer.
+Advance shell 2: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: scrolling.
+Advance shell 2: scrolling.
+Advance shell 3: adding to face layer.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: adding to face layer.
+Advance shell 2: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: scrolling.
+Advance shell 2: adding to face layer.
+Advance shell 3: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: adding to face layer.
+Advance shell 2: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: scrolling.
+Advance shell 2: scrolling.
+Advance shell 3: scrolling.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: adding to face layer.
+Advance shell 2: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: scrolling.
+Advance shell 2: adding to face layer.
+Advance shell 3: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: adding to face layer.
+Advance shell 2: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: scrolling.
+Advance shell 2: scrolling.
+Advance shell 3: adding to face layer.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: scrolling.
+Advance shell 1: adding to face layer.
+Advance shell 2: suffient terrain, returning.
+Movement!
+Advance shell 0: suffient terrain, returning.
+Movement!
+Advance shell 0: adding to face layer.
+Advance shell 1: suffient terrain, returning.

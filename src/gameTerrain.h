@@ -41,7 +41,9 @@ public:
 	CShader* chunkCheckShader;
 	unsigned int hNWsamplePos;
 	unsigned int hLoDscale;;
+	unsigned int hTerrainTexture;
 
+	CRenderTexture tmpTerrainMap;
 	
 	CModel* shaderChunkGrid; ///<3D grid of verts modelling the cubes of a chunk, used in terrain creation.
 	CBaseBuf* tempFeedbackBuf;
@@ -62,6 +64,7 @@ public:
 	unsigned int hChunkSamplePosition;
 	unsigned int hFPHSampleScale;
 	unsigned int hChunkLocaliser;
+	unsigned int hFPHterrainTexture;
 
 
 
@@ -76,6 +79,7 @@ public:
 	CShader* terrainPointShader;
 	unsigned int hPointSampleBase;
 	unsigned int hPointOffsetScale;
+	unsigned int hPSTerrainTexture;
 	CBuf heightFinderBuf;
 
 
@@ -91,6 +95,7 @@ public:
 	unsigned int hChunkTriTable;
 	unsigned int hChunkTerrainPos;
 	unsigned int hSamplesPerCube;
+	unsigned int hChunkTerrainTexture;
 
 	CShader* wireBoxShader;
 	unsigned int hBoxMVP;

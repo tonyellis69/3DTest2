@@ -132,6 +132,10 @@ bool CGameTerrain::superChunkIsEmpty(CSuperChunk & SC) {
 	float LoDscale = (SC.sampleStep) / (cubesPerChunkEdge);
 	chunkCheckShader->setShaderValue(hNWsamplePos,SC.nwSamplePos);
 	chunkCheckShader->setShaderValue(hLoDscale,LoDscale);
+	cerr << "\n" << SC.nwSamplePos.x << " " << SC.nwSamplePos.y << " "
+		<< SC.nwSamplePos.z;
+	pRenderer->attachTexture(0, tmpTerrainMap.handle);
+	chunkCheckShader->setShaderValue(hTerrainTexture, 0);
 
 	//cerr << "\nLoD " << SC.LoD << " SC sampleStep " << SC.sampleStep << " LoDscale " << LoDscale;
 
@@ -168,6 +172,9 @@ bool CGameTerrain::chunkExists(vec3& sampleCorner, int LoD) {
 	chunkCheckShader->setShaderValue(hNWsamplePos, sampleCorner);
 	chunkCheckShader->setShaderValue(hLoDscale, LoDscale);
 
+	pRenderer->attachTexture(0, tmpTerrainMap.handle);
+	chunkCheckShader->setShaderValue(hTerrainTexture, 0);
+
 	//Draw check grid 
 	//unsigned int primitives = Engine.drawModelCount(*chunkShell);
 
@@ -202,6 +209,9 @@ void CGameTerrain::createChunkMesh(Chunk& chunk) {
 
 	chunkShader->setShaderValue(hChunkTriTable, *triTableTex);
 	chunkShader->setShaderValue(hChunkTerrainPos, chunk.terrainPos);
+
+	pRenderer->attachTexture(0, tmpTerrainMap.handle);
+	chunkShader->setShaderValue(hChunkTerrainTexture, 0);
 
 	int vertsPerPrimitive = 3 * chunk.noAttribs;
 	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
@@ -340,6 +350,9 @@ CBaseBuf* CGameTerrain::createChunkSurfacePoints(CBaseBuf* xzPoints, Chunk& chun
 	findPointHeightShader->setShaderValue(hFPHSampleScale, 1.0f / worldUnitsPerSampleUnit);
 	findPointHeightShader->setShaderValue(hChunkLocaliser, glm::vec3(0));
 
+	pRenderer->attachTexture(0, tmpTerrainMap.handle);
+	findPointHeightShader->setShaderValue(hFPHterrainTexture, 0);
+
 	//copy points
 	int noPoints = xzPoints->getNoVerts();
 	CBaseBuf* pointBuf = pRenderer->createBuffer();
@@ -429,6 +442,7 @@ void CGameTerrain::loadShaders() {
 	hChunkTriTable = chunkShader->getUniformHandle("triTableTex");
 	hChunkTerrainPos = chunkShader->getUniformHandle("terrainPos");
 	hSamplesPerCube = chunkShader->getUniformHandle("samplesPerCube");
+	hChunkTerrainTexture = chunkShader->getUniformHandle("terrainTexture");
 	chunkShader->setShaderValue(hChunkTriTable, *triTableTex);
 
 	//load chunkCheck shader
@@ -436,6 +450,7 @@ void CGameTerrain::loadShaders() {
 	pRenderer->setShader(chunkCheckShader);
 	hNWsamplePos = chunkCheckShader->getUniformHandle("nwSamplePos");
 	hLoDscale = chunkCheckShader->getUniformHandle("LoDscale");
+	hTerrainTexture = chunkCheckShader->getUniformHandle("terrainTexture");
 
 	//load te point finding shader
 	char* fPointFeedbackStrs[1];
@@ -445,7 +460,7 @@ void CGameTerrain::loadShaders() {
 	hChunkSamplePosition = findPointHeightShader->getUniformHandle("chunkSamplePosition");
 	hFPHSampleScale = findPointHeightShader->getUniformHandle("sampleScale");
 	hChunkLocaliser = findPointHeightShader->getUniformHandle("chunkLocaliser");
-
+	hFPHterrainTexture = findPointHeightShader->getUniformHandle("terrainTexture");
 
 
 	grassTex = pRenderer->textureManager.getTexture(pRenderer->dataPath + "grassPack.dds");
@@ -467,7 +482,7 @@ void CGameTerrain::loadShaders() {
 	pRenderer->setShader(terrainPointShader);
 	hPointSampleBase = terrainPointShader->getUniformHandle("sampleBase");
 	hPointOffsetScale = terrainPointShader->getUniformHandle("offsetScale");
-
+	hPSTerrainTexture = terrainPointShader->getUniformHandle("terrainTexture");
 
 	//load heightpoint culling shader
 	char* feedbackStrs[1];
@@ -489,6 +504,10 @@ float CGameTerrain::findTerrainHeight(glm::vec3& basePos) {
 	pRenderer->setShader(terrainPointShader);
 	float offsetScale = 1 / worldUnitsPerSampleUnit;
 	terrainPointShader->setShaderValue(hPointOffsetScale,offsetScale);
+
+	pRenderer->attachTexture(0, tmpTerrainMap.handle);
+	terrainPointShader->setShaderValue(hPSTerrainTexture, 0);
+
 	vec3 startPos = basePos;
 	CBaseBuf* heightResultsBuf = pRenderer->createBuffer();
 	heightResultsBuf->setSize(sizeof(float) * findHeightVerts);

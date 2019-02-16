@@ -82,6 +82,13 @@ void C3DtestApp::onStart() {
 	Engine.physObjManager.addPhysObj(terrainPhysObj);
 	
 	//
+
+	/////////////////////////temp: create a terrain texture
+	//ComposeTest testCompositor;
+	testCompositor.initTex();
+	testCompositor.restore(dataPath + "noiseland.gen");
+	testCompositor.compose();
+	terrain.tmpTerrainMap = testCompositor.getComposedTexture();
 	
 	
 	CBaseBuf* terrainBuf = &terrain.multiBuf; //TO DO: ugh, make a setter
@@ -273,8 +280,15 @@ void C3DtestApp::onStart() {
 	//texCompositor.initTex();
 	//texCompositor.compose();
 	//texCompositor.colourise();
+
+
+
 	texGenUI.init(this);
 	texGenUI.compose();
+
+	
+
+
 
 	if (appMode != texGenMode)
 		texGenUI.hide(true);
@@ -685,7 +699,7 @@ void C3DtestApp::draw() {
 }
 
 void C3DtestApp::terrain2TestDraw() {
-	
+	//return;
 	//draw shell wireframes
 
 	for (int shell = 0; shell < 2; shell++) {
@@ -709,25 +723,21 @@ void C3DtestApp::terrain2TestDraw() {
 		//make it relative to the shell's origin
 		//that's our matrix
 		float scSize = terrain2.shells[shell].SCsize;
-		int numbShellSCs = terrain2.shells[shell].shellSCs;	
-		for (int x = 0; x < numbShellSCs; x+=1) {
-			for (int y = 0; y < numbShellSCs; y+=1) {
-				for (int z = 0; z < numbShellSCs; z+=1) {
-					if (terrain2.shells[shell].scArray.element(x, y, z).isEmpty)
-						continue;
-					i32vec3 origIndex = terrain2.shells[shell].scArray.element(x, y, z).origIndex;
-					vec3 SCorigin = vec3(origIndex) * scSize;
-					SCorigin += scSize * 0.5; //move orgin to centre of SC
-					SCorigin -= shellSize * 0.5; // and make relative to centre of shell
-					SCorigin += shellWorldspacePos; //and then relative to shell's worldspace position
-					scM = translate(mat4(1), SCorigin);
-					wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
-					wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
-					wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(origIndex.x, origIndex.y, origIndex.z).colour);
-					renderer.drawBuf(wireCube, drawLinesStrip);
-				}
 
-			}
+		for (COuterSCIterator SCiter = terrain2.shells[shell].getOuterSCiterator(); !SCiter.finished(); SCiter++) {
+			if (SCiter->isEmpty)
+				continue;
+
+			i32vec3 origIndex = SCiter->origIndex;
+			vec3 SCorigin = vec3(origIndex) * scSize;
+			SCorigin += scSize * 0.5; //move orgin to centre of SC
+			SCorigin -= shellSize * 0.5; // and make relative to centre of shell
+			SCorigin += shellWorldspacePos; //and then relative to shell's worldspace position
+			scM = translate(mat4(1), SCorigin);
+			wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
+			wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
+			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(origIndex.x, origIndex.y, origIndex.z).colour);
+			renderer.drawBuf(wireCube, drawLinesStrip);
 
 		}
 
@@ -1018,7 +1028,8 @@ void C3DtestApp::initHeightmapGUI() {
 void C3DtestApp::updateHeightmapImage() {
 	//activate the render-to-texture shader
 
-	heightmapImage->setTexture((CBaseTexture&)mainFont.texture);
+	//heightmapImage->setTexture((CBaseTexture&)mainFont.texture);
+	heightmapImage->setTexture((CBaseTexture&)terrain.tmpTerrainMap);
 
 	return;
 
@@ -1125,6 +1136,10 @@ bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & pos, float scSize) {
 	//float LoDscale = (SC.sampleStep) / (cubesPerChunkEdge);
 	terrain.chunkCheckShader->setShaderValue(terrain.hNWsamplePos, nwSamplePos);
 	terrain.chunkCheckShader->setShaderValue(terrain.hLoDscale, LoDscale);
+
+	Engine.Renderer.attachTexture(0, terrain.tmpTerrainMap.handle);
+	terrain.chunkCheckShader->setShaderValue(terrain.hTerrainTexture, 0);
+
 
 	//cerr << "\n" << SC.tmpIndex.x << " " << SC.tmpIndex.y << " " << SC.tmpIndex.z << " "
 	//	<< SC.nwSamplePos.x << " " << SC.nwSamplePos.y << " " << SC.nwSamplePos.z;

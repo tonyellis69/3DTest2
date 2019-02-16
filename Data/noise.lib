@@ -31,6 +31,9 @@ float maze[81] = float[](	0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
 const float cellSize = mazeSize / mazeSteps;
 
 
+uniform sampler2D terrainTexture;
+
+
 vec2 random2( vec2 p ) {
     return fract(sin(vec2(dot(p,vec2(127.1,311.7)),
 							dot(p,vec2(269.5,183.3))))*43758.5453);
@@ -400,7 +403,7 @@ float fbm3D( int octaves, vec3 xyz) {
 	float persistence = 0.5;
 	float total = 0;
     for( int i=0; i < octaves; i++ ) {
-        total += snoise(xyz.xy * frequency) * amplitude;
+        total += snoise(xyz.xyz * frequency) * amplitude;
         frequency *= lacunarity;
         amplitude *= persistence;
     }
@@ -655,9 +658,101 @@ float       interpolate(float a, float b, float x)
 }
 
 
+/** Return the texture height at the given point.*/
+float textureHeight(vec2 xy) {
+	vec2 unitXY = (xy - vec2(5.0) )/ 2;
+	return texture(terrainTexture,unitXY).r;
+	
+	
+	
+}
+
 
 float terrainValue (  int octaves,   vec3 xyz ) {
+	
+	if (xyz.y < 0.6)
+		return -1;
+	
+	float baseNoise = 0; float noise = 0;
+	vec2 xy = vec2(xyz.xz);
+	
+		
+	
+	//baseNoise = distantMountains(5,xy) * 0.3;
+	baseNoise = textureHeight(xy) * 0.3;
+
+	
+	baseNoise = xyz.y - baseNoise ; //clip 2D height value against 3D position
+	//negative value means we're sampling below the surface, positive = above it
+	
+
+	
+
+	return baseNoise ;
+}
+
+
+/*
+//working fractal terrain
+float terrainValue (  int octaves,   vec3 xyz ) {
+	float baseNoise = 0; float noise = 0;
+	vec2 xy = vec2(xyz.xz);
+	
+		
+		
+	//baseNoise = grandCanyon(5,    xy) ;
+	
+
+	
+	//baseNoise += noise3D ;
+	
+
+
+	//noise = fbm2D(5, xy * 2) * 0.1; //good standard (busy, varied)
+	
+	//noise = fbm2D(4, xy ) * 0.05; //sand dunes
+
+	//noise = turbulence(4, xy) * 0.15;
+	
+	//noise = ridgedMF(4,xy ) * 0.1;
+	
+	baseNoise = distantMountains(5,xy) * 0.3;
+	
+//	baseNoise = fbm2D(5, xy * 2) * 0.1;
+	//float mask = blobbyMask(1,xy * 0.5);
+	
+	//baseNoise = fbm2D(5, xy * 2) * 0.1; //standard
+//	baseNoise = max(0,baseNoise);
+	
+	//noise =  ridgedMF(4,xy ) * 0.1;
+	
+	//baseNoise += noise * mask;
+	
+	baseNoise = xyz.y - baseNoise ; //clip 2D height value against 3D position
+	
+	noise = fbm3D(5,xyz ) * 0.15; //
+	//noise = fbm3Dclassic(5,xyz ) * 0.15;
+	
+	
+	
+	baseNoise += noise;
+	
+
+	
+	return baseNoise ;
+}
+*/
+
+
+
+/*
+//old maze thing
+float terrainValue (  int octaves,   vec3 xyz ) {
+	
+	
+	
 	vec2 xy = xyz.xz;
+	
 	
 	vec2 epiCentre = (floor(xy / realmSize) * realmSize) + realmSize/2.0;
 	vec2 nwMazeCorner = epiCentre - vec2(mazeSize/2.0);
@@ -690,16 +785,16 @@ float terrainValue (  int octaves,   vec3 xyz ) {
 	
 	height *= 0.1f * mazeSize;
 	
-
+	
 	
 	float value = xyz.y - height; //clip 2D height value against 3D position
 	
 	
-	//float noise = fbm3D(5,xyz ) * 0.15;
-	//value += noise;
+	float noise = fbm3D(5,xyz ) * 0.15;
+	value += noise;
 	
 
 	return value;
 }
 
-
+*/

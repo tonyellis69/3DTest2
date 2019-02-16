@@ -168,6 +168,7 @@ public:
 	glm::vec3 oldPos;//<Temporary clunky way to track player movement for terrain2. Tidy!
 
 	CModel2 tmpModel2;
+	ComposeTest testCompositor;
 };
 
 const float yawAng = 0.22f;
