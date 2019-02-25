@@ -203,7 +203,7 @@ void CWorldUI::createTextWindow() {
 	mainTextPanel->setBackColour1(uiWhite);
 	mainTextPanel->setBackColour2(uiWhite);
 	
-	mainTextPanel->borderOn(true);
+	mainTextPanel->setBorderOn(true);
 	mainTextPanel->hFormat = hCentre;
 	mainTextPanel->setInset(40);
 	mainTextPanel->setTextColour(UIwhite);
@@ -218,7 +218,7 @@ void CWorldUI::createInventoryWindow() {
 	invPanel->setBackColour1(white);
 	invPanel->setBackColour2(white);
 
-	invPanel->borderOn(true);
+	invPanel->setBorderOn(true);
 	invPanel->anchorRight = 10;
 	invPanel->hFormat = hRight;
 	invPanel->setInset(10);
@@ -237,7 +237,7 @@ CGUIrichTextPanel* CWorldUI::spawnPopText() {
 	CGUIrichTextPanel* popupPanel = new CGUIrichTextPanel(0, 0, 300, 300);
 	popupPanel->setBackColour1(white);
 	popupPanel->setBackColour2(white);
-	popupPanel->borderOn(true);
+	popupPanel->setBorderOn(true);
 	popupPanel->setFont(&pApp->popFont);
 	popupPanel->setTextColour(UIwhite);
 	popupPanel->setResizeMode(resizeByWidthMode);

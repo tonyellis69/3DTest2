@@ -662,33 +662,72 @@ float       interpolate(float a, float b, float x)
 float textureHeight(vec2 xy) {
 	vec2 unitXY = (xy - vec2(5.0) )/ 2;
 	return texture(terrainTexture,unitXY).r;
-	
-	
-	
+}
+
+float tmp(vec2 n) { 
+	return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
 }
 
 
+
 float terrainValue (  int octaves,   vec3 xyz ) {
+	if (xyz.x < 5 && xyz.z < 5)
+		return xyz.y;
+	if (xyz.x < 6 /*&& xyz.z < 6*/)
+		return xyz.y - 0.1;
+	return xyz.y - 0.2;
+
+	//perturbing the actual coordinates like this makes for very blocky erosion
+	//xyz.x += fbm3Dclassic(5,xyz * 16 ) * 0.005;
+	//xyz.z += fbm3Dclassic(5,xyz * 16 + vec3(1) ) * 0.005;
 	
-	if (xyz.y < 0.6)
-		return -1;
 	
-	float baseNoise = 0; float noise = 0;
+	float terrain = 0; 
+	
 	vec2 xy = vec2(xyz.xz);
+	//xy.x += fbm3Dclassic(5,xyz * 10) * 0.015; //does work for normal funcs, creating mild indents and overhands
+	//xy.y += fbm3Dclassic(5,xyz * 10) * 0.015;
 	
-		
+
+	float mask = 1.0 - textureHeight(xy);
 	
-	//baseNoise = distantMountains(5,xy) * 0.3;
-	baseNoise = textureHeight(xy) * 0.3;
+	float moonRockinesss = pow(abs(fbm2DclassicFreq(3,xy,80)),3) * 0.02;
+	
+	//float rugged = floor(fbm2DclassicFreq(2,xy,32)) * 0.015; //investigate! very canyony
+	
+	float rugged = fbm2DclassicFreq(2,xy,32);
+	//float pos = max(rugged,0) * 0.015;
+	float neg = min(rugged,0) * 0.005;
+	//float gentle = pos + neg; //gentle hills without the hollows
+	
+	//decent ridged terrain with softer spaces:
+	float ridges = ridgedMF(2,xy,16);
+	float pos = max(ridges,0) * 0.03;
+	float flatDetail = fbm2DclassicFreq(2,xy,32) * 0.005;
+	pos += smoothstep(0.1,-0.1,ridges) *  flatDetail; //This is *great* for transitioning from vertical to horizonal
+	//without ugly ridges.	
+	terrain = pos * mask;
+	
+	terrain += fbm2DclassicFreq(2,xy,1) * 0.05; //adds subtle large-scale slopes
+	
+	//terrain = floor(fbm2DclassicFreq(2,xy,20)) * 0.015; //investigate! very canyony
+	
 
 	
-	baseNoise = xyz.y - baseNoise ; //clip 2D height value against 3D position
+	terrain = xyz.y - terrain ; //clip 2D height value against 3D position
 	//negative value means we're sampling below the surface, positive = above it
 	
-
+	terrain = clamp(terrain,-1,1);
 	
 
-	return baseNoise ;
+	if (terrain < 0.0) {
+		xyz.y *= 20;
+			terrain += fbm3Dclassic(5,xyz * 200) * 0.15;
+	}
+	
+	//terrain += fbm3Dclassic(5,xyz * 10) * 0.015;
+
+	return terrain ;
 }
 
 

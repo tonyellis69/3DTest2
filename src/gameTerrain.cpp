@@ -132,8 +132,8 @@ bool CGameTerrain::superChunkIsEmpty(CSuperChunk & SC) {
 	float LoDscale = (SC.sampleStep) / (cubesPerChunkEdge);
 	chunkCheckShader->setShaderValue(hNWsamplePos,SC.nwSamplePos);
 	chunkCheckShader->setShaderValue(hLoDscale,LoDscale);
-	cerr << "\n" << SC.nwSamplePos.x << " " << SC.nwSamplePos.y << " "
-		<< SC.nwSamplePos.z;
+	//cerr << "\n" << SC.nwSamplePos.x << " " << SC.nwSamplePos.y << " "
+	//	<< SC.nwSamplePos.z;
 	pRenderer->attachTexture(0, tmpTerrainMap.handle);
 	chunkCheckShader->setShaderValue(hTerrainTexture, 0);
 
@@ -462,8 +462,8 @@ void CGameTerrain::loadShaders() {
 	hChunkLocaliser = findPointHeightShader->getUniformHandle("chunkLocaliser");
 	hFPHterrainTexture = findPointHeightShader->getUniformHandle("terrainTexture");
 
-
-	grassTex = pRenderer->textureManager.getTexture(pRenderer->dataPath + "grassPack.dds");
+	//TO DO: temporarily commented out while I try to remove dependency on soil.h
+	//grassTex = pRenderer->textureManager.getTexture(pRenderer->dataPath + "grassPack.dds");
 
 	//load the grass drawing shader
 	grassShader = pRenderer->createShader(pRenderer->dataPath + "grass");

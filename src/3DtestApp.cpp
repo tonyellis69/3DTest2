@@ -40,7 +40,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = texGenMode;// texGenMode;// terrainMode;
+	appMode = terrainMode;// texGenMode;// terrainMode;
 	
 
 	chunkCall = 0;
@@ -86,7 +86,8 @@ void C3DtestApp::onStart() {
 	/////////////////////////temp: create a terrain texture
 	//ComposeTest testCompositor;
 	testCompositor.initTex();
-	testCompositor.restore(dataPath + "noiseland.gen");
+	//testCompositor.restore(dataPath + "noiseland.gen");
+	testCompositor.restore(dataPath + "terrainTest.gen");
 	testCompositor.compose();
 	terrain.tmpTerrainMap = testCompositor.getComposedTexture();
 	
@@ -352,7 +353,7 @@ void C3DtestApp::keyCheck() {
 				currentCamera->yaw(float(-yawAng * dT));
 			}
 
-			float rot = dT * 200.0f;
+			float rot = dT * 200.0;
 			if (keyNow('P')) {
 				cube->rotate(rot, glm::vec3(1, 0, 0));
 			}
@@ -519,11 +520,11 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 		fpsOn = !fpsOn;
 		if (fpsOn) {
 			//Engine.setCurrentCamera(&fpsCam);
-			Engine.setCurrentCamera(&playerObject.povCam);
+			renderer.setCurrentCamera(&playerObject.povCam);
 			playerPhys->asleep = false;
 		}
 		else
-			Engine.setCurrentCamera(Engine.defaultCamera);
+			renderer.setCurrentCamera(renderer.defaultCamera);
 		//EatKeys();
 
 	}
@@ -535,7 +536,7 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 		terrain->createAllChunks();
 		updateHeightmapImage();
 		*/
-		for (int s = 0; s < terrain.shells[3].superChunks.size(); s++) {
+		for (unsigned int s = 0; s < terrain.shells[3].superChunks.size(); s++) {
 			CSuperChunk* sc = terrain.shells[3].superChunks[s];
 			if (sc->tmpIndex == i32vec3(2, 1, 1)) {
 				sc->removeAllChunks();
@@ -624,8 +625,9 @@ void C3DtestApp::draw() {
 	terrain.drawVisibleChunks();/////////////////////////////
 
 	//draw grass
+	//TO DO: temporarily commented out while I remove Soil
 	Engine.Renderer.setShader(terrain.grassShader);
-	Engine.Renderer.attachTexture(0, *terrain.grassTex);
+//	Engine.Renderer.attachTexture(0, *terrain.grassTex);
 	terrain.grassShader->setTextureUnit(0, terrain.hGrassTexure);
 	terrain.grassShader->setShaderValue(terrain.hGrassTime, (float)Time);
 	terrain.grassShader->setShaderValue(terrain.hGrassMVP, mvp);
@@ -657,7 +659,7 @@ void C3DtestApp::draw() {
 		for (int l = terrain.shells.size() - 1; l > -1; l--) {
 			vBuf::T3DnormVert box[2000]; //should be enough
 			int index = 0;
-			for (int s = 0; s < terrain.shells[l].superChunks.size(); s++) {
+			for (unsigned int s = 0; s < terrain.shells[l].superChunks.size(); s++) {
 				sc = terrain.shells[l].superChunks[s];
 				if (sc->nonEmpty)
 				{
@@ -702,7 +704,7 @@ void C3DtestApp::terrain2TestDraw() {
 	//return;
 	//draw shell wireframes
 
-	for (int shell = 0; shell < 2; shell++) {
+	for (int shell = 0; shell < 1; shell++) {
 	//int shell = 0;
 		vec3 shellWorldspacePos = terrain2.shells[shell].worldSpacePos;
 		renderer.setShader(wire2Shader);
@@ -728,8 +730,9 @@ void C3DtestApp::terrain2TestDraw() {
 			if (SCiter->isEmpty)
 				continue;
 
+			i32vec3 index = SCiter.getIndex();
 			i32vec3 origIndex = SCiter->origIndex;
-			vec3 SCorigin = vec3(origIndex) * scSize;
+			vec3 SCorigin = vec3(index) * scSize;
 			SCorigin += scSize * 0.5; //move orgin to centre of SC
 			SCorigin -= shellSize * 0.5; // and make relative to centre of shell
 			SCorigin += shellWorldspacePos; //and then relative to shell's worldspace position
@@ -849,7 +852,7 @@ void C3DtestApp::advance(Tdirection direction) {
 	vec3 pos = terrain.scrollTriggerPoint;
 
 
-	int chunkDist = cubesPerChunkEdge * cubeSize; //span of a chunk in world space
+	float chunkDist = cubesPerChunkEdge * cubeSize; //span of a chunk in world space
 	bvec3 outsideChunkBoundary = glm::greaterThan(glm::abs(pos), vec3(chunkDist, chunkDist, chunkDist));
 
 	//If terrain has moved by the length of a chunk
@@ -888,7 +891,7 @@ void C3DtestApp::advance(Tdirection direction) {
 /** Called every frame. Mainly use this to scroll terrain if we're moving in first-person mode*/
 void C3DtestApp::Update() {
 	vmUpdate();
-	worldUI.mainTextPanel->update(dT); //TO DO:  update worldUI instead!
+	worldUI.mainTextPanel->update((float)dT); //TO DO:  update worldUI instead!
 
 	if (skyDome)
 		skyDome->update(dT);
@@ -1097,7 +1100,7 @@ void C3DtestApp::vmUpdate() {
 
 void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	if (control.parent->getID() == worldUI.mainTextWindowID && Message.Msg == uiMsgHotTextClick) {
-		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
+		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
 		worldUI.mainWindowClick(Message.value,Message.value2, mousePos);
 		return;
 	}
@@ -1105,21 +1108,21 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	//if (control.getID() == textWindowID && Message.Msg == uiMsgRMouseUp)
 
 	if (control.parent->getID() == worldUI.invPanelID && Message.Msg == uiMsgHotTextClick) {
-		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
+		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
 		worldUI.inventoryClick(Message.value,Message.value2,mousePos);
 		return;
 	}
 
 	//popup menu text click
 	if (control.parent->id == popMenuId && Message.Msg == uiMsgHotTextClick) {
-		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
+		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
 		worldUI.menuClick(Message.value,Message.value2, mousePos, (CGUIrichTextPanel *)control.parent);
 		return;
 	}
 
 	//object window click
 	if (control.parent->id == popObjWinId && Message.Msg == uiMsgHotTextClick) {
-		glm::i32vec2 mousePos = control.getScreenCoords(Message.x, Message.y);
+		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
 		worldUI.objWindowClick(Message.value, Message.value2, mousePos, (CGUIrichTextPanel *)control.parent);
 	}
 
@@ -1127,15 +1130,20 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 }
 
 /** Returns true if terrain intersects the given cube. */
-bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & pos, float scSize) {
+bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & pos, float SCsampleStep) {
 	Engine.Renderer.setShader(terrain.chunkCheckShader);
 	//find nwcorner in sample space
 	vec3 nwSamplePos = pos;
-	float LoDscale = 0.00390625;// 0.007812500;// 0.00390625;// scSize / 2.0f; // 0.0312500000; //seems to be sample distance covered by a MC cube
-	LoDscale = scSize;
+
 	//float LoDscale = (SC.sampleStep) / (cubesPerChunkEdge);
+	float chunkShellVertCount = (float)terrain2.chunkCubes;
+	//This is simply the number of divisions chunkShell has, because normally it is used to check MC cube
+	//points on the surface of a chunk-sized volume. 
+	//Here we are abusing it to check points on the surface of a SC-sized volume.
+	//TO DO: create a separate shell for SC checks, to avoid this ambiguity
+
 	terrain.chunkCheckShader->setShaderValue(terrain.hNWsamplePos, nwSamplePos);
-	terrain.chunkCheckShader->setShaderValue(terrain.hLoDscale, LoDscale);
+	terrain.chunkCheckShader->setShaderValue(terrain.hLoDscale, SCsampleStep/ chunkShellVertCount);
 
 	Engine.Renderer.attachTexture(0, terrain.tmpTerrainMap.handle);
 	terrain.chunkCheckShader->setShaderValue(terrain.hTerrainTexture, 0);
