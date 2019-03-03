@@ -26,20 +26,26 @@ public:
 	void init();
 	void start();
 	void appendText(std::string& text, int window);
-	void mainWindowClick(int msgId, int objId, glm::i32vec2 mousePos);
-	void inventoryClick(int msgId, int objId, const glm::i32vec2& mousePos);
+	void mainWindowClick(unsigned int hotId, glm::i32vec2 mousePos);
+	void inventoryClick(unsigned int hotId, glm::i32vec2 mousePos);
+
 	void handleRoomChange(int direction);
 	void openWindow(int winId);
 	void openMenuWindow(int winId);
 	void openObjWindow(int objId);
-	void purge(int memberId, int objId);
+	void purge(unsigned int id);
 	void clearWindow(int window);
 
 	void showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& mousePos);
-	void menuClick(const int choice, int objId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp);
+	//void menuClick(const int choice, int objId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp);
+	void menuClick(unsigned int hotId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp);
 
-	void objWindowClick(const int msgId, int objId, glm::i32vec2 & mousePos, CGUIrichTextPanel * popUp);
-	
+
+	//void objWindowClick(const int msgId, int objId, glm::i32vec2 & mousePos, CGUIrichTextPanel * popUp);
+	void objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel * popUp);
+
+	void closeObjWindow(CGUIrichTextPanel * popUp);
+
 	
 	void setHottextColour(const glm::vec4& colour);
 	void setHottextSelectColour(const glm::vec4& colour);
@@ -55,6 +61,8 @@ public:
 	void createTextStyles();
 
 	void hide(bool onOff);
+	
+	void reset();
 
 	//unsigned int textWindowID;
 	//CGUIrichText* textWindow;

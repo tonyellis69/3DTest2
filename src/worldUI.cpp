@@ -19,10 +19,12 @@ void CWorldUI::setGameApp(C3DtestApp * app) {
 
 /** Any initialisation that has to wait for items to be ready. */
 void CWorldUI::init() {
+	createTextStyles();
+
 	pVM->execute(); //for any global variables or code
 	playerId = pVM->getGlobalVar("playerObj").getObjId();
 
-	createTextStyles();
+
 
 	createTextWindow();
 	createInventoryWindow();
@@ -62,26 +64,31 @@ void CWorldUI::appendText(std::string & text, int window) {
 }
 
 
+/**	Player has clicked on the identified hot text in the main window, so
+	execute the function call stored for it. */
+void CWorldUI::mainWindowClick(unsigned int hotId, glm::i32vec2 mousePos) {
+	THotTextFnCall fnCall = pVM->getHotTextFnCall(hotId);
 
-
-/** Player has clicked hot text in the main windiw. */
-void CWorldUI::mainWindowClick(int msgId, int objId, glm::i32vec2 mousePos) {
 	//has the user clicked on hot text for player movement?
 	int currentRoomId = pVM->callMember(playerId, "parent", {}).getObjId();
-	if (objId == currentRoomId) {
-		pVM->callMember(playerId, "moveTo", { msgId });
+	if (fnCall.objId == currentRoomId) {
+		pVM->callMember(playerId, "moveTo", { fnCall.msgId });
 		return;
 	}
+	//TO DO: replace above bodge with a clean call to player.moveTo(direction)
+	//this can be the first test of parameters in hot func calls
 
 	currentMousePos = mousePos;
-	pVM->callMember(objId, "click");
+	pVM->callMember(fnCall.objId, fnCall.msgId);
 }
 
-/** Handle a click on an inventory window item with the given object id. */
-void CWorldUI::inventoryClick(int msgId, int objId, const glm::i32vec2& mousePos) {
+/** Handle a click on an inventory window item. */
+void  CWorldUI::inventoryClick(unsigned int hotId, glm::i32vec2 mousePos) {
+	THotTextFnCall fnCall = pVM->getHotTextFnCall(hotId);
 	currentMousePos = mousePos;
-	pVM->callMember(objId, "click");
+	pVM->callMember(fnCall.objId, fnCall.msgId);
 }
+
 
 /** Register change in current room. */
 void CWorldUI::handleRoomChange(int roomId) {
@@ -120,8 +127,11 @@ void CWorldUI::openObjWindow(int objId) {
 }
 
 
-void CWorldUI::purge(int memberId, int objId) {
-	mainTextPanel->purgeHotText(memberId, objId);
+void CWorldUI::purge(unsigned int id) {
+	vector<unsigned int> purgedIds = mainTextPanel->purgeHotText(id);
+	//whatever hot text was removed, remove also from the list of hot text function calls.
+	for (auto purgedId : purgedIds)
+		pVM->removeHotTextFnCall(purgedId);
 }
 
 void CWorldUI::clearWindow(int window) {
@@ -156,26 +166,25 @@ void CWorldUI::showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& 
 }
 
 /** Respond to the user selecting an item from the popup menu. */
-void CWorldUI::menuClick(const int msgId, int objId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp) {
+void CWorldUI::menuClick(unsigned int hotId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp) {
 	currentMousePos = mousePos;
-	pVM->callMember(objId, msgId);
+	THotTextFnCall fnCall = pVM->getHotTextFnCall(hotId);
+	pVM->callMember(fnCall.objId, fnCall.msgId);
 	delete popUp;
 }
 
 /** Respond to user clicking on an object window.*/
-void CWorldUI::objWindowClick(const int msgId, int objId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp) {
+void CWorldUI::objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel * popUp) {
+	THotTextFnCall fnCall = pVM->getHotTextFnCall(hotId);
 	currentMousePos = mousePos;
-
-	if (msgId == -1) { //clicked outside window, so we want to dismiss this window
-		objWindows.pop_back();
-		delete popUp;
-		return;
-	}
-
-	pVM->callMember(objId, msgId);
+	pVM->callMember(fnCall.objId, fnCall.msgId);
 }
 
-
+void CWorldUI::closeObjWindow(CGUIrichTextPanel * popUp) {
+	objWindows.pop_back();
+	delete popUp;
+	return;
+}
 
 
 /*
@@ -210,6 +219,7 @@ void CWorldUI::createTextWindow() {
 	mainTextPanel->setResizeMode(resizeByWidthMode);
 	mainTextWindowID = mainTextPanel->getID();
 	mainTextPanel->setTextStyles(&normalTheme.styles);
+	mainTextPanel->setTextStyle("mainBody");
 	pApp->GUIroot.Add(mainTextPanel);
 }
 
@@ -271,5 +281,15 @@ void CWorldUI::createTextStyles() {
 void CWorldUI::hide(bool onOff) {
 	invPanel->setVisible(!onOff);
 	mainTextPanel->setVisible(!onOff);
+}
+
+void CWorldUI::reset() {
+	pVM->execute(); //for any global variables or code
+	playerId = pVM->getGlobalVar("playerObj").getObjId();
+
+	invPanel->clear();
+	mainTextPanel->clear();
+
+	start();
 }
 

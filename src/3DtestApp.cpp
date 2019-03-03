@@ -40,7 +40,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = terrainMode;// texGenMode;// terrainMode;
+	appMode = terrainMode;// texGenMode;// terrainMode; //textMode;
 	
 
 	chunkCall = 0;
@@ -506,7 +506,14 @@ void C3DtestApp::keyCheck() {
 
 /** Triggered *when* a key is pressed, not while it is held down. This is not 'whileKeyDown'. */
 void C3DtestApp::onKeyDown( int key, long mod) {
-	
+	if (key == 'R' && mod == GLFW_MOD_CONTROL) {
+		if (appMode == textMode) {
+			vm.reset();
+			vm.reloadProgFile();
+			worldUI.reset();
+			return;
+		}
+	}
 
 
 	if (key == 'R') {
@@ -1063,7 +1070,7 @@ void C3DtestApp::vmMessage(TvmAppMsg msg) {
 	//	worldUI.addHotText(msg.text,msg.integer,msg.integer2);
 	//}
 	if (msg.type == appPurge) {
-		worldUI.purge(msg.integer, msg.integer2);
+		worldUI.purge(msg.integer);
 	}
 	if (msg.type == appWriteText) {
 		worldUI.appendText(msg.text, msg.integer);
@@ -1101,32 +1108,39 @@ void C3DtestApp::vmUpdate() {
 void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	if (control.parent->getID() == worldUI.mainTextWindowID && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
-		worldUI.mainWindowClick(Message.value,Message.value2, mousePos);
+		worldUI.mainWindowClick(Message.value, mousePos);
 		return;
 	}
 
-	//if (control.getID() == textWindowID && Message.Msg == uiMsgRMouseUp)
-
 	if (control.parent->getID() == worldUI.invPanelID && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
-		worldUI.inventoryClick(Message.value,Message.value2,mousePos);
+		worldUI.inventoryClick(Message.value, mousePos);
 		return;
 	}
 
 	//popup menu text click
 	if (control.parent->id == popMenuId && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
-		worldUI.menuClick(Message.value,Message.value2, mousePos, (CGUIrichTextPanel *)control.parent);
+		worldUI.menuClick(Message.value, mousePos, (CGUIrichTextPanel *)control.parent);
+		return;
+	}
+
+	if (control.parent->id == popMenuId && Message.Msg == uiClickOutside) {
+		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
+		delete control.parent;
 		return;
 	}
 
 	//object window click
 	if (control.parent->id == popObjWinId && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
-		worldUI.objWindowClick(Message.value, Message.value2, mousePos, (CGUIrichTextPanel *)control.parent);
+		worldUI.objWindowClick(Message.value, mousePos, (CGUIrichTextPanel *)control.parent);
 	}
 
-
+	if (control.parent->id == popObjWinId && Message.Msg == uiClickOutside) {
+		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
+		worldUI.closeObjWindow((CGUIrichTextPanel *)control.parent);
+	}
 }
 
 /** Returns true if terrain intersects the given cube. */
@@ -1149,8 +1163,7 @@ bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & pos, float SCsampleStep
 	terrain.chunkCheckShader->setShaderValue(terrain.hTerrainTexture, 0);
 
 
-	//cerr << "\n" << SC.tmpIndex.x << " " << SC.tmpIndex.y << " " << SC.tmpIndex.z << " "
-	//	<< SC.nwSamplePos.x << " " << SC.nwSamplePos.y << " " << SC.nwSamplePos.z;
+	
 
 
 

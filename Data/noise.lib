@@ -673,7 +673,7 @@ float tmp(vec2 n) {
 float terrainValue (  int octaves,   vec3 xyz ) {
 	if (xyz.x < 5 && xyz.z < 5)
 		return xyz.y;
-	if (xyz.x < 6 /*&& xyz.z < 6*/)
+	if (xyz.x < 6 && xyz.z < 6)
 		return xyz.y - 0.1;
 	return xyz.y - 0.2;
 
