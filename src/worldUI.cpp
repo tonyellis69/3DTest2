@@ -23,8 +23,8 @@ void CWorldUI::init() {
 
 	pVM->execute(); //for any global variables or code
 	playerId = pVM->getGlobalVar("playerObj").getObjId();
-
-
+	clickId = pVM->getMemberId("click");
+	examId = pVM->getMemberId("examine");
 
 	createTextWindow();
 	createInventoryWindow();
@@ -34,8 +34,8 @@ void CWorldUI::init() {
 /** Start a game session. */
 void CWorldUI::start() {
 	pVM->callMember(zeroObject, "init"); 	//execute Tig initialisation code
-	int currentRoomId = pVM->callMember(playerId, "parent").getObjId();
-	pVM->callMember(currentRoomId, "look");
+//	int currentRoomId = pVM->callMember(playerId, "parent").getObjId();
+//	pVM->callMember(currentRoomId, "look");
 }
 
 
@@ -67,28 +67,29 @@ void CWorldUI::appendText(std::string & text, int window) {
 /**	Player has clicked on the identified hot text in the main window, so
 	execute the function call stored for it. */
 void CWorldUI::mainWindowClick(unsigned int hotId, glm::i32vec2 mousePos) {
-	THotTextFnCall fnCall = pVM->getHotTextFnCall(hotId);
-
-	//has the user clicked on hot text for player movement?
-	int currentRoomId = pVM->callMember(playerId, "parent", {}).getObjId();
-	if (fnCall.objId == currentRoomId) {
-		pVM->callMember(playerId, "moveTo", { fnCall.msgId });
-		return;
-	}
-	//TO DO: replace above bodge with a clean call to player.moveTo(direction)
-	//this can be the first test of parameters in hot func calls
-
 	currentMousePos = mousePos;
-	pVM->callMember(fnCall.objId, fnCall.msgId);
+	playerTurn(hotId);
 }
 
 /** Handle a click on an inventory window item. */
 void  CWorldUI::inventoryClick(unsigned int hotId, glm::i32vec2 mousePos) {
-	THotTextFnCall fnCall = pVM->getHotTextFnCall(hotId);
 	currentMousePos = mousePos;
-	pVM->callMember(fnCall.objId, fnCall.msgId);
+	playerTurn(hotId);
 }
 
+/**	Carry out one complete turn of the game. This consists of anything that happens
+	immediately before the player's action, the player's action itself (and any
+	reactions), and then any game activity. */
+void CWorldUI::playerTurn(unsigned int actionHotId) {
+	THotTextFnCall fnCall = pVM->getHotTextFnCall(actionHotId);
+	pVM->callMember(fnCall.objId, fnCall.msgId,fnCall.params);
+
+	//instantaneous actions don't end the player's turn
+	if (fnCall.msgId == clickId || fnCall.msgId == examId)
+		return; 
+
+	pVM->callMember(NULL, "gameTurn");
+}
 
 /** Register change in current room. */
 void CWorldUI::handleRoomChange(int roomId) {
@@ -105,8 +106,6 @@ void CWorldUI::openWindow(int winId) {
 void CWorldUI::openMenuWindow(int winId) {
 	pMenuWindow = spawnPopText();
 	pMenuWindow->setTextStyle("small");
-//	pMenuWindow->setHotTextColour(hottextColour);
-//	pMenuWindow->setHotTextHighlightColour(hottextSelectedColour);
 	pMenuWindow->setResizeMode(resizeByWidthMode);
 	pMenuWindow->id = popMenuId;
 }
@@ -119,8 +118,6 @@ void CWorldUI::openObjWindow(int objId) {
 
 	CGUIrichTextPanel* pop = spawnPopText();
 	pop->resize(300, 200);
-	//pop->setHotTextColour(hottextColour);
-	//pop->setHotTextHighlightColour(hottextSelectedColour);
 	pop->setResizeMode(resizeByRatioMode);
 	pop->id = popObjWinId;
 	objWindows.push_back({ pop,objId });
@@ -161,23 +158,21 @@ void CWorldUI::showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& 
 	if (newCornerPos.y + popControl->getHeight() + margin > popControl->parent->getHeight())
 		newCornerPos.y -= (newCornerPos.y + popControl->getHeight() + margin) - popControl->parent->getHeight();
 
-	popControl->setPos(newCornerPos.x, newCornerPos.y);
+	popControl->setLocalPos(newCornerPos.x, newCornerPos.y);
 	popControl->setVisible(true);
 }
 
 /** Respond to the user selecting an item from the popup menu. */
 void CWorldUI::menuClick(unsigned int hotId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp) {
 	currentMousePos = mousePos;
-	THotTextFnCall fnCall = pVM->getHotTextFnCall(hotId);
-	pVM->callMember(fnCall.objId, fnCall.msgId);
 	delete popUp;
+	playerTurn(hotId);
 }
 
 /** Respond to user clicking on an object window.*/
 void CWorldUI::objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel * popUp) {
-	THotTextFnCall fnCall = pVM->getHotTextFnCall(hotId);
 	currentMousePos = mousePos;
-	pVM->callMember(fnCall.objId, fnCall.msgId);
+	playerTurn(hotId);
 }
 
 void CWorldUI::closeObjWindow(CGUIrichTextPanel * popUp) {
@@ -186,20 +181,6 @@ void CWorldUI::closeObjWindow(CGUIrichTextPanel * popUp) {
 	return;
 }
 
-
-/*
-void CWorldUI::setHottextColour(const glm::vec4 & colour) {
-	hottextColour = colour;
-	mainTextPanel->setHotTextColour(hottextColour);
-	invPanel->setHotTextColour(hottextColour);
-}
-
-void CWorldUI::setHottextSelectColour(const glm::vec4 & colour) {
-	hottextSelectedColour = colour;
-	mainTextPanel->setHotTextHighlightColour(hottextSelectedColour);
-	invPanel->setHotTextHighlightColour(hottextSelectedColour);;
-}
-*/
 
 void CWorldUI::vmMessage(int p1, int p2) {
 	if (p1 == msgRoomChange)
@@ -214,7 +195,7 @@ void CWorldUI::createTextWindow() {
 	
 	mainTextPanel->setBorderOn(true);
 	mainTextPanel->hFormat = hCentre;
-	mainTextPanel->setInset(40);
+	mainTextPanel->setInset(10);
 	mainTextPanel->setTextColour(UIwhite);
 	mainTextPanel->setResizeMode(resizeByWidthMode);
 	mainTextWindowID = mainTextPanel->getID();
@@ -232,10 +213,8 @@ void CWorldUI::createInventoryWindow() {
 	invPanel->anchorRight = 10;
 	invPanel->hFormat = hRight;
 	invPanel->setInset(10);
-	//invPanel->setFont(&pApp->popFont);
 	invPanel->setTextColour(UIwhite);
 	invPanel->setResizeMode(resizeByWidthMode);
-	//popupTextID = popupPanel->getRichTextID();
 	invPanelID = invPanel->getID();
 	invPanel->setTextStyles(&smallNormalTheme.styles);
 	invPanel->setTextStyle("smallHeader");

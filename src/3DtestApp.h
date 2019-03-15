@@ -25,6 +25,8 @@
 #include "texGen\compositor.h"
 #include "texGen\texGenUI.h"
 
+#include "utils/log.h"
+
 extern CSuperChunk* dbgSC;
 
 extern float xAdj;
@@ -59,8 +61,8 @@ public:
 	void vmUpdate();
 	//void showChoice();
 	void HandleUImsg(CGUIbase& Control, CMessage& Message);
-
 	bool scIntersectionCheckCallback(glm::vec3& pos, float scSize);
+	bool chunkCheckCallback(glm::vec3& pos, float scSize);
 
 	
 	string dataPath; ///<Filepath to the Data folder

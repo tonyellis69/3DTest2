@@ -1,6 +1,6 @@
 #version 330
 
-#include noise.lib
+#include noise2.lib
 #line 5
 
 in vec2 texCoord0;

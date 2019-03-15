@@ -48,6 +48,7 @@ void C3DtestApp::onStart() {
 	dataPath = homeDir + "Data\\";
 	lastMousePos = glm::vec2(0, 0);
 
+
 	//test objects, temporary
 	cube = Engine.createCube(vec3(-3, 300, -3), vec3(1.0f)); Engine.modelDrawList.push_back(cube);
 	Engine.modelDrawList.push_back(Engine.createCube(vec3(3, 300, -3), vec3(1.0f)));
@@ -746,7 +747,7 @@ void C3DtestApp::terrain2TestDraw() {
 			scM = translate(mat4(1), SCorigin);
 			wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
 			wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
-			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(origIndex.x, origIndex.y, origIndex.z).colour);
+			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
 			renderer.drawBuf(wireCube, drawLinesStrip);
 
 		}
@@ -1175,6 +1176,13 @@ bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & pos, float SCsampleStep
 	if ((primitives == 0) || (primitives == shellTotalVerts)) {
 		return true; //outside surface
 	}
+
+	return false;
+}
+
+/** Returns true if terrain intersects the given chunk volume .*/
+bool C3DtestApp::chunkCheckCallback(glm::vec3 & chunkPos, float chunkSampleSize) {
+
 
 	return false;
 }

@@ -29,6 +29,8 @@ public:
 	void mainWindowClick(unsigned int hotId, glm::i32vec2 mousePos);
 	void inventoryClick(unsigned int hotId, glm::i32vec2 mousePos);
 
+	void playerTurn(unsigned int actionHotId);
+
 	void handleRoomChange(int direction);
 	void openWindow(int winId);
 	void openMenuWindow(int winId);
@@ -93,6 +95,8 @@ private:
 	CFont* popBodyFont;
 
 	int playerId; ///<Id of the player object.
+	int clickId; ///<Id of the click message.
+	int examId; ///<Id of the examine message
 
 	glm::i32vec2 currentMousePos;
 	glm::i32vec2 lastMenuCorner;
