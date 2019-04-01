@@ -1,4 +1,4 @@
-*** Friday March 15, 2019  time: 22:00:18 ***
+*** Sunday March 31, 2019  time: 14:47:01 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
@@ -6,3 +6,8627 @@ OpenGL version: 4.6.0 NVIDIA 399.07
 Has NPOT
 glsl version: 4.60 NVIDIA
 BaseApp constructor finished. Yay!
+
+SC index x 0 y 0 z 0 nwChunkStart x 2 y 2 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 1 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 2 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 3 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 4 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 0 y 1 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 0 y 2 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 0 y 3 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 0 y 4 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 1 z 3
+SC index x 0 y 4 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 0 y 4 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 0 y 4 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 0 y 4 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 1
+SC index x 1 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 1 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 1 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 1 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 1 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
+SC index x 1 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 1 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 1 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 1 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
+SC index x 2 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 2 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 2 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 2 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 2 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
+SC index x 2 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 2 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 2 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 2 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
+SC index x 3 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 3 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 3 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 3 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 3 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
+SC index x 3 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 3 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 3 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 3 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
+SC index x 4 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 1
+SC index x 4 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
+SC index x 4 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
+SC index x 4 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
+SC index x 4 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 1 z 3
+SC index x 4 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
+SC index x 4 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
+SC index x 4 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
+SC index x 4 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 1
+SC index x 0 y 0 z 0 nwChunkStart x 2 y 2 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 1 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 2 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 3 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 4 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 0 y 1 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 0 y 2 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 0 y 3 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 0 y 4 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 1 z 3
+SC index x 0 y 4 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 0 y 4 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 0 y 4 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 0 y 4 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 1
+SC index x 1 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 1 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 1 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 1 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 1 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
+SC index x 1 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 1 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 1 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 1 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
+SC index x 2 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 2 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 2 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 2 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 2 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
+SC index x 2 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 2 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 2 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 2 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
+SC index x 3 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 3 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 3 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 3 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 3 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
+SC index x 3 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 3 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 3 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 3 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
+SC index x 4 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 1
+SC index x 4 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
+SC index x 4 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
+SC index x 4 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
+SC index x 4 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 1 z 3
+SC index x 4 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
+SC index x 4 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
+SC index x 4 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
+SC index x 4 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 1
+SC index x 0 y 0 z 0 nwChunkStart x 2 y 2 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 1 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 2 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 3 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 4 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 0 y 1 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 0 y 2 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 0 y 3 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 0 y 4 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 1 z 3
+SC index x 0 y 4 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 0 y 4 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 0 y 4 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 0 y 4 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 1
+SC index x 1 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 1 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 1 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 1 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 1 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
+SC index x 1 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 1 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 1 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 1 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
+SC index x 2 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 2 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 2 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 2 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 2 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
+SC index x 2 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 2 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 2 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 2 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
+SC index x 3 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 3 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 3 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 3 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
+SC index x 3 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
+SC index x 3 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 3 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 3 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
+SC index x 3 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
+SC index x 4 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 1
+SC index x 4 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
+SC index x 4 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
+SC index x 4 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
+SC index x 4 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
+SC index x 4 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 1 z 3
+SC index x 4 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
+SC index x 4 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
+SC index x 4 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
+SC index x 4 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 1
+SC index x 0 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 0 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 1 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 2 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 3 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 4 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 5 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 6 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
+1538
+1538
+865
+865
+1538
+1538
+865
+865
+1538
+1538
+1538
+1538
+865
+865
+865
+865
+1538
+1538
+1538
+1538
+865
+865
+865
+865
+1538
+1538
+1538
+1538
+865
+984
+1538
+1538
+1538
+1538
+1538
+1538
+865
+984
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+865
+865
+1538
+1538
+865
+865
+1538
+1538
+865
+865
+1538
+1538
+865
+865
+1538
+1538
+1538
+1538
+865
+865
+865
+865
+1538
+1538
+1538
+1538
+865
+865
+865
+865
+1538
+1538
+1538
+1538
+865
+865
+865
+865
+1538
+1538
+1538
+1538
+865
+865
+865
+865
+1538
+1538
+1538
+1538
+865
+984
+1538
+1538
+1538
+1538
+1538
+1538
+865
+984
+1538
+1538
+1538
+1538
+1538
+1538
+865
+984
+1538
+1538
+1538
+1538
+1538
+1538
+865
+984
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+865
+865
+1538
+1538
+984
+984
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+865
+865
+865
+865
+1538
+1538
+1538
+1538
+984
+984
+984
+984
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+865
+984
+1538
+1538
+1538
+1538
+1538
+1538
+984
+1096
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+289
+289
+289
+289
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+289
+289
+289
+289
+289
+289
+289
+289
+289
+289
+289
+289
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+289
+561
+1538
+1538
+289
+561
+1538
+1538
+289
+561
+1538
+1538
+289
+561
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+17
+17
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+289
+289
+289
+289
+17
+17
+17
+17
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+289
+561
+1538
+1538
+289
+561
+1538
+1538
+17
+33
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1057
+1057
+0
+0
+1538
+1538
+1538
+1538
+1057
+1057
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1057
+1057
+1057
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1057
+1057
+1057
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1125
+1538
+1538
+0
+289
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1125
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1057
+1057
+0
+0
+1538
+1538
+1538
+1538
+1057
+1057
+0
+0
+1538
+1538
+1538
+1538
+1057
+1057
+0
+0
+1538
+1538
+1538
+1538
+1057
+1057
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1057
+1057
+1057
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1057
+1057
+1057
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1057
+1057
+1057
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1057
+1057
+1057
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1125
+1538
+1538
+0
+289
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1125
+1538
+1538
+0
+289
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1125
+1538
+1538
+0
+289
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1125
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+0
+289
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1057
+1057
+0
+0
+1538
+1538
+1538
+1538
+1125
+1125
+289
+289
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1057
+1057
+1057
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1125
+1125
+1125
+1125
+289
+289
+289
+289
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1125
+1538
+1538
+0
+289
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1125
+1189
+1538
+1538
+289
+561
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+17
+17
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+289
+289
+289
+289
+17
+17
+17
+17
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+673
+673
+0
+0
+0
+0
+0
+0
+673
+673
+0
+0
+0
+0
+0
+0
+673
+673
+673
+673
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+673
+673
+673
+673
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+673
+843
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+673
+843
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+673
+673
+0
+0
+0
+0
+0
+0
+673
+673
+0
+0
+0
+0
+0
+0
+673
+673
+0
+0
+0
+0
+0
+0
+673
+673
+0
+0
+0
+0
+0
+0
+673
+673
+673
+673
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+673
+673
+673
+673
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+673
+673
+673
+673
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+673
+673
+673
+673
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+673
+843
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+673
+843
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+673
+843
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+673
+843
+1538
+1538
+0
+289
+1538
+1538
+0
+17
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+673
+673
+0
+0
+0
+0
+0
+0
+843
+843
+289
+289
+17
+17
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+673
+673
+673
+673
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+843
+843
+843
+843
+289
+289
+289
+289
+17
+17
+17
+17
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+673
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+673
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+673
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+673
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+843
+0
+0
+0
+68
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+843
+0
+0
+0
+68
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+843
+0
+0
+0
+68
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+843
+0
+0
+0
+68
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+702
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+702
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+702
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+702
+0
+0
+0
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+673
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+673
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+673
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+843
+843
+843
+843
+68
+68
+68
+68
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+843
+0
+0
+0
+68
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+843
+0
+0
+0
+68
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+843
+0
+0
+0
+68
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+843
+843
+843
+1003
+68
+68
+68
+132
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+702
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+702
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+702
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+702
+0
+0
+0
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+702
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+702
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+702
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+702
+0
+0
+0
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+702
+702
+702
+702
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+702
+702
+702
+702
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+702
+702
+702
+702
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+17
+17
+17
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+17
+17
+17
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+17
+17
+17
+17
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0

@@ -2,14 +2,6 @@
 
 Total SCs 680
 Passed SCs 116
- x= 0 samplespace pos of 0 0 0 changed to 5.84375 0.543516 5.84375
- x= 4 samplespace pos of 0 0 0 changed to 6.09375 0.543516 5.84375
- x= 0 samplespace pos of 0 0 0 changed to 5.6875 0.387266 5.6875
- x= 4 samplespace pos of 0 0 0 changed to 6.1875 0.387266 5.6875
- x= 0 samplespace pos of 0 0 0 changed to 5.375 0.0747657 5.375
- x= 4 samplespace pos of 0 0 0 changed to 6.375 0.0747657 5.375
- x= 0 samplespace pos of 0 0 0 changed to 4 -1.30023 4
- x= 4 samplespace pos of 0 0 0 changed to 6 -1.30023 4
  checking SC at 0 0 0 , samplePos5.84375 0.543516 5.84375, coverage 0.0625
  checking SC at 0 0 1 , samplePos5.84375 0.543516 5.90625, coverage 0.0625
  checking SC at 0 0 2 , samplePos5.84375 0.543516 5.96875, coverage 0.0625

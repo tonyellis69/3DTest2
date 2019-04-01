@@ -6,6 +6,7 @@
 
 
 CWorldUI::CWorldUI() {
+	
 }
 
 void CWorldUI::setVM(CTigVM * vm) {
@@ -19,6 +20,7 @@ void CWorldUI::setGameApp(C3DtestApp * app) {
 
 /** Any initialisation that has to wait for items to be ready. */
 void CWorldUI::init() {
+	transcript.setFile(pApp->homeDir + "transcript.txt");
 	createTextStyles();
 
 	pVM->execute(); //for any global variables or code
@@ -28,6 +30,7 @@ void CWorldUI::init() {
 
 	createTextWindow();
 	createInventoryWindow();
+	createCombatWindow();
 }
 
 
@@ -49,6 +52,10 @@ void CWorldUI::appendText(std::string & text, int window) {
 		if (!pMenuWindow->visible)
 			showPopupMenu(pMenuWindow, currentMousePos);
 		pMenuWindow->resizeToFit();
+	}
+	else if (window == combatWin) {
+		combatPanel->appendMarkedUpText(text);
+
 	}
 	else { //obj window
 		for (auto objWin : objWindows) {
@@ -97,7 +104,9 @@ void CWorldUI::handleRoomChange(int roomId) {
 }
 
 void CWorldUI::openWindow(int winId) {
-	if (winId == menuWin)
+	if (winId == combatWin)
+		openCombatWindow(winId);
+	else if (winId == menuWin)
 		openMenuWindow(winId);
 	else
 		openObjWindow(winId);
@@ -117,10 +126,16 @@ void CWorldUI::openObjWindow(int objId) {
 	}
 
 	CGUIrichTextPanel* pop = spawnPopText();
+	pop->draggable = true;
 	pop->resize(300, 200);
 	pop->setResizeMode(resizeByRatioMode);
 	pop->id = popObjWinId;
 	objWindows.push_back({ pop,objId });
+}
+
+void CWorldUI::openCombatWindow(int winId) {
+	combatPanel->setVisible(true);
+
 }
 
 
@@ -158,7 +173,8 @@ void CWorldUI::showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& 
 	if (newCornerPos.y + popControl->getHeight() + margin > popControl->parent->getHeight())
 		newCornerPos.y -= (newCornerPos.y + popControl->getHeight() + margin) - popControl->parent->getHeight();
 
-	popControl->setLocalPos(newCornerPos.x, newCornerPos.y);
+	//popControl->setLocalPos(newCornerPos.x, newCornerPos.y);
+	popControl->setLocalPos(cornerPos.x, cornerPos.y);
 	popControl->setVisible(true);
 }
 
@@ -174,6 +190,13 @@ void CWorldUI::objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIric
 	currentMousePos = mousePos;
 	playerTurn(hotId);
 }
+
+void CWorldUI::combatWindowClick(unsigned int hotId, glm::i32vec2 mousePos) {
+	currentMousePos = mousePos;
+	playerTurn(hotId);
+}
+
+
 
 void CWorldUI::closeObjWindow(CGUIrichTextPanel * popUp) {
 	objWindows.pop_back();
@@ -202,13 +225,14 @@ void CWorldUI::createTextWindow() {
 	mainTextPanel->setTextStyles(&normalTheme.styles);
 	mainTextPanel->setTextStyle("mainBody");
 	pApp->GUIroot.Add(mainTextPanel);
+	mainTextPanel->richText->transcriptLog = &transcript;
 }
 
 void CWorldUI::createInventoryWindow() {
 	invPanel = new CGUIrichTextPanel(1100, 120, 180, 300);
 	invPanel->setBackColour1(white);
 	invPanel->setBackColour2(white);
-
+	
 	invPanel->setBorderOn(true);
 	invPanel->anchorRight = 10;
 	invPanel->hFormat = hRight;
@@ -220,6 +244,22 @@ void CWorldUI::createInventoryWindow() {
 	invPanel->setTextStyle("smallHeader");
 	invPanel->appendText("Inventory:");
 	pApp->GUIroot.Add(invPanel);
+}
+
+void CWorldUI::createCombatWindow() {
+	combatPanel = new CGUIrichTextPanel(600, 250, 390, 490);
+	combatPanel->setBackColour1(white);
+	combatPanel->setBackColour2(white);
+	combatPanel->draggable = true;
+	combatPanel->setBorderOn(true);
+	combatPanel->setVisible(false);
+	combatPanel->setInset(10);
+	combatPanel->setTextColour(UIwhite);
+	combatPanel->setResizeMode(resizeByWidthMode);
+	combatPanelID = combatPanel->getID();
+	combatPanel->setTextStyles(&smallNormalTheme.styles);
+	combatPanel->setTextStyle("small");
+	pApp->GUIroot.Add(combatPanel);
 }
 
 CGUIrichTextPanel* CWorldUI::spawnPopText() {
@@ -270,5 +310,27 @@ void CWorldUI::reset() {
 	mainTextPanel->clear();
 
 	start();
+}
+
+/** Turn temporary text mode on or off. */
+//TO DO: this should work for any window, not just main. 
+void CWorldUI::tempText(bool onOff, int winId) {
+	mainTextPanel->setTempText(onOff);
+}
+
+void CWorldUI::update(float dT) {
+	mainTextPanel->update(dT);
+	combatPanel->update(dT);
+}
+
+/** Handle a pause request from the vm. Suspend most activity if we're pausing, but leave the
+	player able to un-pause/. */
+void CWorldUI::pause(bool isOn) {
+	if (isOn) { 
+		invPanel->suspend(true);
+	} 
+	else {
+		invPanel->suspend(false);
+	}
 }
 

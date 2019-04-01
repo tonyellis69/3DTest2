@@ -35,6 +35,7 @@ public:
 	void openWindow(int winId);
 	void openMenuWindow(int winId);
 	void openObjWindow(int objId);
+	void openCombatWindow(int winId);
 	void purge(unsigned int id);
 	void clearWindow(int window);
 
@@ -43,8 +44,10 @@ public:
 	void menuClick(unsigned int hotId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp);
 
 
-	//void objWindowClick(const int msgId, int objId, glm::i32vec2 & mousePos, CGUIrichTextPanel * popUp);
 	void objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel * popUp);
+
+	void combatWindowClick(unsigned int hotId, glm::i32vec2 mousePos);
+
 
 	void closeObjWindow(CGUIrichTextPanel * popUp);
 
@@ -55,8 +58,8 @@ public:
 	void vmMessage(int p1, int p2);
 
 	void createTextWindow();
-
 	void createInventoryWindow();
+	void createCombatWindow();
 
 	CGUIrichTextPanel * spawnPopText();
 
@@ -66,15 +69,22 @@ public:
 	
 	void reset();
 
+	void tempText(bool onOff, int winId);
+
+	void update(float dT);
+
+	void pause(bool isOn);
+
 	//unsigned int textWindowID;
 	//CGUIrichText* textWindow;
 	CGUIrichTextPanel* mainTextPanel;
 	unsigned int mainTextWindowID;
 
-	//CGUIrichText* invWindow;
-	//unsigned int invWindowID;
 	CGUIrichTextPanel* invPanel;
 	unsigned int invPanelID;
+
+	CGUIrichTextPanel* combatPanel;
+	unsigned int combatPanelID;
 
 	CGUIrichTextPanel* popupPanel;
 	unsigned int popupPanelID;
@@ -114,6 +124,7 @@ private:
 	CFont mainFont;
 	CFont mainFontBold;
 
+	CLog transcript; ///<For logging output to main window.
 };
 
 
@@ -124,4 +135,5 @@ const int popObjWinId = 5001;
 const int mainWin = 0;
 const int invWin = 1;
 const int menuWin = 2;
+const int combatWin = 3;
 const int msgRoomChange = 5000;

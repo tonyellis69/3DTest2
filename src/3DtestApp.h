@@ -171,6 +171,8 @@ public:
 
 	CModel2 tmpModel2;
 	ComposeTest testCompositor;
+
+	
 };
 
 const float yawAng = 0.22f;

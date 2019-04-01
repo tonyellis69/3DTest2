@@ -41,7 +41,9 @@ C3DtestApp::C3DtestApp() {
 
 void C3DtestApp::onStart() {
 	appMode = textMode;// texGenMode;// terrainMode; //textMode;
+
 	
+	//GUIroot.add(uiButton, "Save");
 
 	chunkCall = 0;
 
@@ -55,7 +57,7 @@ void C3DtestApp::onStart() {
 	Engine.createCylinder(vec3(0, 300, -4), 1, 2, 30);
 
 
-	//position the default camera
+	//positionHint the default camera
 	
 	Engine.getCurrentCamera()->setPos(vec3(-3, 300, 3));
 	Engine.getCurrentCamera()->lookAt(vec3(0.0746933, -0.291096, 0.953797));
@@ -711,6 +713,7 @@ void C3DtestApp::draw() {
 void C3DtestApp::terrain2TestDraw() {
 	//return;
 	//draw shell wireframes
+	mat4 chunkM;
 
 	for (int shell = 0; shell < 1; shell++) {
 	//int shell = 0;
@@ -726,13 +729,18 @@ void C3DtestApp::terrain2TestDraw() {
 
 		//now draw boxes for each SC
 		float SCsize = terrain2.shells[shell].SCsize * 0.9f;
+		float scActualSize = terrain2.shells[shell].SCsize;
 		glm::mat4 SCshape = glm::scale(glm::mat4(1), glm::vec3(SCsize));
+
+		float chunkSize = terrain2.shells[shell].chunkSize * 0.9f;
+		float actualChunkSize = terrain2.shells[shell].chunkSize;
+		glm::mat4 chunkShape = glm::scale(glm::mat4(1), glm::vec3(chunkSize));
 		
 		//create world displacement matrix for each SC:
 		//find the centre point of the SC using x,y,z index * SCsize
 		//make it relative to the shell's origin
 		//that's our matrix
-		float scSize = terrain2.shells[shell].SCsize;
+		//float scSize = terrain2.shells[shell].SCsize;
 
 		for (COuterSCIterator SCiter = terrain2.shells[shell].getOuterSCiterator(); !SCiter.finished(); SCiter++) {
 			if (SCiter->isEmpty)
@@ -740,15 +748,34 @@ void C3DtestApp::terrain2TestDraw() {
 
 			i32vec3 index = SCiter.getIndex();
 			i32vec3 origIndex = SCiter->origIndex;
-			vec3 SCorigin = vec3(index) * scSize;
-			SCorigin += scSize * 0.5; //move orgin to centre of SC
+			vec3 SCorigin = vec3(index) * scActualSize;
+			SCorigin += scActualSize * 0.5; //move orgin to centre of SC
 			SCorigin -= shellSize * 0.5; // and make relative to centre of shell
-			SCorigin += shellWorldspacePos; //and then relative to shell's worldspace position
+			SCorigin += shellWorldspacePos; //and then relative to shell's worldspace positionHint
 			scM = translate(mat4(1), SCorigin);
 			wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
 			wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
 			renderer.drawBuf(wireCube, drawLinesStrip);
+
+			//draw chunks
+		//	if (shell > 0)
+			//	continue;
+			for (auto chunk : SCiter->chunks) {
+				i32vec3 chunkIndex = chunk;
+				vec3 chunkOrigin = vec3(chunkIndex) * actualChunkSize;
+				chunkOrigin += actualChunkSize * 0.5; //move orgin to centre of chunk
+				chunkOrigin -= scActualSize * 0.5; // and make relative to centre of SC ???? may need actual SC size
+				//chunkOrigin -= shellSize * 0.5; // and make relative to centre of shell
+				//chunkOrigin += shellWorldspacePos; //and then relative to shell's worldspace positionHint
+				chunkOrigin += SCorigin; //and then relative to shell's worldspace positionHint
+
+				chunkM = translate(mat4(1), chunkOrigin);
+				wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * chunkM * chunkShape;
+				wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
+				wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
+				renderer.drawBuf(wireCube, drawLinesStrip);
+			}
 
 		}
 
@@ -899,7 +926,8 @@ void C3DtestApp::advance(Tdirection direction) {
 /** Called every frame. Mainly use this to scroll terrain if we're moving in first-person mode*/
 void C3DtestApp::Update() {
 	vmUpdate();
-	worldUI.mainTextPanel->update((float)dT); //TO DO:  update worldUI instead!
+	
+	worldUI.update((float)dT);
 
 	if (skyDome)
 		skyDome->update(dT);
@@ -1011,7 +1039,7 @@ void C3DtestApp::initWireSCs() {
 void C3DtestApp::onTerrainAdvance(Tdirection direction) {
 	if (physCube) {
 	//	physCube->pModel->translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
-		//physCube->position += -dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize;
+		//physCube->positionHint += -dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize;
 	}
 	//playerObject.translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
 }
@@ -1067,9 +1095,6 @@ void C3DtestApp::updateHeightmapImage() {
 
 /** Handle messages from the virtual machine. */
 void C3DtestApp::vmMessage(TvmAppMsg msg) {
-	//if (msg.type == appHotText) {
-	//	worldUI.addHotText(msg.text,msg.integer,msg.integer2);
-	//}
 	if (msg.type == appPurge) {
 		worldUI.purge(msg.integer);
 	}
@@ -1084,6 +1109,15 @@ void C3DtestApp::vmMessage(TvmAppMsg msg) {
 	}
 	if (msg.type == appMsg) {
 		worldUI.vmMessage(msg.integer,msg.integer2);
+	}
+	if (msg.type == appTempTxt) {
+		worldUI.tempText((bool)msg.integer,msg.integer2);
+	}
+	if (msg.type == appPause) {
+		worldUI.pause(true);
+	}
+	if (msg.type == appUnpause) {
+		worldUI.pause(false);
 	}
 }
 
@@ -1107,14 +1141,15 @@ void C3DtestApp::vmUpdate() {
 
 
 void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
+
 	if (control.parent->getID() == worldUI.mainTextWindowID && Message.Msg == uiMsgHotTextClick) {
-		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
+		glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
 		worldUI.mainWindowClick(Message.value, mousePos);
 		return;
 	}
 
 	if (control.parent->getID() == worldUI.invPanelID && Message.Msg == uiMsgHotTextClick) {
-		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
+		glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
 		worldUI.inventoryClick(Message.value, mousePos);
 		return;
 	}
@@ -1134,21 +1169,30 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
 	//object window click
 	if (control.parent->id == popObjWinId && Message.Msg == uiMsgHotTextClick) {
-		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
+		glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
 		worldUI.objWindowClick(Message.value, mousePos, (CGUIrichTextPanel *)control.parent);
+		return;
 	}
 
 	if (control.parent->id == popObjWinId && Message.Msg == uiClickOutside) {
-		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
+		glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
 		worldUI.closeObjWindow((CGUIrichTextPanel *)control.parent);
+		return;
+	}
+
+	//combat window click
+	if (control.parent->getID() == worldUI.combatPanelID && Message.Msg == uiMsgHotTextClick) {
+		glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
+		worldUI.combatWindowClick(Message.value, mousePos);
+		return;
 	}
 }
 
-/** Returns true if terrain intersects the given cube. */
-bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & pos, float SCsampleStep) {
+/** Returns true if terrain *does not* intersect the given cube - ie, SC is empty. */
+bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & nwSamplePos, float SCsampleStep) {
 	Engine.Renderer.setShader(terrain.chunkCheckShader);
 	//find nwcorner in sample space
-	vec3 nwSamplePos = pos;
+	
 
 	//float LoDscale = (SC.sampleStep) / (cubesPerChunkEdge);
 	float chunkShellVertCount = (float)terrain2.chunkCubes;
@@ -1163,11 +1207,6 @@ bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & pos, float SCsampleStep
 	Engine.Renderer.attachTexture(0, terrain.tmpTerrainMap.handle);
 	terrain.chunkCheckShader->setShaderValue(terrain.hTerrainTexture, 0);
 
-
-	
-
-
-
 	Engine.Renderer.initQuery();
 	terrain.chunkShell->drawNew();
 	unsigned int primitives = Engine.Renderer.query();
@@ -1180,11 +1219,33 @@ bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & pos, float SCsampleStep
 	return false;
 }
 
-/** Returns true if terrain intersects the given chunk volume .*/
-bool C3DtestApp::chunkCheckCallback(glm::vec3 & chunkPos, float chunkSampleSize) {
+//TO DO: these two methods are identical aside from returning true/false. Consolidate!
 
+/** Returns true if terrain *intersects* the given chunk volume .*/
+bool C3DtestApp::chunkCheckCallback(glm::vec3 & chunkSamplePos, float chunkSampleSize) {
+	Engine.Renderer.setShader(terrain.chunkCheckShader);
+	
+	float chunkShellVertCount = (float)terrain2.chunkCubes; ///<Gives number of divisions in the shell
+	
+	terrain.chunkCheckShader->setShaderValue(terrain.hNWsamplePos, chunkSamplePos);
+	terrain.chunkCheckShader->setShaderValue(terrain.hLoDscale, chunkSampleSize / chunkShellVertCount);
 
-	return false;
+	Engine.Renderer.attachTexture(0, terrain.tmpTerrainMap.handle);
+	terrain.chunkCheckShader->setShaderValue(terrain.hTerrainTexture, 0);
+
+	//Draw check grid 
+	//unsigned int primitives = Engine.drawModelCount(*chunkShell);
+
+	Engine.Renderer.initQuery();
+	terrain.chunkShell->drawNew();
+	unsigned int primitives = Engine.Renderer.query();
+
+	sysLog << "\n" << primitives;
+
+	if (primitives == 0 || primitives == shellTotalVerts)
+		return false;
+	
+	return true;
 }
 
 
