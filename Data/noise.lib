@@ -1,34 +1,6 @@
 #line 2
 const int realmSize = 4;
-const float mazeSize =  3;//0.03125;// 0.0625;// 0.25;//3;
-const int mazeSteps = 9;
 
-float maze[81] = float[](	0.0,0.0,0.0,0.0,0.0,0.0,0.0,1,0.0,
-							0.0,1,0.0,1,1,1,0.0,1,0.0,
-							0.0,1,0.0,0.0,0.0,1,0.0,1,0.0,
-							0.0,1,1,1,1,1,1,1,0.0,
-							0.0,1,0.0,1,0.0,0.0,0.0,0.0,0.0,
-							0.0,1,0.0,1,0.0,1,1,1,1,
-							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-							0.0,1,0.0,1,1,1,0.0,1,1,
-							0.0,1,0.0,0.0,0.0,1,0.0,0.0,0.0);
-							
-						
-/*					
-float maze[81] = float[](	0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-							0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-							0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);							
-							
-						
-		*/			
-							
-const float cellSize = mazeSize / mazeSteps;
 
 
 uniform sampler2D terrainTexture;
@@ -631,21 +603,7 @@ float terrace(float noise, int steps) {
 	return round(noise * steps) / steps;
 }
 
-float getMazeValue(vec2 positionInMaze) {
 
-	ivec2 mazeCell = ivec2(positionInMaze / cellSize);
-	if (mazeCell.x < 0 || mazeCell.y < 0)
-		return 0;
-	if (mazeCell.x > 8 || mazeCell.y > 8)
-		return 0;
-	
-	
-	
-	int cell = (mazeCell.y * mazeSteps) + mazeCell.x;
-	if (cell > 80)
-		return 0;
-	return maze[cell];
-}
 
 float       interpolate(float a, float b, float x)
 {
@@ -659,9 +617,11 @@ float       interpolate(float a, float b, float x)
 
 
 /** Return the texture height at the given point.*/
-float textureHeight(vec2 xy) {
-	vec2 unitXY = (xy - vec2(5.0) )/ 2;
-	return texture(terrainTexture,unitXY).r;
+vec2 textureHeight(vec2 xy) {
+	//vec2 unitXY = (xy - vec2(4.0,4.1) ) / 3.8; //fills terraim
+	//vec2 unitXY = (xy - vec2(5.89,5.89) ) /2;
+	vec2 unitXY = (xy  ) * 2; //2
+	return texture(terrainTexture,unitXY).rg;
 }
 
 float tmp(vec2 n) { 
@@ -671,11 +631,14 @@ float tmp(vec2 n) {
 
 
 float terrainValue (  int octaves,   vec3 xyz ) {
-	if (xyz.x < 5 && xyz.z < 5)
+
+	// Test steps - uncomment to use
+	 if (xyz.x < -1 && xyz.z < -1)
 		return xyz.y;
-	if (xyz.x < 6 && xyz.z < 6)
+	if (xyz.x < 0 && xyz.z < 0)
 		return xyz.y - 0.1;
 	return xyz.y - 0.2;
+	
 
 	//perturbing the actual coordinates like this makes for very blocky erosion
 	//xyz.x += fbm3Dclassic(5,xyz * 16 ) * 0.005;
@@ -689,26 +652,37 @@ float terrainValue (  int octaves,   vec3 xyz ) {
 	//xy.y += fbm3Dclassic(5,xyz * 10) * 0.015;
 	
 
-	float mask = 1.0 - textureHeight(xy);
+	vec2 masks = textureHeight(xy);
+	float mask = 1.0 - masks.r;
+	float broadMask = 1.0 - (masks.g  /** 2*/);
 	
 	float moonRockinesss = pow(abs(fbm2DclassicFreq(3,xy,80)),3) * 0.02;
 	
 	//float rugged = floor(fbm2DclassicFreq(2,xy,32)) * 0.015; //investigate! very canyony
 	
-	float rugged = fbm2DclassicFreq(2,xy,32);
-	//float pos = max(rugged,0) * 0.015;
+	float rugged = fbm2DclassicFreq(3,xy,32);
+	float pos = max(rugged,0) * 0.015;
 	float neg = min(rugged,0) * 0.005;
 	//float gentle = pos + neg; //gentle hills without the hollows
 	
 	//decent ridged terrain with softer spaces:
-	float ridges = ridgedMF(2,xy,16);
-	float pos = max(ridges,0) * 0.03;
-	float flatDetail = fbm2DclassicFreq(2,xy,32) * 0.005;
-	pos += smoothstep(0.1,-0.1,ridges) *  flatDetail; //This is *great* for transitioning from vertical to horizonal
+	//float ridges = ridgedMF(2,xy,16);
+	//float pos = max(ridges,0) * 0.03;
+	//float flatDetail = fbm2DclassicFreq(2,xy,32) * 0.005;
+	//pos += smoothstep(0.1,-0.1,ridges) *  flatDetail; //This is *great* for transitioning from vertical to horizonal
 	//without ugly ridges.	
-	terrain = pos * mask;
+	//terrain = pos * mask;
 	
-	terrain += fbm2DclassicFreq(2,xy,1) * 0.05; //adds subtle large-scale slopes
+	//spikey mountain scenery, but no spikes on the path, looks pretty good:
+	float test = fbm2DclassicFreq(3,xy,4) ;
+	terrain = ((test  * 0.15) +moonRockinesss) * broadMask;
+	terrain += (pos + neg) * 0.25;// * mask ;
+	
+	//terrain =  0.1 * mask; //flat - good for seeing where the mask is.
+	
+	//terrain += fbm2DclassicFreq(2,xy,1) * 0.05; //adds subtle large-scale slopes
+	
+	//terrain += fbm2DclassicFreq(2,xy,1) * 0.5; //alpine slopes
 	
 	//terrain = floor(fbm2DclassicFreq(2,xy,20)) * 0.015; //investigate! very canyony
 	

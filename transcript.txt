@@ -4,29 +4,3 @@ This is a plain, unremarkable room.
 A little way off, a cleaning bot polishes the floor, while a rectangular servobot watches you with narrow, electronic eyes. 
 
 The cleaning bot and servobot charge toward you, arms wheeling!
-
-You level your gun for a shot...
-You fire your MK1 blaster at the fast approaching cleaning bot, for 9 damage. 
-
-The cleaning bot and servobot are attacking you!
-
-You level your gun for a shot...
-Whoosh! Moving fast, the rectangular servobot swipes at you with its metal arm, doing 1 damage. Whoosh! The cleaning bot swipes at you with its whirling brush arm, doing 1 damage. You fire your MK1 blaster at the rectangular servobot, for 7 damage. 
-
-The cleaning bot and servobot are attacking you. 
-You equip the adjustable wrench. 
-
-You choose to attack...
-You strike with the adjustable wrench at the rectangular servobot, but it blocks the attack with a metal arm. The cleaning bot swings its whirling brush arm at you, doing 1 damage. 
-
-The cleaning bot and servobot are attacking you. 
-
-You choose to attack...
-Whoosh! The rectangular servobot swipes at you with its metal arm, doing 1 damage. Hefting the adjustable wrench, you swing it at the cleaning bot, but it blocks the attack with a whirling brush arm. 
-
-The cleaning bot and servobot are attacking you. 
-
-You choose to block...
-Whoosh! The cleaning bot swipes at you with its whirling brush arm, doing 1 damage. Your armour is wrecked in the process. You make a defensive move, but so does the rectangular servobot. 
-
-The cleaning bot and servobot are attacking you. 

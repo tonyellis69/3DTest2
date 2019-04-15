@@ -40,7 +40,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = textMode;// texGenMode;// terrainMode; //textMode;
+	appMode = terrainMode;// texGenMode;// terrainMode; //textMode;
 
 	
 	//GUIroot.add(uiButton, "Save");
@@ -51,13 +51,27 @@ void C3DtestApp::onStart() {
 	lastMousePos = glm::vec2(0, 0);
 
 
+
+
 	//test objects, temporary
-	cube = Engine.createCube(vec3(-3, 300, -3), vec3(1.0f)); Engine.modelDrawList.push_back(cube);
-	Engine.modelDrawList.push_back(Engine.createCube(vec3(3, 300, -3), vec3(1.0f)));
-	Engine.createCylinder(vec3(0, 300, -4), 1, 2, 30);
+	//cube = Engine.createCube(vec3(-3, 300, -3), vec3(1.0f)); Engine.modelDrawList.push_back(cube);
+
+	cube.loadMesh(shape::cubeMesh());
+	cube.setPos(vec3(-3, 300, -3));
+	Engine.modelDrawList.push_back(&cube);
+
+//	Engine.modelDrawList.push_back(Engine.createCube(vec3(3, 300, -3), vec3(1.0f)));
+	cube2.loadMesh(shape::cubeMesh());
+	cube2.setPos(vec3(3, 300, -3));
+	Engine.modelDrawList.push_back(&cube2);
 
 
-	//positionHint the default camera
+//	Engine.createCylinder(vec3(0, 300, -4), 1, 2, 30);
+	cylinder.loadMesh(shape::cylinderMesh(1,2,30));
+	cylinder.setPos(vec3(0, 300, -4));
+	Engine.modelDrawList.push_back(&cylinder);
+
+	//position the default camera
 	
 	Engine.getCurrentCamera()->setPos(vec3(-3, 300, 3));
 	Engine.getCurrentCamera()->lookAt(vec3(0.0746933, -0.291096, 0.953797));
@@ -77,22 +91,18 @@ void C3DtestApp::onStart() {
 	fpsOn = false;
 	selectChk = i32vec3(0, 0, 0);
 	mouseLook = false;
-	
+
+	renderer.defaultLightPos = vec3(4000, 4000, 4000);
+	renderer.defaultLightDir = vec3(0,0,-1);
 		
 	CTerrainPhysObj* terrainPhysObj = new CTerrainPhysObj();
 	terrainPhysObj->attachModel(&terrain);
 	terrainPhysObj->setCollides(false);
 	Engine.physObjManager.addPhysObj(terrainPhysObj);
 	
-	//
 
-	/////////////////////////temp: create a terrain texture
-	//ComposeTest testCompositor;
-	testCompositor.initTex();
-	//testCompositor.restore(dataPath + "noiseland.gen");
-	testCompositor.restore(dataPath + "terrainTest.gen");
-	testCompositor.compose();
-	terrain.tmpTerrainMap = testCompositor.getComposedTexture();
+	createRegion();
+
 	
 	
 	CBaseBuf* terrainBuf = &terrain.multiBuf; //TO DO: ugh, make a setter
@@ -123,7 +133,8 @@ void C3DtestApp::onStart() {
 	
 
 	terrain.initHeightFinder();
-	terrain.createTerrain(vec2(6, 6)); //seem to get striations above 999
+	//terrain.createTerrain(vec2(0.05, 0.05)); //seem to get striations above 999
+	terrain.createTerrain(playerStartOffset); //seem to get striations above 999
 
 	initHeightmapGUI();
 	
@@ -160,7 +171,9 @@ void C3DtestApp::onStart() {
 	supWire = false;
 
 	//initialise player object
-	playerObject.pModel = Engine.createCube(vec3(0), vec3(playerObject.width*1, playerObject.height, playerObject.width*1));
+	playerObject.model.loadMesh(shape::cubeMesh()); 
+	//= Engine.createCube(vec3(0), vec3(playerObject.width * 1, playerObject.height, playerObject.width * 1));
+	playerObject.model.scale(vec3(playerObject.width * 1, playerObject.height, playerObject.width * 1));
 	playerObject.setPos(vec3(0, 237, 0));
 	playerObject.setPos(vec3(0, 0, 0));
 
@@ -321,6 +334,11 @@ void C3DtestApp::keyCheck() {
 		CCamera* currentCamera = Engine.getCurrentCamera();
 		float moveInc = float(dT * 1000.0); // 0.05125f;
 
+		if (keyNow('L')) {
+			renderer.defaultLightPos = rotate(renderer.defaultLightPos, 0.01f, vec3(0, 1, 0));
+			//building.setPos(renderer.defaultLightPos);
+		}
+
 		if (!fpsOn) {
 
 			if (keyNow('E')) {
@@ -358,11 +376,12 @@ void C3DtestApp::keyCheck() {
 
 			float rot = dT * 200.0;
 			if (keyNow('P')) {
-				cube->rotate(rot, glm::vec3(1, 0, 0));
+				cube.rotate(rot, glm::vec3(1, 0, 0));
 			}
 			if (keyNow('Y')) {
-				cube->rotate(rot, glm::vec3(0, 1, 0));
+				cube.rotate(rot, glm::vec3(0, 1, 0));
 			}
+	
 
 
 		}
@@ -516,15 +535,22 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 			worldUI.reset();
 			return;
 		}
+
+		if (appMode == terrainMode) {
+			terrain.clear();
+			terrain.chunkShader->recompile();
+			terrain.chunkCheckShader->recompile();
+			terrain2texShader->recompile();
+			terrain.createAllChunks();
+			updateHeightmapImage();
+			//terrain.grassShader->recompile();
+			//EatKeys();
+		}
+
 	}
 
 
-	if (key == 'R') {
-		//cube->rotate(rot, glm::vec3(0, 0, 1));
-		//chunkShader->recompile();
-		terrain.grassShader->recompile();
-		//EatKeys();
-	}
+	
 
 	if (key == '1') {
 		fpsOn = !fpsOn;
@@ -619,6 +645,7 @@ void C3DtestApp::draw() {
 	}
 
 	///////////////////////////tmpModel2.draw();
+	building.draw();
 
 	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
 	terrain.updateVisibleSClist(fpsCam);
@@ -627,11 +654,6 @@ void C3DtestApp::draw() {
 
 	mat4 mvp = Engine.getCurrentCamera()->clipMatrix * terrain.chunkOrigin;
 
-	//draw chunks
-	mat3 tmp;
-	Engine.Renderer.setShader(Engine.Renderer.phongShader);
-	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hNormalModelToCameraMatrix, tmp); //why am I doing this?
-	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP, mvp);
 	terrain.drawVisibleChunks();/////////////////////////////
 
 	//draw grass
@@ -701,10 +723,7 @@ void C3DtestApp::draw() {
 	terrain2TestDraw();
 
 	if (!fpsOn) {
-		Engine.Renderer.setShader(Engine.Renderer.phongShader);
-		mvp = Engine.getCurrentCamera()->clipMatrix * playerObject.pModel->worldMatrix;
-		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP,mvp);
-		playerObject.pModel->drawNew();
+		playerObject.model.draw();
 	}
 
 	///watch::watch1 << "text";
@@ -714,8 +733,9 @@ void C3DtestApp::terrain2TestDraw() {
 	//return;
 	//draw shell wireframes
 	mat4 chunkM;
+	float boxScale = 0.99f;
 
-	for (int shell = 0; shell < 1; shell++) {
+	for (int shell = 0; shell < 2; shell++) {
 	//int shell = 0;
 		vec3 shellWorldspacePos = terrain2.shells[shell].worldSpacePos;
 		renderer.setShader(wire2Shader);
@@ -728,11 +748,11 @@ void C3DtestApp::terrain2TestDraw() {
 		renderer.drawBuf(wireCube, drawLinesStrip);
 
 		//now draw boxes for each SC
-		float SCsize = terrain2.shells[shell].SCsize * 0.9f;
+		float SCsize = terrain2.shells[shell].SCsize * boxScale;
 		float scActualSize = terrain2.shells[shell].SCsize;
 		glm::mat4 SCshape = glm::scale(glm::mat4(1), glm::vec3(SCsize));
 
-		float chunkSize = terrain2.shells[shell].chunkSize * 0.9f;
+		float chunkSize = terrain2.shells[shell].chunkSize * boxScale;
 		float actualChunkSize = terrain2.shells[shell].chunkSize;
 		glm::mat4 chunkShape = glm::scale(glm::mat4(1), glm::vec3(chunkSize));
 		
@@ -759,8 +779,8 @@ void C3DtestApp::terrain2TestDraw() {
 			renderer.drawBuf(wireCube, drawLinesStrip);
 
 			//draw chunks
-		//	if (shell > 0)
-			//	continue;
+			if (shell > 0)
+				continue;
 			for (auto chunk : SCiter->chunks) {
 				i32vec3 chunkIndex = chunk;
 				vec3 chunkOrigin = vec3(chunkIndex) * actualChunkSize;
@@ -848,7 +868,7 @@ void C3DtestApp::terrain2TestDraw() {
 		Engine.Renderer.setShader(Engine.Renderer.phongShader);
 		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hNormalModelToCameraMatrix, tmp); //why am I doing this?
 		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP, mvp);
-		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hColour, vec4(1, 0, 0, 0.25));
+		Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMatDiffuse, vec4(1, 0, 0, 0.25));
 		//Engine.Renderer.drawBuf(box, drawTris);
 	}
 }
@@ -970,6 +990,7 @@ void C3DtestApp::Update() {
 			//fpsCam.setPos(posMod); //secretly reposition viewpoint prior to scrolling terrain
 			playerObject.setPos(posMod);
 			playerPhys->position = posMod;
+			
 			;
 
 			vec3 translation = vec3(terrain.chunkOriginInt *  cubesPerChunkEdge) * cubeSize;
@@ -1006,6 +1027,9 @@ void C3DtestApp::Update() {
 				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt) , 1);
 				terrain.advance(direction);
 			}
+
+			onTerrainAdvance(direction);
+
 		}
 	}
 }
@@ -1042,6 +1066,8 @@ void C3DtestApp::onTerrainAdvance(Tdirection direction) {
 		//physCube->positionHint += -dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize;
 	}
 	//playerObject.translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
+	building.translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
+	liveLog << "\nonTerrainAdvance called!";
 }
 
 /** Create the GUI and textures for displaying 2D terrain heightmaps. */
@@ -1246,6 +1272,35 @@ bool C3DtestApp::chunkCheckCallback(glm::vec3 & chunkSamplePos, float chunkSampl
 		return false;
 	
 	return true;
+}
+
+/** Create a playable terrain region, with a start point, end point and path. */
+void C3DtestApp::createRegion() {
+	testCompositor.initTex();
+	testCompositor.restore(dataPath + "terrainTest.gen");
+	testCompositor.compose();
+	terrain.tmpTerrainMap = testCompositor.getComposedTexture();
+	playerStartOffset = static_cast<CTerrainTex*>(testCompositor.currentTexGen)->getStartPoint();
+	vec2 endPoint = static_cast<CTerrainTex*>(testCompositor.currentTexGen)->getEndPoint();
+
+	playerStartOffset *= 0.5;
+	endPoint *= terrain.worldUnitsPerSampleUnit *0.5;
+
+	//create placeholder building
+	ComposeTest buildingTexCompositor;
+	buildingTexCompositor.initTex();
+	buildingTexCompositor.restore(dataPath + "buildingTex.gen");
+	buildingTexCompositor.compose();
+	tmpBuildingTexture = buildingTexCompositor.getComposedTexture();
+
+
+	building.loadMesh(shape::fustrumMesh(0.5f));
+	building.setPos(vec3(endPoint.x,90, endPoint.y));
+	building.scale(vec3(180));
+	building.setTexture(&tmpBuildingTexture);
+
+
+
 }
 
 

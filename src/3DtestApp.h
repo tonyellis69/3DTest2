@@ -64,10 +64,14 @@ public:
 	bool scIntersectionCheckCallback(glm::vec3& pos, float scSize);
 	bool chunkCheckCallback(glm::vec3& pos, float scSize);
 
+	void createRegion();
+
 	
 	string dataPath; ///<Filepath to the Data folder
 	
-	CModel* cube; //TO DO: get rid of this
+	CModel2 cube; 
+	CModel2 cube2;
+	CModel2 cylinder;
 	
 	glm::vec2 lastMousePos; ///<Used to track current mouse movement
 
@@ -171,6 +175,11 @@ public:
 
 	CModel2 tmpModel2;
 	ComposeTest testCompositor;
+	CRenderTexture tmpBuildingTexture;
+
+	glm::vec2 playerStartOffset;///<The adjustment required to centre terrain on the player spawn point.
+	CModel2 building;
+
 
 	
 };

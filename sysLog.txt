@@ -1,4 +1,4 @@
-*** Sunday March 31, 2019  time: 14:47:01 ***
+*** Sunday April 14, 2019  time: 17:36:19 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
@@ -7,893 +7,6 @@ Has NPOT
 glsl version: 4.60 NVIDIA
 BaseApp constructor finished. Yay!
 
-SC index x 0 y 0 z 0 nwChunkStart x 2 y 2 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 1 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 2 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 3 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 4 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 0 y 1 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 0 y 2 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 0 y 3 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 0 y 4 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 1 z 3
-SC index x 0 y 4 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 0 y 4 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 0 y 4 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 0 y 4 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 1
-SC index x 1 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 1 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 1 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 1 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 1 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
-SC index x 1 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 1 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 1 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 1 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
-SC index x 2 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 2 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 2 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 2 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 2 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
-SC index x 2 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 2 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 2 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 2 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
-SC index x 3 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 3 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 3 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 3 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 3 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
-SC index x 3 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 3 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 3 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 3 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
-SC index x 4 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 1
-SC index x 4 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
-SC index x 4 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
-SC index x 4 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
-SC index x 4 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 1 z 3
-SC index x 4 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
-SC index x 4 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
-SC index x 4 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
-SC index x 4 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 1
-SC index x 0 y 0 z 0 nwChunkStart x 2 y 2 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 1 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 2 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 3 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 4 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 0 y 1 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 0 y 2 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 0 y 3 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 0 y 4 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 1 z 3
-SC index x 0 y 4 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 0 y 4 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 0 y 4 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 0 y 4 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 1
-SC index x 1 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 1 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 1 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 1 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 1 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
-SC index x 1 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 1 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 1 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 1 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
-SC index x 2 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 2 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 2 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 2 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 2 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
-SC index x 2 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 2 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 2 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 2 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
-SC index x 3 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 3 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 3 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 3 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 3 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
-SC index x 3 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 3 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 3 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 3 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
-SC index x 4 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 1
-SC index x 4 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
-SC index x 4 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
-SC index x 4 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
-SC index x 4 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 1 z 3
-SC index x 4 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
-SC index x 4 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
-SC index x 4 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
-SC index x 4 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 1
-SC index x 0 y 0 z 0 nwChunkStart x 2 y 2 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 1 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 2 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 3 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 4 nwChunkStart x 2 y 2 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 0 y 1 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 0 y 2 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 0 y 3 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 0 y 4 z 0 nwChunkStart x 2 y 0 z 2 seChunkEnd x 3 y 1 z 3
-SC index x 0 y 4 z 1 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 0 y 4 z 2 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 0 y 4 z 3 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 0 y 4 z 4 nwChunkStart x 2 y 0 z 0 seChunkEnd x 3 y 1 z 1
-SC index x 1 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 1 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 1 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 1 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 1 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
-SC index x 1 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 1 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 1 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 1 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
-SC index x 2 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 2 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 2 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 2 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 2 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
-SC index x 2 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 2 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 2 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 2 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
-SC index x 3 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 3 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 3 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 3 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 1
-SC index x 3 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 3 y 1 z 3
-SC index x 3 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 3 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 3 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 3
-SC index x 3 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 1 z 1
-SC index x 4 y 0 z 0 nwChunkStart x 0 y 2 z 2 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 0 z 1 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 0 z 2 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 0 z 3 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 0 z 4 nwChunkStart x 0 y 2 z 0 seChunkEnd x 1 y 3 z 1
-SC index x 4 y 1 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
-SC index x 4 y 2 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
-SC index x 4 y 3 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 3
-SC index x 4 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 3 z 1
-SC index x 4 y 4 z 0 nwChunkStart x 0 y 0 z 2 seChunkEnd x 1 y 1 z 3
-SC index x 4 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
-SC index x 4 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
-SC index x 4 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 3
-SC index x 4 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 1 y 1 z 1
-SC index x 0 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 0 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 1 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 2 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 3 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 4 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 5 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 6 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 0 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 0 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 0 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 0 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 0 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 0 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 0 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 0 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 1 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 1 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 1 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 1 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 1 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 1 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 1 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 1 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 2 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 2 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 2 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 2 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 2 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 2 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 2 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 2 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 3 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 3 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 3 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 3 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 3 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 3 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 3 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 3 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 4 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 4 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 4 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 4 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 4 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 4 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 4 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 4 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 5 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 5 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 5 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 5 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 5 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 5 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 5 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 5 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 6 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 6 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 6 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 6 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 6 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 6 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 6 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 6 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 7 z 0 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 7 z 1 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 7 z 2 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 7 z 3 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 7 z 4 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 7 z 5 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 7 z 6 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
-SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 865
@@ -923,7 +36,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 865
-984
+1332
 1538
 1538
 1538
@@ -931,67 +44,67 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 865
-984
+1332
 1538
 1538
 0
+1057
+1538
+1538
+0
+1057
+1538
+1538
+0
+1057
+1538
+1538
+0
+1057
+1538
+1538
+0
+1057
+1538
+1538
+0
+1057
+1538
+1538
+0
+1057
+1538
+1538
+0
+1057
+1538
+1538
+0
+1057
+1538
+1538
+0
+1057
+1538
+1538
+0
+221
 289
-1538
-1538
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-17
-289
 289
 0
 0
 0
 0
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-17
+221
 289
 289
 0
@@ -1099,7 +212,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 865
-984
+1332
 1538
 1538
 1538
@@ -1107,7 +220,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 865
-984
+1332
 1538
 1538
 1538
@@ -1115,7 +228,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 865
-984
+1332
 1538
 1538
 1538
@@ -1123,99 +236,83 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 865
-984
+1332
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-17
-289
-289
-0
-0
-0
-0
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-17
+221
 289
 289
 0
@@ -1223,31 +320,47 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
+1057
+1538
+1538
+0
+1057
+1538
+1538
+0
+221
 289
-1538
-1538
-0
-289
-1538
-1538
-0
-17
-289
 289
 0
 0
 0
 0
 0
-289
+1057
 1538
 1538
 0
-289
+1057
 1538
 1538
 0
-17
+221
+289
+289
+0
+0
+0
+0
+0
+1057
+1538
+1538
+0
+1057
+1538
+1538
+0
+221
 289
 289
 0
@@ -1356,8 +469,8 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 865
 1538
 1538
-984
-984
+1332
+1332
 1538
 1538
 1538
@@ -1378,10 +491,10 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
-984
-984
-984
-984
+1332
+1332
+1332
+1332
 1538
 1538
 1538
@@ -1403,49 +516,17 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 865
-984
+1332
 1538
 1538
 1538
 1538
 1538
 1538
-984
-1096
+1332
+1480
 1538
 1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-289
-289
-289
-289
 1538
 1538
 1538
@@ -1470,46 +551,14 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-289
-289
-289
-289
-289
-289
-289
-289
-289
-289
-289
-289
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
+1057
+1057
+1057
+1057
+1057
+1057
+1057
+1057
 1538
 1538
 1538
@@ -1527,37 +576,37 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 0
-289
-1538
-1538
 0
-289
-1538
-1538
 0
-289
-1538
-1538
 0
-289
-1538
-1538
-289
-561
-1538
-1538
-289
-561
-1538
-1538
-289
-561
-1538
-1538
-289
-561
-1538
-1538
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1057
+1057
+1057
+1057
+1057
+1057
+1057
+1057
+1057
+1057
+1057
+1057
+1057
+1057
+1057
+1057
 1538
 1538
 1538
@@ -1591,27 +640,83 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 0
+1057
+1538
+1538
 0
+1057
+1538
+1538
 0
+1057
+1538
+1538
 0
-0
-0
-0
-0
-289
-289
-289
-289
-17
-17
-0
-0
+1057
+1538
+1538
+1057
+1401
+1538
+1538
+1057
+1401
+1538
+1538
+1057
+1401
+1538
+1538
+1057
+1401
 1538
 1538
 1538
 1538
-289
-289
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+0
+0
+0
+0
+0
+0
+0
+0
+1057
+1057
+1057
+1057
+221
+221
 0
 0
 1538
@@ -1622,50 +727,42 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 289
 0
 0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-289
-289
-289
-289
-17
-17
-17
-17
-0
-0
-0
-0
-1538
-1538
-1538
-1538
 1538
 1538
 1538
 1538
 289
 289
-289
-289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1057
+1057
+1057
+1057
+1057
+1057
+1057
+1057
+221
+221
+221
+221
 0
 0
 0
@@ -1686,32 +783,48 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-0
-289
 1538
 1538
-0
-289
 1538
 1538
-0
-17
-289
-289
-0
-0
-0
-0
-289
-561
+1538
+1538
 1538
 1538
 289
-561
+289
+289
+289
+0
+0
+0
+0
+0
+1057
 1538
 1538
-17
-33
+0
+1057
+1538
+1538
+0
+221
+289
+289
+0
+0
+0
+0
+1057
+1401
+1538
+1538
+1057
+1401
+1538
+1538
+221
+273
 289
 289
 0
@@ -2287,11 +1400,11 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1057
-1125
+1263
 1538
 1538
 0
-289
+673
 1538
 1538
 1538
@@ -2303,55 +1416,39 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1057
-1125
+1263
 1538
 1538
 0
-289
+673
 1538
 1538
 0
-289
+673
 1538
 1538
 0
-289
+673
 1538
 1538
 0
-17
-289
-289
-0
-0
-0
-0
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-17
+119
 289
 289
 0
 0
 0
 0
+0
+673
 1538
 1538
+0
+673
 1538
 1538
-1538
-1538
-1538
-1538
-289
-289
+0
+119
 289
 289
 0
@@ -2378,8 +1475,16 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
+1538
+1538
+1538
+1538
 289
 289
+289
+289
+0
+0
 0
 0
 1538
@@ -2394,8 +1499,8 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
-1057
-1057
+289
+289
 0
 0
 1538
@@ -2426,16 +1531,8 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
-1538
-1538
-1538
-1538
 1057
 1057
-1057
-1057
-0
-0
 0
 0
 1538
@@ -2495,262 +1592,6 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1057
-1125
-1538
-1538
-0
-289
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1057
-1125
-1538
-1538
-0
-289
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1057
-1125
-1538
-1538
-0
-289
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1057
-1125
-1538
-1538
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-17
-289
-289
-0
-0
-0
-0
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-17
-289
-289
-0
-0
-0
-0
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-17
-289
-289
-0
-0
-0
-0
-0
-289
-1538
-1538
-0
-289
-1538
-1538
-0
-17
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-1057
-1057
-0
-0
-1538
-1538
-1538
-1538
-1125
-1125
-289
-289
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1057
 1057
 1057
 1057
@@ -2766,14 +1607,142 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
-1125
-1125
-1125
-1125
+1057
+1263
+1538
+1538
+0
+673
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1263
+1538
+1538
+0
+673
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1263
+1538
+1538
+0
+673
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1263
+1538
+1538
+0
+673
+1538
+1538
+0
+673
+1538
+1538
+0
+673
+1538
+1538
+0
+119
+289
+289
+0
+0
+0
+0
+0
+673
+1538
+1538
+0
+673
+1538
+1538
+0
+119
+289
+289
+0
+0
+0
+0
+0
+673
+1538
+1538
+0
+673
+1538
+1538
+0
+119
+289
+289
+0
+0
+0
+0
+0
+673
+1538
+1538
+0
+673
+1538
+1538
+0
+119
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
 289
 289
 289
 289
+0
+0
+0
+0
 1538
 1538
 1538
@@ -2782,6 +1751,14 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
+289
+289
+289
+289
+0
+0
+0
+0
 1538
 1538
 1538
@@ -2790,6 +1767,78 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1057
+1057
+0
+0
+1538
+1538
+1538
+1538
+1263
+1263
+673
+673
 1538
 1538
 1538
@@ -2815,11 +1864,75 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1057
-1125
+1057
+1057
+1057
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1263
+1263
+1263
+1263
+673
+673
+673
+673
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
 1538
 1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1057
+1263
+1538
+1538
 0
-289
+673
 1538
 1538
 1538
@@ -2830,12 +1943,12 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
-1125
-1189
+1263
+1381
 1538
 1538
-289
-561
+673
+1053
 1538
 1538
 1538
@@ -2878,12 +1991,12 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-289
-289
-289
-289
-17
-17
+673
+673
+673
+673
+119
+119
 0
 0
 1538
@@ -2918,18 +2031,18 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-289
-289
-289
-289
-289
-289
-289
-289
-17
-17
-17
-17
+673
+673
+673
+673
+673
+673
+673
+673
+119
+119
+119
+119
 0
 0
 0
@@ -3270,44 +2383,20 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-1538
-1538
-1538
-1538
 1538
 1538
 1538
 1538
-289
-289
-289
-289
-0
-0
-0
-0
 1538
 1538
 1538
 1538
 289
 289
-0
-0
-1538
-1538
-1538
-1538
 289
 289
 0
 0
-1538
-1538
-1538
-1538
-289
-289
 0
 0
 1538
@@ -3334,52 +2423,28 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 289
 0
 0
-1538
-1538
-1538
-1538
 1538
 1538
 1538
 1538
 289
 289
-289
-289
-0
-0
 0
 0
-1538
-1538
-1538
-1538
 1538
 1538
 1538
 1538
 289
 289
-289
-289
-0
-0
 0
 0
-1538
-1538
-1538
-1538
 1538
 1538
 1538
 1538
 289
 289
-289
-289
-0
-0
 0
 0
 1538
@@ -3428,98 +2493,18 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 289
 0
 0
-0
-0
-1538
-1538
-1538
-1538
-289
-289
 0
 0
 1538
 1538
 1538
 1538
-289
-289
-0
-0
-673
-673
-0
-0
-0
-0
-0
-0
-673
-673
-0
-0
-0
-0
-0
-0
-673
-673
-673
-673
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-673
-673
-673
-673
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-673
-843
 1538
 1538
-0
-289
 1538
 1538
-0
-17
 289
-289
-0
-0
-0
-0
-673
-843
-1538
-1538
-0
 289
-1538
-1538
-0
-17
 289
 289
 0
@@ -3572,24 +2557,74 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 289
 289
-0
-0
-673
-673
-0
-0
-0
-0
-0
-0
-673
-673
-0
-0
-0
-0
 0
 0
+
+Removing on face 0
+SC x 1 y 1 z 1 told to cull from x 2 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 2 z 1 told to cull from x 2 y 0 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 3 z 1 told to cull from x 2 y 0 z 2 to x 3 y 2 z 3 inclusuve.
+SC x 2 y 1 z 1 told to cull from x 0 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 1 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 3 z 1 told to cull from x 0 y 0 z 2 to x 3 y 2 z 3 inclusuve.
+SC x 3 y 1 z 1 told to cull from x 0 y 2 z 2 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 2 z 1 told to cull from x 0 y 0 z 2 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 3 z 1 told to cull from x 0 y 0 z 2 to x 2 y 2 z 3 inclusuve.
+
+Removing on face 1
+SC x 3 y 1 z 1 told to cull from x 0 y 2 z 2 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 1 z 2 told to cull from x 0 y 2 z 0 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 2 y 3 z 2 inclusuve.
+SC x 3 y 2 z 1 told to cull from x 0 y 0 z 2 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 2 z 2 told to cull from x 0 y 0 z 0 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 2 z 3 told to cull from x 0 y 0 z 0 to x 2 y 3 z 2 inclusuve.
+SC x 3 y 3 z 1 told to cull from x 0 y 0 z 2 to x 2 y 2 z 3 inclusuve.
+SC x 3 y 3 z 2 told to cull from x 0 y 0 z 0 to x 2 y 2 z 3 inclusuve.
+SC x 3 y 3 z 3 told to cull from x 0 y 0 z 0 to x 2 y 2 z 2 inclusuve.
+
+Removing on face 2
+SC x 1 y 1 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 1 y 2 z 3 told to cull from x 2 y 0 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 1 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 2 z 2 inclusuve.
+SC x 2 y 1 z 3 told to cull from x 0 y 2 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 2 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 2 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 2 z 2 inclusuve.
+SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 2 y 3 z 2 inclusuve.
+SC x 3 y 2 z 3 told to cull from x 0 y 0 z 0 to x 2 y 3 z 2 inclusuve.
+SC x 3 y 3 z 3 told to cull from x 0 y 0 z 0 to x 2 y 2 z 2 inclusuve.
+
+Removing on face 3
+SC x 1 y 1 z 1 told to cull from x 2 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 1 z 2 told to cull from x 2 y 2 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 1 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 1 y 2 z 1 told to cull from x 2 y 0 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 2 z 2 told to cull from x 2 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 2 z 3 told to cull from x 2 y 0 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 1 y 3 z 1 told to cull from x 2 y 0 z 2 to x 3 y 2 z 3 inclusuve.
+SC x 1 y 3 z 2 told to cull from x 2 y 0 z 0 to x 3 y 2 z 3 inclusuve.
+SC x 1 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 2 z 2 inclusuve.
+
+Removing on face 4
+SC x 1 y 3 z 1 told to cull from x 2 y 0 z 2 to x 3 y 2 z 3 inclusuve.
+SC x 1 y 3 z 2 told to cull from x 2 y 0 z 0 to x 3 y 2 z 3 inclusuve.
+SC x 1 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 2 z 2 inclusuve.
+SC x 2 y 3 z 1 told to cull from x 0 y 0 z 2 to x 3 y 2 z 3 inclusuve.
+SC x 2 y 3 z 2 told to cull from x 0 y 0 z 0 to x 3 y 2 z 3 inclusuve.
+SC x 2 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 2 z 2 inclusuve.
+SC x 3 y 3 z 1 told to cull from x 0 y 0 z 2 to x 2 y 2 z 3 inclusuve.
+SC x 3 y 3 z 2 told to cull from x 0 y 0 z 0 to x 2 y 2 z 3 inclusuve.
+SC x 3 y 3 z 3 told to cull from x 0 y 0 z 0 to x 2 y 2 z 2 inclusuve.
+
+Removing on face 5
+SC x 1 y 1 z 1 told to cull from x 2 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 1 z 2 told to cull from x 2 y 2 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 1 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 2 y 1 z 1 told to cull from x 0 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 1 z 2 told to cull from x 0 y 2 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 1 z 3 told to cull from x 0 y 2 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 3 y 1 z 1 told to cull from x 0 y 2 z 2 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 1 z 2 told to cull from x 0 y 2 z 0 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 2 y 3 z 2 inclusuve.
 673
 673
 0
@@ -3639,951 +2674,245 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 673
-673
-673
-673
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-673
-673
-673
-673
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-673
-843
+948
 1538
 1538
 0
-289
+481
 1538
 1538
-0
-17
-289
-289
-0
-0
-0
-0
-673
-843
-1538
-1538
-0
-289
-1538
-1538
-0
-17
-289
-289
-0
-0
-0
-0
-673
-843
-1538
-1538
-0
-289
-1538
-1538
-0
-17
-289
-289
-0
-0
-0
-0
-673
-843
-1538
-1538
-0
-289
-1538
-1538
-0
-17
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-673
-673
-0
-0
-0
-0
-0
-0
-843
-843
-289
-289
-17
-17
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-673
-673
-673
-673
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-843
-843
-843
-843
-289
-289
-289
-289
-17
-17
-17
-17
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-289
-289
-289
-289
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-289
-289
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-673
-673
-673
-673
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-673
-673
-673
-673
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-673
-673
-673
-673
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-673
-673
-673
-673
-0
-0
-0
-0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-673
-673
-673
-843
-0
-0
 0
 68
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-673
-673
-673
-843
+289
+289
 0
 0
+0
+0
+673
+948
+1538
+1538
+0
+481
+1538
+1538
 0
 68
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-673
-673
-673
-843
+289
+289
 0
 0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+673
+673
+0
+0
+0
+0
+0
+0
+673
+673
+0
+0
+0
+0
+0
+0
+673
+673
+0
+0
+0
+0
+0
+0
+673
+673
+0
+0
+0
+0
+0
+0
+673
+673
+673
+673
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+673
+673
+673
+673
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+673
+673
+673
+673
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+673
+673
+673
+673
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+673
+948
+1538
+1538
+0
+481
+1538
+1538
 0
 68
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-673
-673
-673
-843
+289
+289
 0
 0
+0
+0
+673
+948
+1538
+1538
+0
+481
+1538
+1538
 0
 68
+289
+289
+0
+0
+0
+0
+673
+948
 1538
 1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-481
-481
-481
+0
 481
 1538
 1538
+0
+68
+289
+289
+0
+0
+0
+0
+673
+948
 1538
 1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-481
-481
-481
-481
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-481
-481
-481
+0
 481
 1538
 1538
+0
+68
+289
+289
+0
+0
+0
+0
 1538
 1538
 1538
@@ -4592,404 +2921,126 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
+289
+289
+289
+289
+0
+0
+0
+0
 1538
 1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+673
+673
+0
+0
+0
+0
+0
+0
+948
+948
 481
 481
-481
-481
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-481
-481
-481
-702
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-481
-481
-481
-702
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-481
-481
-481
-702
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-481
-481
-481
-702
-0
-0
-0
-17
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-17
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-17
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-17
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
-289
-289
-289
-289
-0
-0
-0
-0
-0
-0
-0
-0
-0
-0
+68
+68
 0
 0
 1538
 1538
 1538
 1538
+289
+289
+0
+0
 1538
 1538
 1538
 1538
+289
+289
+0
+0
 673
 673
 673
@@ -4998,54 +3049,608 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-673
-673
-673
-673
 0
 0
 0
 0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-673
-673
-673
-673
 0
 0
 0
 0
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-1538
-843
-843
-843
-843
+948
+948
+948
+948
+481
+481
+481
+481
 68
 68
 68
 68
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+289
+289
+289
+289
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+1538
+1538
+1538
+1538
+289
+289
+0
+0
+
+Removing on face 0
+SC x 1 y 1 z 1 told to cull from x 2 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 2 z 1 told to cull from x 2 y 0 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 3 z 1 told to cull from x 2 y 0 z 2 to x 3 y 2 z 3 inclusuve.
+SC x 2 y 1 z 1 told to cull from x 0 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 1 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 3 z 1 told to cull from x 0 y 0 z 2 to x 3 y 2 z 3 inclusuve.
+SC x 3 y 1 z 1 told to cull from x 0 y 2 z 2 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 2 z 1 told to cull from x 0 y 0 z 2 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 3 z 1 told to cull from x 0 y 0 z 2 to x 2 y 2 z 3 inclusuve.
+
+Removing on face 1
+SC x 3 y 1 z 1 told to cull from x 0 y 2 z 2 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 1 z 2 told to cull from x 0 y 2 z 0 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 2 y 3 z 2 inclusuve.
+SC x 3 y 2 z 1 told to cull from x 0 y 0 z 2 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 2 z 2 told to cull from x 0 y 0 z 0 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 2 z 3 told to cull from x 0 y 0 z 0 to x 2 y 3 z 2 inclusuve.
+SC x 3 y 3 z 1 told to cull from x 0 y 0 z 2 to x 2 y 2 z 3 inclusuve.
+SC x 3 y 3 z 2 told to cull from x 0 y 0 z 0 to x 2 y 2 z 3 inclusuve.
+SC x 3 y 3 z 3 told to cull from x 0 y 0 z 0 to x 2 y 2 z 2 inclusuve.
+
+Removing on face 2
+SC x 1 y 1 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 1 y 2 z 3 told to cull from x 2 y 0 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 1 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 2 z 2 inclusuve.
+SC x 2 y 1 z 3 told to cull from x 0 y 2 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 2 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 2 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 2 z 2 inclusuve.
+SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 2 y 3 z 2 inclusuve.
+SC x 3 y 2 z 3 told to cull from x 0 y 0 z 0 to x 2 y 3 z 2 inclusuve.
+SC x 3 y 3 z 3 told to cull from x 0 y 0 z 0 to x 2 y 2 z 2 inclusuve.
+
+Removing on face 3
+SC x 1 y 1 z 1 told to cull from x 2 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 1 z 2 told to cull from x 2 y 2 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 1 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 1 y 2 z 1 told to cull from x 2 y 0 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 2 z 2 told to cull from x 2 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 2 z 3 told to cull from x 2 y 0 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 1 y 3 z 1 told to cull from x 2 y 0 z 2 to x 3 y 2 z 3 inclusuve.
+SC x 1 y 3 z 2 told to cull from x 2 y 0 z 0 to x 3 y 2 z 3 inclusuve.
+SC x 1 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 2 z 2 inclusuve.
+
+Removing on face 4
+SC x 1 y 3 z 1 told to cull from x 2 y 0 z 2 to x 3 y 2 z 3 inclusuve.
+SC x 1 y 3 z 2 told to cull from x 2 y 0 z 0 to x 3 y 2 z 3 inclusuve.
+SC x 1 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 2 z 2 inclusuve.
+SC x 2 y 3 z 1 told to cull from x 0 y 0 z 2 to x 3 y 2 z 3 inclusuve.
+SC x 2 y 3 z 2 told to cull from x 0 y 0 z 0 to x 3 y 2 z 3 inclusuve.
+SC x 2 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 2 z 2 inclusuve.
+SC x 3 y 3 z 1 told to cull from x 0 y 0 z 2 to x 2 y 2 z 3 inclusuve.
+SC x 3 y 3 z 2 told to cull from x 0 y 0 z 0 to x 2 y 2 z 3 inclusuve.
+SC x 3 y 3 z 3 told to cull from x 0 y 0 z 0 to x 2 y 2 z 2 inclusuve.
+
+Removing on face 5
+SC x 1 y 1 z 1 told to cull from x 2 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 1 z 2 told to cull from x 2 y 2 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 1 y 1 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 2 y 1 z 1 told to cull from x 0 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 1 z 2 told to cull from x 0 y 2 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 1 z 3 told to cull from x 0 y 2 z 0 to x 3 y 3 z 2 inclusuve.
+SC x 3 y 1 z 1 told to cull from x 0 y 2 z 2 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 1 z 2 told to cull from x 0 y 2 z 0 to x 2 y 3 z 3 inclusuve.
+SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 2 y 3 z 2 inclusuve.
 1538
 1538
 1538
@@ -5057,11 +3662,11 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 673
 673
 673
-843
+673
 0
 0
 0
-68
+0
 1538
 1538
 1538
@@ -5073,11 +3678,11 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 673
 673
 673
-843
+673
 0
 0
 0
-68
+0
 1538
 1538
 1538
@@ -5089,11 +3694,651 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 673
 673
 673
-843
+673
 0
 0
 0
-68
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+673
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+878
+0
+0
+0
+91
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+878
+0
+0
+0
+91
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+878
+0
+0
+0
+91
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+878
+0
+0
+0
+91
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+481
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+743
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+743
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+743
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+481
+481
+481
+743
+0
+0
+0
+34
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+34
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+34
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+34
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+289
+289
+289
+289
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+673
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+673
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+673
+0
+0
+0
+0
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+878
+878
+878
+878
+91
+91
+91
+91
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+878
+0
+0
+0
+91
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+878
+0
+0
+0
+91
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+1538
+673
+673
+673
+878
+0
+0
+0
+91
 1538
 1538
 1538
@@ -5102,14 +4347,14 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
-843
-843
-843
-1003
-68
-68
-68
-132
+878
+878
+878
+1052
+91
+91
+91
+169
 1538
 1538
 1538
@@ -5189,7 +4434,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 481
 481
 481
-702
+743
 1538
 1538
 1538
@@ -5205,7 +4450,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 481
 481
 481
-702
+743
 1538
 1538
 1538
@@ -5221,7 +4466,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 481
 481
 481
-702
+743
 1538
 1538
 1538
@@ -5237,11 +4482,11 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 481
 481
 481
-702
+743
 0
 0
 0
-17
+34
 0
 0
 0
@@ -5257,7 +4502,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-17
+34
 0
 0
 0
@@ -5273,7 +4518,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-17
+34
 0
 0
 0
@@ -5289,7 +4534,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-17
+34
 0
 0
 0
@@ -5765,7 +5010,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 481
 481
 481
-702
+743
 1538
 1538
 1538
@@ -5781,7 +5026,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 481
 481
 481
-702
+743
 1538
 1538
 1538
@@ -5797,7 +5042,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 481
 481
 481
-702
+743
 1538
 1538
 1538
@@ -5813,11 +5058,11 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 481
 481
 481
-702
+743
 0
 0
 0
-17
+34
 0
 0
 0
@@ -5833,7 +5078,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-17
+34
 0
 0
 0
@@ -5849,7 +5094,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-17
+34
 0
 0
 0
@@ -5865,7 +5110,7 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-17
+34
 0
 0
 0
@@ -6194,10 +5439,10 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
-702
-702
-702
-702
+743
+743
+743
+743
 1538
 1538
 1538
@@ -6258,10 +5503,10 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
-702
-702
-702
-702
+743
+743
+743
+743
 1538
 1538
 1538
@@ -6322,10 +5567,10 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 1538
 1538
 1538
-702
-702
-702
-702
+743
+743
+743
+743
 0
 0
 0
@@ -6374,10 +5619,10 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-17
-17
-17
-17
+34
+34
+34
+34
 0
 0
 0
@@ -6438,10 +5683,10 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-17
-17
-17
-17
+34
+34
+34
+34
 0
 0
 0
@@ -6502,10 +5747,10 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
-17
-17
-17
-17
+34
+34
+34
+34
 0
 0
 0
@@ -8630,3 +7875,111 @@ SC index x 7 y 7 z 7 nwChunkStart x 0 y 0 z 0 seChunkEnd x 3 y 3 z 3
 0
 0
 0
+
+Removing on face 0
+SC x 2 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 3 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 4 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 3 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 3 y 3 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 3 y 4 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 3 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 4 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 4 y 3 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 4 y 4 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 4 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 5 y 2 z 2 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 3 z 2 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 4 z 2 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 5 z 2 told to cull from x 0 y 0 z 0 to x 0 y 0 z 3 inclusuve.
+
+Removing on face 1
+SC x 5 y 2 z 2 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 2 z 3 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 2 z 4 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 2 z 5 told to cull from x 0 y 0 z 0 to x 0 y 3 z 0 inclusuve.
+SC x 5 y 3 z 2 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 3 z 3 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 3 z 4 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 3 z 5 told to cull from x 0 y 0 z 0 to x 0 y 3 z 0 inclusuve.
+SC x 5 y 4 z 2 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 4 z 3 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 4 z 4 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 4 z 5 told to cull from x 0 y 0 z 0 to x 0 y 3 z 0 inclusuve.
+SC x 5 y 5 z 2 told to cull from x 0 y 0 z 0 to x 0 y 0 z 3 inclusuve.
+SC x 5 y 5 z 3 told to cull from x 0 y 0 z 0 to x 0 y 0 z 3 inclusuve.
+SC x 5 y 5 z 4 told to cull from x 0 y 0 z 0 to x 0 y 0 z 3 inclusuve.
+SC x 5 y 5 z 5 told to cull from x 0 y 0 z 0 to x 0 y 0 z 0 inclusuve.
+
+Removing on face 2
+SC x 2 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 2 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 2 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 2 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 0 z 0 inclusuve.
+SC x 3 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 3 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 3 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 3 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 0 z 0 inclusuve.
+SC x 4 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 4 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 4 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 4 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 0 z 0 inclusuve.
+SC x 5 y 2 z 5 told to cull from x 0 y 0 z 0 to x 0 y 3 z 0 inclusuve.
+SC x 5 y 3 z 5 told to cull from x 0 y 0 z 0 to x 0 y 3 z 0 inclusuve.
+SC x 5 y 4 z 5 told to cull from x 0 y 0 z 0 to x 0 y 3 z 0 inclusuve.
+SC x 5 y 5 z 5 told to cull from x 0 y 0 z 0 to x 0 y 0 z 0 inclusuve.
+
+Removing on face 3
+SC x 2 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 2 y 3 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 3 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 2 y 4 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 4 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 4 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 2 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 2 y 5 z 3 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 2 y 5 z 4 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 2 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 0 z 0 inclusuve.
+
+Removing on face 4
+SC x 2 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 2 y 5 z 3 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 2 y 5 z 4 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 2 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 0 z 0 inclusuve.
+SC x 3 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 3 y 5 z 3 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 3 y 5 z 4 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 3 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 0 z 0 inclusuve.
+SC x 4 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 4 y 5 z 3 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 4 y 5 z 4 told to cull from x 0 y 0 z 0 to x 3 y 0 z 3 inclusuve.
+SC x 4 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 0 z 0 inclusuve.
+SC x 5 y 5 z 2 told to cull from x 0 y 0 z 0 to x 0 y 0 z 3 inclusuve.
+SC x 5 y 5 z 3 told to cull from x 0 y 0 z 0 to x 0 y 0 z 3 inclusuve.
+SC x 5 y 5 z 4 told to cull from x 0 y 0 z 0 to x 0 y 0 z 3 inclusuve.
+SC x 5 y 5 z 5 told to cull from x 0 y 0 z 0 to x 0 y 0 z 0 inclusuve.
+
+Removing on face 5
+SC x 2 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 3 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 3 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 3 y 2 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 3 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 4 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 4 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 4 y 2 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 4 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
+SC x 5 y 2 z 2 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 2 z 3 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 2 z 4 told to cull from x 0 y 0 z 0 to x 0 y 3 z 3 inclusuve.
+SC x 5 y 2 z 5 told to cull from x 0 y 0 z 0 to x 0 y 3 z 0 inclusuve.
