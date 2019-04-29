@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
-#include <stdio.h>
+//#include <stdio>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/perpendicular.hpp>
 #include <glm/gtx/common.hpp>
@@ -776,10 +776,11 @@ void C3DtestApp::terrain2TestDraw() {
 			wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
 			wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
-			renderer.drawBuf(wireCube, drawLinesStrip);
+			if (shell < 2)
+				renderer.drawBuf(wireCube, drawLinesStrip);
 
 			//draw chunks
-			if (shell > 0)
+			if (shell > 1)
 				continue;
 			for (auto chunk : SCiter->chunks) {
 				i32vec3 chunkIndex = chunk;
@@ -798,6 +799,8 @@ void C3DtestApp::terrain2TestDraw() {
 			}
 
 		}
+		
+
 
 		/*
 
@@ -1266,7 +1269,6 @@ bool C3DtestApp::chunkCheckCallback(glm::vec3 & chunkSamplePos, float chunkSampl
 	terrain.chunkShell->drawNew();
 	unsigned int primitives = Engine.Renderer.query();
 
-	sysLog << "\n" << primitives;
 
 	if (primitives == 0 || primitives == shellTotalVerts)
 		return false;

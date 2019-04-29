@@ -1,6 +1,3 @@
-Bare room
-This is a plain, unremarkable room. 
 
-A little way off, a cleaning bot polishes the floor, while a rectangular servobot watches you with narrow, electronic eyes. 
-
-The cleaning bot and servobot charge toward you, arms wheeling!
+Ran out of rooms! Pipe hall
+A vast, humid space filled with criss-crossing pipes of all shapes and sizes. Exits lead northeast, east, southeast, south, southwest, west and northwest. 
