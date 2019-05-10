@@ -40,7 +40,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = terrainMode;// texGenMode;// terrainMode; //textMode;
+	appMode = textMode;// texGenMode;// terrainMode; //textMode;
 
 	
 	//GUIroot.add(uiButton, "Save");
@@ -154,11 +154,11 @@ void C3DtestApp::onStart() {
 	terrain2.createLoD1shell(cubeSize, cubesPerChunkEdge, chunksPerSuperChunkEdge, LoD1shellSCs);
 	terrain2.addShell(0);
 	terrain2.addShell(0);
-	terrain2.addShell(3);
+	terrain2.addShell(2);
 
 	terrain2.fillShells();
 
-	terrain2.getInnerBounds(1);
+	//terrain2.getInnerBounds(1);
 
 
 	t = Engine.Time.milliseconds() - t;
@@ -776,12 +776,12 @@ void C3DtestApp::terrain2TestDraw() {
 			wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
 			wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
-			if (shell < 2)
+			if (shell == 2 || shell == 1)
 				renderer.drawBuf(wireCube, drawLinesStrip);
 
 			//draw chunks
-			if (shell > 1)
-				continue;
+			//if (shell != 3 && shell !=2 )
+			//	 continue;
 			for (auto chunk : SCiter->chunks) {
 				i32vec3 chunkIndex = chunk;
 				vec3 chunkOrigin = vec3(chunkIndex) * actualChunkSize;
@@ -1171,10 +1171,16 @@ void C3DtestApp::vmUpdate() {
 
 void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
-	if (control.parent->getID() == worldUI.mainTextWindowID && Message.Msg == uiMsgHotTextClick) {
+	if (control.parent->getID() == worldUI.mainTextWindowID) {
 		glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
-		worldUI.mainWindowClick(Message.value, mousePos);
-		return;
+		if (Message.Msg == uiMsgHotTextClick) {
+			worldUI.mainWindowClick(Message.value, mousePos);
+			return;
+		}
+		if (Message.Msg == uiMsgRMouseUp) {
+			worldUI.mainWindowRightClick(mousePos);
+			return;
+		}
 	}
 
 	if (control.parent->getID() == worldUI.invPanelID && Message.Msg == uiMsgHotTextClick) {
@@ -1192,9 +1198,21 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
 	if (control.parent->id == popMenuId && Message.Msg == uiClickOutside) {
 		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
-		delete control.parent;
+		worldUI.deletePopupMenu((CGUIrichTextPanel*)control.parent);
 		return;
 	}
+
+	if (control.parent->id == popMenuId && Message.Msg == uiMsgMouseMove) {
+		worldUI.mouseOverHotText(Message.value);
+		return;
+	}
+
+	
+	if (control.parent->id == popMenuId && Message.Msg == uiMouseWheel) {
+		worldUI.mouseWheelHotText(Message.value, Message.value2);
+		return;
+	}
+
 
 	//object window click
 	if (control.parent->id == popObjWinId && Message.Msg == uiMsgHotTextClick) {

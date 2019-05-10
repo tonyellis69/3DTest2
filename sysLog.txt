@@ -1,4 +1,4 @@
-*** Sunday April 28, 2019  time: 22:19:08 ***
+*** Friday May 10, 2019  time: 17:36:26 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
@@ -141,409 +141,73 @@ SC x 3 y 1 z 2 told to cull from x 0 y 2 z 0 to x 1 y 3 z 3 inclusuve.
 SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 1 y 3 z 1 inclusuve.
 
 shell 3 removing on face 0
-SC x 2 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 4 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 3 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 4 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 3 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 4 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 3 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 4 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 2 told to cull from x 2 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 3 z 2 told to cull from x 2 y 0 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 4 z 2 told to cull from x 2 y 0 z 2 to x 3 y 1 z 3 inclusuve.
+SC x 3 y 2 z 2 told to cull from x 0 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 3 y 3 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 3 y 4 z 2 told to cull from x 0 y 0 z 2 to x 3 y 1 z 3 inclusuve.
+SC x 4 y 2 z 2 told to cull from x 0 y 2 z 2 to x 1 y 3 z 3 inclusuve.
+SC x 4 y 3 z 2 told to cull from x 0 y 0 z 2 to x 1 y 3 z 3 inclusuve.
+SC x 4 y 4 z 2 told to cull from x 0 y 0 z 2 to x 1 y 1 z 3 inclusuve.
 
 shell 3 removing on face 1
-SC x 5 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 2 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 3 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 3 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 4 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 4 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 4 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 5 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 5 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 4 y 2 z 2 told to cull from x 0 y 2 z 2 to x 1 y 3 z 3 inclusuve.
+SC x 4 y 2 z 3 told to cull from x 0 y 2 z 0 to x 1 y 3 z 3 inclusuve.
+SC x 4 y 2 z 4 told to cull from x 0 y 2 z 0 to x 1 y 3 z 1 inclusuve.
+SC x 4 y 3 z 2 told to cull from x 0 y 0 z 2 to x 1 y 3 z 3 inclusuve.
+SC x 4 y 3 z 3 told to cull from x 0 y 0 z 0 to x 1 y 3 z 3 inclusuve.
+SC x 4 y 3 z 4 told to cull from x 0 y 0 z 0 to x 1 y 3 z 1 inclusuve.
+SC x 4 y 4 z 2 told to cull from x 0 y 0 z 2 to x 1 y 1 z 3 inclusuve.
+SC x 4 y 4 z 3 told to cull from x 0 y 0 z 0 to x 1 y 1 z 3 inclusuve.
+SC x 4 y 4 z 4 told to cull from x 0 y 0 z 0 to x 1 y 1 z 1 inclusuve.
 
 shell 3 removing on face 2
-SC x 2 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 4 told to cull from x 2 y 2 z 0 to x 3 y 3 z 1 inclusuve.
+SC x 2 y 3 z 4 told to cull from x 2 y 0 z 0 to x 3 y 3 z 1 inclusuve.
+SC x 2 y 4 z 4 told to cull from x 2 y 0 z 0 to x 3 y 1 z 1 inclusuve.
+SC x 3 y 2 z 4 told to cull from x 0 y 2 z 0 to x 3 y 3 z 1 inclusuve.
+SC x 3 y 3 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 1 inclusuve.
+SC x 3 y 4 z 4 told to cull from x 0 y 0 z 0 to x 3 y 1 z 1 inclusuve.
+SC x 4 y 2 z 4 told to cull from x 0 y 2 z 0 to x 1 y 3 z 1 inclusuve.
+SC x 4 y 3 z 4 told to cull from x 0 y 0 z 0 to x 1 y 3 z 1 inclusuve.
+SC x 4 y 4 z 4 told to cull from x 0 y 0 z 0 to x 1 y 1 z 1 inclusuve.
 
 shell 3 removing on face 3
-SC x 2 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 4 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 4 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 4 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 5 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 5 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 2 told to cull from x 2 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 4 told to cull from x 2 y 2 z 0 to x 3 y 3 z 1 inclusuve.
+SC x 2 y 3 z 2 told to cull from x 2 y 0 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 3 z 4 told to cull from x 2 y 0 z 0 to x 3 y 3 z 1 inclusuve.
+SC x 2 y 4 z 2 told to cull from x 2 y 0 z 2 to x 3 y 1 z 3 inclusuve.
+SC x 2 y 4 z 3 told to cull from x 2 y 0 z 0 to x 3 y 1 z 3 inclusuve.
+SC x 2 y 4 z 4 told to cull from x 2 y 0 z 0 to x 3 y 1 z 1 inclusuve.
 
 shell 3 removing on face 4
-SC x 2 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 5 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 5 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 5 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 5 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 5 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 5 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 5 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 5 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 5 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 4 z 2 told to cull from x 2 y 0 z 2 to x 3 y 1 z 3 inclusuve.
+SC x 2 y 4 z 3 told to cull from x 2 y 0 z 0 to x 3 y 1 z 3 inclusuve.
+SC x 2 y 4 z 4 told to cull from x 2 y 0 z 0 to x 3 y 1 z 1 inclusuve.
+SC x 3 y 4 z 2 told to cull from x 0 y 0 z 2 to x 3 y 1 z 3 inclusuve.
+SC x 3 y 4 z 3 told to cull from x 0 y 0 z 0 to x 3 y 1 z 3 inclusuve.
+SC x 3 y 4 z 4 told to cull from x 0 y 0 z 0 to x 3 y 1 z 1 inclusuve.
+SC x 4 y 4 z 2 told to cull from x 0 y 0 z 2 to x 1 y 1 z 3 inclusuve.
+SC x 4 y 4 z 3 told to cull from x 0 y 0 z 0 to x 1 y 1 z 3 inclusuve.
+SC x 4 y 4 z 4 told to cull from x 0 y 0 z 0 to x 1 y 1 z 1 inclusuve.
 
 shell 3 removing on face 5
-SC x 2 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 2 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 2 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 2 z 2 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 2 z 4 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-
-shell 3 removing on face 0
-SC x 2 y 2 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 4 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 5 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 2 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 3 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 4 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 5 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 2 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 3 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 4 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 5 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 2 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 3 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 4 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 5 z 2 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-
-shell 2 removing on face 0
-SC x 1 y 1 z 1 told to cull from x 2 y 2 z 1 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 1 told to cull from x 2 y 0 z 1 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 1 told to cull from x 2 y 0 z 1 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 1 told to cull from x 0 y 2 z 1 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 1 told to cull from x 0 y 0 z 1 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 1 told to cull from x 0 y 0 z 1 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 1 told to cull from x 0 y 2 z 1 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 1 told to cull from x 0 y 0 z 1 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 1 told to cull from x 0 y 0 z 1 to x 1 y 1 z 3 inclusuve.
-
-shell 1 removing on face 0
-SC x 1 y 1 z 1 told to cull from x 2 y 2 z 1 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 1 told to cull from x 2 y 0 z 1 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 1 told to cull from x 2 y 0 z 1 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 1 told to cull from x 0 y 2 z 1 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 1 told to cull from x 0 y 0 z 1 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 1 told to cull from x 0 y 0 z 1 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 1 told to cull from x 0 y 2 z 1 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 1 told to cull from x 0 y 0 z 1 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 1 told to cull from x 0 y 0 z 1 to x 1 y 1 z 3 inclusuve.
-Add innerFaceChunks called on shell 1 face 2
-SC x 1 y 2 z 3 told to add outside x 2 y 0 z -1 to x 3 y 3 z -1 inclusive.
-SC x 2 y 2 z 3 told to add outside x 0 y 0 z -1 to x 3 y 3 z -1 inclusive.
-SC x 3 y 2 z 3 told to add outside x 0 y 0 z -1 to x 1 y 3 z -1 inclusive.
-
-shell 1 removing on face 0
-SC x 1 y 1 z 1 told to cull from x 2 y 2 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 1 told to cull from x 2 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 1 told to cull from x 2 y 0 z 0 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 1 told to cull from x 0 y 2 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 1 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 1 told to cull from x 0 y 0 z 0 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 1 told to cull from x 0 y 2 z 0 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 1 told to cull from x 0 y 0 z 0 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 1 told to cull from x 0 y 0 z 0 to x 1 y 1 z 3 inclusuve.
-Add innerFaceChunks called on shell 2 face 2
-SC x 1 y 2 z 3 told to add outside x 2 y 0 z -1 to x 3 y 3 z -1 inclusive.
-SC x 2 y 2 z 3 told to add outside x 0 y 0 z -1 to x 3 y 3 z -1 inclusive.
-SC x 3 y 2 z 3 told to add outside x 0 y 0 z -1 to x 1 y 3 z -1 inclusive.
-
-shell 2 removing on face 0
-SC x 1 y 1 z 1 told to cull from x 2 y 2 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 1 told to cull from x 2 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 1 told to cull from x 2 y 0 z 0 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 1 told to cull from x 0 y 2 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 1 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 1 told to cull from x 0 y 0 z 0 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 1 told to cull from x 0 y 2 z 0 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 1 told to cull from x 0 y 0 z 0 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 1 told to cull from x 0 y 0 z 0 to x 1 y 1 z 3 inclusuve.
-
-shell 1 removing on face 0
-SC x 1 y 1 z 1 told to cull from x 2 y 2 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 1 told to cull from x 2 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 1 told to cull from x 2 y 0 z 3 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 1 told to cull from x 0 y 2 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 1 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 1 told to cull from x 0 y 0 z 3 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 1 told to cull from x 0 y 2 z 3 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 1 told to cull from x 0 y 0 z 3 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 1 told to cull from x 0 y 0 z 3 to x 1 y 1 z 3 inclusuve.
-Add innerFaceChunks called on shell 1 face 2
-SC x 1 y 1 z 3 told to add outside x 2 y 2 z 0 to x 3 y 3 z 1 inclusive.
-SC x 1 y 2 z 3 told to add outside x 2 y 0 z 0 to x 3 y 3 z 1 inclusive.
-SC x 2 y 1 z 3 told to add outside x 0 y 2 z 0 to x 3 y 3 z 1 inclusive.
-SC x 2 y 2 z 3 told to add outside x 0 y 0 z 0 to x 3 y 3 z 1 inclusive.
-SC x 3 y 2 z 3 told to add outside x 0 y 0 z 0 to x 1 y 3 z 1 inclusive.
-
-shell 1 removing on face 0
-SC x 1 y 1 z 1 told to cull from x 2 y 2 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 1 told to cull from x 2 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 1 told to cull from x 2 y 0 z 2 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 1 told to cull from x 0 y 2 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 1 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 1 told to cull from x 0 y 0 z 2 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 1 told to cull from x 0 y 2 z 2 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 1 told to cull from x 0 y 0 z 2 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 1 told to cull from x 0 y 0 z 2 to x 1 y 1 z 3 inclusuve.
-Add innerFaceChunks called on shell 3 face 2
-SC x 2 y 4 z 5 told to add outside x 0 y 0 z -1 to x 3 y 3 z -1 inclusive.
-SC x 3 y 4 z 5 told to add outside x 0 y 0 z -1 to x 3 y 3 z -1 inclusive.
-SC x 4 y 4 z 5 told to add outside x 0 y 0 z -1 to x 3 y 3 z -1 inclusive.
-SC x 5 y 4 z 5 told to add outside x 0 y 0 z -1 to x 3 y 3 z -1 inclusive.
-
-shell 3 removing on face 0
-SC x 2 y 2 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 4 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 5 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 2 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 3 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 4 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 3 y 5 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 2 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 3 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 4 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 4 y 5 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 2 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 3 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 4 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 5 y 5 z 2 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-
-shell 2 removing on face 0
-SC x 1 y 1 z 1 told to cull from x 2 y 2 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 1 told to cull from x 2 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 1 told to cull from x 2 y 0 z 3 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 1 told to cull from x 0 y 2 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 1 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 1 told to cull from x 0 y 0 z 3 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 1 told to cull from x 0 y 2 z 3 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 1 told to cull from x 0 y 0 z 3 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 1 told to cull from x 0 y 0 z 3 to x 1 y 1 z 3 inclusuve.
-
-shell 1 removing on face 0
-SC x 1 y 1 z 1 told to cull from x 2 y 2 z 1 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 1 told to cull from x 2 y 0 z 1 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 1 told to cull from x 2 y 0 z 1 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 1 told to cull from x 0 y 2 z 1 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 1 told to cull from x 0 y 0 z 1 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 1 told to cull from x 0 y 0 z 1 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 1 told to cull from x 0 y 2 z 1 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 1 told to cull from x 0 y 0 z 1 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 1 told to cull from x 0 y 0 z 1 to x 1 y 1 z 3 inclusuve.
-Add innerFaceChunks called on shell 1 face 2
-SC x 1 y 1 z 3 told to add outside x 2 y 2 z -1 to x 3 y 3 z -1 inclusive.
-SC x 1 y 2 z 3 told to add outside x 2 y 0 z -1 to x 3 y 3 z -1 inclusive.
-SC x 2 y 1 z 3 told to add outside x 0 y 2 z -1 to x 3 y 3 z -1 inclusive.
-SC x 2 y 2 z 3 told to add outside x 0 y 0 z -1 to x 3 y 3 z -1 inclusive.
-SC x 3 y 2 z 3 told to add outside x 0 y 0 z -1 to x 1 y 3 z -1 inclusive.
-
-shell 1 removing on face 0
-SC x 1 y 1 z 1 told to cull from x 2 y 2 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 1 told to cull from x 2 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 1 told to cull from x 2 y 0 z 0 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 1 told to cull from x 0 y 2 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 1 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 1 told to cull from x 0 y 0 z 0 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 1 told to cull from x 0 y 2 z 0 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 1 told to cull from x 0 y 0 z 0 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 1 told to cull from x 0 y 0 z 0 to x 1 y 1 z 3 inclusuve.
-Add innerFaceChunks called on shell 2 face 2
-SC x 1 y 2 z 3 told to add outside x 2 y 0 z 0 to x 3 y 3 z 1 inclusive.
-SC x 2 y 2 z 3 told to add outside x 0 y 0 z 0 to x 3 y 3 z 1 inclusive.
-SC x 3 y 2 z 3 told to add outside x 0 y 0 z 0 to x 1 y 3 z 1 inclusive.
-
-shell 2 removing on face 0
-SC x 1 y 1 z 1 told to cull from x 2 y 2 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 1 told to cull from x 2 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 1 told to cull from x 2 y 0 z 2 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 1 told to cull from x 0 y 2 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 1 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 1 told to cull from x 0 y 0 z 2 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 1 told to cull from x 0 y 2 z 2 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 1 told to cull from x 0 y 0 z 2 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 1 told to cull from x 0 y 0 z 2 to x 1 y 1 z 3 inclusuve.
-
-shell 1 removing on face 0
-SC x 1 y 1 z 1 told to cull from x 2 y 2 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 1 told to cull from x 2 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 1 told to cull from x 2 y 0 z 3 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 1 told to cull from x 0 y 2 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 1 told to cull from x 0 y 0 z 3 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 1 told to cull from x 0 y 0 z 3 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 1 told to cull from x 0 y 2 z 3 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 1 told to cull from x 0 y 0 z 3 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 1 told to cull from x 0 y 0 z 3 to x 1 y 1 z 3 inclusuve.
-Add innerFaceChunks called on shell 1 face 2
-SC x 1 y 1 z 3 told to add outside x 2 y 2 z 0 to x 3 y 3 z 1 inclusive.
-SC x 2 y 1 z 3 told to add outside x 0 y 2 z 0 to x 3 y 3 z 1 inclusive.
-SC x 2 y 2 z 3 told to add outside x 0 y 0 z 0 to x 3 y 3 z 1 inclusive.
-SC x 3 y 2 z 3 told to add outside x 0 y 0 z 0 to x 1 y 3 z 1 inclusive.
-
-shell 1 removing on face 0
-SC x 1 y 1 z 1 told to cull from x 2 y 2 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 1 told to cull from x 2 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 1 told to cull from x 2 y 0 z 2 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 1 told to cull from x 0 y 2 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 1 told to cull from x 0 y 0 z 2 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 1 told to cull from x 0 y 0 z 2 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 1 told to cull from x 0 y 2 z 2 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 1 told to cull from x 0 y 0 z 2 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 1 told to cull from x 0 y 0 z 2 to x 1 y 1 z 3 inclusuve.
-
-shell 3 removing on face 2
-SC x 2 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 2 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 2 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 2 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 3 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 3 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 3 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 3 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 4 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 4 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 4 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 4 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 5 y 2 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 5 y 3 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 5 y 4 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 5 y 5 z 5 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-
-shell 2 removing on face 2
-SC x 1 y 1 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 1 y 2 z 3 told to cull from x 2 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 1 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 1 z 2 inclusuve.
-SC x 2 y 1 z 3 told to cull from x 0 y 2 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 2 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 2 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 1 z 2 inclusuve.
-SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 1 y 3 z 2 inclusuve.
-SC x 3 y 2 z 3 told to cull from x 0 y 0 z 0 to x 1 y 3 z 2 inclusuve.
-SC x 3 y 3 z 3 told to cull from x 0 y 0 z 0 to x 1 y 1 z 2 inclusuve.
-
-shell 1 removing on face 2
-SC x 1 y 1 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 1 y 2 z 3 told to cull from x 2 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 1 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 1 z 2 inclusuve.
-SC x 2 y 1 z 3 told to cull from x 0 y 2 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 2 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 2 inclusuve.
-SC x 2 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 1 z 2 inclusuve.
-SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 1 y 3 z 2 inclusuve.
-SC x 3 y 2 z 3 told to cull from x 0 y 0 z 0 to x 1 y 3 z 2 inclusuve.
-SC x 3 y 3 z 3 told to cull from x 0 y 0 z 0 to x 1 y 1 z 2 inclusuve.
-Add innerFaceChunks called on shell 1 face 0
-SC x 1 y 1 z 1 told to add outside x 2 y 2 z -1 to x 3 y 3 z -1 inclusive.
-SC x 2 y 1 z 1 told to add outside x 0 y 2 z -1 to x 3 y 3 z -1 inclusive.
-SC x 2 y 2 z 1 told to add outside x 0 y 0 z -1 to x 3 y 3 z -1 inclusive.
-SC x 3 y 2 z 1 told to add outside x 0 y 0 z -1 to x 1 y 3 z -1 inclusive.
-
-shell 1 removing on face 2
-SC x 1 y 1 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 3 told to cull from x 2 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 3 told to cull from x 0 y 2 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 3 told to cull from x 0 y 0 z 0 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 3 told to cull from x 0 y 0 z 0 to x 1 y 1 z 3 inclusuve.
-Add innerFaceChunks called on shell 2 face 0
-SC x 1 y 2 z 1 told to add outside x 2 y 0 z -1 to x 3 y 3 z -1 inclusive.
-SC x 2 y 2 z 1 told to add outside x 0 y 0 z -1 to x 3 y 3 z -1 inclusive.
-SC x 3 y 2 z 1 told to add outside x 0 y 0 z -1 to x 1 y 3 z -1 inclusive.
-
-shell 2 removing on face 2
-SC x 1 y 1 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 2 z 3 told to cull from x 2 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 1 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 1 z 3 inclusuve.
-SC x 2 y 1 z 3 told to cull from x 0 y 2 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 3 inclusuve.
-SC x 2 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 1 z 3 inclusuve.
-SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 2 z 3 told to cull from x 0 y 0 z 0 to x 1 y 3 z 3 inclusuve.
-SC x 3 y 3 z 3 told to cull from x 0 y 0 z 0 to x 1 y 1 z 3 inclusuve.
-
-shell 1 removing on face 2
-SC x 1 y 1 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 0 inclusuve.
-SC x 1 y 2 z 3 told to cull from x 2 y 0 z 0 to x 3 y 3 z 0 inclusuve.
-SC x 1 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 1 z 0 inclusuve.
-SC x 2 y 1 z 3 told to cull from x 0 y 2 z 0 to x 3 y 3 z 0 inclusuve.
-SC x 2 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 0 inclusuve.
-SC x 2 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 1 z 0 inclusuve.
-SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 1 y 3 z 0 inclusuve.
-SC x 3 y 2 z 3 told to cull from x 0 y 0 z 0 to x 1 y 3 z 0 inclusuve.
-SC x 3 y 3 z 3 told to cull from x 0 y 0 z 0 to x 1 y 1 z 0 inclusuve.
-Add innerFaceChunks called on shell 1 face 0
-SC x 1 y 1 z 1 told to add outside x 2 y 2 z 2 to x 3 y 3 z 3 inclusive.
-SC x 2 y 1 z 1 told to add outside x 0 y 2 z 2 to x 3 y 3 z 3 inclusive.
-SC x 2 y 2 z 1 told to add outside x 0 y 0 z 2 to x 3 y 3 z 3 inclusive.
-SC x 3 y 2 z 1 told to add outside x 0 y 0 z 2 to x 1 y 3 z 3 inclusive.
-
-shell 1 removing on face 2
-SC x 1 y 1 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 1 inclusuve.
-SC x 1 y 2 z 3 told to cull from x 2 y 0 z 0 to x 3 y 3 z 1 inclusuve.
-SC x 1 y 3 z 3 told to cull from x 2 y 0 z 0 to x 3 y 1 z 1 inclusuve.
-SC x 2 y 1 z 3 told to cull from x 0 y 2 z 0 to x 3 y 3 z 1 inclusuve.
-SC x 2 y 2 z 3 told to cull from x 0 y 0 z 0 to x 3 y 3 z 1 inclusuve.
-SC x 2 y 3 z 3 told to cull from x 0 y 0 z 0 to x 3 y 1 z 1 inclusuve.
-SC x 3 y 1 z 3 told to cull from x 0 y 2 z 0 to x 1 y 3 z 1 inclusuve.
-SC x 3 y 2 z 3 told to cull from x 0 y 0 z 0 to x 1 y 3 z 1 inclusuve.
-SC x 3 y 3 z 3 told to cull from x 0 y 0 z 0 to x 1 y 1 z 1 inclusuve.
+SC x 2 y 2 z 2 told to cull from x 2 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 3 told to cull from x 2 y 2 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 2 y 2 z 4 told to cull from x 2 y 2 z 0 to x 3 y 3 z 1 inclusuve.
+SC x 3 y 2 z 2 told to cull from x 0 y 2 z 2 to x 3 y 3 z 3 inclusuve.
+SC x 3 y 2 z 3 told to cull from x 0 y 2 z 0 to x 3 y 3 z 3 inclusuve.
+SC x 3 y 2 z 4 told to cull from x 0 y 2 z 0 to x 3 y 3 z 1 inclusuve.
+SC x 4 y 2 z 2 told to cull from x 0 y 2 z 2 to x 1 y 3 z 3 inclusuve.
+SC x 4 y 2 z 3 told to cull from x 0 y 2 z 0 to x 1 y 3 z 3 inclusuve.
+SC x 4 y 2 z 4 told to cull from x 0 y 2 z 0 to x 1 y 3 z 1 inclusuve.
+[player acts on player]rectangular servobot choosing combat action.
+[player acts on rectangular servobot]
+rectangular servobot: [Silent dodge action.]rectangular servobot choosing combat action.
+[player acts on rectangular servobot]
+robot hitpoints 10
+player hitpoints 12

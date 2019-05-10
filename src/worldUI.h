@@ -27,6 +27,7 @@ public:
 	void start();
 	void appendText(std::string& text, int window);
 	void mainWindowClick(unsigned int hotId, glm::i32vec2 mousePos);
+	void mainWindowRightClick(glm::i32vec2 mousePos);
 	void inventoryClick(unsigned int hotId, glm::i32vec2 mousePos);
 
 	void playerTurn(unsigned int actionHotId);
@@ -39,9 +40,13 @@ public:
 	void purge(unsigned int id);
 	void clearWindow(int window);
 
+	void clearWindowHotIds(CGUIrichTextPanel* panel);
+
 	void showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& mousePos);
 	//void menuClick(const int choice, int objId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp);
 	void menuClick(unsigned int hotId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp);
+
+	void deletePopupMenu(CGUIrichTextPanel* popUp);
 
 
 	void objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel * popUp);
@@ -75,6 +80,9 @@ public:
 
 	void pause(bool isOn);
 
+	void mouseOverHotText(int hotId);
+	void mouseWheelHotText(int hotID, int direction);
+
 	//unsigned int textWindowID;
 	//CGUIrichText* textWindow;
 	CGUIrichTextPanel* mainTextPanel;
@@ -107,6 +115,7 @@ private:
 	int playerId; ///<Id of the player object.
 	int clickId; ///<Id of the click message.
 	int examId; ///<Id of the examine message
+	int moveToId; ///<Id of the moveTo message
 
 	glm::i32vec2 currentMousePos;
 	glm::i32vec2 lastMenuCorner;
@@ -125,6 +134,8 @@ private:
 	CFont mainFontBold;
 
 	CLog transcript; ///<For logging output to main window.
+
+	int currentVariant; ///<Index no. of the hot text variant currently selected
 };
 
 

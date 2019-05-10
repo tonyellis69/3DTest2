@@ -1,3 +1,22 @@
 
-Ran out of rooms! Pipe hall
-A vast, humid space filled with criss-crossing pipes of all shapes and sizes. Exits lead northeast, east, southeast, south, southwest, west and northwest. 
+Bare room
+This is a plain, unremarkable room. Exits lead south and southwest. 
+
+You go south.
+
+
+Test room south
+This is a test room. The way back leads north. 
+
+A rectangular servobot stands here. 
+Seeing you, the servobot charges, metal arms whirling! 
+
+You're being attacked. You should probably do something. 
+
+You aim a shot at the rectangular servobot, but it slips out of the way. 
+
+You're being attacked. You should probably do something. 
+
+You aim a shot at the rectangular servobot for 5 damage. Moving fast, the rectangular servobot swings its metal arm at you, doing 3 damage. 
+
+You're being attacked. You should probably do something. 

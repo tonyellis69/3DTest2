@@ -27,6 +27,7 @@ void CWorldUI::init() {
 	playerId = pVM->getGlobalVar("playerObj").getObjId();
 	clickId = pVM->getMemberId("click");
 	examId = pVM->getMemberId("examine");
+	moveToId = pVM->getMemberId("moveTo");
 
 	createTextWindow();
 	createInventoryWindow();
@@ -75,8 +76,22 @@ void CWorldUI::appendText(std::string & text, int window) {
 	execute the function call stored for it. */
 void CWorldUI::mainWindowClick(unsigned int hotId, glm::i32vec2 mousePos) {
 	currentMousePos = mousePos;
-	playerTurn(hotId);
+
+	TFnCall fnCall = pVM->getHotTextFnCall(hotId, 0);
+	pVM->callMember(fnCall.objId, fnCall.msgId, fnCall.params);
+
+	//If the player clicked an exit, that counts as a turn
+	if (fnCall.msgId == moveToId)
+		pVM->callMember(NULL, "gameTurn");
 }
+
+/** Player has right-clicked on the main window, so get the game to pop-up
+	the handy menu. */
+void CWorldUI::mainWindowRightClick(glm::i32vec2 mousePos) {
+	currentMousePos = mousePos;
+	pVM->callMember(NULL, "shortcutMenu");
+}
+
 
 /** Handle a click on an inventory window item. */
 void  CWorldUI::inventoryClick(unsigned int hotId, glm::i32vec2 mousePos) {
@@ -88,7 +103,13 @@ void  CWorldUI::inventoryClick(unsigned int hotId, glm::i32vec2 mousePos) {
 	immediately before the player's action, the player's action itself (and any
 	reactions), and then any game activity. */
 void CWorldUI::playerTurn(unsigned int actionHotId) {
-	THotTextFnCall fnCall = pVM->getHotTextFnCall(actionHotId);
+	mainTextPanel->solidifyTempText();
+
+
+	TFnCall fnCall = pVM->getHotTextFnCall(actionHotId,currentVariant);
+
+	//TO DO: push a copy of fnCall to an array to record player activity for playback
+
 	pVM->callMember(fnCall.objId, fnCall.msgId,fnCall.params);
 
 	//instantaneous actions don't end the player's turn
@@ -147,16 +168,28 @@ void CWorldUI::purge(unsigned int id) {
 }
 
 void CWorldUI::clearWindow(int window) {
-	if (window == mainWin)
+	if (window == mainWin) {
+		clearWindowHotIds(mainTextPanel);
 		mainTextPanel->clear();
-	else if (window == invWin)
+	}
+	else if (window == invWin) {	
+		clearWindowHotIds(invPanel);
 		invPanel->clear();
+	}
 	else {
 		for (auto objWin : objWindows)
 			if (objWin.objId == window) {
+				clearWindowHotIds(objWin.win);
 				objWin.win->clear();
 				return;
 			}
+	}
+}
+
+void CWorldUI::clearWindowHotIds(CGUIrichTextPanel* panel) {
+	vector<unsigned int> lostIds = panel->richText->getHotTextIds();
+	for (auto hotId : lostIds) {
+		pVM->removeHotTextFnCall(hotId);
 	}
 }
 
@@ -181,8 +214,13 @@ void CWorldUI::showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& 
 /** Respond to the user selecting an item from the popup menu. */
 void CWorldUI::menuClick(unsigned int hotId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp) {
 	currentMousePos = mousePos;
-	delete popUp;
 	playerTurn(hotId);
+	deletePopupMenu(popUp);
+}
+
+void CWorldUI::deletePopupMenu(CGUIrichTextPanel* popUp) {
+	clearWindowHotIds(popUp);
+	delete popUp;
 }
 
 /** Respond to user clicking on an object window.*/
@@ -331,6 +369,46 @@ void CWorldUI::pause(bool isOn) {
 	} 
 	else {
 		invPanel->suspend(false);
+	}
+}
+
+/** The player has moused over new hot text, so display the associated text. */
+void CWorldUI::mouseOverHotText( int hotId) {
+	currentVariant = 0;
+	mainTextPanel->collapseTempText();
+
+	if (hotId < 1)
+		return;
+	TFnCall fnCall = pVM->getHotTextFnCall(hotId, currentVariant);
+	if (!fnCall.params.empty()) {
+		CTigVar finalParam = fnCall.params.back();
+		if (finalParam.type == tigString) {
+			mainTextPanel->setTempText(true);
+			mainTextPanel->appendMarkedUpText("\n\n" + finalParam.getStringValue());
+			mainTextPanel->setTempText(false);
+		}
+	}
+}
+
+/** Player is mousewheeling over hot text. Cycle through the variants if they exist. */
+void CWorldUI::mouseWheelHotText(int hotId, int direction) {
+	
+	THotTextFnCall fnCallrec = pVM->getHotTextFnCallRec(hotId);
+	currentVariant += direction;
+	if (currentVariant >= (int)fnCallrec.options.size())
+		currentVariant = 0;
+	if (currentVariant < 0)
+			currentVariant = fnCallrec.options.size() - 1;
+
+	TFnCall fnCall = pVM->getHotTextFnCall(hotId, currentVariant);
+	if (!fnCall.params.empty()) {
+		CTigVar finalParam = fnCall.params.back();
+		if (finalParam.type == tigString) {
+			mainTextPanel->collapseTempText();
+			mainTextPanel->setTempText(true);
+			mainTextPanel->appendMarkedUpText("\n\n" + finalParam.getStringValue());
+			mainTextPanel->setTempText(false);
+		}
 	}
 }
 
