@@ -1,22 +1,14 @@
 
+
 Bare room
 This is a plain, unremarkable room. Exits lead south and southwest. 
 
-You go south.
-
+You go south
 
 Test room south
 This is a test room. The way back leads north. 
 
-A rectangular servobot stands here. 
-Seeing you, the servobot charges, metal arms whirling! 
+A cleaning bot polishes the floor, while a rectangular servobot is stalking about here. 
+Seeing you, the cleaning bot rushes at you! Seeing you, the servobot rushes at you! 
 
-You're being attacked. You should probably do something. 
-
-You aim a shot at the rectangular servobot, but it slips out of the way. 
-
-You're being attacked. You should probably do something. 
-
-You aim a shot at the rectangular servobot for 5 damage. Moving fast, the rectangular servobot swings its metal arm at you, doing 3 damage. 
-
-You're being attacked. You should probably do something. 
+[You're being attacked. You should probably do something.]

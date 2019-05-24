@@ -28,10 +28,12 @@ void CWorldUI::init() {
 	clickId = pVM->getMemberId("click");
 	examId = pVM->getMemberId("examine");
 	moveToId = pVM->getMemberId("moveTo");
+	showPlayerOpsId = pVM->getMemberId("showPlayerOptions");
 
 	createTextWindow();
 	createInventoryWindow();
 	createCombatWindow();
+	currentVariant = 0;
 }
 
 
@@ -50,9 +52,10 @@ void CWorldUI::appendText(std::string & text, int window) {
 		invPanel->appendMarkedUpText(text);
 	else if (window == menuWin) {
 		pMenuWindow->appendMarkedUpText(text);
+		pMenuWindow->resizeToFit();
 		if (!pMenuWindow->visible)
 			showPopupMenu(pMenuWindow, currentMousePos);
-		pMenuWindow->resizeToFit();
+		
 	}
 	else if (window == combatWin) {
 		combatPanel->appendMarkedUpText(text);
@@ -62,9 +65,9 @@ void CWorldUI::appendText(std::string & text, int window) {
 		for (auto objWin : objWindows) {
 			if (objWin.objId == window) {
 				objWin.win->appendMarkedUpText(text);
-				if (!objWin.win->visible)
-					showPopupMenu(objWin.win, lastMenuCorner);
 				objWin.win->resizeToFit();
+				//if (!objWin.win->visible)
+					showPopupMenu(objWin.win, currentMousePos);
 				return;
 			}
 		}
@@ -76,13 +79,15 @@ void CWorldUI::appendText(std::string & text, int window) {
 	execute the function call stored for it. */
 void CWorldUI::mainWindowClick(unsigned int hotId, glm::i32vec2 mousePos) {
 	currentMousePos = mousePos;
+	playerTurn(hotId);
 
-	TFnCall fnCall = pVM->getHotTextFnCall(hotId, 0);
+
+/*	TFnCall fnCall = pVM->getHotTextFnCall(hotId, 0);
 	pVM->callMember(fnCall.objId, fnCall.msgId, fnCall.params);
 
 	//If the player clicked an exit, that counts as a turn
 	if (fnCall.msgId == moveToId)
-		pVM->callMember(NULL, "gameTurn");
+		pVM->callMember(NULL, "gameTurn");*/
 }
 
 /** Player has right-clicked on the main window, so get the game to pop-up
@@ -103,17 +108,26 @@ void  CWorldUI::inventoryClick(unsigned int hotId, glm::i32vec2 mousePos) {
 	immediately before the player's action, the player's action itself (and any
 	reactions), and then any game activity. */
 void CWorldUI::playerTurn(unsigned int actionHotId) {
+	TFnCall fnCall = pVM->getHotTextFnCall(actionHotId, currentVariant);
+
+/*	if (fnCall.msgId != clickId && fnCall.msgId != examId) {
+		mainTextPanel->removeMarked();
+		mainTextPanel->unhotDuplicates();
+		mainTextPanel->solidifyTempText();
+	}*/
+
+	if (fnCall.msgId != showPlayerOpsId && fnCall.msgId != clickId)
+		mainTextPanel->removeMarked();
+	mainTextPanel->unhotDuplicates();
 	mainTextPanel->solidifyTempText();
 
-
-	TFnCall fnCall = pVM->getHotTextFnCall(actionHotId,currentVariant);
 
 	//TO DO: push a copy of fnCall to an array to record player activity for playback
 
 	pVM->callMember(fnCall.objId, fnCall.msgId,fnCall.params);
 
 	//instantaneous actions don't end the player's turn
-	if (fnCall.msgId == clickId || fnCall.msgId == examId)
+	if (fnCall.msgId == clickId || fnCall.msgId == examId || fnCall.msgId == showPlayerOpsId )
 		return; 
 
 	pVM->callMember(NULL, "gameTurn");
@@ -130,7 +144,7 @@ void CWorldUI::openWindow(int winId) {
 	else if (winId == menuWin)
 		openMenuWindow(winId);
 	else
-		openObjWindow(winId);
+		spawnObjWindow(winId);
 }
 
 void CWorldUI::openMenuWindow(int winId) {
@@ -140,12 +154,12 @@ void CWorldUI::openMenuWindow(int winId) {
 	pMenuWindow->id = popMenuId;
 }
 
-void CWorldUI::openObjWindow(int objId) {
+/** Creat an Object Window, and add it to the list of object windows. */
+void CWorldUI::spawnObjWindow(int objId) {
 	for (auto objWindow : objWindows) {
 		if (objWindow.objId == objId)
 			return;
 	}
-
 	CGUIrichTextPanel* pop = spawnPopText();
 	pop->draggable = true;
 	pop->resize(300, 200);
@@ -186,6 +200,12 @@ void CWorldUI::clearWindow(int window) {
 	}
 }
 
+void CWorldUI::clearMarkedText(int window) {
+	if (window == mainWin) {
+		mainTextPanel->removeMarked();
+	}
+}
+
 void CWorldUI::clearWindowHotIds(CGUIrichTextPanel* panel) {
 	vector<unsigned int> lostIds = panel->richText->getHotTextIds();
 	for (auto hotId : lostIds) {
@@ -195,19 +215,20 @@ void CWorldUI::clearWindowHotIds(CGUIrichTextPanel* panel) {
 
 
 /** Display the popup menu at the cursor position, adjusted for its dimensions and the screen edge. */
-void CWorldUI::showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& cornerPos) {
-	lastMenuCorner = cornerPos;
-	popControl->resizeToFit();
-	glm::i32vec2 newCornerPos = cornerPos + glm::i32vec2(0, mainTextPanel->getFont()->lineHeight  );
-	int margin = 30;
-	if (newCornerPos.x + popControl->getWidth() + margin > popControl->parent->getWidth())
-		newCornerPos.x -= (newCornerPos.x + popControl->getWidth() + margin) - popControl->parent->getWidth();
+void CWorldUI::showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& mousePos) {
+	lastMenuCorner = mousePos;
+	//popControl->resizeToFit();
 
-	if (newCornerPos.y + popControl->getHeight() + margin > popControl->parent->getHeight())
-		newCornerPos.y -= (newCornerPos.y + popControl->getHeight() + margin) - popControl->parent->getHeight();
+	int margin = 20;
 
-	//popControl->setLocalPos(newCornerPos.x, newCornerPos.y);
-	popControl->setLocalPos(cornerPos.x, cornerPos.y);
+	glm::i32vec2 tlCorner = mousePos;
+	glm::i32vec2 size =  popControl->getSize() + glm::i32vec2(margin);
+
+	glm::i32vec2 brCornerApp = popControl->parent->getSize();
+
+	tlCorner = glm::min<>(tlCorner, brCornerApp - size);
+
+	popControl->setLocalPos(tlCorner.x, tlCorner.y);
 	popControl->setVisible(true);
 }
 
@@ -225,8 +246,10 @@ void CWorldUI::deletePopupMenu(CGUIrichTextPanel* popUp) {
 
 /** Respond to user clicking on an object window.*/
 void CWorldUI::objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel * popUp) {
+	
 	currentMousePos = mousePos;
 	playerTurn(hotId);
+	closeObjWindow(popUp);
 }
 
 void CWorldUI::combatWindowClick(unsigned int hotId, glm::i32vec2 mousePos) {
@@ -237,6 +260,7 @@ void CWorldUI::combatWindowClick(unsigned int hotId, glm::i32vec2 mousePos) {
 
 
 void CWorldUI::closeObjWindow(CGUIrichTextPanel * popUp) {
+	clearWindowHotIds(popUp);
 	objWindows.pop_back();
 	delete popUp;
 	return;
@@ -262,6 +286,7 @@ void CWorldUI::createTextWindow() {
 	mainTextWindowID = mainTextPanel->getID();
 	mainTextPanel->setTextStyles(&normalTheme.styles);
 	mainTextPanel->setTextStyle("mainBody");
+	mainTextPanel->setDefaultTextStyle("mainBody");
 	pApp->GUIroot.Add(mainTextPanel);
 	mainTextPanel->richText->transcriptLog = &transcript;
 }
@@ -308,6 +333,7 @@ CGUIrichTextPanel* CWorldUI::spawnPopText() {
 	popupPanel->setFont(&pApp->popFont);
 	popupPanel->setTextColour(UIwhite);
 	popupPanel->setResizeMode(resizeByWidthMode);
+	popupPanel->setShortestSpaceBreak(150);
 	popupTextID = popupPanel->getRichTextID();
 	popupPanelID = popupPanel->getID();
 	popupPanel->setVisible(false);
@@ -319,6 +345,7 @@ CGUIrichTextPanel* CWorldUI::spawnPopText() {
 /** Create the various text styles the various text controls use. */
 void CWorldUI::createTextStyles() {
 	darkGray = glm::vec4(0.25, 0.25, 0.25, 1);
+	choiceColour = glm::vec4(0.5, 0.5, 0.5, 1);
 	white = glm::vec4(1);
 	hottextColour =  glm::vec4(0.28, 0.28, 0.47, 1);
 	hottextSelectedColour =  glm::vec4(1, 0.547, 0.0, 1);
@@ -327,6 +354,7 @@ void CWorldUI::createTextStyles() {
 	normalTheme.styles.push_back({ "mainHeader","mainHeader",darkGray });
 	normalTheme.styles.push_back({ "hot", "main", hottextColour });
 	normalTheme.styles.push_back({ "hotSelected", "main", hottextSelectedColour });
+	normalTheme.styles.push_back({ "choice", "main", choiceColour });
 
 	smallNormalTheme.styles.push_back({ "small","small",darkGray });
 	smallNormalTheme.styles.push_back({ "smallHeader","smallHeader",darkGray });
@@ -376,31 +404,45 @@ void CWorldUI::pause(bool isOn) {
 void CWorldUI::mouseOverHotText( int hotId) {
 	currentVariant = 0;
 	mainTextPanel->collapseTempText();
-
 	if (hotId < 1)
 		return;
+	displayNarrativeChoice(hotId);
+}
+
+void CWorldUI::displayNarrativeChoice(int hotId) {
 	TFnCall fnCall = pVM->getHotTextFnCall(hotId, currentVariant);
 	if (!fnCall.params.empty()) {
 		CTigVar finalParam = fnCall.params.back();
 		if (finalParam.type == tigString) {
 			mainTextPanel->setTempText(true);
-			mainTextPanel->appendMarkedUpText("\n\n" + finalParam.getStringValue());
+			string narrativeChoice = finalParam.getStringValue();
+			for (int x = 0; x < narrativeChoice.size(); x++) {
+				if (narrativeChoice[x] == '\\' && narrativeChoice[x + 1] == 'h')
+					narrativeChoice[x + 1] = 'S';
+			}
+			mainTextPanel->setTextStyle("choice");
+			mainTextPanel->appendMarkedUpText("\n\n" + narrativeChoice);
 			mainTextPanel->setTempText(false);
+			mainTextPanel->setTextStyle("mainBody");
 		}
 	}
+
 }
 
 /** Player is mousewheeling over hot text. Cycle through the variants if they exist. */
 void CWorldUI::mouseWheelHotText(int hotId, int direction) {
-	
 	THotTextFnCall fnCallrec = pVM->getHotTextFnCallRec(hotId);
+	if (fnCallrec.options.size() == 1)
+		return;
 	currentVariant += direction;
 	if (currentVariant >= (int)fnCallrec.options.size())
 		currentVariant = 0;
 	if (currentVariant < 0)
 			currentVariant = fnCallrec.options.size() - 1;
+	mainTextPanel->collapseTempText();
+	displayNarrativeChoice(hotId);
 
-	TFnCall fnCall = pVM->getHotTextFnCall(hotId, currentVariant);
+/*	TFnCall fnCall = pVM->getHotTextFnCall(hotId, currentVariant);
 	if (!fnCall.params.empty()) {
 		CTigVar finalParam = fnCall.params.back();
 		if (finalParam.type == tigString) {
@@ -409,6 +451,6 @@ void CWorldUI::mouseWheelHotText(int hotId, int direction) {
 			mainTextPanel->appendMarkedUpText("\n\n" + finalParam.getStringValue());
 			mainTextPanel->setTempText(false);
 		}
-	}
+	}*/
 }
 

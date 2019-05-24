@@ -35,10 +35,11 @@ public:
 	void handleRoomChange(int direction);
 	void openWindow(int winId);
 	void openMenuWindow(int winId);
-	void openObjWindow(int objId);
+	void spawnObjWindow(int objId);
 	void openCombatWindow(int winId);
 	void purge(unsigned int id);
 	void clearWindow(int window);
+	void clearMarkedText(int window);
 
 	void clearWindowHotIds(CGUIrichTextPanel* panel);
 
@@ -81,6 +82,7 @@ public:
 	void pause(bool isOn);
 
 	void mouseOverHotText(int hotId);
+	void displayNarrativeChoice(int hotId);
 	void mouseWheelHotText(int hotID, int direction);
 
 	//unsigned int textWindowID;
@@ -116,6 +118,7 @@ private:
 	int clickId; ///<Id of the click message.
 	int examId; ///<Id of the examine message
 	int moveToId; ///<Id of the moveTo message
+	int showPlayerOpsId; 
 
 	glm::i32vec2 currentMousePos;
 	glm::i32vec2 lastMenuCorner;
@@ -123,6 +126,7 @@ private:
 	
 
 	glm::vec4 darkGray;
+	glm::vec4 choiceColour;
 	glm::vec4 white;
 	glm::vec4 hottextColour;
 	glm::vec4 hottextSelectedColour;

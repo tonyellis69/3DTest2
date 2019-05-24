@@ -121,7 +121,6 @@
     <ClInclude Include="src\3DtestApp.h" />
     <ClInclude Include="src\gameTerrain.h" />
     <ClInclude Include="src\localHotList.h" />
-    <ClInclude Include="src\worldUI.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3DEngine\3DEngine\3DEngine.vcxproj">
