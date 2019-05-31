@@ -110,12 +110,6 @@ void  CWorldUI::inventoryClick(unsigned int hotId, glm::i32vec2 mousePos) {
 void CWorldUI::playerTurn(unsigned int actionHotId) {
 	TFnCall fnCall = pVM->getHotTextFnCall(actionHotId, currentVariant);
 
-/*	if (fnCall.msgId != clickId && fnCall.msgId != examId) {
-		mainTextPanel->removeMarked();
-		mainTextPanel->unhotDuplicates();
-		mainTextPanel->solidifyTempText();
-	}*/
-
 	if (fnCall.msgId != showPlayerOpsId && fnCall.msgId != clickId)
 		mainTextPanel->removeMarked();
 	mainTextPanel->unhotDuplicates();
@@ -131,6 +125,8 @@ void CWorldUI::playerTurn(unsigned int actionHotId) {
 		return; 
 
 	pVM->callMember(NULL, "gameTurn");
+
+	updateObjWindows();
 }
 
 /** Register change in current room. */
@@ -138,30 +134,32 @@ void CWorldUI::handleRoomChange(int roomId) {
 	//TO DO: ever doing anything here?
 }
 
-void CWorldUI::openWindow(int winId) {
+void CWorldUI::openWindow(int winId, bool modal) {
 	if (winId == combatWin)
 		openCombatWindow(winId);
 	else if (winId == menuWin)
 		openMenuWindow(winId);
 	else
-		spawnObjWindow(winId);
+		spawnObjWindow(winId,modal);
 }
 
 void CWorldUI::openMenuWindow(int winId) {
-	pMenuWindow = spawnPopText();
+	pMenuWindow = spawnPopText(true);
 	pMenuWindow->setTextStyle("small");
+	pMenuWindow->setLocalPos(currentMousePos.x, currentMousePos.y);
 	pMenuWindow->setResizeMode(resizeByWidthMode);
 	pMenuWindow->id = popMenuId;
 }
 
 /** Creat an Object Window, and add it to the list of object windows. */
-void CWorldUI::spawnObjWindow(int objId) {
+void CWorldUI::spawnObjWindow(int objId,bool modal) {
 	for (auto objWindow : objWindows) {
 		if (objWindow.objId == objId)
 			return;
 	}
-	CGUIrichTextPanel* pop = spawnPopText();
+	CGUIrichTextPanel* pop = spawnPopText(modal);
 	pop->draggable = true;
+	pop->setLocalPos(currentMousePos.x, currentMousePos.y);
 	pop->resize(300, 200);
 	pop->setResizeMode(resizeByRatioMode);
 	pop->id = popObjWinId;
@@ -216,12 +214,12 @@ void CWorldUI::clearWindowHotIds(CGUIrichTextPanel* panel) {
 
 /** Display the popup menu at the cursor position, adjusted for its dimensions and the screen edge. */
 void CWorldUI::showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& mousePos) {
-	lastMenuCorner = mousePos;
-	//popControl->resizeToFit();
+	
 
 	int margin = 20;
 
-	glm::i32vec2 tlCorner = mousePos;
+	//glm::i32vec2 tlCorner = mousePos;
+	glm::i32vec2 tlCorner = popControl->getLocalPos();
 	glm::i32vec2 size =  popControl->getSize() + glm::i32vec2(margin);
 
 	glm::i32vec2 brCornerApp = popControl->parent->getSize();
@@ -250,6 +248,11 @@ void CWorldUI::objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIric
 	currentMousePos = mousePos;
 	playerTurn(hotId);
 	closeObjWindow(popUp);
+}
+
+
+void CWorldUI::objWindowRightClick(CGUIrichTextPanel* popUp){
+
 }
 
 void CWorldUI::combatWindowClick(unsigned int hotId, glm::i32vec2 mousePos) {
@@ -325,7 +328,7 @@ void CWorldUI::createCombatWindow() {
 	pApp->GUIroot.Add(combatPanel);
 }
 
-CGUIrichTextPanel* CWorldUI::spawnPopText() {
+CGUIrichTextPanel* CWorldUI::spawnPopText(bool modal) {
 	CGUIrichTextPanel* popupPanel = new CGUIrichTextPanel(0, 0, 300, 300);
 	popupPanel->setBackColour1(white);
 	popupPanel->setBackColour2(white);
@@ -333,12 +336,15 @@ CGUIrichTextPanel* CWorldUI::spawnPopText() {
 	popupPanel->setFont(&pApp->popFont);
 	popupPanel->setTextColour(UIwhite);
 	popupPanel->setResizeMode(resizeByWidthMode);
-	popupPanel->setShortestSpaceBreak(150);
+	popupPanel->setShortestSpaceBreak(50);
 	popupTextID = popupPanel->getRichTextID();
 	popupPanelID = popupPanel->getID();
 	popupPanel->setVisible(false);
 	popupPanel->setTextStyles(&smallNormalTheme.styles);
-	pApp->GUIroot.addModal(popupPanel);
+	if (modal)
+		pApp->GUIroot.addModal(popupPanel);
+	else
+		pApp->GUIroot.Add(popupPanel);
 	return popupPanel;
 }
 
@@ -452,5 +458,15 @@ void CWorldUI::mouseWheelHotText(int hotId, int direction) {
 			mainTextPanel->setTempText(false);
 		}
 	}*/
+}
+
+/** Ask the game code to provide up-to-date text for all open obj windows. This
+	updates visible robot descriptions with damage taken, activity, etc. */
+void CWorldUI::updateObjWindows() {
+	for (auto objWindow : objWindows) {
+		//ask game to examine this object
+		pVM->callMember(objWindow.objId, "examine");
+
+	}
 }
 

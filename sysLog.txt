@@ -1,4 +1,4 @@
-*** Friday May 24, 2019  time: 17:03:00 ***
+*** Friday May 31, 2019  time: 14:53:06 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
@@ -235,4 +235,38 @@ SC x 5 y 2 z 2 told to cull from x 0 y 3 z 3 to x 0 y 3 z 3 inclusuve.
 SC x 5 y 2 z 3 told to cull from x 0 y 3 z 0 to x 0 y 3 z 3 inclusuve.
 SC x 5 y 2 z 4 told to cull from x 0 y 3 z 0 to x 0 y 3 z 3 inclusuve.
 SC x 5 y 2 z 5 told to cull from x 0 y 3 z 0 to x 0 y 3 z 0 inclusuve.
-[player acts on player]
+[player acts on player]cleaning bot choosing combat action.rectangular servobot choosing combat action.
+[player acts on cleaning bot]
+Player rolls a 19
+plus weapon mod = 16
+Target AC 10
+Cover: 20 Armour reduction: 3
+Robot ACmodifier: 2 hit roll + mod: 5 vs player AC: 10
+Robot ACmodifier: 2 hit roll + mod: 18 vs player AC: 10
+Cover: 20 Armour reduction: 1
+[player acts on player]cleaning bot choosing combat action.rectangular servobot choosing combat action.
+[player acts on cleaning bot]
+Player rolls a 19
+plus weapon mod = 16
+Target AC 10
+Cover: 20 Armour reduction: 3
+Robot ACmodifier: 2 hit roll + mod: 5 vs player AC: 10
+Robot ACmodifier: 2 hit roll + mod: 18 vs player AC: 10
+Cover: 20 Armour reduction: 1
+[player acts on player]cleaning bot choosing combat action.rectangular servobot choosing combat action.
+[player acts on cleaning bot]
+Player rolls a 19
+plus weapon mod = 22
+Target AC 10
+Cover: 20 Armour reduction: 3
+Robot ACmodifier: 2 hit roll + mod: 5 vs player AC: 10
+Robot ACmodifier: 2 hit roll + mod: 18 vs player AC: 10
+Cover: 20 Armour reduction: 1cleaning bot choosing combat action.rectangular servobot choosing combat action.
+[player acts on rectangular servobot]
+Player rolls a 10
+plus weapon mod = 13
+Target AC 10
+Cover: 17 Armour reduction: 3
+Robot ACmodifier: 2 hit roll + mod: 17 vs player AC: 10
+Cover: 17 Armour reduction: 1
+Robot ACmodifier: 2 hit roll + mod: 2 vs player AC: 10

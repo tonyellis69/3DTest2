@@ -776,7 +776,7 @@ void C3DtestApp::terrain2TestDraw() {
 			wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
 			wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
-			if (shell == 1 || shell == 1)
+			if (shell == 1 || shell == 2)
 				 renderer.drawBuf(wireCube, drawLinesStrip);
 
 			//draw chunks
@@ -1134,7 +1134,10 @@ void C3DtestApp::vmMessage(TvmAppMsg msg) {
 		worldUI.clearWindow(msg.integer);
 	}
 	if (msg.type == appOpenWin) {
-		worldUI.openWindow(msg.integer);
+		worldUI.openWindow(msg.integer,false);
+	}
+	if (msg.type == appOpenWinModal) {
+		worldUI.openWindow(msg.integer, true);
 	}
 	if (msg.type == appMsg) {
 		worldUI.vmMessage(msg.integer,msg.integer2);
@@ -1233,12 +1236,19 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 			worldUI.mouseOverHotText(Message.value);
 			return;
 		}
-	}
 
-	if (control.parent->id == popObjWinId && Message.Msg == uiClickOutside) {
-		glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
-		worldUI.closeObjWindow((CGUIrichTextPanel *)control.parent);
-		return;
+		if (Message.Msg == uiMsgRMouseUp) {
+			worldUI.closeObjWindow((CGUIrichTextPanel*)control.parent); 
+			return;
+		}
+
+
+		//NB will only work if modal
+		if (Message.Msg == uiClickOutside) {
+			glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
+			worldUI.closeObjWindow((CGUIrichTextPanel*)control.parent);
+			return;
+		}
 	}
 
 	//combat window click

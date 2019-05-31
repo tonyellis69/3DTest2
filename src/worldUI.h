@@ -33,9 +33,9 @@ public:
 	void playerTurn(unsigned int actionHotId);
 
 	void handleRoomChange(int direction);
-	void openWindow(int winId);
+	void openWindow(int winId, bool modal);
 	void openMenuWindow(int winId);
-	void spawnObjWindow(int objId);
+	void spawnObjWindow(int objId, bool modal);
 	void openCombatWindow(int winId);
 	void purge(unsigned int id);
 	void clearWindow(int window);
@@ -51,6 +51,7 @@ public:
 
 
 	void objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel * popUp);
+	void objWindowRightClick(CGUIrichTextPanel* popUp);
 
 	void combatWindowClick(unsigned int hotId, glm::i32vec2 mousePos);
 
@@ -67,7 +68,7 @@ public:
 	void createInventoryWindow();
 	void createCombatWindow();
 
-	CGUIrichTextPanel * spawnPopText();
+	CGUIrichTextPanel * spawnPopText(bool modal);
 
 	void createTextStyles();
 
@@ -84,6 +85,8 @@ public:
 	void mouseOverHotText(int hotId);
 	void displayNarrativeChoice(int hotId);
 	void mouseWheelHotText(int hotID, int direction);
+
+	void updateObjWindows();
 
 	//unsigned int textWindowID;
 	//CGUIrichText* textWindow;
