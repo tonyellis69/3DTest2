@@ -5,60 +5,34 @@ This is a plain, unremarkable room. Exits lead south and southwest.
 
 You go south
 
-Test room south
-This is a test room. The way back leads north. 
-
-A cleaning bot polishes the floor, while a rectangular servobot is stalking about here. 
-Seeing you, the cleaning bot rushes at you! Seeing you, the servobot rushes at you! 
-
-[You're being attacked. You should probably do something.]
-
-You aim a quick shot at the cleaning bot
-
-You aim carefully and fire at the cleaning bot, hitting it for 1 damage. The rectangular servobot swings viciously, but misses. The cleaning bot lashes at you with a whirling brush arm, hitting for 2 damage. 
-
-[You're being attacked. You should probably do something.]
-
-Bare room
-This is a plain, unremarkable room. Exits lead south and southwest. 
-
 You go south
 
 Test room south
 This is a test room. The way back leads north. 
 
 A cleaning bot polishes the floor, while a rectangular servobot is stalking about here. 
-Seeing you, the cleaning bot rushes at you! Seeing you, the servobot rushes at you! 
+Seeing you, the cleaning bot charges in your direction, metal arms whirling!Seeing you, the servobot rushes at you! 
 
 [You're being attacked. You should probably do something.]
 
-You aim a quick shot at the cleaning bot
+Taking your time, you swing at the cleaning bot as hard as you can
 
-You aim carefully and fire at the cleaning bot, hitting it for 1 damage. The rectangular servobot swings viciously, but misses. The cleaning bot lashes at you with a whirling brush arm, hitting for 2 damage. 
+Hastily, you swing your adjustable wrench at the cleaning bot
 
-[You're being attacked. You should probably do something.]
+Taking your time, you swing at the cleaning bot as hard as you can
 
-Bare room
-This is a plain, unremarkable room. Exits lead south and southwest. 
+You wait to see what happens
 
-You go south
+You wait to see what happens
 
-Test room south
-This is a test room. The way back leads north. 
+Taking your time, you swing at the cleaning bot as hard as you can
 
-A cleaning bot polishes the floor, while a rectangular servobot is stalking about here. 
-Seeing you, the cleaning bot rushes at you! Seeing you, the servobot rushes at you! 
+Taking your time, you swing at the cleaning bot as hard as you can
 
-[You're being attacked. You should probably do something.]
+You wait to see what happens
 
-You aim a quick shot at the cleaning bot
+You raise your adjustable wrench to fend off the cleaning bot's attack
 
-You aim carefully and fire at the cleaning bot, hitting it for 2 damage. The rectangular servobot swings viciously, but misses. The cleaning bot lashes at you with a whirling brush arm, hitting for 2 damage. 
+Taking your time, you swing at the cleaning bot as hard as you can
 
-[You're being attacked. You should probably do something.]
-
-You aim a quick shot at the rectangular servobot
-
-You aim carefully and fire at the rectangular servobot, hitting it for 3 damage. The cleaning bot lashes at you with a whirling brush arm, hitting for 1 damage. You sidestep just in time as the rectangular servobot swings at you. 
-
-[You're being attacked. You should probably do something.]
+Hastily, you swing your adjustable wrench at the cleaning bot

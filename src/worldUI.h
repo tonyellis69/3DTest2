@@ -1,5 +1,7 @@
 #pragma once
 
+#include <random>
+
 //#include "3DtestApp.h"
 #include "vm.h"
 #include "UI\GUIrichText.h"
@@ -88,6 +90,8 @@ public:
 
 	void updateObjWindows();
 
+	glm::i32vec2 randomWindowPos();
+
 	//unsigned int textWindowID;
 	//CGUIrichText* textWindow;
 	CGUIrichTextPanel* mainTextPanel;
@@ -143,6 +147,9 @@ private:
 	CLog transcript; ///<For logging output to main window.
 
 	int currentVariant; ///<Index no. of the hot text variant currently selected
+
+	std::mt19937 randEngine; ///<Random number engine.
+
 };
 
 

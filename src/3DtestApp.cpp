@@ -14,7 +14,7 @@
 
 #include <glm/gtc/matrix_access.hpp>	 //temp
 
-#include "watch.h"
+//#include "watch.h"
 
 #include "UI\GUIimage.h"
 #include "UI\GUIlabel2.h"
@@ -23,8 +23,6 @@
 #include "plants\fractalTree.h"
 
 #include "shapes.h"
-
-using namespace watch;
 
 using namespace glm;
 
@@ -153,7 +151,7 @@ void C3DtestApp::onStart() {
 	terrain2.setCallbackApp(this);
 	terrain2.createLoD1shell(cubeSize, cubesPerChunkEdge, chunksPerSuperChunkEdge, LoD1shellSCs);
 	terrain2.addShell(1);
-	terrain2.addShell(0);
+	terrain2.addShell(1);
 	terrain2.addShell(2);
 
 	terrain2.fillShells();
@@ -209,6 +207,7 @@ void C3DtestApp::onStart() {
 	fractalTree.setStemFaces(5);
 	fractalTree.setBranchType(lateral);
 	*/
+
 
 	fractalTree.setLength(10.0f, 0.2f);
 	fractalTree.setMaxJoints(3);
@@ -735,7 +734,7 @@ void C3DtestApp::terrain2TestDraw() {
 	mat4 chunkM;
 	float boxScale = 0.99f;
 
-	for (int shell = 0; shell < 3; shell++) {
+	for (int shell = 0; shell < 4; shell++) {
 	//int shell = 0;
 		vec3 shellWorldspacePos = terrain2.shells[shell].worldSpacePos;
 		renderer.setShader(wire2Shader);
@@ -776,8 +775,8 @@ void C3DtestApp::terrain2TestDraw() {
 			wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
 			wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
-			if (shell == 1 || shell == 2)
-				 renderer.drawBuf(wireCube, drawLinesStrip);
+			//if (shell == 1 || shell == 1)
+			//	 renderer.drawBuf(wireCube, drawLinesStrip);
 
 			//draw chunks
 			//if (shell != 3 && shell !=2 )

@@ -33,6 +33,7 @@ void CWorldUI::init() {
 	createTextWindow();
 	createInventoryWindow();
 	createCombatWindow();
+	pMenuWindow = NULL; //TO DO: should probably create and make invisible to be consistent
 	currentVariant = 0;
 }
 
@@ -159,7 +160,11 @@ void CWorldUI::spawnObjWindow(int objId,bool modal) {
 	}
 	CGUIrichTextPanel* pop = spawnPopText(modal);
 	pop->draggable = true;
-	pop->setLocalPos(currentMousePos.x, currentMousePos.y);
+
+	//pop->setLocalPos(currentMousePos.x, currentMousePos.y);
+	glm::i32vec2 randomPos = randomWindowPos();
+	pop->setLocalPos(randomPos.x, randomPos.y);
+
 	pop->resize(300, 200);
 	pop->setResizeMode(resizeByRatioMode);
 	pop->id = popObjWinId;
@@ -238,6 +243,8 @@ void CWorldUI::menuClick(unsigned int hotId, glm::i32vec2& mousePos, CGUIrichTex
 }
 
 void CWorldUI::deletePopupMenu(CGUIrichTextPanel* popUp) {
+	if (popUp == pMenuWindow)
+		pMenuWindow = NULL;
 	clearWindowHotIds(popUp);
 	delete popUp;
 }
@@ -264,9 +271,13 @@ void CWorldUI::combatWindowClick(unsigned int hotId, glm::i32vec2 mousePos) {
 
 void CWorldUI::closeObjWindow(CGUIrichTextPanel * popUp) {
 	clearWindowHotIds(popUp);
-	objWindows.pop_back();
+	for (unsigned int x = 0; x < objWindows.size(); x++) {
+		if (objWindows[x].win == popUp) {
+			objWindows.erase(objWindows.begin() + x);
+			break;
+		}
+	}
 	delete popUp;
-	return;
 }
 
 
@@ -392,7 +403,12 @@ void CWorldUI::tempText(bool onOff, int winId) {
 
 void CWorldUI::update(float dT) {
 	mainTextPanel->update(dT);
-	combatPanel->update(dT);
+	invPanel->update(dT);
+	if (pMenuWindow)
+		pMenuWindow->update(dT);
+	for (auto objWindow : objWindows)
+		objWindow.win->update(dT);
+
 }
 
 /** Handle a pause request from the vm. Suspend most activity if we're pausing, but leave the
@@ -468,5 +484,17 @@ void CWorldUI::updateObjWindows() {
 		pVM->callMember(objWindow.objId, "examine");
 
 	}
+}
+
+/** Return a semi-random coordinate. */
+glm::i32vec2 CWorldUI::randomWindowPos() {
+	glm::i32vec2 appSize(pApp->viewWidth, pApp->viewHeight);
+
+	std::uniform_int_distribution<> randomYRange{ 0,appSize.y / 3 };
+	std::uniform_int_distribution<> randomXRange{ 0,appSize.x };
+	int randomY = randomYRange(randEngine);
+	int randomX = randomXRange(randEngine);
+
+	return glm::i32vec2(randomX,randomY);
 }
 
