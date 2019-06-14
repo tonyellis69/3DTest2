@@ -1,4 +1,4 @@
-*** Tuesday June 11, 2019  time: 14:12:49 ***
+*** Friday June 14, 2019  time: 16:18:32 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
@@ -13,3 +13,48 @@ Robot combat fn: 0cleaning bot choosing combat action.
 chose to block.rectangular servobot choosing combat action.
 chose to block.
 Stamina: 10
+[player combats cleaning bot]
+Player rolls a 11
+plus weapon mod = 9
+blockTarget is player
+Target AC 15
+Robot combat fn: 1088
+Robot combat fn: 1088rectangular servobot choosing combat action.
+chose to block.cleaning bot choosing combat action.
+chose to block.
+Stamina: 9
+[player combats rectangular servobot]
+Player rolls a 4
+plus weapon mod = 2
+blockTarget is player
+Target AC 15
+Robot combat fn: 1088
+Robot combat fn: 1088cleaning bot choosing combat action.
+chose to bash.rectangular servobot choosing combat action.
+chose to bash.
+Stamina: 8
+[player combats cleaning bot]
+Player rolls a 14
+plus weapon mod = 12
+Target AC 10
+Cover: 20 Armour reduction: 3
+Robot combat fn: 1116
+Robot ACmodifier: 2 hit roll + mod: 17 vs player AC: 10
+Cover: 20 Armour reduction: 1
+Robot combat fn: 1116
+Robot ACmodifier: 2 hit roll + mod: 0 vs player AC: 10rectangular servobot choosing combat action.
+chose to bash.cleaning bot choosing combat action.
+chose to block.
+Stamina: 7
+[player combats rectangular servobot]
+Player rolls a 13
+plus weapon mod = 11
+Target AC 10
+Cover: 17 Armour reduction: 3
+Robot combat fn: 1088
+Robot combat fn: 1116
+Robot ACmodifier: 2 hit roll + mod: 14 vs player AC: 10
+Cover: 17 Armour reduction: 1cleaning bot choosing combat action.
+chose to bash.rectangular servobot choosing combat action.
+chose to block.
+Stamina: 6

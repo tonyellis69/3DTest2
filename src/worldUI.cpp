@@ -437,13 +437,16 @@ void CWorldUI::displayNarrativeChoice(int hotId) {
 		CTigVar finalParam = fnCall.params.back();
 		if (finalParam.type == tigString) {
 			mainTextPanel->setTempText(true);
+			mainTextPanel->setTextStyle("fadeOn");
 			string narrativeChoice = finalParam.getStringValue();
-			for (int x = 0; x < narrativeChoice.size(); x++) {
+			for (int x = 0; x < narrativeChoice.size(); x++) { //catch any hot text and suspend it
 				if (narrativeChoice[x] == '\\' && narrativeChoice[x + 1] == 'h')
 					narrativeChoice[x + 1] = 'S';
 			}
 			mainTextPanel->setTextStyle("choice");
+			
 			mainTextPanel->appendMarkedUpText("\n\n" + narrativeChoice);
+			mainTextPanel->setTextStyle("fadeOff");
 			mainTextPanel->setTempText(false);
 			mainTextPanel->setTextStyle("mainBody");
 		}
