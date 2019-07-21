@@ -29,8 +29,8 @@
 
 extern CSuperChunk* dbgSC;
 
-extern float xAdj;
-extern float yAdj;
+//extern float xAdj;
+//extern float yAdj;
 
 enum TAppMode {terrainMode, textMode, texGenMode};
 
@@ -63,6 +63,10 @@ public:
 	void HandleUImsg(CGUIbase& Control, CMessage& Message);
 	bool scIntersectionCheckCallback(glm::vec3& pos, float scSize);
 	bool chunkCheckCallback(glm::vec3& pos, float scSize);
+
+	void createChunkMesh(Chunk2& chunk);
+
+	void drawVisibleChunks();
 
 	void createRegion();
 
@@ -101,6 +105,7 @@ public:
 	int chunkCall;
 
 	CBaseBuf* tempFeedbackBuf; 
+	CBaseBuf* tempFeedbackBuf2;
 
 	float bigGap;
 
@@ -181,6 +186,8 @@ public:
 	CModel2 building;
 
 
+	CMultiBuf multiBuf; 
+	//TO DO: temp! Think where this should go, app or CTerrain
 	
 };
 

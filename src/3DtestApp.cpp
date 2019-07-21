@@ -14,8 +14,6 @@
 
 #include <glm/gtc/matrix_access.hpp>	 //temp
 
-//#include "watch.h"
-
 #include "UI\GUIimage.h"
 #include "UI\GUIlabel2.h"
 #include "UI\GUIcheckButton.h"
@@ -23,6 +21,7 @@
 #include "plants\fractalTree.h"
 
 #include "shapes.h"
+
 
 using namespace glm;
 
@@ -38,7 +37,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = textMode;// texGenMode;// terrainMode; //textMode;
+	appMode = terrainMode;// texGenMode;// terrainMode; //textMode;
 
 	
 	//GUIroot.add(uiButton, "Save");
@@ -144,6 +143,18 @@ void C3DtestApp::onStart() {
 
 
 	////////////NEW TERRAIN STUFF
+	CBaseBuf* terrainBuf2 = &multiBuf; //TO DO: ugh, make a setter
+//((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
+
+	terrainBuf2->setSize(175000000);
+
+	terrainBuf2->storeLayout(3, 3, 0, 0);
+
+	tempFeedbackBuf2 = Engine.createBuffer();
+	tempFeedbackBuf2->setSize(1000000);
+
+
+
 	shellTotalVerts = terrain.shellTotalVerts;
 	int LoD1shellSCs = 5;
 	terrain2.setSampleSpacePosition(terrain.sampleOffset);
@@ -653,7 +664,8 @@ void C3DtestApp::draw() {
 
 	mat4 mvp = Engine.getCurrentCamera()->clipMatrix * terrain.chunkOrigin;
 
-	terrain.drawVisibleChunks();/////////////////////////////
+	//terrain.drawVisibleChunks();/////////////////////////////
+	drawVisibleChunks();
 
 	//draw grass
 	//TO DO: temporarily commented out while I remove Soil
@@ -775,19 +787,17 @@ void C3DtestApp::terrain2TestDraw() {
 			wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
 			wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
-			//if (shell == 1 || shell == 1)
+			//if (shell == 2 || shell == 2)
 			//	 renderer.drawBuf(wireCube, drawLinesStrip);
 
 			//draw chunks
 			//if (shell != 3 && shell !=2 )
 			//	 continue;
-			for (auto chunk : SCiter->chunks) {
-				i32vec3 chunkIndex = chunk;
+			for (auto chunk : SCiter->chunks2) {
+				i32vec3 chunkIndex = terrain2.chunks[chunk].index;
 				vec3 chunkOrigin = vec3(chunkIndex) * actualChunkSize;
 				chunkOrigin += actualChunkSize * 0.5; //move orgin to centre of chunk
 				chunkOrigin -= scActualSize * 0.5; // and make relative to centre of SC ???? may need actual SC size
-				//chunkOrigin -= shellSize * 0.5; // and make relative to centre of shell
-				//chunkOrigin += shellWorldspacePos; //and then relative to shell's worldspace positionHint
 				chunkOrigin += SCorigin; //and then relative to shell's worldspace positionHint
 
 				chunkM = translate(mat4(1), chunkOrigin);
@@ -954,7 +964,9 @@ void C3DtestApp::Update() {
 	if (skyDome)
 		skyDome->update(dT);
 
-	terrain.update();
+	//terrain.update(); commented out to speed up tests on terrain2
+
+	terrain2.update(dT);
 
 	vec3 pos = Engine.getCurrentCamera()->getPos();
 
@@ -1120,39 +1132,10 @@ void C3DtestApp::updateHeightmapImage() {
 
 
 
-
+//TO DO: make msg a reference to save on big string copies!!!!!!!
 /** Handle messages from the virtual machine. */
 void C3DtestApp::vmMessage(TvmAppMsg msg) {
-	if (msg.type == appPurge) {
-		worldUI.purge(msg.integer);
-	}
-	if (msg.type == appWriteText) {
-		worldUI.appendText(msg.text, msg.integer);
-	}
-	if (msg.type == appClearWin) {
-		worldUI.clearWindow(msg.integer);
-	}
-	if (msg.type == appOpenWin) {
-		worldUI.openWindow(msg.integer,false);
-	}
-	if (msg.type == appOpenWinModal) {
-		worldUI.openWindow(msg.integer, true);
-	}
-	if (msg.type == appMsg) {
-		worldUI.vmMessage(msg.integer,msg.integer2);
-	}
-	if (msg.type == appTempTxt) {
-		worldUI.tempText((bool)msg.integer,msg.integer2);
-	}
-	if (msg.type == appPause) {
-		worldUI.pause(true);
-	}
-	if (msg.type == appUnpause) {
-		worldUI.pause(false);
-	}
-	if (msg.type == appClearMarked) {
-		worldUI.clearMarkedText(msg.integer);
-	}
+	worldUI.queueMsg(msg);
 }
 
 /** Carry out any processing demanded by the virtual machine. */
@@ -1188,7 +1171,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 		}
 
 		if (Message.Msg == uiMsgMouseMove) { 
-			worldUI.mouseOverHotText(Message.value);
+			worldUI.queueMsg(TvmAppMsg{ appMouseoverHotTxt,"",Message.value });
 			return;
 		}
 	}
@@ -1213,7 +1196,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	}
 
 	if (control.parent->id == popMenuId && Message.Msg == uiMsgMouseMove) {
-		worldUI.mouseOverHotText(Message.value);
+		worldUI.queueMsg(TvmAppMsg{ appMouseoverHotTxt,"",Message.value });;
 		return;
 	}
 
@@ -1232,7 +1215,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 			return;
 		}
 		if (Message.Msg == uiMsgMouseMove) {
-			worldUI.mouseOverHotText(Message.value);
+			worldUI.queueMsg(TvmAppMsg{ appMouseoverHotTxt,"",Message.value });
 			return;
 		}
 
@@ -1248,13 +1231,6 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 			worldUI.closeObjWindow((CGUIrichTextPanel*)control.parent);
 			return;
 		}
-	}
-
-	//combat window click
-	if (control.parent->getID() == worldUI.combatPanelID && Message.Msg == uiMsgHotTextClick) {
-		glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
-		worldUI.combatWindowClick(Message.value, mousePos);
-		return;
 	}
 }
 
@@ -1315,6 +1291,98 @@ bool C3DtestApp::chunkCheckCallback(glm::vec3 & chunkSamplePos, float chunkSampl
 		return false;
 	
 	return true;
+}
+
+
+/*  Create a mesh for this chunk, and register it with the renderer.  */
+void C3DtestApp::createChunkMesh(Chunk2& chunk) {
+	Engine.Renderer.setShader(terrain.chunkShader);
+	terrain.chunkShader->setShaderValue(terrain.hChunkCubeSize, chunk.cubeSize);
+
+	float LoDscale = chunk.LoD;
+	terrain.chunkShader->setShaderValue(terrain.hChunkLoDscale, LoDscale);
+	terrain.chunkShader->setShaderValue(terrain.hChunkSamplePos, chunk.sampleCorner);
+
+	float samplesPerCube = cubeSize / terrain.worldUnitsPerSampleUnit;
+	terrain.chunkShader->setShaderValue(terrain.hSamplesPerCube, samplesPerCube);
+
+	terrain.chunkShader->setShaderValue(terrain.hChunkTriTable, *terrain.triTableTex); 
+	terrain.chunkShader->setShaderValue(terrain.hChunkTerrainPos, chunk.terrainPos);
+
+	Engine.Renderer.attachTexture(0, terrain.tmpTerrainMap.handle);
+	terrain.chunkShader->setShaderValue(terrain.hChunkTerrainTexture, 0);
+
+	int chunkAttribs = 2;
+	int vertsPerPrimitive = 3 * chunkAttribs;
+	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
+	int nVertsOut = cubesPerChunkEdge * cubesPerChunkEdge * cubesPerChunkEdge * maxMCverts;
+
+	CBaseBuf* terrainBuf = &multiBuf;
+	CBuf* srcBuf = &((CRenderModel*)terrain.shaderChunkGrid)->buf;
+	unsigned int primitives = Engine.Renderer.getGeometryFeedback(*srcBuf, drawLinesAdjacency, (CBuf&)* tempFeedbackBuf2, drawTris);
+
+	if (primitives) {
+		int outSize = primitives * 3 * sizeof(vBuf::T3DnormVert);
+		totalbufsize += outSize;
+		totalchunks++;
+
+		terrainBuf->copyBuf(*tempFeedbackBuf2, outSize);
+
+		chunk.id = terrainBuf->getLastId();
+
+		TDrawDetails* details = &chunk.drawDetails;
+		terrainBuf->getElementData(chunk.id, details->vertStart, details->vertCount, details->childBufNo);
+		details->colour = chunk.colour;
+
+	//	if (chunk.LoD == 1) {
+	//		findTreePoints(chunk);
+	//		//	findGrassPoints(chunk);
+	//	}
+	}
+	else
+		chunk.id = NULL;
+	chunk.status = chSkinned;
+
+
+
+	//totalTris += (primitives * 3);
+}
+
+void C3DtestApp::drawVisibleChunks() {
+	mat4 mvp = Engine.Renderer.currentCamera->clipMatrix;// *terrain.chunkOrigin;
+
+	//draw chunks
+	Engine.Renderer.setShader(Engine.Renderer.phongShader);
+	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hMVP, mvp);
+	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hModel, mat4(1));
+	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hView, Engine.Renderer.currentCamera->camMatrix);
+	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hLightPosition, Engine.Renderer.defaultLightPos);
+
+	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hLightSpecular, glm::vec4(1));
+	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hLightDiffuse, glm::vec4(0.8f, 0.8f, 0.8f, 1));
+	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hLightAmbient, glm::vec4(0.2f, 0.2f, 0.2f, 1));
+
+	Engine.Renderer.attachTexture(0, Engine.Renderer.texture1x1->handle);
+
+
+//	CSuperChunk* sc;
+//	int childBuf = -1;
+//	int scListSize = visibleSClist.size();
+//	for (int scNo = 0; scNo < scListSize; scNo++) {
+	//	sc = visibleSClist[scNo];
+	//	int clSize = sc->chunkList.size();
+	//	for (int chunkNo = 0; chunkNo < clSize; chunkNo++) {
+		for (int chunkNo = 0; chunkNo < terrain2.chunks.size(); chunkNo++) {
+			Chunk2* chunk = &terrain2.chunks[chunkNo];
+			if (chunk->status != chSkinned)
+				break;
+			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatDiffuse, chunk->drawDetails.colour);
+			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatAmbient, chunk->drawDetails.colour);
+			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatSpecular, glm::vec4(0.0f, 0.0f, 0.0f, 1));
+			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatShininess, 32.0f);
+			Engine.Renderer.drawMultiBufChildVerts(drawTris, multiBuf, chunk->drawDetails.childBufNo, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
+		}
+	//}
 }
 
 /** Create a playable terrain region, with a start point, end point and path. */

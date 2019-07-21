@@ -3,28 +3,4 @@
 Bare room
 This is a plain, unremarkable room. Exits lead south and southwest. 
 
-You go south
-
-Test room south
-This is a test room. The way back leads north. 
-
-A cleaning bot polishes the floor, while a rectangular servobot is stalking about here. 
-Seeing you, the cleaning bot charges in your direction, metal arms whirling!Seeing you, the servobot rushes at you! 
-
-[You're being attacked. You should probably do something.]
-
-Hastily, you swing your adjustable wrench at the cleaning bot, but your opponent blocks it. object 12
-
-[You're being attacked. You should probably do something.]
-
-Trying to keep your distance, you jab at the rectangular servobot, but your opponent blocks it. object 12
-
-[You're being attacked. You should probably do something.]
-
-You aim a quick strike at the cleaning bot, hitting it for 2 damage. The rectangular servobot bludgeons you with a metal arm, hitting for 5 damage. The cleaning bot swings viciously, but misses. 
-
-[You're being attacked. You should probably do something.]
-
-Hastily, you swing your adjustable wrench at the rectangular servobot, hitting it for 2 damage. The rectangular servobot bludgeons you with a metal arm, hitting for 1 damage. 
-
-[You're being attacked. You should probably do something.]
+This is line 1

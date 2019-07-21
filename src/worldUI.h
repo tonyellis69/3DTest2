@@ -1,9 +1,10 @@
 #pragma once
 
 #include <random>
+#include <queue>
 
 //#include "3DtestApp.h"
-#include "vm.h"
+#include "vmApp.h"
 #include "UI\GUIrichText.h"
 //#include "UI\GUIpopMenu.h"
 #include "UI\GUIrichTextPanel.h"
@@ -27,7 +28,7 @@ public:
 	void setGameApp(C3DtestApp* app);
 	void init();
 	void start();
-	void appendText(std::string& text, int window);
+	bool writeText(std::string& text, int window);
 	void mainWindowClick(unsigned int hotId, glm::i32vec2 mousePos);
 	void mainWindowRightClick(glm::i32vec2 mousePos);
 	void inventoryClick(unsigned int hotId, glm::i32vec2 mousePos);
@@ -38,14 +39,13 @@ public:
 	void openWindow(int winId, bool modal);
 	void openMenuWindow(int winId);
 	void spawnObjWindow(int objId, bool modal);
-	void openCombatWindow(int winId);
-	void purge(unsigned int id);
-	void clearWindow(int window);
+	void purgeMainPanel(unsigned int id);
+	bool clearWindow(int window);
 	void clearMarkedText(int window);
 
 	void clearWindowHotIds(CGUIrichTextPanel* panel);
 
-	void showPopupMenu(CGUIrichTextPanel* popControl, const glm::i32vec2& mousePos);
+	void positionWindow(CGUIrichTextPanel* popControl, const glm::i32vec2& mousePos);
 	//void menuClick(const int choice, int objId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp);
 	void menuClick(unsigned int hotId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp);
 
@@ -55,9 +55,6 @@ public:
 	void objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel * popUp);
 	void objWindowRightClick(CGUIrichTextPanel* popUp);
 
-	void combatWindowClick(unsigned int hotId, glm::i32vec2 mousePos);
-
-
 	void closeObjWindow(CGUIrichTextPanel * popUp);
 
 	
@@ -66,9 +63,10 @@ public:
 
 	void vmMessage(int p1, int p2);
 
+	void queueMsg(TvmAppMsg& msg);
+
 	void createTextWindow();
 	void createInventoryWindow();
-	void createCombatWindow();
 
 	CGUIrichTextPanel * spawnPopText(bool modal);
 
@@ -92,6 +90,8 @@ public:
 
 	glm::i32vec2 randomWindowPos();
 
+	void processMessageQueue();
+
 	//unsigned int textWindowID;
 	//CGUIrichText* textWindow;
 	CGUIrichTextPanel* mainTextPanel;
@@ -100,8 +100,6 @@ public:
 	CGUIrichTextPanel* invPanel;
 	unsigned int invPanelID;
 
-	CGUIrichTextPanel* combatPanel;
-	unsigned int combatPanelID;
 
 	CGUIrichTextPanel* popupPanel;
 	unsigned int popupPanelID;
@@ -112,8 +110,6 @@ public:
 
 private:
 	CTigVM* pVM;
-//	CGUIrichText* pInvWindow;
-//	CGUIrichText* currentTextWindow;
 	CGUIrichTextPanel* pMenuWindow;
 
 	C3DtestApp* pApp;
@@ -149,6 +145,8 @@ private:
 	int currentVariant; ///<Index no. of the hot text variant currently selected
 
 	std::mt19937 randEngine; ///<Random number engine.
+
+	std::queue<TvmAppMsg> messages; 
 
 };
 
