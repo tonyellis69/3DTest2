@@ -37,7 +37,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = terrainMode;// texGenMode;// terrainMode; //textMode;
+	appMode = textMode;// texGenMode;// terrainMode; //textMode;
 
 	
 	//GUIroot.add(uiButton, "Save");

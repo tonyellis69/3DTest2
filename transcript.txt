@@ -4,3 +4,19 @@ Bare room
 This is a plain, unremarkable room. Exits lead south and southwest. 
 
 This is line 1
+
+You go south
+
+Test room south
+This is a test room. The way back leads north. 
+
+A cleaning bot polishes the floor, while a rectangular servobot is stalking about here. 
+Seeing you, the cleaning bot charges in your direction, metal arms whirling!Seeing you, the servobot rushes at you! 
+
+[You're being attacked. You should probably do something.]
+
+Focusing on damage over defence, you swing at the cleaning bot
+
+Keeping your guard up, you aim a hasty swing at the cleaning bot, but your opponent blocks it. 
+
+[You're being attacked. You should probably do something.]
