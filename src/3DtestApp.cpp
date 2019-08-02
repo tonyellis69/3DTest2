@@ -746,7 +746,7 @@ void C3DtestApp::terrain2TestDraw() {
 	mat4 chunkM;
 	float boxScale = 0.99f;
 
-	for (int shell = 0; shell < 4; shell++) {
+	for (int shell = 0; shell < 2; shell++) {
 	//int shell = 0;
 		vec3 shellWorldspacePos = terrain2.shells[shell].worldSpacePos;
 		renderer.setShader(wire2Shader);
@@ -964,7 +964,7 @@ void C3DtestApp::Update() {
 	if (skyDome)
 		skyDome->update(dT);
 
-	//terrain.update(); commented out to speed up tests on terrain2
+	//terrain.update(); //commented out to speed up tests on terrain2
 
 	terrain2.update(dT);
 
@@ -1302,6 +1302,8 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 	float LoDscale = chunk.LoD;
 	terrain.chunkShader->setShaderValue(terrain.hChunkLoDscale, LoDscale);
 	terrain.chunkShader->setShaderValue(terrain.hChunkSamplePos, chunk.sampleCorner);
+
+	//sysLog << "\nLod " << chunk.LoD << " cubesize " << chunk.cubeSize;
 
 	float samplesPerCube = cubeSize / terrain.worldUnitsPerSampleUnit;
 	terrain.chunkShader->setShaderValue(terrain.hSamplesPerCube, samplesPerCube);

@@ -32,7 +32,7 @@ void CWorldUI::init() {
 	moveToId = pVM->getMemberId("moveTo");
 	showPlayerOpsId = pVM->getMemberId("showPlayerOptions");
 
-	createTextWindow();
+	createMainWindow();
 	createInventoryWindow();
 	pMenuWindow = NULL; //TO DO: should probably create and make invisible to be consistent
 	currentVariant = 0;
@@ -272,7 +272,7 @@ void CWorldUI::queueMsg(TvmAppMsg& msg) {
 }
 
 /** Create the main text window. */
-void CWorldUI::createTextWindow() {
+void CWorldUI::createMainWindow() {
 	mainTextPanel = new CGUIrichTextPanel(200, 50, 800, 700);
 	mainTextPanel->setBackColour1(uiWhite);
 	mainTextPanel->setBackColour2(uiWhite);
@@ -289,6 +289,7 @@ void CWorldUI::createTextWindow() {
 	pApp->GUIroot.Add(mainTextPanel);
 	mainTextPanel->richText->transcriptLog = &transcript;
 	mainTextPanel->deliveryMode = byCharacter;// byClause;
+	mainTextPanel->setLineFadeIn(false);
 }
 
 void CWorldUI::createInventoryWindow() {

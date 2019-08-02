@@ -65,7 +65,7 @@ public:
 
 	void queueMsg(TvmAppMsg& msg);
 
-	void createTextWindow();
+	void createMainWindow();
 	void createInventoryWindow();
 
 	CGUIrichTextPanel * spawnPopText(bool modal);

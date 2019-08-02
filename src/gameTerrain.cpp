@@ -4,9 +4,12 @@
 
 #include "poisson.h"
 
+#include "utils/log.h"
+
 #include <iostream>
 
 using namespace glm;
+
 
 CGameTerrain::CGameTerrain() {
 	loadShaders();
@@ -202,6 +205,8 @@ void CGameTerrain::createChunkMesh(Chunk& chunk) {
 	chunkShader->setShaderValue(hChunkLoDscale,LoDscale);
 	chunkShader->setShaderValue(hChunkSamplePos, chunk.samplePos);
 	//chunkShader->setSamplesPerCube(terrain->sampleScale);
+
+	//sysLog << "\nLod " << chunk.LoD << " cubesize " << chunk.cubeSize;
 
 	float samplesPerCube = cubeSize / worldUnitsPerSampleUnit;
 	chunkShader->setShaderValue(hSamplesPerCube, samplesPerCube);
