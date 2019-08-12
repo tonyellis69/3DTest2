@@ -746,7 +746,7 @@ void C3DtestApp::terrain2TestDraw() {
 	mat4 chunkM;
 	float boxScale = 0.99f;
 
-	for (int shell = 0; shell < 2; shell++) {
+	for (int shell = 0; shell <1; shell++) {
 	//int shell = 0;
 		vec3 shellWorldspacePos = terrain2.shells[shell].worldSpacePos;
 		renderer.setShader(wire2Shader);
@@ -787,8 +787,8 @@ void C3DtestApp::terrain2TestDraw() {
 			wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
 			wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
-			//if (shell == 2 || shell == 2)
-			//	 renderer.drawBuf(wireCube, drawLinesStrip);
+			if (shell == 0 || shell == 0)
+				 renderer.drawBuf(wireCube, drawLinesStrip);
 
 			//draw chunks
 			//if (shell != 3 && shell !=2 )
@@ -1377,7 +1377,7 @@ void C3DtestApp::drawVisibleChunks() {
 		for (int chunkNo = 0; chunkNo < terrain2.chunks.size(); chunkNo++) {
 			Chunk2* chunk = &terrain2.chunks[chunkNo];
 			if (chunk->status != chSkinned)
-				break;
+				continue;
 			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatDiffuse, chunk->drawDetails.colour);
 			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatAmbient, chunk->drawDetails.colour);
 			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatSpecular, glm::vec4(0.0f, 0.0f, 0.0f, 1));

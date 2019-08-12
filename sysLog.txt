@@ -1,4 +1,4 @@
-*** Friday August 02, 2019  time: 20:05:13 ***
+*** Monday August 12, 2019  time: 17:40:18 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
@@ -7,19 +7,4 @@ Has NPOT
 glsl version: 4.60 NVIDIA
 BaseApp constructor finished. Yay!
 
-Stamina: 10 initiatingCombatMsg initiatingCombatMsg
-Robot combat fn: 0
-Robot combat fn: 0cleaning bot choosing combat action.
-chose to block.rectangular servobot choosing combat action.
-chose to block.
 Stamina: 10
-[player combats cleaning bot]
-Player rolls a 16
-plus weapon mod = 14
-blockTarget is player
-Target AC 15
-Robot combat fn: 1088
-Robot combat fn: 1088cleaning bot choosing combat action.
-chose to block.rectangular servobot choosing combat action.
-chose to bash.
-Stamina: 9

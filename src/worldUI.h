@@ -15,13 +15,14 @@
 struct TObjWindow {
 	CGUIrichTextPanel* win;
 	int objId;
+	float lifeTime;
 };
 
 class C3DtestApp;
 
 /** An interface between the player and a game world running on the 
 	Tig virtual machine. */
-class CWorldUI {
+class CWorldUI : public Icallback {
 public:
 	CWorldUI();
 	void setVM(CTigVM* vm);
@@ -38,7 +39,7 @@ public:
 	void handleRoomChange(int direction);
 	void openWindow(int winId, bool modal);
 	void openMenuWindow(int winId);
-	void spawnObjWindow(int objId, bool modal);
+	void spawnPopupWindow(int objId);
 	void purgeMainPanel(unsigned int id);
 	bool clearWindow(int window);
 	void clearMarkedText(int window);
@@ -56,6 +57,8 @@ public:
 	void objWindowRightClick(CGUIrichTextPanel* popUp);
 
 	void closeObjWindow(CGUIrichTextPanel * popUp);
+
+	void deletePopupWindow(int id);
 
 	
 	void setHottextColour(const glm::vec4& colour);
@@ -86,11 +89,15 @@ public:
 	void displayNarrativeChoice(int hotId);
 	void mouseWheelHotText(int hotID, int direction);
 
-	void updateObjWindows();
-
 	glm::i32vec2 randomWindowPos();
 
 	void processMessageQueue();
+
+	void GUIcallback(CGUIbase* sender, CMessage& msg);
+
+	void onHotTextMouseOver(int hotId);
+
+	void positionPopupWindow(CGUIrichTextPanel* popupWin);
 
 	//unsigned int textWindowID;
 	//CGUIrichText* textWindow;
@@ -123,7 +130,7 @@ private:
 	int moveToId; ///<Id of the moveTo message
 	int showPlayerOpsId; 
 
-	glm::i32vec2 currentMousePos;
+	glm::i32vec2 lastMouseOverPos;
 	glm::i32vec2 lastMenuCorner;
 
 	
@@ -134,8 +141,8 @@ private:
 	glm::vec4 hottextColour;
 	glm::vec4 hottextSelectedColour;
 
-	std::vector<TObjWindow> objWindows;
-
+	std::vector<TObjWindow> objWindows; //TO DO: deprecating, remove
+	std::vector<TObjWindow> popupWindows;
 
 	CFont mainFont;
 	CFont mainFontBold;
@@ -148,7 +155,11 @@ private:
 
 	std::queue<TvmAppMsg> messages; 
 
+	int currentMouseOverObj; ///<Most recent object a hot text function call was made on. -1 when mouse leaves hot text.
 };
+
+
+
 
 
 const int popMenuId = 5000;

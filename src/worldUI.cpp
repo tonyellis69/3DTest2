@@ -56,19 +56,16 @@ bool CWorldUI::writeText(std::string & text, int window) {
 	else if (window == menuWin) {
 		pMenuWindow->displayText(text);
 		pMenuWindow->resizeToFit();
-		//if (!pMenuWindow->visible)
-		liveLog << "\ntxt " << text << " h: " << pMenuWindow->getSize().y;
-		positionWindow(pMenuWindow, currentMousePos);
+		positionWindow(pMenuWindow, lastMouseOverPos);
 		
 	}
-	else { //obj window
-		for (auto objWin : objWindows) {
-			if (objWin.objId == window) {
-				objWin.win->displayText(text);
-				objWin.win->resizeToFit();
-				if (!objWin.win->visible)
-					objWin.win->setVisible(true);
-					//positionWindow(objWin.win, currentMousePos);
+	else { 
+		for (auto popupWin : popupWindows) {
+			if (popupWin.objId == window) {
+				popupWin.win->displayText(text);
+				popupWin.win->resizeToFit();
+				popupWin.win->setStatus(CGUIrichTextPanel::readyToPosition);
+				//TO DO: might want to wait for a vm message before commiting to readyToPosition, we'll see
 				return true;
 			}
 		}
@@ -80,21 +77,21 @@ bool CWorldUI::writeText(std::string & text, int window) {
 /**	Player has clicked on the identified hot text in the main window, so
 	execute the function call stored for it. */
 void CWorldUI::mainWindowClick(unsigned int hotId, glm::i32vec2 mousePos) {
-	currentMousePos = mousePos;
 	playerTurn(hotId);
 }
 
 /** Player has right-clicked on the main window, so get the game to pop-up
 	the handy menu. */
 void CWorldUI::mainWindowRightClick(glm::i32vec2 mousePos) {
-	currentMousePos = mousePos;
+	lastMouseOverPos = mousePos;
 	pVM->callMember(NULL, "shortcutMenu");
 }
 
 
 /** Handle a click on an inventory window item. */
+//TO DO: probably redundant, as we no longer click on inventory items but their popups
 void  CWorldUI::inventoryClick(unsigned int hotId, glm::i32vec2 mousePos) {
-	currentMousePos = mousePos;
+	lastMouseOverPos = mousePos;
 	playerTurn(hotId);
 }
 
@@ -119,8 +116,6 @@ void CWorldUI::playerTurn(unsigned int actionHotId) {
 		return; 
 
 	pVM->callMember(NULL, "gameTurn");
-
-	updateObjWindows();
 }
 
 /** Register change in current room. */
@@ -132,34 +127,35 @@ void CWorldUI::openWindow(int winId, bool modal) {
 	if (winId == menuWin)
 		openMenuWindow(winId);
 	else
-		spawnObjWindow(winId,modal);
+		spawnPopupWindow(winId);
 }
 
 void CWorldUI::openMenuWindow(int winId) {
 	pMenuWindow = spawnPopText(true);
 	pMenuWindow->setTextStyle("small");
 	pMenuWindow->setResizeMode(resizeByWidthMode);
-	pMenuWindow->setLocalPos(currentMousePos.x, currentMousePos.y );
+	pMenuWindow->setLocalPos(lastMouseOverPos.x, lastMouseOverPos.y );
 	pMenuWindow->id = popMenuId;
 }
 
-/** Creat an Object Window, and add it to the list of object windows. */
-void CWorldUI::spawnObjWindow(int objId,bool modal) {
-	for (auto objWindow : objWindows) {
-		if (objWindow.objId == objId)
+
+
+/** Create a pop-up window with the given id. */
+void CWorldUI::spawnPopupWindow(int objId) {
+	for (auto popWindow : popupWindows) {
+		if (popWindow.objId == objId)
 			return;
 	}
-	CGUIrichTextPanel* pop = spawnPopText(modal);
+	CGUIrichTextPanel* pop = spawnPopText(true);
 	pop->draggable = true;
 
-	//pop->setLocalPos(currentMousePos.x, currentMousePos.y);
-	glm::i32vec2 randomPos = randomWindowPos();
-	pop->setLocalPos(randomPos.x, randomPos.y);
-
+	pop->setLocalPos(lastMouseOverPos.x, lastMouseOverPos.y);
 	pop->resize(300, 200);
 	pop->setResizeMode(resizeByRatioMode);
 	pop->id = popObjWinId;
-	objWindows.push_back({ pop,objId });
+	pop->uniqueID = objId; //TO DO: should really be id, try to phase out the above
+	popupWindows.push_back({ pop,objId });
+
 }
 
 
@@ -174,19 +170,23 @@ bool CWorldUI::clearWindow(int window) {
 	if (window == mainWin) {
 		clearWindowHotIds(mainTextPanel);
 		mainTextPanel->clear();
+		return true;
 	}
-	else if (window == invWin) {	
+	if (window == invWin) {
 		clearWindowHotIds(invPanel);
 		invPanel->clear();
+		return true;
 	}
-	else {
-		for (auto objWin : objWindows)
-			if (objWin.objId == window) {
-				clearWindowHotIds(objWin.win);
-				objWin.win->clear();
-				return true;
-			}
-	}
+
+	for (auto popjWin : popupWindows)
+		if (popjWin.objId == window) {
+			clearWindowHotIds(popjWin.win);
+			popjWin.win->clear();
+			return true;
+		}
+
+
+	return false;
 }
 
 void CWorldUI::clearMarkedText(int window) {
@@ -225,7 +225,7 @@ void CWorldUI::positionWindow(CGUIrichTextPanel* popControl, const glm::i32vec2&
 
 /** Respond to the user selecting an item from the popup menu. */
 void CWorldUI::menuClick(unsigned int hotId, glm::i32vec2& mousePos, CGUIrichTextPanel* popUp) {
-	currentMousePos = mousePos;
+	lastMouseOverPos = mousePos;
 	playerTurn(hotId);
 	deletePopupMenu(popUp);
 }
@@ -239,7 +239,7 @@ void CWorldUI::deletePopupMenu(CGUIrichTextPanel* popUp) {
 
 /** Respond to user clicking on an object window.*/
 void CWorldUI::objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel * popUp) {
-	currentMousePos = mousePos;
+	lastMouseOverPos = mousePos;
 	playerTurn(hotId);
 	closeObjWindow(popUp);
 }
@@ -258,6 +258,18 @@ void CWorldUI::closeObjWindow(CGUIrichTextPanel * popUp) {
 		}
 	}
 	delete popUp;
+}
+
+
+void CWorldUI::deletePopupWindow(int id) { 
+	for (auto popupWin = popupWindows.begin(); popupWin != popupWindows.end(); popupWin++) {
+		if (popupWin->objId == id) {
+			clearWindowHotIds(popupWin->win);
+			delete popupWin->win;
+			popupWindows.erase(popupWin);
+			return;
+		}
+	}
 }
 
 
@@ -290,6 +302,7 @@ void CWorldUI::createMainWindow() {
 	mainTextPanel->richText->transcriptLog = &transcript;
 	mainTextPanel->deliveryMode = byCharacter;// byClause;
 	mainTextPanel->setLineFadeIn(false);
+	mainTextPanel->setGUIcallback(this);
 }
 
 void CWorldUI::createInventoryWindow() {
@@ -308,6 +321,7 @@ void CWorldUI::createInventoryWindow() {
 	invPanel->setTextStyle("smallHeader");
 	invPanel->displayText("Inventory:");
 	pApp->GUIroot.Add(invPanel);
+	invPanel->setGUIcallback(this);
 }
 
 
@@ -322,11 +336,12 @@ CGUIrichTextPanel* CWorldUI::spawnPopText(bool modal) {
 	popupPanel->setShortestSpaceBreak(50);
 	popupTextID = popupPanel->getRichTextID();
 	popupPanelID = popupPanel->getID();
+	popupPanel->setGUIcallback(this);
 	popupPanel->setVisible(false);
 	popupPanel->setTextStyles(&smallNormalTheme.styles);
-	if (modal)
-		pApp->GUIroot.addModal(popupPanel);
-	else
+	//if (modal)
+	//	pApp->GUIroot.addModal(popupPanel);
+	//else
 		pApp->GUIroot.Add(popupPanel);
 	return popupPanel;
 }
@@ -380,8 +395,23 @@ void CWorldUI::update(float dT) {
 	invPanel->update(dT);
 	if (pMenuWindow)
 		pMenuWindow->update(dT);
-	for (auto objWindow : objWindows)
-		objWindow.win->update(dT);
+
+	for (auto& popupWindow : popupWindows) {
+		if (popupWindow.win->status == CGUIrichTextPanel::displaying) {
+			popupWindow.lifeTime += dT;
+			if (popupWindow.lifeTime > 0.15f && popupWindow.win->noMouse() &&
+				currentMouseOverObj != popupWindow.objId) {
+				deletePopupWindow(popupWindow.objId);
+			}
+		}
+		if (popupWindow.win->status == CGUIrichTextPanel::readyToDelete) {
+			deletePopupWindow(popupWindow.objId);
+		}
+		if (popupWindow.win->status == CGUIrichTextPanel::readyToPosition) {
+			positionPopupWindow(popupWindow.win);
+			popupWindow.win->setVisible(true);
+		}
+	}
 
 }
 
@@ -444,15 +474,7 @@ void CWorldUI::mouseWheelHotText(int hotId, int direction) {
 	displayNarrativeChoice(hotId);
 }
 
-/** Ask the game code to provide up-to-date text for all open obj windows. This
-	updates visible robot descriptions with damage taken, activity, etc. */
-void CWorldUI::updateObjWindows() {
-	for (auto objWindow : objWindows) {
-		//ask game to examine this object
-		pVM->callMember(objWindow.objId, "examine");
 
-	}
-}
 
 /** Return a semi-random coordinate. */
 glm::i32vec2 CWorldUI::randomWindowPos() {
@@ -492,5 +514,56 @@ void CWorldUI::processMessageQueue() {
 		else
 			break;
 	}
+}
+
+/** First calling point for callbacks from GUI controls such as the rich text panels. */
+void CWorldUI::GUIcallback(CGUIbase* sender, CMessage& msg) {
+	
+	if (msg.Msg == uiMsgHotTextMouseOver) {
+		currentMouseOverObj = -1;
+		if (msg.value != -1) {
+			lastMouseOverPos = glm::i32vec2(msg.x,msg.y);
+			liveLog << "\nvalue " << msg.value;
+			onHotTextMouseOver(msg.value);
+		}
+	}
+
+	if (msg.Msg == uiMsgDelete && sender->id == popObjWinId) {
+		static_cast<CGUIrichTextPanel*>(sender)->setStatus(CGUIrichTextPanel::readyToDelete);
+	}
+
+}
+
+/** Respond to player mousing over hot text.*/
+void CWorldUI::onHotTextMouseOver(int hotId) {
+	TFnCall fnCall = pVM->getHotTextFnCall(hotId, currentVariant);
+	currentMouseOverObj = fnCall.objId;
+	for (auto& popWin : popupWindows) {
+		if (fnCall.objId == popWin.objId && popWin.win->status == CGUIrichTextPanel::displaying) {
+			popWin.lifeTime = 0;
+			return;
+		}
+		//for now, we close any other pop up window
+		//later this needs to be naunced: if a window is the sender of our mouseover (need a 2nd param)
+		//we don't close it
+		popWin.win->setStatus(CGUIrichTextPanel::readyToDelete);
+	}
+
+	pVM->callMember(fnCall.objId, fnCall.msgId, fnCall.params);
+}
+
+/** Position this popup window near to the mouse position when it was spawned, but adjusted
+	to keep it inside the screen. */
+void CWorldUI::positionPopupWindow(CGUIrichTextPanel* popupWin) {
+	glm::i32vec2 mousePos = lastMouseOverPos;
+	glm::i32vec2 newCornerPos = mousePos - glm::i32vec2(0, popupWin->getHeight());
+
+	if (newCornerPos.y < 1)
+		newCornerPos.y = mousePos.y + popupWin->getFont()->lineHeight;
+	if (newCornerPos.x + popupWin->getWidth() > popupWin->parent->getWidth())
+		newCornerPos.x = mousePos.x - popupWin->getWidth();
+	popupWin->setLocalPos(newCornerPos.x, newCornerPos.y);
+
+	popupWin->setStatus(CGUIrichTextPanel::displaying);
 }
 
