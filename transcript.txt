@@ -1,17 +1,21 @@
-A short first line. 
-This is a longer second line, about three times as long at least, definitely. 
-Another short line. 
-And another long line, are we seeing any kind of pattern yet in all of this?
 
-That was a line gap, did it make a difference?
-
-
-And that was a double line gap. 
-Now here is a section of text that is going to run on for some lines, on and on and on in the interest of seeing what difference that makes. Of the trail of ink there is no end, as the man said. How many lines is this, I wonder. Enough to make a difference? We shall see. 
-
-Another line gap. Done. 
 
 Bare room
 This is a plain, unremarkable room. Exits lead south and southwest. 
 
-This is line 1
+You go south
+
+Test room south
+This is a test room. The way back leads north. 
+
+A rectangular servobot is stalking about here. 
+
+
+The rectangular servobot rushes to attack you! 
+
+You swing at the rectangular servobot with your adjustable wrench
+
+Test room south
+This is a test room. The way back leads north. 
+
+A rectangular servobot is attacking you! 

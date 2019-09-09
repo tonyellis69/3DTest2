@@ -1,6 +1,9 @@
 #include "worldUI.h"
 #include "worldUI.h"
 #include "worldUI.h"
+#include "worldUI.h"
+#include "worldUI.h"
+#include "worldUI.h"
 
 #include <ctype.h>
 
@@ -27,10 +30,12 @@ void CWorldUI::init() {
 
 	pVM->execute(); //for any global variables or code
 	playerId = pVM->getGlobalVar("playerObj").getObjId();
-	clickId = pVM->getMemberId("click");
+	mouseoverId = pVM->getMemberId("mouseOver");
 	examId = pVM->getMemberId("examine");
-	moveToId = pVM->getMemberId("moveTo");
+	attemptMoveId = pVM->getMemberId("attemptMove");
 	showPlayerOpsId = pVM->getMemberId("showPlayerOptions");
+	gameStateId = pVM->getGlobalVar("gameStateObj").getObjId();
+	tidyModeMask = pVM->getFlagBitmask("tidyMode");
 
 	createMainWindow();
 	createInventoryWindow();
@@ -95,24 +100,45 @@ void  CWorldUI::inventoryClick(unsigned int hotId, glm::i32vec2 mousePos) {
 	playerTurn(hotId);
 }
 
+int tmpCount = 0;
+
 /**	Carry out one complete turn of the game. This consists of anything that happens
 	immediately before the player's action, the player's action itself (and any
 	reactions), and then any game activity. */
 void CWorldUI::playerTurn(unsigned int actionHotId) {
 	TFnCall fnCall = pVM->getHotTextFnCall(actionHotId, currentVariant);
-	if (fnCall.msgId != showPlayerOpsId && fnCall.msgId != clickId)
-		mainTextPanel->removeMarked();
+
+	tmpCount++;
+
+	//if (fnCall.msgId != showPlayerOpsId && fnCall.msgId != mouseoverId)
+	//	mainTextPanel->removeMarked();
+	
+	
 	mainTextPanel->unhotDuplicates();
 
-	//mainTextPanel->solidifyTempText();
-	queueMsg(TvmAppMsg{ appSolidifyTmpText });
+	//do we want to refresh the room description?
+	if (pVM->hasFlag(gameStateId, tidyModeMask)) {
+		queueMsg(TvmAppMsg{ appClearToBookmark });
+
+		queueMsg(TvmAppMsg{ appSetLineFadein,"",1 });
+		pVM->callMember(NULL, "globalLook");
+		//queueMsg(TvmAppMsg{ appSetLineFadein,"",0 });
+
+		queueMsg(TvmAppMsg{ appFinishDisplay});
+		//displayNarrativeChoice(string("\nChoice text goes here... "));
+	}
+
+
+	//queueMsg(TvmAppMsg{ appSolidifyTmpText }); 
+	//this prevents the choice text being cleared when the uses mouses off their choice
 
 	//TO DO: push a copy of fnCall to an array to record player activity for playback
-
+	if (tmpCount == 2)
+		return;
 	pVM->callMember(fnCall.objId, fnCall.msgId,fnCall.params);
 
 	//instantaneous actions don't end the player's turn
-	if (fnCall.msgId == clickId || fnCall.msgId == examId || fnCall.msgId == showPlayerOpsId )
+	if (fnCall.msgId == mouseoverId || fnCall.msgId == examId || fnCall.msgId == showPlayerOpsId )
 		return; 
 
 	pVM->callMember(NULL, "gameTurn");
@@ -154,7 +180,8 @@ void CWorldUI::spawnPopupWindow(int objId) {
 	pop->setResizeMode(resizeByRatioMode);
 	pop->id = popObjWinId;
 	pop->uniqueID = objId; //TO DO: should really be id, try to phase out the above
-	popupWindows.push_back({ pop,objId });
+	pop->setObjId(objId);
+	popupWindows.push_back({ pop,objId,0 });
 
 }
 
@@ -237,27 +264,14 @@ void CWorldUI::deletePopupMenu(CGUIrichTextPanel* popUp) {
 	delete popUp;
 }
 
-/** Respond to user clicking on an object window.*/
-void CWorldUI::objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel * popUp) {
+/** Respond to user clicking on a popup window.*/
+void CWorldUI::popupWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel* popUp) {
 	lastMouseOverPos = mousePos;
 	playerTurn(hotId);
-	closeObjWindow(popUp);
-}
+	//closeObjWindow(popUp);
 
+	deletePopupWindow(popUp->getObjId());
 
-void CWorldUI::objWindowRightClick(CGUIrichTextPanel* popUp){
-
-}
-
-void CWorldUI::closeObjWindow(CGUIrichTextPanel * popUp) {
-	clearWindowHotIds(popUp);
-	for (unsigned int x = 0; x < objWindows.size(); x++) {
-		if (objWindows[x].win == popUp) {
-			objWindows.erase(objWindows.begin() + x);
-			break;
-		}
-	}
-	delete popUp;
 }
 
 
@@ -384,8 +398,8 @@ void CWorldUI::reset() {
 
 /** Turn temporary text mode on or off. */
 //TO DO: this should work for any window, not just main. 
-void CWorldUI::tempText(bool onOff, int winId) {
-	mainTextPanel->setTempText(onOff);
+bool CWorldUI::tempText(bool onOff, int winId) {
+	return	mainTextPanel->setTempText(onOff);
 }
 
 void CWorldUI::update(float dT) {
@@ -399,14 +413,19 @@ void CWorldUI::update(float dT) {
 	for (auto& popupWindow : popupWindows) {
 		if (popupWindow.win->status == CGUIrichTextPanel::displaying) {
 			popupWindow.lifeTime += dT;
+
 			if (popupWindow.lifeTime > 0.15f && popupWindow.win->noMouse() &&
-				currentMouseOverObj != popupWindow.objId) {
+				popupWindow.objId != pVM->getHotTextFnCallObj(currentHotId) ) {
 				deletePopupWindow(popupWindow.objId);
 			}
+			continue;
 		}
+
 		if (popupWindow.win->status == CGUIrichTextPanel::readyToDelete) {
 			deletePopupWindow(popupWindow.objId);
+			continue;
 		}
+
 		if (popupWindow.win->status == CGUIrichTextPanel::readyToPosition) {
 			positionPopupWindow(popupWindow.win);
 			popupWindow.win->setVisible(true);
@@ -426,39 +445,85 @@ void CWorldUI::pause(bool isOn) {
 	}
 }
 
-/** The player has moused over new hot text, so display the associated text. */
-void CWorldUI::mouseOverHotText( int hotId) {
+/** The player has moused off or onto hot text. */
+void CWorldUI::onHotTextChange( int newHotId) {
 	currentVariant = 0;
-	mainTextPanel->collapseTempText();
-	if (hotId < 1)
+	currentHotId = newHotId;
+
+	//if user has moused off of hot text
+	if (currentHotId == noHotText) {
+		queueMsg(TvmAppMsg{ appCollapseTmpTxt });
 		return;
-	displayNarrativeChoice(hotId);
+	}
+
+	TFnCall fnCall = pVM->getHotTextFnCall(newHotId, currentVariant);
+	//does this hot text fn call require a popup window?
+	if (fnCall.msgId == mouseoverId) {
+		popupRequest(fnCall);
+		return;
+	}
+
+	//if not, it's a player choice
+	queueMsg(TvmAppMsg{ appCollapseTmpTxt });
+	handleChoiceText(currentHotId);
 }
 
-void CWorldUI::displayNarrativeChoice(int hotId) {
+void CWorldUI::handleChoiceText(int hotId) {
+	string choiceTxt;
 	TFnCall fnCall = pVM->getHotTextFnCall(hotId, currentVariant);
 	if (!fnCall.params.empty()) {
 		CTigVar finalParam = fnCall.params.back();
 		if (finalParam.type == tigString) {
-			mainTextPanel->setTempText(true);
-			mainTextPanel->setTextStyle("fadeOn");
-			mainTextPanel->deliveryMode = noDelivery;
-			string narrativeChoice = finalParam.getStringValue();
-			for (int x = 0; x < narrativeChoice.size(); x++) { //catch any hot text and suspend it
-				if (narrativeChoice[x] == '\\' && narrativeChoice[x + 1] == 'h')
-					narrativeChoice[x + 1] = 'S';
+			choiceTxt = finalParam.getStringValue();
+			for (int x = 0; x < choiceTxt.size(); x++) { //catch any hot text and suspend it
+				if (choiceTxt[x] == '\\' && choiceTxt[x + 1] == 'h')
+					choiceTxt[x + 1] = 'S';
 			}
-			mainTextPanel->setTextStyle("choice");
-			
-			mainTextPanel->displayText("\n\n" + narrativeChoice);
-			mainTextPanel->deliveryMode = byCharacter;//byClause;
-			mainTextPanel->setTextStyle("fadeOff");
-			mainTextPanel->setTempText(false);
-			mainTextPanel->setTextStyle("mainBody");
+			//if (pVM->hasFlag(gameStateId, tidyModeMask)) {
+				//queueMsg(TvmAppMsg{ appSetStyle,"markOn" });;
+			//}
+		//	queueMsg(TvmAppMsg{ appDisplayNarrativeChoice,choiceTxt });
+			displayNarrativeChoice(choiceTxt);
 		}
 	}
-
+	
 }
+
+/** Display the choice text associated with this hotId. */
+bool CWorldUI::displayNarrativeChoice(std::string& choiceText) {
+	/*if (mainTextPanel->busy()) {
+		liveLog << "\nToo busy for choice text!";
+		return false;
+	}*/
+
+//	mainTextPanel->setTempText(true);
+	queueMsg(TvmAppMsg{ appTempTxt,"",1,(int)mainTextWindowID });
+	//mainTextPanel->setTextStyle("fadeOn");
+	queueMsg(TvmAppMsg{ appSetStyle,"fadeOn" });;
+
+	mainTextPanel->deliveryMode = noDelivery;
+
+	//mainTextPanel->setTextStyle("choice");
+	queueMsg(TvmAppMsg{ appSetStyle,"choice" });
+
+	//mainTextPanel->displayText("\n\n" + choiceText);
+	queueMsg(TvmAppMsg{ appWriteText,"\n\n" + choiceText });
+
+	mainTextPanel->deliveryMode = byCharacter;//byClause;
+	
+	//mainTextPanel->setTextStyle("fadeOff");
+	queueMsg(TvmAppMsg{ appSetStyle,"fadeOff" });
+
+	//mainTextPanel->setTempText(false);
+	queueMsg(TvmAppMsg{ appTempTxt,"",0,(int)mainTextWindowID });
+
+	//mainTextPanel->setTextStyle("mainBody");
+	queueMsg(TvmAppMsg{ appSetStyle,"mainBody" });
+
+	return true;
+}
+
+
 
 /** Player is mousewheeling over hot text. Cycle through the variants if they exist. */
 void CWorldUI::mouseWheelHotText(int hotId, int direction) {
@@ -470,8 +535,10 @@ void CWorldUI::mouseWheelHotText(int hotId, int direction) {
 		currentVariant = 0;
 	if (currentVariant < 0)
 			currentVariant = fnCallrec.options.size() - 1;
-	mainTextPanel->collapseTempText();
-	displayNarrativeChoice(hotId);
+	//mainTextPanel->collapseTempText();
+	//displayNarrativeChoice(hotId);
+	queueMsg(TvmAppMsg{ appCollapseTmpTxt });
+	handleChoiceText(currentHotId);
 }
 
 
@@ -489,6 +556,14 @@ glm::i32vec2 CWorldUI::randomWindowPos() {
 }
 
 /** Handle whatever instructions are currently on the queue. */
+//NB The point of queuing was supposed to be for the benefit of the VM, to ensure it wasn't sending
+//instructions out into the world that couldn't yet be handled. If the queue is told an instruction 
+//couldn't be received it keeps sending it, while safely queuing any later VM instructions behind it.
+//But what about GUI messages such as the user mousing over or clicking on hot text? If they happen 
+//when the system is busy they should just be thrown away, I don't want them to pile up. By themselves
+//they don't require any third party to be ready for them. However, any instructions they give 
+//eg to rich text panels probably should be queued.
+//Try this out with mouseover, then clickon.
 void CWorldUI::processMessageQueue() {
 	bool result = true;
 	while (!messages.empty()) {
@@ -501,12 +576,19 @@ void CWorldUI::processMessageQueue() {
 			case appOpenWin: openWindow(msg.integer, false); break;
 			case appOpenWinModal: openWindow(msg.integer, true); break;
 			case appMsg: vmMessage(msg.integer, msg.integer2); break;
-			case appTempTxt: tempText((bool)msg.integer, msg.integer2); break;
+			case appTempTxt: result = tempText((bool)msg.integer, msg.integer2); break;
 			case appPause: pause(true); break;
 			case appUnpause: pause(false); break;
 			case appClearMarked: clearMarkedText(msg.integer); break;
-			case appMouseoverHotTxt: mouseOverHotText(msg.integer); break;
-			case appSolidifyTmpText : result = mainTextPanel->solidifyTempText();
+			//case appHotTxtChange: onHotTextChange(msg.integer); break;
+			case appSolidifyTmpText: result = mainTextPanel->solidifyTempText(); break;
+			case appCollapseTmpTxt: result = mainTextPanel->collapseTempText(); break;
+			case appDisplayNarrativeChoice: result = displayNarrativeChoice(msg.text); break;
+			case appSetStyle: result = mainTextPanel->setTextStyle(msg.text); break;
+			case appClearToBookmark: result = mainTextPanel->clearToBookMark(); break;
+			case appSetLineFadein: result = mainTextPanel->setLineFadeIn((bool)msg.integer); break;
+			case appFinishDisplay: result = mainTextPanel->isDisplayFinished(); break;
+
 		}
 
 		if (result)
@@ -518,26 +600,35 @@ void CWorldUI::processMessageQueue() {
 
 /** First calling point for callbacks from GUI controls such as the rich text panels. */
 void CWorldUI::GUIcallback(CGUIbase* sender, CMessage& msg) {
-	
-	if (msg.Msg == uiMsgHotTextMouseOver) {
-		currentMouseOverObj = -1;
-		if (msg.value != -1) {
-			lastMouseOverPos = glm::i32vec2(msg.x,msg.y);
-			liveLog << "\nvalue " << msg.value;
-			onHotTextMouseOver(msg.value);
-		}
+	if (msg.Msg == uiMsgHotTextChange) {
+		lastMouseOverPos = glm::i32vec2(msg.x,msg.y);
+		//queueMsg(TvmAppMsg{ appHotTxtChange,"",msg.value,0,glm::i32vec2(msg.x,msg.y) });
+		onHotTextChange(msg.value);
 	}
 
 	if (msg.Msg == uiMsgDelete && sender->id == popObjWinId) {
 		static_cast<CGUIrichTextPanel*>(sender)->setStatus(CGUIrichTextPanel::readyToDelete);
 	}
 
+	if (msg.Msg == uiMsgHotTextClick) {
+		if (sender->getID() == mainTextWindowID)
+			mainWindowClick(msg.value, glm::i32vec2(msg.x, msg.y));
+		else if (sender->id == popObjWinId)
+			//objWindowClick(msg.value, glm::i32vec2(msg.x,msg.y), (CGUIrichTextPanel*)sender);
+			popupWindowClick(msg.value, glm::i32vec2(msg.x, msg.y), (CGUIrichTextPanel*)sender);
+		//TO DO clone to popupWindowClick 
+		else if (sender->id == popMenuId)
+			menuClick(msg.value, glm::i32vec2(msg.x, msg.y), (CGUIrichTextPanel*)sender);
+	}
+
+
+	if (msg.Msg == uiMsgRMouseUp && sender->getID() == mainTextWindowID) {
+		mainWindowRightClick(glm::i32vec2(msg.x, msg.y));
+	}
 }
 
-/** Respond to player mousing over hot text.*/
-void CWorldUI::onHotTextMouseOver(int hotId) {
-	TFnCall fnCall = pVM->getHotTextFnCall(hotId, currentVariant);
-	currentMouseOverObj = fnCall.objId;
+/** Respond to player mousing over popup hot text.*/
+void CWorldUI::popupRequest(TFnCall& fnCall) {
 	for (auto& popWin : popupWindows) {
 		if (fnCall.objId == popWin.objId && popWin.win->status == CGUIrichTextPanel::displaying) {
 			popWin.lifeTime = 0;
@@ -565,5 +656,12 @@ void CWorldUI::positionPopupWindow(CGUIrichTextPanel* popupWin) {
 	popupWin->setLocalPos(newCornerPos.x, newCornerPos.y);
 
 	popupWin->setStatus(CGUIrichTextPanel::displaying);
+}
+
+
+void CWorldUI::flushMessageQueue() {
+	while (!messages.empty()) {
+		processMessageQueue();
+	}
 }
 

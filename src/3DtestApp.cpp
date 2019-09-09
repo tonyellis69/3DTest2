@@ -741,12 +741,12 @@ void C3DtestApp::draw() {
 }
 
 void C3DtestApp::terrain2TestDraw() {
-	//return;
+	return;
 	//draw shell wireframes
 	mat4 chunkM;
 	float boxScale = 0.99f;
 
-	for (int shell = 0; shell <1; shell++) {
+	for (int shell = 0; shell <2; shell++) {
 	//int shell = 0;
 		vec3 shellWorldspacePos = terrain2.shells[shell].worldSpacePos;
 		renderer.setShader(wire2Shader);
@@ -787,7 +787,7 @@ void C3DtestApp::terrain2TestDraw() {
 			wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
 			wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
-			if (shell == 0 || shell == 0)
+			if (shell == 0 || shell == 1)
 				 renderer.drawBuf(wireCube, drawLinesStrip);
 
 			//draw chunks
@@ -804,7 +804,7 @@ void C3DtestApp::terrain2TestDraw() {
 				wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * chunkM * chunkShape;
 				wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 				wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
-				renderer.drawBuf(wireCube, drawLinesStrip);
+				//renderer.drawBuf(wireCube, drawLinesStrip);
 			}
 
 		}
@@ -1135,6 +1135,11 @@ void C3DtestApp::updateHeightmapImage() {
 //TO DO: make msg a reference to save on big string copies!!!!!!!
 /** Handle messages from the virtual machine. */
 void C3DtestApp::vmMessage(TvmAppMsg msg) {
+	if (msg.type == appFlush) {
+		worldUI.flushMessageQueue();
+		return;
+	}
+
 	worldUI.queueMsg(msg);
 }
 
@@ -1159,22 +1164,6 @@ void C3DtestApp::vmUpdate() {
 
 void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
-	if (control.parent->getID() == worldUI.mainTextWindowID) {
-		glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
-		if (Message.Msg == uiMsgHotTextClick) {
-			worldUI.mainWindowClick(Message.value, mousePos);
-			return;
-		}
-		if (Message.Msg == uiMsgRMouseUp) {
-			worldUI.mainWindowRightClick(mousePos);
-			return;
-		}
-
-		if (Message.Msg == uiMsgMouseMove) { 
-			worldUI.queueMsg(TvmAppMsg{ appMouseoverHotTxt,"",Message.value });
-			return;
-		}
-	}
 
 	if (control.parent->getID() == worldUI.invPanelID && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
@@ -1196,7 +1185,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	}
 
 	if (control.parent->id == popMenuId && Message.Msg == uiMsgMouseMove) {
-		worldUI.queueMsg(TvmAppMsg{ appMouseoverHotTxt,"",Message.value });;
+		worldUI.queueMsg(TvmAppMsg{ appHotTxtChange,"",Message.value });;
 		return;
 	}
 
@@ -1207,31 +1196,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	}
 
 
-	//object window click
-	if (control.parent->id == popObjWinId) {
-		if (Message.Msg == uiMsgHotTextClick) {
-			glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
-			worldUI.objWindowClick(Message.value, mousePos, (CGUIrichTextPanel*)control.parent);
-			return;
-		}
-		if (Message.Msg == uiMsgMouseMove) {
-			worldUI.queueMsg(TvmAppMsg{ appMouseoverHotTxt,"",Message.value });
-			return;
-		}
 
-		if (Message.Msg == uiMsgRMouseUp) {
-			worldUI.closeObjWindow((CGUIrichTextPanel*)control.parent); 
-			return;
-		}
-
-
-		//NB will only work if modal
-		if (Message.Msg == uiClickOutside) {
-			glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
-			worldUI.closeObjWindow((CGUIrichTextPanel*)control.parent);
-			return;
-		}
-	}
 }
 
 /** Returns true if terrain *does not* intersect the given cube - ie, SC is empty. */
@@ -1350,8 +1315,14 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 	//totalTris += (primitives * 3);
 }
 
+
+void C3DtestApp::deleteChunkMesh(Chunk2& chunk) {
+	CBaseBuf* terrainBuf = &multiBuf;
+	terrainBuf->deleteBlock(chunk.id);
+}
+
 void C3DtestApp::drawVisibleChunks() {
-	mat4 mvp = Engine.Renderer.currentCamera->clipMatrix;// *terrain.chunkOrigin;
+	mat4 mvp = Engine.Renderer.currentCamera->clipMatrix * terrain2.chunkOrigin;
 
 	//draw chunks
 	Engine.Renderer.setShader(Engine.Renderer.phongShader);

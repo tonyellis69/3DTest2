@@ -67,6 +67,8 @@ public:
 
 	void createChunkMesh(Chunk2& chunk);
 
+	void deleteChunkMesh(Chunk2& chunk);
+
 	void drawVisibleChunks();
 
 	void createRegion();

@@ -52,11 +52,7 @@ public:
 
 	void deletePopupMenu(CGUIrichTextPanel* popUp);
 
-
-	void objWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel * popUp);
-	void objWindowRightClick(CGUIrichTextPanel* popUp);
-
-	void closeObjWindow(CGUIrichTextPanel * popUp);
+	void popupWindowClick(unsigned int hotId, glm::i32vec2 mousePos, CGUIrichTextPanel* popUp);
 
 	void deletePopupWindow(int id);
 
@@ -79,14 +75,15 @@ public:
 	
 	void reset();
 
-	void tempText(bool onOff, int winId);
+	bool tempText(bool onOff, int winId);
 
 	void update(float dT);
 
 	void pause(bool isOn);
 
-	void mouseOverHotText(int hotId);
-	void displayNarrativeChoice(int hotId);
+	void onHotTextChange(int hotId);
+	void handleChoiceText(int hotId);
+	bool displayNarrativeChoice(std::string& choiceText);
 	void mouseWheelHotText(int hotID, int direction);
 
 	glm::i32vec2 randomWindowPos();
@@ -95,9 +92,11 @@ public:
 
 	void GUIcallback(CGUIbase* sender, CMessage& msg);
 
-	void onHotTextMouseOver(int hotId);
+	void popupRequest(TFnCall& fnCall);
 
 	void positionPopupWindow(CGUIrichTextPanel* popupWin);
+
+	void flushMessageQueue();
 
 	//unsigned int textWindowID;
 	//CGUIrichText* textWindow;
@@ -125,10 +124,12 @@ private:
 	CFont* popBodyFont;
 
 	int playerId; ///<Id of the player object.
-	int clickId; ///<Id of the click message.
+	int mouseoverId; ///<Id of the VM mouseover message.
 	int examId; ///<Id of the examine message
-	int moveToId; ///<Id of the moveTo message
+	int attemptMoveId; ///<Id of the moveTo message
 	int showPlayerOpsId; 
+	int gameStateId; ///<Id of the gameState object.
+	int tidyModeMask;///<bitmask for tidyMode flag.
 
 	glm::i32vec2 lastMouseOverPos;
 	glm::i32vec2 lastMenuCorner;
@@ -141,7 +142,6 @@ private:
 	glm::vec4 hottextColour;
 	glm::vec4 hottextSelectedColour;
 
-	std::vector<TObjWindow> objWindows; //TO DO: deprecating, remove
 	std::vector<TObjWindow> popupWindows;
 
 	CFont mainFont;
@@ -155,12 +155,14 @@ private:
 
 	std::queue<TvmAppMsg> messages; 
 
-	int currentMouseOverObj; ///<Most recent object a hot text function call was made on. -1 when mouse leaves hot text.
+	int currentHotId;
+
+
 };
 
 
 
-
+const int noHotText = -1;
 
 const int popMenuId = 5000;
 const int popObjWinId = 5001;
