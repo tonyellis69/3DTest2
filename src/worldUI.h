@@ -157,7 +157,7 @@ private:
 
 	int currentHotId;
 
-
+	string choiceTxt; ///<Most recent choice text, available for reuse.
 };
 
 

@@ -5,17 +5,22 @@ This is a plain, unremarkable room. Exits lead south and southwest.
 
 You go south
 
+You go south
+
 Test room south
 This is a test room. The way back leads north. 
 
 A rectangular servobot is stalking about here. 
 
-
 The rectangular servobot rushes to attack you! 
 
-You swing at the rectangular servobot with your adjustable wrench
+You swing at the rectangular servobot with your adjustable wrench 
 
 Test room south
 This is a test room. The way back leads north. 
 
 A rectangular servobot is attacking you! 
+
+You swing at the rectangular servobot with your adjustable wrench damage 10 defence 8...the blow connects with the rectangular servobot, causing 2 points of damage. 
+
+The rectangular servobot swings at you for 3 points! 

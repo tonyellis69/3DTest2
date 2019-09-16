@@ -100,7 +100,6 @@ void  CWorldUI::inventoryClick(unsigned int hotId, glm::i32vec2 mousePos) {
 	playerTurn(hotId);
 }
 
-int tmpCount = 0;
 
 /**	Carry out one complete turn of the game. This consists of anything that happens
 	immediately before the player's action, the player's action itself (and any
@@ -108,7 +107,6 @@ int tmpCount = 0;
 void CWorldUI::playerTurn(unsigned int actionHotId) {
 	TFnCall fnCall = pVM->getHotTextFnCall(actionHotId, currentVariant);
 
-	tmpCount++;
 
 	//if (fnCall.msgId != showPlayerOpsId && fnCall.msgId != mouseoverId)
 	//	mainTextPanel->removeMarked();
@@ -122,19 +120,21 @@ void CWorldUI::playerTurn(unsigned int actionHotId) {
 
 		queueMsg(TvmAppMsg{ appSetLineFadein,"",1 });
 		pVM->callMember(NULL, "globalLook");
-		//queueMsg(TvmAppMsg{ appSetLineFadein,"",0 });
+
 
 		queueMsg(TvmAppMsg{ appFinishDisplay});
+		queueMsg(TvmAppMsg{ appSetLineFadein,"",0 });
 		//displayNarrativeChoice(string("\nChoice text goes here... "));
+		//handleChoiceText(actionHotId);
+		queueMsg(TvmAppMsg{ appWriteText,"\n" + choiceTxt });
 	}
 
 
-	//queueMsg(TvmAppMsg{ appSolidifyTmpText }); 
+	queueMsg(TvmAppMsg{ appSolidifyTmpText }); 
 	//this prevents the choice text being cleared when the uses mouses off their choice
 
 	//TO DO: push a copy of fnCall to an array to record player activity for playback
-	if (tmpCount == 2)
-		return;
+
 	pVM->callMember(fnCall.objId, fnCall.msgId,fnCall.params);
 
 	//instantaneous actions don't end the player's turn
@@ -411,6 +411,8 @@ void CWorldUI::update(float dT) {
 		pMenuWindow->update(dT);
 
 	for (auto& popupWindow : popupWindows) {
+		popupWindow.win->update(dT); //CHECK: may want to do this only when displaying. 
+
 		if (popupWindow.win->status == CGUIrichTextPanel::displaying) {
 			popupWindow.lifeTime += dT;
 
@@ -469,7 +471,7 @@ void CWorldUI::onHotTextChange( int newHotId) {
 }
 
 void CWorldUI::handleChoiceText(int hotId) {
-	string choiceTxt;
+	//string choiceTxt;
 	TFnCall fnCall = pVM->getHotTextFnCall(hotId, currentVariant);
 	if (!fnCall.params.empty()) {
 		CTigVar finalParam = fnCall.params.back();
