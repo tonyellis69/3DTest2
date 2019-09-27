@@ -1,4 +1,4 @@
-*** Monday September 16, 2019  time: 16:40:06 ***
+*** Friday September 27, 2019  time: 13:25:24 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
@@ -7,6 +7,4 @@ Has NPOT
 glsl version: 4.60 NVIDIA
 BaseApp constructor finished. Yay!
 
-Stamina: 10
-Stamina: 10
 Stamina: 10

@@ -113,6 +113,9 @@
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp" />
     <ClCompile Include="src\gameTerrain.cpp" />
+    <ClCompile Include="src\GUIdistributor.cpp" />
+    <ClCompile Include="src\GUIgamePanel.cpp" />
+    <ClCompile Include="src\GUIrichTextPanel.cpp" />
     <ClCompile Include="src\localHotList.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\worldUI.cpp" />
@@ -120,6 +123,9 @@
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h" />
     <ClInclude Include="src\gameTerrain.h" />
+    <ClInclude Include="src\GUIdistributor.h" />
+    <ClInclude Include="src\GUIgamePanel.h" />
+    <ClInclude Include="src\GUIrichTextPanel.h" />
     <ClInclude Include="src\localHotList.h" />
   </ItemGroup>
   <ItemGroup>

@@ -7,9 +7,10 @@
 #include "vmApp.h"
 #include "UI\GUIrichText.h"
 //#include "UI\GUIpopMenu.h"
-#include "UI\GUIrichTextPanel.h"
+#include "GUIrichTextPanel.h"
 #include "localHotList.h"
-
+#include "GUIgamePanel.h"
+#include "GUIdistributor.h"
 
  
 struct TObjWindow {
@@ -69,6 +70,8 @@ public:
 
 	CGUIrichTextPanel * spawnPopText(bool modal);
 
+	CGUIrichTextPanel* createDistributor();
+
 	void createTextStyles();
 
 	void hide(bool onOff);
@@ -98,6 +101,9 @@ public:
 
 	void flushMessageQueue();
 
+	void setDistributorObj(int offence, int defence);
+	void updateDistributorGUI();
+
 	//unsigned int textWindowID;
 	//CGUIrichText* textWindow;
 	CGUIrichTextPanel* mainTextPanel;
@@ -110,6 +116,9 @@ public:
 	CGUIrichTextPanel* popupPanel;
 	unsigned int popupPanelID;
 	unsigned int popupTextID;
+
+	CGUIdistributor* distributor;
+	unsigned int distributorID;
 
 	TtextTheme normalTheme; ///<Groups normal styles for rich text.
 	TtextTheme smallNormalTheme; ///<Groups normal styles for rich text, smaller font size.

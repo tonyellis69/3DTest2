@@ -17,7 +17,7 @@
 
 #include "UI\GUIrichText.h"
 //#include "UI\GUIpopMenu.h"
-#include "UI\GUIrichTextPanel.h"
+///////////////#include "UI\GUIrichTextPanel.h"
 
 #include "poisson.h"
 
@@ -27,6 +27,8 @@
 #include "texGen\texGenUI.h"
 
 #include "utils/log.h"
+
+#include "physics/terrainPhysObj2.h"
 
 extern CSuperChunk* dbgSC;
 
@@ -191,6 +193,7 @@ public:
 
 	CMultiBuf multiBuf; 
 	//TO DO: temp! Think where this should go, app or CTerrain
+
 	
 };
 

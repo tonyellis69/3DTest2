@@ -4,6 +4,8 @@
 #include "worldUI.h"
 #include "worldUI.h"
 #include "worldUI.h"
+#include "worldUI.h"
+#include "worldUI.h"
 
 #include <ctype.h>
 
@@ -41,6 +43,9 @@ void CWorldUI::init() {
 	createInventoryWindow();
 	pMenuWindow = NULL; //TO DO: should probably create and make invisible to be consistent
 	currentVariant = 0;
+
+	createDistributor();
+	updateDistributorGUI();
 }
 
 
@@ -107,10 +112,9 @@ void  CWorldUI::inventoryClick(unsigned int hotId, glm::i32vec2 mousePos) {
 void CWorldUI::playerTurn(unsigned int actionHotId) {
 	TFnCall fnCall = pVM->getHotTextFnCall(actionHotId, currentVariant);
 
+	if (fnCall.msgId == mouseoverId) //plauyer clicked on hot text that supplies pop-ups only
+		return;
 
-	//if (fnCall.msgId != showPlayerOpsId && fnCall.msgId != mouseoverId)
-	//	mainTextPanel->removeMarked();
-	
 	
 	mainTextPanel->unhotDuplicates();
 
@@ -121,11 +125,9 @@ void CWorldUI::playerTurn(unsigned int actionHotId) {
 		queueMsg(TvmAppMsg{ appSetLineFadein,"",1 });
 		pVM->callMember(NULL, "globalLook");
 
-
 		queueMsg(TvmAppMsg{ appFinishDisplay});
 		queueMsg(TvmAppMsg{ appSetLineFadein,"",0 });
-		//displayNarrativeChoice(string("\nChoice text goes here... "));
-		//handleChoiceText(actionHotId);
+
 		queueMsg(TvmAppMsg{ appWriteText,"\n" + choiceTxt });
 	}
 
@@ -138,10 +140,12 @@ void CWorldUI::playerTurn(unsigned int actionHotId) {
 	pVM->callMember(fnCall.objId, fnCall.msgId,fnCall.params);
 
 	//instantaneous actions don't end the player's turn
-	if (fnCall.msgId == mouseoverId || fnCall.msgId == examId || fnCall.msgId == showPlayerOpsId )
+	if (fnCall.msgId == showPlayerOpsId )
 		return; 
 
 	pVM->callMember(NULL, "gameTurn");
+
+	updateDistributorGUI();
 }
 
 /** Register change in current room. */
@@ -305,10 +309,10 @@ void CWorldUI::createMainWindow() {
 	
 	mainTextPanel->setBorderOn(true);
 	mainTextPanel->hFormat = hCentre;
-	mainTextPanel->setInset(10);
+	mainTextPanel->setRichtextInset(10);
 	mainTextPanel->setTextColour(UIwhite);
 	mainTextPanel->setResizeMode(resizeByWidthMode);
-	mainTextWindowID = mainTextPanel->getID();
+	mainTextWindowID = mainTextPanel->getUniqueID();
 	mainTextPanel->setTextStyles(&normalTheme.styles);
 	mainTextPanel->setTextStyle("mainBody");
 	mainTextPanel->setDefaultTextStyle("mainBody");
@@ -327,10 +331,10 @@ void CWorldUI::createInventoryWindow() {
 	invPanel->setBorderOn(true);
 	invPanel->anchorRight = 10;
 	invPanel->hFormat = hRight;
-	invPanel->setInset(10);
+	invPanel->setRichtextInset(10);
 	invPanel->setTextColour(UIwhite);
 	invPanel->setResizeMode(resizeByWidthMode);
-	invPanelID = invPanel->getID();
+	invPanelID = invPanel->getUniqueID();
 	invPanel->setTextStyles(&smallNormalTheme.styles);
 	invPanel->setTextStyle("smallHeader");
 	invPanel->displayText("Inventory:");
@@ -349,7 +353,7 @@ CGUIrichTextPanel* CWorldUI::spawnPopText(bool modal) {
 	popupPanel->setResizeMode(resizeByWidthMode);
 	popupPanel->setShortestSpaceBreak(50);
 	popupTextID = popupPanel->getRichTextID();
-	popupPanelID = popupPanel->getID();
+	popupPanelID = popupPanel->getUniqueID();
 	popupPanel->setGUIcallback(this);
 	popupPanel->setVisible(false);
 	popupPanel->setTextStyles(&smallNormalTheme.styles);
@@ -357,6 +361,23 @@ CGUIrichTextPanel* CWorldUI::spawnPopText(bool modal) {
 	//	pApp->GUIroot.addModal(popupPanel);
 	//else
 		pApp->GUIroot.Add(popupPanel);
+	return popupPanel;
+}
+
+
+CGUIrichTextPanel* CWorldUI::createDistributor() {
+	distributor = new CGUIdistributor(1100, 450, 180, 300);
+	distributor->setBackColour1(white);
+	distributor->setBackColour2(white);
+	distributor->setBorderOn(true);
+	distributorID = distributor->getUniqueID();
+	//TO DO: ideally id should be tied to obj id of the vm distributor object
+
+	distributor->setGUIcallback(this);
+	distributor->setBorderOn(true);
+	distributor->anchorRight = 10;
+	distributor->hFormat = hRight;
+	pApp->GUIroot.Add(distributor);
 	return popupPanel;
 }
 
@@ -613,7 +634,7 @@ void CWorldUI::GUIcallback(CGUIbase* sender, CMessage& msg) {
 	}
 
 	if (msg.Msg == uiMsgHotTextClick) {
-		if (sender->getID() == mainTextWindowID)
+		if (sender->getUniqueID() == mainTextWindowID)
 			mainWindowClick(msg.value, glm::i32vec2(msg.x, msg.y));
 		else if (sender->id == popObjWinId)
 			//objWindowClick(msg.value, glm::i32vec2(msg.x,msg.y), (CGUIrichTextPanel*)sender);
@@ -624,8 +645,14 @@ void CWorldUI::GUIcallback(CGUIbase* sender, CMessage& msg) {
 	}
 
 
-	if (msg.Msg == uiMsgRMouseUp && sender->getID() == mainTextWindowID) {
+	if (msg.Msg == uiMsgRMouseUp && sender->getUniqueID() == mainTextWindowID) {
 		mainWindowRightClick(glm::i32vec2(msg.x, msg.y));
+	}
+
+	if (msg.Msg == uiMsgUpdate && sender->getUniqueID() == distributorID) {
+		setDistributorObj(msg.value, msg.value2);
+
+
 	}
 }
 
@@ -665,5 +692,18 @@ void CWorldUI::flushMessageQueue() {
 	while (!messages.empty()) {
 		processMessageQueue();
 	}
+}
+
+/** Set the values of the player's in-game distributor. */
+void CWorldUI::setDistributorObj(int offence, int defence) {
+	std::initializer_list<CTigVar> params = { offence,defence };
+	pVM->callMember(0, "setDistributor", params);
+
+}
+
+/** Update the distributor display with the current available power. */
+void CWorldUI::updateDistributorGUI() {
+	CTigVar availPower = pVM->callMember(0, "getDistributorPower");
+	distributor->setAvailablePower(availPower.getIntValue());
 }
 

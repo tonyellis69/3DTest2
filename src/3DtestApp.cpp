@@ -98,6 +98,17 @@ void C3DtestApp::onStart() {
 	Engine.physObjManager.addPhysObj(terrainPhysObj);
 	
 
+
+	CTerrainPhysObj2* terrainPhysObj2 = new CTerrainPhysObj2();
+	terrainPhysObj2->attachModel(&terrain2);
+	terrainPhysObj2->setCollides(false);
+	Engine.physObjManager.addPhysObj(terrainPhysObj2);
+	
+	
+	
+	
+	
+	
 	createRegion();
 
 	
@@ -1165,7 +1176,7 @@ void C3DtestApp::vmUpdate() {
 void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 
 
-	if (control.parent->getID() == worldUI.invPanelID && Message.Msg == uiMsgHotTextClick) {
+	if (control.parent->getUniqueID() == worldUI.invPanelID && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
 		worldUI.inventoryClick(Message.value, mousePos);
 		return;
