@@ -38,6 +38,7 @@ public:
 	void playerTurn(unsigned int actionHotId);
 
 	void handleRoomChange(int direction);
+	void onVMaccumulatorUpdate(int powerUpdate);
 	void openWindow(int winId, bool modal);
 	void openMenuWindow(int winId);
 	void spawnPopupWindow(int objId);
@@ -101,7 +102,7 @@ public:
 
 	void flushMessageQueue();
 
-	void setDistributorObj(int offence, int defence);
+	void setVMdistributor(int offence, int defence);
 	void updateDistributorGUI();
 
 	//unsigned int textWindowID;
@@ -166,7 +167,7 @@ private:
 
 	int currentHotId;
 
-	string choiceTxt; ///<Most recent choice text, available for reuse.
+	std::string choiceTxt; ///<Most recent choice text, available for reuse.
 };
 
 
@@ -182,3 +183,4 @@ const int invWin = 1;
 const int menuWin = 2;
 const int combatWin = 3;
 const int msgRoomChange = 5000;
+const int msgAccumulatorUpdate = 6000;

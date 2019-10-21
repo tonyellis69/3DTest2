@@ -26,7 +26,7 @@ public:
 	std::vector<unsigned int> purgeHotText(unsigned int id);
 	void update(float dT);
 
-	void appendMarkedUpText(string text);
+	void appendMarkedUpText(std::string text);
 	unsigned int getRichTextID();
 
 

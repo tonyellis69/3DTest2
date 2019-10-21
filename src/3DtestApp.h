@@ -1,5 +1,7 @@
 #pragma once
 
+
+
 #include "..\3DEngine\src\BaseApp.h"
 
 
@@ -66,6 +68,7 @@ public:
 	void HandleUImsg(CGUIbase& Control, CMessage& Message);
 	bool scIntersectionCheckCallback(glm::vec3& pos, float scSize);
 	bool chunkCheckCallback(glm::vec3& pos, float scSize);
+	unsigned int getChunkTrisCallback(int chunkId, TChunkVert* buf);
 
 	void createChunkMesh(Chunk2& chunk);
 
@@ -74,6 +77,8 @@ public:
 	void drawVisibleChunks();
 
 	void createRegion();
+
+	void onTerrainScroll(glm::vec3& movement);
 
 	
 	string dataPath; ///<Filepath to the Data folder

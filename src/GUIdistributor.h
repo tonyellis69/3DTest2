@@ -4,6 +4,8 @@
 
 #include "GUIgamePanel.h"
 
+#include "UI/GUIscrollbar2.h"
+
 
 class CGUIdistributor : public CGUIgamePanel {
 public:
@@ -12,8 +14,8 @@ public:
 	void updateDisplay();
 	void setAvailablePower(int power);
 
-	CGUIlabel2* powerLbl;
-	CGUIsysScrollbar* offenceSlider;
+	CGUIlabel* powerLbl;
+	CGUIsysScrollbar2* offenceSlider;
 	CGUIlabel2* offenceLbl;
 
 	CGUIsysScrollbar* defenceSlider;
@@ -26,6 +28,7 @@ public:
 
 	int offenceID;
 	int defenceID;
+
 };
 
 const int vSpace = 15;

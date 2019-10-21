@@ -1,26 +1,28 @@
 #include "GUIdistributor.h"
 
+
 CGUIdistributor::CGUIdistributor(int x, int y, int w, int h) : CGUIgamePanel(x, y, w, h) {
 	availablePower = 15; offencePower = 0; defencePower = 0; remainingPower = availablePower;
 
-	//CGUIlabel* headerNew = (CGUIlabel *)add(uiLabel, "Available power:");
+	controlCursor.setCols(2);
 
-	CGUIlabel2* header = new CGUIlabel2(0, vSpace, 150, 20);
-	header->setText("Available power:");
-	header->hFormat = hCentre;
-	Add(header);
+	CGUIlabel* headerNew = add2<CGUIlabel>("Avl. power:", uiHcentred);
 
-	powerLbl = new CGUIlabel2(0, vSpace * 2, 30, 50);
-	powerLbl->setText("XX");
-	powerLbl->hFormat = hCentre;
-	Add(powerLbl);
+	CGUIlabel2* header;
 
-	header = new CGUIlabel2(0, vSpace * 4, 50, 50);
-	header->setText("Offence:");
-	header->hFormat = hCentre;
-	Add(header);
+	powerLbl = add2<CGUIlabel>("XX",uiHcentred);
+//	powerLbl->setHorizontalAlignment(uiHcentred);
+//	position(powerLbl);
 
-	offenceSlider = new CGUIsysScrollbar(horizontal, hScrollbarOffset, vSpace * 7, scrollbarWidth);
+
+	headerNew = add2<CGUIlabel>("Offence:",uiHcentred);
+	//headerNew->setHorizontalAlignment(uiHcentred);
+	//position(headerNew);
+
+
+
+
+	offenceSlider = new CGUIsysScrollbar2(scrlHorizontal, hScrollbarOffset, vSpace * 7, scrollbarWidth);
 	offenceID = offenceSlider->getUniqueID();
 	offenceSlider->setMin(1); offenceSlider->setMax(100);
 	Add(offenceSlider);
@@ -84,9 +86,9 @@ void CGUIdistributor::message(CGUIbase* sender, CMessage& msg) {
 
 /** Update the display to show the current distribution of power. */
 void CGUIdistributor::updateDisplay() {
-	powerLbl->setText(to_string((int)remainingPower));
-	offenceLbl->setText(to_string((int)offencePower));
-	defenceLbl->setText(to_string((int)defencePower));
+	powerLbl->setText(std::to_string((int)remainingPower));
+	offenceLbl->setText(std::to_string((int)offencePower));
+	defenceLbl->setText(std::to_string((int)defencePower));
 
 	needsUpdate = true;
 
@@ -100,4 +102,7 @@ void CGUIdistributor::setAvailablePower(int power) {
 	defencePower = (defenceSlider->Value / 100.0f) * availablePower;
 	remainingPower = availablePower - offencePower - defencePower;
 	updateDisplay();
+	CMessage msg;
+	msg = { uiMsgUpdate,offencePower,defencePower };
+	callbackObj->GUIcallback(this, msg);
 }

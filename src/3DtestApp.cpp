@@ -92,17 +92,14 @@ void C3DtestApp::onStart() {
 	renderer.defaultLightPos = vec3(4000, 4000, 4000);
 	renderer.defaultLightDir = vec3(0,0,-1);
 		
-	CTerrainPhysObj* terrainPhysObj = new CTerrainPhysObj();
+	/*CTerrainPhysObj* terrainPhysObj = new CTerrainPhysObj();
 	terrainPhysObj->attachModel(&terrain);
 	terrainPhysObj->setCollides(false);
 	Engine.physObjManager.addPhysObj(terrainPhysObj);
-	
+	*/
 
 
-	CTerrainPhysObj2* terrainPhysObj2 = new CTerrainPhysObj2();
-	terrainPhysObj2->attachModel(&terrain2);
-	terrainPhysObj2->setCollides(false);
-	Engine.physObjManager.addPhysObj(terrainPhysObj2);
+
 	
 	
 	
@@ -180,6 +177,11 @@ void C3DtestApp::onStart() {
 
 	//terrain2.getInnerBounds(1);
 
+	CTerrainPhysObj2* terrainPhysObj2 = new CTerrainPhysObj2();
+	terrainPhysObj2->attachModel(&terrain2);
+	terrainPhysObj2->setCollides(false);
+	Engine.physObjManager.addPhysObj(terrainPhysObj2);
+
 
 	t = Engine.Time.milliseconds() - t;
 	
@@ -195,7 +197,9 @@ void C3DtestApp::onStart() {
 	//= Engine.createCube(vec3(0), vec3(playerObject.width * 1, playerObject.height, playerObject.width * 1));
 	playerObject.model.scale(vec3(playerObject.width * 1, playerObject.height, playerObject.width * 1));
 	playerObject.setPos(vec3(0, 237, 0));
+	playerObject.setPos(vec3(-490, 13900, -490));
 	playerObject.setPos(vec3(0, 0, 0));
+
 
 	playerPhys = Engine.addPhysics(&playerObject);
 	playerPhys->setMass(10);
@@ -408,7 +412,9 @@ void C3DtestApp::keyCheck() {
 		}
 		else {
 			vec3 moveDir(0);
-			if (length(playerPhys->currentContactNormal) <= 0) {
+			//if (length(playerPhys->currentContactNormal) <= 0) {
+			//TERRAIN2 this prevents WASD ever getting checked
+			if (false) {
 				cerr << "\nmove aborted";
 			}
 			else {
@@ -427,11 +433,12 @@ void C3DtestApp::keyCheck() {
 				}
 
 				if (keyNow('W')) {
+					groundNormal = vec3(0, 1, 0);
+					//TERRAIN2 would normally be set by physics/collision
 					moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
 					moveDir = cross(groundNormal, moveDir) / length(groundNormal);
 					moveDir.y = 0; //*
 					playerPhys->velocity += moveDir * 0.35f;// was 1.4f;   //0.03f safe but slow //0.2f formerly caused bounces
-
 					//TO DO: 0.35 causes bounce on steep ascent when looking up. 0.25f does not. 
 					//probably doesn't even need fixing as those aren't realistic conditions
 					//*Setting y=0 fixed it... look into scrapping the whole velocity-parallel-to-the-ground thing
@@ -488,6 +495,9 @@ void C3DtestApp::keyCheck() {
 		}
 		if (keyNow('0')) {
 			advance(down);
+		}
+		if (keyNow('7')) {
+			advance(up);
 		}
 
 		selectChk = glm::mod(vec3(selectChk), vec3(15, 5, 15));
@@ -752,7 +762,7 @@ void C3DtestApp::draw() {
 }
 
 void C3DtestApp::terrain2TestDraw() {
-	return;
+	//return;
 	//draw shell wireframes
 	mat4 chunkM;
 	float boxScale = 0.99f;
@@ -964,6 +974,7 @@ void C3DtestApp::advance(Tdirection direction) {
 	///////////////////////////////////////////////////////////////////////////////////
 	vec3 playerMovement = dirToVec(direction) * 1.0f;  
 	terrain2.playerWalk(playerMovement);
+	//TERRAIN2
 }
 
 /** Called every frame. Mainly use this to scroll terrain if we're moving in first-person mode*/
@@ -995,13 +1006,23 @@ void C3DtestApp::Update() {
 
 		vec3 pos;
 		pos = playerObject.getPos();
+
+
 		bvec3 outsideChunkBoundary = glm::greaterThan(glm::abs(pos), vec3(chunkDist));
+		///true if player has moved >chunkDist away from origin
 
 		/////////////////////////////////////////////////////////////
 		vec3 dPos = pos - oldPos;
 		oldPos = pos;
 		terrain2.playerWalk(dPos);
+		///tell the terrain about the move so that it can scroll etc
+		//return;
 
+		//TERRAIN2
+		//jumping back problem happens somewhere below, but without it player object just gets further 
+		//and further from origin. Obviously this needs to be fixed.
+		//player object should move when terrain moves, and by same amount
+		//use terrain 2 to tell us when it has moved, then move player accordingly, that's simplest
 
 		//has viewpoint moved beyond the length of one chunk?
 		if (outsideChunkBoundary.x || outsideChunkBoundary.y || outsideChunkBoundary.z) {
@@ -1009,14 +1030,16 @@ void C3DtestApp::Update() {
 			posMod.x = fmod(pos.x, chunkDist);
 			posMod.y = fmod(pos.y, chunkDist);  //was pos.y
 			posMod.z = fmod(pos.z, chunkDist);
-
+			//posMod = extent of player position beyond centrol chunk
 			
 			//WAS
 			//fpsCam.setPos(posMod); //secretly reposition viewpoint prior to scrolling terrain
-			playerObject.setPos(posMod);
-			playerPhys->position = posMod;
-			
+			//playerObject.setPos(posMod);
+			//playerPhys->position = posMod;
+			///player now repositioned within central chunk
+			///problem triggered by the above line
 			;
+			
 
 			vec3 translation = vec3(terrain.chunkOriginInt *  cubesPerChunkEdge) * cubeSize;
 			//work out direction to scroll-in new terrain from
@@ -1091,8 +1114,8 @@ void C3DtestApp::onTerrainAdvance(Tdirection direction) {
 		//physCube->positionHint += -dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize;
 	}
 	//playerObject.translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
-	building.translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
-	liveLog << "\nonTerrainAdvance called!";
+//	building.translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
+	//liveLog << "\nonTerrainAdvance called!";
 }
 
 /** Create the GUI and textures for displaying 2D terrain heightmaps. */
@@ -1269,6 +1292,12 @@ bool C3DtestApp::chunkCheckCallback(glm::vec3 & chunkSamplePos, float chunkSampl
 	return true;
 }
 
+/** copy the data from the multibuf to system memory */
+unsigned int C3DtestApp::getChunkTrisCallback(int chunkId, TChunkVert* buf) {
+	multiBuf.copyBlock(chunkId, (char*)buf);
+	return multiBuf.getBlockSize(chunkId);
+}
+
 
 /*  Create a mesh for this chunk, and register it with the renderer.  */
 void C3DtestApp::createChunkMesh(Chunk2& chunk) {
@@ -1396,6 +1425,15 @@ void C3DtestApp::createRegion() {
 
 
 
+}
+
+/** Called when the terrain scrolls. Useful for moving the rest of the world
+	to keep it in line.*/
+void C3DtestApp::onTerrainScroll(glm::vec3& movement) {
+	liveLog << "\nThe earth moved " << movement;
+	building.translate(movement);
+	playerObject.translate(movement);
+	playerPhys->position += movement;
 }
 
 

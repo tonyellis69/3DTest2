@@ -106,7 +106,7 @@ void CGUIrichTextPanel::update(float dT) {
 	richText->update(dT);
 }
 
-void CGUIrichTextPanel::appendMarkedUpText(string text) {
+void CGUIrichTextPanel::appendMarkedUpText(std::string text) {
 	richText->appendMarkedUpText(text);
 }
 
@@ -243,26 +243,26 @@ void CGUIrichTextPanel::displayText(std::string text) {
 /** Break the text in deliveryBuffer into clauses and send them individually to the rich text control to
 	display. */
 void CGUIrichTextPanel::deliverByClause(float dT) {
-	string text;
+	std::string text;
 	clauseInterval += dT;
 	if (clauseInterval > clauseDelay) {
 		clauseInterval = 0;
 		//find next clause
 		unsigned int found = deliveryBuffer.find_first_of(",.");
-		if (found != string::npos) {
+		if (found != std::string::npos) {
 			found++;
 		}
 		else
 			found = deliveryBuffer.size();
 		text = deliveryBuffer.substr(0, found);
-		deliveryBuffer = deliveryBuffer.substr(found, string::npos);
+		deliveryBuffer = deliveryBuffer.substr(found, std::string::npos);
 		richText->appendMarkedUpText(text);
 	}
 }
 
 /** Break the text in deliveryBuffer into characters and send them individually to the rich text control. */
 void CGUIrichTextPanel::deliverByCharacter(float dT) {
-	string text;
+	std::string text;
 	charInterval += dT;
 	if (charInterval < charDelay)
 		return;
@@ -280,7 +280,7 @@ void CGUIrichTextPanel::deliverByCharacter(float dT) {
 		text = deliveryBuffer.substr(0, 1);
 		charInterval = 0;
 	}
-	deliveryBuffer = deliveryBuffer.substr(text.size(), string::npos);
+	deliveryBuffer = deliveryBuffer.substr(text.size(), std::string::npos);
 	richText->appendMarkedUpText(text);
 
 }

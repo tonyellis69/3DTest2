@@ -153,6 +153,12 @@ void CWorldUI::handleRoomChange(int roomId) {
 	//TO DO: ever doing anything here?
 }
 
+/** Respond to a VM message updating the available power in the accumulator. */
+void CWorldUI::onVMaccumulatorUpdate(int powerUpdate) {
+	liveLog << "\naccumulator update of " << powerUpdate;
+	distributor->setAvailablePower(powerUpdate);
+}
+
 void CWorldUI::openWindow(int winId, bool modal) {
 	if (winId == menuWin)
 		openMenuWindow(winId);
@@ -294,6 +300,9 @@ void CWorldUI::deletePopupWindow(int id) {
 void CWorldUI::vmMessage(int p1, int p2) {
 	if (p1 == msgRoomChange)
 		handleRoomChange(p2);
+	if (p1 == msgAccumulatorUpdate)
+		onVMaccumulatorUpdate(p2);
+
 }
 
 /** Add the given message to the queue for eventual processing. */
@@ -324,7 +333,7 @@ void CWorldUI::createMainWindow() {
 }
 
 void CWorldUI::createInventoryWindow() {
-	invPanel = new CGUIrichTextPanel(1100, 120, 180, 300);
+	invPanel = new CGUIrichTextPanel(1100, 50, 180, 390);
 	invPanel->setBackColour1(white);
 	invPanel->setBackColour2(white);
 	
@@ -405,6 +414,7 @@ void CWorldUI::createTextStyles() {
 void CWorldUI::hide(bool onOff) {
 	invPanel->setVisible(!onOff);
 	mainTextPanel->setVisible(!onOff);
+	distributor->setVisible(!onOff);
 }
 
 void CWorldUI::reset() {
@@ -650,7 +660,7 @@ void CWorldUI::GUIcallback(CGUIbase* sender, CMessage& msg) {
 	}
 
 	if (msg.Msg == uiMsgUpdate && sender->getUniqueID() == distributorID) {
-		setDistributorObj(msg.value, msg.value2);
+		setVMdistributor(msg.value, msg.value2);
 
 
 	}
@@ -695,7 +705,7 @@ void CWorldUI::flushMessageQueue() {
 }
 
 /** Set the values of the player's in-game distributor. */
-void CWorldUI::setDistributorObj(int offence, int defence) {
+void CWorldUI::setVMdistributor(int offence, int defence) {
 	std::initializer_list<CTigVar> params = { offence,defence };
 	pVM->callMember(0, "setDistributor", params);
 
