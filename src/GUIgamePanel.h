@@ -5,7 +5,7 @@
 class CGUIgamePanel : public CGUIpanel {
 public:
 	CGUIgamePanel(int x, int y, int w, int h);
-
+	void applyStyleSheet();
 
 
 	void setObjId(int objId) {

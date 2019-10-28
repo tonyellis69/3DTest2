@@ -586,8 +586,8 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 	if (key == '1') {
 		fpsOn = !fpsOn;
 		if (fpsOn) {
-			//Engine.setCurrentCamera(&fpsCam);
-			renderer.setCurrentCamera(&playerObject.povCam);
+			
+			//renderer.setCurrentCamera(&playerObject.povCam);
 			playerPhys->asleep = false;
 		}
 		else
@@ -814,7 +814,7 @@ void C3DtestApp::terrain2TestDraw() {
 			//draw chunks
 			//if (shell != 3 && shell !=2 )
 			//	 continue;
-			for (auto chunk : SCiter->chunks2) {
+			for (auto chunk : SCiter->scChunks) {
 				i32vec3 chunkIndex = terrain2.chunks[chunk].index;
 				vec3 chunkOrigin = vec3(chunkIndex) * actualChunkSize;
 				chunkOrigin += actualChunkSize * 0.5; //move orgin to centre of chunk
@@ -1358,7 +1358,8 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 
 void C3DtestApp::deleteChunkMesh(Chunk2& chunk) {
 	CBaseBuf* terrainBuf = &multiBuf;
-	terrainBuf->deleteBlock(chunk.id);
+	if (chunk.id != 0) //TO DO: temp bug tracking! Should never happen!
+		terrainBuf->deleteBlock(chunk.id);
 }
 
 void C3DtestApp::drawVisibleChunks() {

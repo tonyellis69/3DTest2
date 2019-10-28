@@ -20,7 +20,10 @@ public:
 	void clear();
 	void setResizeMode(TResizeMode mode);
 	void setShortestSpaceBreak(int lineWidth);
-	void setTextStyles(std::vector<TtextStyle>* styles);
+	//void setTextStyles(std::vector<TtextStyle>* styles);
+	void setTextTheme(const std::string& themeName) {
+		richText->setTextTheme(themeName);
+	}
 	bool setTextStyle(std::string styleName);
 	void setDefaultTextStyle(std::string styleName);
 	std::vector<unsigned int> purgeHotText(unsigned int id);

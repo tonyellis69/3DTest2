@@ -313,17 +313,18 @@ void CWorldUI::queueMsg(TvmAppMsg& msg) {
 /** Create the main text window. */
 void CWorldUI::createMainWindow() {
 	mainTextPanel = new CGUIrichTextPanel(200, 50, 800, 700);
-	mainTextPanel->setBackColour1(uiWhite);
-	mainTextPanel->setBackColour2(uiWhite);
+	//mainTextPanel->setBackColour1(uiWhite);
+	//mainTextPanel->setBackColour2(uiWhite);
 	
 	mainTextPanel->setBorderOn(true);
 	mainTextPanel->hFormat = hCentre;
 	mainTextPanel->setRichtextInset(10);
-	mainTextPanel->setTextColour(UIwhite);
+	//mainTextPanel->setTextColour(UIwhite);
 	mainTextPanel->setResizeMode(resizeByWidthMode);
 	mainTextWindowID = mainTextPanel->getUniqueID();
-	mainTextPanel->setTextStyles(&normalTheme.styles);
-	mainTextPanel->setTextStyle("mainBody");
+	//mainTextPanel->setTextStyles(&normalTheme.styles);
+	mainTextPanel->setTextTheme("gameNormal");
+	//mainTextPanel->setTextStyle("mainBody");
 	mainTextPanel->setDefaultTextStyle("mainBody");
 	pApp->GUIroot.Add(mainTextPanel);
 	mainTextPanel->richText->transcriptLog = &transcript;
@@ -344,7 +345,9 @@ void CWorldUI::createInventoryWindow() {
 	invPanel->setTextColour(UIwhite);
 	invPanel->setResizeMode(resizeByWidthMode);
 	invPanelID = invPanel->getUniqueID();
-	invPanel->setTextStyles(&smallNormalTheme.styles);
+	//invPanel->setTextStyles(&smallNormalTheme.styles);
+	invPanel->setTextTheme("smallNormal");
+	invPanel->setDefaultTextStyle("small");
 	invPanel->setTextStyle("smallHeader");
 	invPanel->displayText("Inventory:");
 	pApp->GUIroot.Add(invPanel);
@@ -365,7 +368,9 @@ CGUIrichTextPanel* CWorldUI::spawnPopText(bool modal) {
 	popupPanelID = popupPanel->getUniqueID();
 	popupPanel->setGUIcallback(this);
 	popupPanel->setVisible(false);
-	popupPanel->setTextStyles(&smallNormalTheme.styles);
+	//popupPanel->setTextStyles(&smallNormalTheme.styles);
+	popupPanel->setTextTheme("smallNormal");
+
 	//if (modal)
 	//	pApp->GUIroot.addModal(popupPanel);
 	//else
@@ -398,16 +403,31 @@ void CWorldUI::createTextStyles() {
 	hottextColour =  glm::vec4(0.28, 0.28, 0.47, 1);
 	hottextSelectedColour =  glm::vec4(1, 0.547, 0.0, 1);
 
+	/*
 	normalTheme.styles.push_back({ "mainBody", "main", darkGray });
 	normalTheme.styles.push_back({ "mainHeader","mainHeader",darkGray });
 	normalTheme.styles.push_back({ "hot", "main", hottextColour });
 	normalTheme.styles.push_back({ "hotSelected", "main", hottextSelectedColour });
 	normalTheme.styles.push_back({ "choice", "main", choiceColour });
+	*/
 
+	pApp->GUIroot.themeServer.addToTheme("gameNormal", { "mainBody", "main", darkGray }); 
+	pApp->GUIroot.themeServer.addToTheme("gameNormal", { "mainHeader","mainHeader",darkGray });
+	pApp->GUIroot.themeServer.addToTheme("gameNormal", { "hot", "main", hottextColour });
+	pApp->GUIroot.themeServer.addToTheme("gameNormal", { "hotSelected", "main", hottextSelectedColour });
+	pApp->GUIroot.themeServer.addToTheme("gameNormal", { "choice", "main", choiceColour });
+
+	/*
 	smallNormalTheme.styles.push_back({ "small","small",darkGray });
 	smallNormalTheme.styles.push_back({ "smallHeader","smallHeader",darkGray });
 	smallNormalTheme.styles.push_back({ "hot", "small", hottextColour });
 	smallNormalTheme.styles.push_back({ "hotSelected", "small", hottextSelectedColour });
+	*/
+
+	pApp->GUIroot.themeServer.addToTheme("smallNormal", { "small","small",darkGray });
+	pApp->GUIroot.themeServer.addToTheme("smallNormal", { "smallHeader","small",darkGray);  //darkGray
+	pApp->GUIroot.themeServer.addToTheme("smallNormal", { "hot", "small", hottextColour });
+	pApp->GUIroot.themeServer.addToTheme("smallNormal", { "hotSelected", "small", hottextSelectedColour });
 
 }
 
@@ -508,7 +528,7 @@ void CWorldUI::handleChoiceText(int hotId) {
 		CTigVar finalParam = fnCall.params.back();
 		if (finalParam.type == tigString) {
 			choiceTxt = finalParam.getStringValue();
-			for (int x = 0; x < choiceTxt.size(); x++) { //catch any hot text and suspend it
+			for (unsigned int x = 0; x < choiceTxt.size(); x++) { //catch any hot text and suspend it
 				if (choiceTxt[x] == '\\' && choiceTxt[x + 1] == 'h')
 					choiceTxt[x + 1] = 'S';
 			}

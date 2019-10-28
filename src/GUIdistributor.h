@@ -16,10 +16,10 @@ public:
 
 	CGUIlabel* powerLbl;
 	CGUIsysScrollbar2* offenceSlider;
-	CGUIlabel2* offenceLbl;
+	CGUIlabel* offenceLbl;
 
-	CGUIsysScrollbar* defenceSlider;
-	CGUIlabel2* defenceLbl;
+	CGUIsysScrollbar2* defenceSlider;
+	CGUIlabel* defenceLbl;
 
 	int availablePower;
 	int offencePower;

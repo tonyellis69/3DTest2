@@ -4,46 +4,36 @@
 CGUIdistributor::CGUIdistributor(int x, int y, int w, int h) : CGUIgamePanel(x, y, w, h) {
 	availablePower = 15; offencePower = 0; defencePower = 0; remainingPower = availablePower;
 
+	add2<CGUIbutton>("Button", 0);
+
 	controlCursor.setCols(2);
+	controlCursor.centreRow();
 
-	CGUIlabel* headerNew = add2<CGUIlabel>("Avl. power:", uiHcentred);
+	CGUIlabel* headerNew = add2<CGUIlabel>("Avl. power:", uiHright);
 
-	CGUIlabel2* header;
+	powerLbl = add2<CGUIlabel>("XX",uiHleft);
 
-	powerLbl = add2<CGUIlabel>("XX",uiHcentred);
-//	powerLbl->setHorizontalAlignment(uiHcentred);
-//	position(powerLbl);
-
-
+	controlCursor.setCols(1);
 	headerNew = add2<CGUIlabel>("Offence:",uiHcentred);
-	//headerNew->setHorizontalAlignment(uiHcentred);
-	//position(headerNew);
 
+	controlCursor.setCols(2);
+	offenceSlider = add2<CGUIsysScrollbar2>(scrlHorizontal, uiHcentred);
 
-
-
-	offenceSlider = new CGUIsysScrollbar2(scrlHorizontal, hScrollbarOffset, vSpace * 7, scrollbarWidth);
 	offenceID = offenceSlider->getUniqueID();
 	offenceSlider->setMin(1); offenceSlider->setMax(100);
-	Add(offenceSlider);
 
-	offenceLbl = new CGUIlabel2(scrollbarWidth + hScrollbarOffset*2, vSpace * 7, 30, 18);
-	offenceLbl->setText("YY");
-	Add(offenceLbl);
+	offenceLbl = add2<CGUIlabel>("YY", uiHcentred);
 
-	header = new CGUIlabel2(0, vSpace * 9, 60, 50);
-	header->setText("Defence:");
-	header->hFormat = hCentre;
-	Add(header);
+	controlCursor.setCols(1);
+	headerNew = add2<CGUIlabel>("Defence:", uiHcentred);
 
-	defenceSlider = new CGUIsysScrollbar(horizontal, hScrollbarOffset, vSpace * 12, scrollbarWidth);
+	controlCursor.setCols(2);
+
+	defenceSlider = add2<CGUIsysScrollbar2>(scrlHorizontal, uiHcentred);
 	defenceID = defenceSlider->getUniqueID();
 	defenceSlider->setMin(1); offenceSlider->setMax(100);
-	Add(defenceSlider);
 
-	defenceLbl = new CGUIlabel2(scrollbarWidth + hScrollbarOffset * 2, vSpace * 12, 30, 18);
-	defenceLbl->setText("ZZ");
-	Add(defenceLbl);
+	defenceLbl = add2<CGUIlabel>("ZZ", uiHcentred);
 	
 	updateDisplay();
 }

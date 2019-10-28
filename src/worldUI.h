@@ -121,8 +121,6 @@ public:
 	CGUIdistributor* distributor;
 	unsigned int distributorID;
 
-	TtextTheme normalTheme; ///<Groups normal styles for rich text.
-	TtextTheme smallNormalTheme; ///<Groups normal styles for rich text, smaller font size.
 
 private:
 	CTigVM* pVM;

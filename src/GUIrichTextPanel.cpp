@@ -8,8 +8,8 @@ CGUIrichTextPanel::CGUIrichTextPanel(int x, int y, int w, int h) : CGUIgamePanel
 	setHeight(h);
 	type = uiRichTextPanel;
 
-	setBackColour1(oldbackColour1);
-	setBackColour2(oldbackColour2);
+//	setBackColour1(oldbackColour1);
+//	setBackColour2(oldbackColour2);
 
 	inset = 10;
 	richText = new CGUIrichText(inset, inset, w - inset*2, h - inset);
@@ -79,10 +79,10 @@ void CGUIrichTextPanel::setShortestSpaceBreak(int lineWidth) {
 }
 
 
-
+/*
 void CGUIrichTextPanel::setTextStyles(std::vector<TtextStyle>* styles) {
 	richText->setTextStyles(styles);
-}
+}*/
 
 bool CGUIrichTextPanel::setTextStyle(std::string styleName) {
 	return richText->setTextStyle(styleName);
