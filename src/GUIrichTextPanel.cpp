@@ -80,8 +80,8 @@ void CGUIrichTextPanel::setShortestSpaceBreak(int lineWidth) {
 
 
 /*
-void CGUIrichTextPanel::setTextStyles(std::vector<TtextStyle>* styles) {
-	richText->setTextStyles(styles);
+void CGUIrichTextPanel::refreshCurrentTextStyles(std::vector<TtextStyle>* styles) {
+	richText->refreshCurrentTextStyles(styles);
 }*/
 
 bool CGUIrichTextPanel::setTextStyle(std::string styleName) {

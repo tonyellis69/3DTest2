@@ -4,36 +4,38 @@
 CGUIdistributor::CGUIdistributor(int x, int y, int w, int h) : CGUIgamePanel(x, y, w, h) {
 	availablePower = 15; offencePower = 0; defencePower = 0; remainingPower = availablePower;
 
-	add2<CGUIbutton>("Button", 0);
+	//add<CGUIbutton>("Button", 0);
+
+	resizesForChildren.y = true;
 
 	controlCursor.setCols(2);
 	controlCursor.centreRow();
 
-	CGUIlabel* headerNew = add2<CGUIlabel>("Avl. power:", uiHright);
+	CGUIlabel* headerNew = add<CGUIlabel>("Avl. power:", uiHright);
 
-	powerLbl = add2<CGUIlabel>("XX",uiHleft);
+	powerLbl = add<CGUIlabel>("XX",uiHleft);
 
 	controlCursor.setCols(1);
-	headerNew = add2<CGUIlabel>("Offence:",uiHcentred);
+	headerNew = add<CGUIlabel>("Offence:",uiHcentred);
 
 	controlCursor.setCols(2);
-	offenceSlider = add2<CGUIsysScrollbar2>(scrlHorizontal, uiHcentred);
+	offenceSlider = add<CGUIsysScrollbar2>(scrlHorizontal, uiHcentred);
 
 	offenceID = offenceSlider->getUniqueID();
 	offenceSlider->setMin(1); offenceSlider->setMax(100);
 
-	offenceLbl = add2<CGUIlabel>("YY", uiHcentred);
+	offenceLbl = add<CGUIlabel>("YY", uiHcentred);
 
 	controlCursor.setCols(1);
-	headerNew = add2<CGUIlabel>("Defence:", uiHcentred);
+	headerNew = add<CGUIlabel>("Defence:", uiHcentred);
 
 	controlCursor.setCols(2);
 
-	defenceSlider = add2<CGUIsysScrollbar2>(scrlHorizontal, uiHcentred);
+	defenceSlider = add<CGUIsysScrollbar2>(scrlHorizontal, uiHcentred);
 	defenceID = defenceSlider->getUniqueID();
 	defenceSlider->setMin(1); offenceSlider->setMax(100);
 
-	defenceLbl = add2<CGUIlabel>("ZZ", uiHcentred);
+	defenceLbl = add<CGUIlabel>("ZZ", uiHcentred);
 	
 	updateDisplay();
 }

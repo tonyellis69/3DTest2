@@ -148,6 +148,8 @@ void CWorldUI::playerTurn(unsigned int actionHotId) {
 	updateDistributorGUI();
 }
 
+
+
 /** Register change in current room. */
 void CWorldUI::handleRoomChange(int roomId) {
 	//TO DO: ever doing anything here?
@@ -403,31 +405,18 @@ void CWorldUI::createTextStyles() {
 	hottextColour =  glm::vec4(0.28, 0.28, 0.47, 1);
 	hottextSelectedColour =  glm::vec4(1, 0.547, 0.0, 1);
 
-	/*
-	normalTheme.styles.push_back({ "mainBody", "main", darkGray });
-	normalTheme.styles.push_back({ "mainHeader","mainHeader",darkGray });
-	normalTheme.styles.push_back({ "hot", "main", hottextColour });
-	normalTheme.styles.push_back({ "hotSelected", "main", hottextSelectedColour });
-	normalTheme.styles.push_back({ "choice", "main", choiceColour });
-	*/
 
-	pApp->GUIroot.themeServer.addToTheme("gameNormal", { "mainBody", "main", darkGray }); 
-	pApp->GUIroot.themeServer.addToTheme("gameNormal", { "mainHeader","mainHeader",darkGray });
-	pApp->GUIroot.themeServer.addToTheme("gameNormal", { "hot", "main", hottextColour });
-	pApp->GUIroot.themeServer.addToTheme("gameNormal", { "hotSelected", "main", hottextSelectedColour });
-	pApp->GUIroot.themeServer.addToTheme("gameNormal", { "choice", "main", choiceColour });
+	pApp->sysStyleSheet.addToTheme("gameNormal", { "mainBody", "main", darkGray });
+	pApp->sysStyleSheet.addToTheme("gameNormal", { "mainHeader","mainHeader",darkGray });
+	pApp->sysStyleSheet.addToTheme("gameNormal", { "hot", "main", hottextColour });
+	pApp->sysStyleSheet.addToTheme("gameNormal", { "hotSelected", "main", hottextSelectedColour });
+	pApp->sysStyleSheet.addToTheme("gameNormal", { "choice", "main", choiceColour });
 
-	/*
-	smallNormalTheme.styles.push_back({ "small","small",darkGray });
-	smallNormalTheme.styles.push_back({ "smallHeader","smallHeader",darkGray });
-	smallNormalTheme.styles.push_back({ "hot", "small", hottextColour });
-	smallNormalTheme.styles.push_back({ "hotSelected", "small", hottextSelectedColour });
-	*/
 
-	pApp->GUIroot.themeServer.addToTheme("smallNormal", { "small","small",darkGray });
-	pApp->GUIroot.themeServer.addToTheme("smallNormal", { "smallHeader","small",darkGray);  //darkGray
-	pApp->GUIroot.themeServer.addToTheme("smallNormal", { "hot", "small", hottextColour });
-	pApp->GUIroot.themeServer.addToTheme("smallNormal", { "hotSelected", "small", hottextSelectedColour });
+	pApp->sysStyleSheet.addToTheme("smallNormal", { "small","small",darkGray });
+	pApp->sysStyleSheet.addToTheme("smallNormal", { "smallHeader","small",darkGray });
+	pApp->sysStyleSheet.addToTheme("smallNormal", { "hot", "small", hottextColour });
+	pApp->sysStyleSheet.addToTheme("smallNormal", { "hotSelected", "small", hottextSelectedColour });
 
 }
 
