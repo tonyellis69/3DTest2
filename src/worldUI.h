@@ -11,6 +11,7 @@
 #include "localHotList.h"
 #include "GUIgamePanel.h"
 #include "GUIdistributor.h"
+#include "GUIhealthPanel.h"
 
  
 struct TObjWindow {
@@ -39,6 +40,8 @@ public:
 
 	void handleRoomChange(int direction);
 	void onVMaccumulatorUpdate(int powerUpdate);
+	void onVMpowerCellUpdate(int powerUpdate);
+	void onVMhpChange(int hpUpdate);
 	void openWindow(int winId, bool modal);
 	void openMenuWindow(int winId);
 	void spawnPopupWindow(int objId);
@@ -58,11 +61,7 @@ public:
 
 	void deletePopupWindow(int id);
 
-	
-	void setHottextColour(const glm::vec4& colour);
-	void setHottextSelectColour(const glm::vec4& colour);
-
-	void vmMessage(int p1, int p2);
+	void vmMessage(const std::string& p1, int p2);
 
 	void queueMsg(TvmAppMsg& msg);
 
@@ -71,7 +70,9 @@ public:
 
 	CGUIrichTextPanel * spawnPopText(bool modal);
 
-	CGUIrichTextPanel* createDistributor();
+	
+	void createDistributor();
+	void createHealthPanel();
 
 	void createTextStyles();
 
@@ -105,6 +106,8 @@ public:
 	void setVMdistributor(int offence, int defence);
 	void updateDistributorGUI();
 
+	void updateHealthGUI();
+
 	//unsigned int textWindowID;
 	//CGUIrichText* textWindow;
 	CGUIrichTextPanel* mainTextPanel;
@@ -120,6 +123,9 @@ public:
 
 	CGUIdistributor* distributor;
 	unsigned int distributorID;
+
+	CGUIhealthPanel* healthPanel;
+	unsigned int healthPanelID;
 
 
 private:
@@ -180,5 +186,3 @@ const int mainWin = 0;
 const int invWin = 1;
 const int menuWin = 2;
 const int combatWin = 3;
-const int msgRoomChange = 5000;
-const int msgAccumulatorUpdate = 6000;

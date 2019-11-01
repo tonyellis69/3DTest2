@@ -1165,8 +1165,6 @@ void C3DtestApp::updateHeightmapImage() {
 }
 
 
-
-//TO DO: make msg a reference to save on big string copies!!!!!!!
 /** Handle messages from the virtual machine. */
 void C3DtestApp::vmMessage(TvmAppMsg msg) {
 	if (msg.type == appFlush) {
@@ -1219,7 +1217,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	}
 
 	if (control.parent->id == popMenuId && Message.Msg == uiMsgMouseMove) {
-		worldUI.queueMsg(TvmAppMsg{ appHotTxtChange,"",Message.value });;
+		worldUI.queueMsg(TvmAppMsg{ appHotTxtChange,"","",Message.value });;
 		return;
 	}
 

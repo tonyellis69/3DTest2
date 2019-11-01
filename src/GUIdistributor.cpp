@@ -2,7 +2,7 @@
 
 
 CGUIdistributor::CGUIdistributor(int x, int y, int w, int h) : CGUIgamePanel(x, y, w, h) {
-	availablePower = 15; offencePower = 0; defencePower = 0; remainingPower = availablePower;
+	availablePower = 0; offencePower = 0; defencePower = 0; remainingPower = availablePower;
 
 	//add<CGUIbutton>("Button", 0);
 
@@ -35,7 +35,9 @@ CGUIdistributor::CGUIdistributor(int x, int y, int w, int h) : CGUIgamePanel(x, 
 	defenceID = defenceSlider->getUniqueID();
 	defenceSlider->setMin(1); offenceSlider->setMax(100);
 
-	defenceLbl = add<CGUIlabel>("ZZ", uiHcentred);
+	defenceLbl = add<CGUIlabel>("YY", uiHcentred);
+
+	
 	
 	updateDisplay();
 }

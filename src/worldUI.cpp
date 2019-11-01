@@ -4,8 +4,7 @@
 #include "worldUI.h"
 #include "worldUI.h"
 #include "worldUI.h"
-#include "worldUI.h"
-#include "worldUI.h"
+
 
 #include <ctype.h>
 
@@ -45,13 +44,16 @@ void CWorldUI::init() {
 	currentVariant = 0;
 
 	createDistributor();
-	updateDistributorGUI();
+	createHealthPanel();
+
 }
 
 
 /** Start a game session. */
 void CWorldUI::start() {
 	pVM->callMember(zeroObject, "init"); 	//execute Tig initialisation code
+	updateDistributorGUI();
+	updateHealthGUI();
 }
 
 
@@ -122,13 +124,13 @@ void CWorldUI::playerTurn(unsigned int actionHotId) {
 	if (pVM->hasFlag(gameStateId, tidyModeMask)) {
 		queueMsg(TvmAppMsg{ appClearToBookmark });
 
-		queueMsg(TvmAppMsg{ appSetLineFadein,"",1 });
+		queueMsg(TvmAppMsg{ appSetLineFadein,"","",1 });
 		pVM->callMember(NULL, "globalLook");
 
 		queueMsg(TvmAppMsg{ appFinishDisplay});
-		queueMsg(TvmAppMsg{ appSetLineFadein,"",0 });
+		queueMsg(TvmAppMsg{ appSetLineFadein,"","",0 });
 
-		queueMsg(TvmAppMsg{ appWriteText,"\n" + choiceTxt });
+		queueMsg(TvmAppMsg{ appWriteText,"","\n" + choiceTxt });
 	}
 
 
@@ -159,6 +161,15 @@ void CWorldUI::handleRoomChange(int roomId) {
 void CWorldUI::onVMaccumulatorUpdate(int powerUpdate) {
 	liveLog << "\naccumulator update of " << powerUpdate;
 	distributor->setAvailablePower(powerUpdate);
+}
+
+/** Respond to a VM message updating the available power in the current power cell. */
+void CWorldUI::onVMpowerCellUpdate(int powerUpdate) {
+	healthPanel->setPower(powerUpdate);
+}
+
+void CWorldUI::onVMhpChange(int hpUpdate) {
+	healthPanel->setHP(hpUpdate);
 }
 
 void CWorldUI::openWindow(int winId, bool modal) {
@@ -298,12 +309,16 @@ void CWorldUI::deletePopupWindow(int id) {
 	}
 }
 
-
-void CWorldUI::vmMessage(int p1, int p2) {
-	if (p1 == msgRoomChange)
+/** Handle a message from the VM. */
+void CWorldUI::vmMessage(const std::string& p1, int p2) {
+	if (p1 == "roomChange")
 		handleRoomChange(p2);
-	if (p1 == msgAccumulatorUpdate)
+	if (p1 == "accumulatorUpdate")
 		onVMaccumulatorUpdate(p2);
+	if (p1 == "powerCellUpdate")
+		onVMpowerCellUpdate(p2);
+	if (p1 == "HPchange")
+		onVMhpChange(p2);
 
 }
 
@@ -381,7 +396,7 @@ CGUIrichTextPanel* CWorldUI::spawnPopText(bool modal) {
 }
 
 
-CGUIrichTextPanel* CWorldUI::createDistributor() {
+void CWorldUI::createDistributor() {
 	distributor = new CGUIdistributor(1100, 450, 180, 300);
 	distributor->setBackColour1(white);
 	distributor->setBackColour2(white);
@@ -394,7 +409,25 @@ CGUIrichTextPanel* CWorldUI::createDistributor() {
 	distributor->anchorRight = 10;
 	distributor->hFormat = hRight;
 	pApp->GUIroot.Add(distributor);
-	return popupPanel;
+}
+
+void CWorldUI::createHealthPanel() {
+	int yStart = distributor->getLocalPos().y + distributor->getHeight() + 10;
+
+	healthPanel = new CGUIhealthPanel(1100, yStart, 180, 300);
+	healthPanel->setBackColour1(white);
+	healthPanel->setBackColour2(white);
+	//TO DO: shouldn't need this with stylesheets! fix!
+	healthPanel->setBorderOn(true);
+	healthPanelID = healthPanel->getUniqueID();
+
+	healthPanel->setGUIcallback(this);
+	healthPanel->setBorderOn(true);
+	healthPanel->anchorRight = 10;
+	healthPanel->hFormat = hRight;
+	pApp->GUIroot.Add(healthPanel);
+
+
 }
 
 /** Create the various text styles the various text controls use. */
@@ -539,28 +572,28 @@ bool CWorldUI::displayNarrativeChoice(std::string& choiceText) {
 	}*/
 
 //	mainTextPanel->setTempText(true);
-	queueMsg(TvmAppMsg{ appTempTxt,"",1,(int)mainTextWindowID });
+	queueMsg(TvmAppMsg{ appTempTxt,"","",1,(int)mainTextWindowID });
 	//mainTextPanel->setTextStyle("fadeOn");
-	queueMsg(TvmAppMsg{ appSetStyle,"fadeOn" });;
+	queueMsg(TvmAppMsg{ appSetStyle,"","fadeOn" });;
 
 	mainTextPanel->deliveryMode = noDelivery;
 
 	//mainTextPanel->setTextStyle("choice");
-	queueMsg(TvmAppMsg{ appSetStyle,"choice" });
+	queueMsg(TvmAppMsg{ appSetStyle,"","choice" });
 
 	//mainTextPanel->displayText("\n\n" + choiceText);
-	queueMsg(TvmAppMsg{ appWriteText,"\n\n" + choiceText });
+	queueMsg(TvmAppMsg{ appWriteText,"","\n\n" + choiceText });
 
 	mainTextPanel->deliveryMode = byCharacter;//byClause;
 	
 	//mainTextPanel->setTextStyle("fadeOff");
-	queueMsg(TvmAppMsg{ appSetStyle,"fadeOff" });
+	queueMsg(TvmAppMsg{ appSetStyle,"","fadeOff" });
 
 	//mainTextPanel->setTempText(false);
-	queueMsg(TvmAppMsg{ appTempTxt,"",0,(int)mainTextWindowID });
+	queueMsg(TvmAppMsg{ appTempTxt,"","",0,(int)mainTextWindowID });
 
 	//mainTextPanel->setTextStyle("mainBody");
-	queueMsg(TvmAppMsg{ appSetStyle,"mainBody" });
+	queueMsg(TvmAppMsg{ appSetStyle,"","mainBody" });
 
 	return true;
 }
@@ -617,7 +650,7 @@ void CWorldUI::processMessageQueue() {
 			case appPurge: purgeMainPanel(msg.integer); break;
 			case appOpenWin: openWindow(msg.integer, false); break;
 			case appOpenWinModal: openWindow(msg.integer, true); break;
-			case appMsg: vmMessage(msg.integer, msg.integer2); break;
+			case appMsg: vmMessage(msg.msgString, msg.integer2); break;
 			case appTempTxt: result = tempText((bool)msg.integer, msg.integer2); break;
 			case appPause: pause(true); break;
 			case appUnpause: pause(false); break;
@@ -708,9 +741,9 @@ void CWorldUI::positionPopupWindow(CGUIrichTextPanel* popupWin) {
 
 
 void CWorldUI::flushMessageQueue() {
-	while (!messages.empty()) {
-		processMessageQueue();
-	}
+	//while (!messages.empty()) {
+	//	processMessageQueue();
+	//}
 }
 
 /** Set the values of the player's in-game distributor. */
@@ -725,4 +758,14 @@ void CWorldUI::updateDistributorGUI() {
 	CTigVar availPower = pVM->callMember(0, "getDistributorPower");
 	distributor->setAvailablePower(availPower.getIntValue());
 }
+
+/** Update the distributor display with the current available power. */
+void CWorldUI::updateHealthGUI() {
+	CTigVar remainPower = pVM->callMember(0, "getRemainingPower");
+	healthPanel->setPower(remainPower.getIntValue());
+
+	CTigVar hp = pVM->callMember(0, "getPlayerHP");
+	healthPanel->setHP(hp.getIntValue());
+}
+
 

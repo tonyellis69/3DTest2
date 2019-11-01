@@ -117,6 +117,7 @@
     <ClCompile Include="src\gameTerrain.cpp" />
     <ClCompile Include="src\GUIdistributor.cpp" />
     <ClCompile Include="src\GUIgamePanel.cpp" />
+    <ClCompile Include="src\GUIhealthPanel.cpp" />
     <ClCompile Include="src\GUIrichTextPanel.cpp" />
     <ClCompile Include="src\localHotList.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -127,6 +128,7 @@
     <ClInclude Include="src\gameTerrain.h" />
     <ClInclude Include="src\GUIdistributor.h" />
     <ClInclude Include="src\GUIgamePanel.h" />
+    <ClInclude Include="src\GUIhealthPanel.h" />
     <ClInclude Include="src\GUIrichTextPanel.h" />
     <ClInclude Include="src\localHotList.h" />
   </ItemGroup>
