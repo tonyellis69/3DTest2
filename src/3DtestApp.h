@@ -32,14 +32,17 @@
 
 #include "physics/terrainPhysObj2.h"
 
+#include "hexRenderer.h"
+
 extern CSuperChunk* dbgSC;
 
 //extern float xAdj;
 //extern float yAdj;
 
-enum TAppMode {terrainMode, textMode, texGenMode};
+enum TAppMode {terrainMode, textMode, texGenMode, hexMode};
 
-class C3DtestApp : public  CBaseApp , public ITerrainCallback {
+class C3DtestApp : public  CBaseApp , public ITerrainCallback,	
+	public IhexCallback {
 public:
 	C3DtestApp();
 	void OnMouseWheelMsg(float xoffset, float yoffset);
@@ -80,7 +83,13 @@ public:
 
 	void onTerrainScroll(glm::vec3& movement);
 
-	
+	void onResize(int width, int height);
+
+	bool hexKeyNowCallback(int key) { return keyNow(key); };
+
+	void initHexRenderer();
+
+
 	string dataPath; ///<Filepath to the Data folder
 	
 	CModel2 cube; 
@@ -198,6 +207,8 @@ public:
 
 	CMultiBuf multiBuf; 
 	//TO DO: temp! Think where this should go, app or CTerrain
+
+	CHexRenderer hexRenderer;
 
 	
 };

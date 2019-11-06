@@ -13,7 +13,7 @@ CGUIdistributor::CGUIdistributor(int x, int y, int w, int h) : CGUIgamePanel(x, 
 
 	CGUIlabel* headerNew = add<CGUIlabel>("Avl. power:", uiHright);
 
-	powerLbl = add<CGUIlabel>("XX",uiHleft);
+	powerLbl = add<CGUIlabel>("",uiHleft);
 
 	controlCursor.setCols(1);
 	headerNew = add<CGUIlabel>("Offence:",uiHcentred);
@@ -24,7 +24,7 @@ CGUIdistributor::CGUIdistributor(int x, int y, int w, int h) : CGUIgamePanel(x, 
 	offenceID = offenceSlider->getUniqueID();
 	offenceSlider->setMin(1); offenceSlider->setMax(100);
 
-	offenceLbl = add<CGUIlabel>("YY", uiHcentred);
+	offenceLbl = add<CGUIlabel>("", uiHcentred);
 
 	controlCursor.setCols(1);
 	headerNew = add<CGUIlabel>("Defence:", uiHcentred);
@@ -35,7 +35,7 @@ CGUIdistributor::CGUIdistributor(int x, int y, int w, int h) : CGUIgamePanel(x, 
 	defenceID = defenceSlider->getUniqueID();
 	defenceSlider->setMin(1); offenceSlider->setMax(100);
 
-	defenceLbl = add<CGUIlabel>("YY", uiHcentred);
+	defenceLbl = add<CGUIlabel>("", uiHcentred);
 
 	
 	

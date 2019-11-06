@@ -457,6 +457,7 @@ void CWorldUI::hide(bool onOff) {
 	invPanel->setVisible(!onOff);
 	mainTextPanel->setVisible(!onOff);
 	distributor->setVisible(!onOff);
+	healthPanel->setVisible(!onOff);
 }
 
 void CWorldUI::reset() {
@@ -477,7 +478,8 @@ bool CWorldUI::tempText(bool onOff, int winId) {
 
 void CWorldUI::update(float dT) {
 	processMessageQueue();
-
+	
+	//TO DO: the impact of these two updates is *HUGE*. something definitely wrong
 	mainTextPanel->update(dT);
 	invPanel->update(dT);
 	if (pMenuWindow)

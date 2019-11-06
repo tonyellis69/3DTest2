@@ -42,6 +42,9 @@
     <ClCompile Include="src\GUIhealthPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\hexRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -63,6 +66,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GUIhealthPanel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexRenderer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

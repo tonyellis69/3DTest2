@@ -37,8 +37,10 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = textMode;// texGenMode;// terrainMode; //textMode;
+	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //hexMode;
 
+	if (appMode == hexMode)
+		logWindow->setTextColour(glm::vec4(1));
 	
 	//GUIroot.add(uiButton, "Save");
 
@@ -343,6 +345,7 @@ void C3DtestApp::onStart() {
 	tmpModel2.scale(vec3(3000, 3000, 3000));
 	tmpModel2.rotate(45, vec3(1, 0, 0));
 
+	initHexRenderer();
 
 	return;
 }
@@ -354,6 +357,11 @@ void C3DtestApp::onStart() {
 
 /** Called every frame, provides a place for the user to check input where constant feedback is required. */
 void C3DtestApp::keyCheck() {
+	if (appMode == hexMode) {
+		hexRenderer.keyCheck();
+	}
+
+
 	if (appMode == terrainMode) {
 
 		CCamera* currentCamera = Engine.getCurrentCamera();
@@ -667,6 +675,13 @@ void C3DtestApp::onResize(int width, int height) {
 */
 
 void C3DtestApp::draw() {
+
+	if (appMode == hexMode) {
+		Engine.Renderer.setBackColour((rgba&)uialmostBlack);
+		Engine.Renderer.clearFrame();
+		hexRenderer.draw();
+		return;
+	}
 	
 	if (appMode != terrainMode) {
 		Engine.Renderer.setBackColour((rgba&)uialmostBlack);
@@ -1435,6 +1450,18 @@ void C3DtestApp::onTerrainScroll(glm::vec3& movement) {
 	playerPhys->position += movement;
 }
 
+void C3DtestApp::onResize(int width, int height) {
+	hexRenderer.setAspectRatio(glm::vec2(width, height));
+}
+
+/** Get the hexRenderer ready for use. */
+void C3DtestApp::initHexRenderer() {
+	hexRenderer.setCallbackApp(this);
+	importer.loadFile(dataPath + "models\\test.obj");
+	hexRenderer.addModels(importer.getMeshes());
+	//... more models
+}
+
 
 
 /** Trap mousewheel events for our own use. */
@@ -1445,6 +1472,9 @@ void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	int keyState = 0; //can get key state if ever needed
 
 	CBaseApp::OnMouseWheelMsg(xoffset, yoffset);
+
+	if (appMode == hexMode)
+		hexRenderer.onMouseWheel(yoffset);
 }
 
 
