@@ -35,11 +35,9 @@ public:
 
 	bool MouseWheelMsg(const int mouseX, const int mouseY, int wheelDelta, int key);
 
-	void OnLMouseDown(const int mouseX, const int mouseY, int key);
-	void onRMouseUp(const int mouseX, const int mouseY);
+	bool OnLMouseDown(const int mouseX, const int mouseY, int key);
 	bool onMouseOff(const  int mouseX, const  int mouseY, int key);
-	void OnMouseMove(const  int mouseX, const  int mouseY, int key);
-
+	
 
 	void resizeToFit();
 

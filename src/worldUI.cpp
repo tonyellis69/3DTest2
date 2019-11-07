@@ -185,6 +185,7 @@ void CWorldUI::openMenuWindow(int winId) {
 	pMenuWindow->setResizeMode(resizeByWidthMode);
 	pMenuWindow->setLocalPos(lastMouseOverPos.x, lastMouseOverPos.y );
 	pMenuWindow->id = popMenuId;
+	//pMenuWindow->makeModal();
 }
 
 

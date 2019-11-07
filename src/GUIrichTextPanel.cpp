@@ -120,7 +120,7 @@ bool CGUIrichTextPanel::MouseWheelMsg(const  int mouseX, const  int mouseY, int 
 	return richText->MouseWheelMsg(mouseX, mouseY, wheelDelta, key);
 }
 
-void CGUIrichTextPanel::OnLMouseDown(const int mouseX, const int mouseY, int key) {
+bool CGUIrichTextPanel::OnLMouseDown(const int mouseX, const int mouseY, int key) {
 	if (!IsOnControl((CGUIbase&)*this,mouseX, mouseY)) {
 		CMessage msg;
 		msg.Msg = uiClickOutside;
@@ -128,23 +128,14 @@ void CGUIrichTextPanel::OnLMouseDown(const int mouseX, const int mouseY, int key
 		pDrawFuncs->handleUImsg(*this->richText, msg);
 
 	}
+	return true;
 }
 
-void CGUIrichTextPanel::onRMouseUp(const int mouseX, const int mouseY) {
 
-}
 
 bool CGUIrichTextPanel::onMouseOff(const int mouseX, const int mouseY, int key) {
 	return true;
 }
-
-void CGUIrichTextPanel::OnMouseMove(const int mouseX, const int mouseY, int key) {
-
-}
-
-
-
-
 
 
 void CGUIrichTextPanel::resizeToFit() {

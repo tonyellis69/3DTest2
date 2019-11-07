@@ -4,7 +4,7 @@
 CGUIdistributor::CGUIdistributor(int x, int y, int w, int h) : CGUIgamePanel(x, y, w, h) {
 	availablePower = 0; offencePower = 0; defencePower = 0; remainingPower = availablePower;
 
-	//add<CGUIbutton>("Button", 0);
+	add<CGUIbutton>("Button", 0);
 
 	resizesForChildren.y = true;
 
