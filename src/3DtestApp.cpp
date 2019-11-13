@@ -49,7 +49,7 @@ void C3DtestApp::onStart() {
 	dataPath = homeDir + "Data\\";
 	lastMousePos = glm::vec2(0, 0);
 
-
+	
 
 
 	//test objects, temporary
@@ -105,7 +105,7 @@ void C3DtestApp::onStart() {
 	
 	
 	
-	
+
 	
 	
 	createRegion();
@@ -153,10 +153,11 @@ void C3DtestApp::onStart() {
 
 
 	////////////NEW TERRAIN STUFF
+	
 	CBaseBuf* terrainBuf2 = &multiBuf; //TO DO: ugh, make a setter
 //((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
 
-	terrainBuf2->setSize(175000000);
+	terrainBuf2->setSize(175000000); //175000000
 
 	terrainBuf2->storeLayout(3, 3, 0, 0);
 
@@ -178,6 +179,7 @@ void C3DtestApp::onStart() {
 	terrain2.fillShells();
 
 	//terrain2.getInnerBounds(1);
+
 
 	CTerrainPhysObj2* terrainPhysObj2 = new CTerrainPhysObj2();
 	terrainPhysObj2->attachModel(&terrain2);
@@ -257,6 +259,8 @@ void C3DtestApp::onStart() {
 	terrain.initTreeFinding();
 	terrain.initGrassFinding();
 
+	
+
 	//GUIroot.borderWidth = 10;
 	//popFont.loadFromFile(dataPath + "Aeileron18.fnt");
 	popFont.loadFromFile(dataPath + "hotMed20.fnt");
@@ -297,13 +301,16 @@ void C3DtestApp::onStart() {
 	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
 	//vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
 
+	//got here
+
 	worldUI.setGameApp(this);
 	worldUI.setVM(&vm);
+	
 	//worldUI.setTextWindow(textWindow);
 	//worldUI.setInventoryWindow(invWindow);
 	//worldUI.setPopupTextWindow(popupPanel);
 	worldUI.init();
-
+	//didn't get here
 	//worldUI.setMainBodyStyle(mainFont, uiDarkGrey);
 	//worldUI.setMainHeaderStyle(mainFontBold, uiDarkGrey);
 
@@ -325,12 +332,13 @@ void C3DtestApp::onStart() {
 	//texCompositor.compose();
 	//texCompositor.colourise();
 
-
+	//got here 2
 
 	texGenUI.init(this);
-	texGenUI.compose();
 
-	
+
+	texGenUI.compose();
+	//still did not get here
 
 
 
@@ -345,8 +353,8 @@ void C3DtestApp::onStart() {
 	tmpModel2.scale(vec3(3000, 3000, 3000));
 	tmpModel2.rotate(45, vec3(1, 0, 0));
 
-	initHexRenderer();
-
+	initHexWorld();
+	
 	return;
 }
 
@@ -358,7 +366,7 @@ void C3DtestApp::onStart() {
 /** Called every frame, provides a place for the user to check input where constant feedback is required. */
 void C3DtestApp::keyCheck() {
 	if (appMode == hexMode) {
-		hexRenderer.keyCheck();
+		hexWorld.keyCheck();
 	}
 
 
@@ -484,6 +492,7 @@ void C3DtestApp::keyCheck() {
 
 		if (keyNow('8')) {
 			advance(north);
+	
 			//	EatKeys();
 		}
 		if (keyNow('2')) {
@@ -565,8 +574,16 @@ void C3DtestApp::keyCheck() {
 
 }
 
+
+
 /** Triggered *when* a key is pressed, not while it is held down. This is not 'whileKeyDown'. */
 void C3DtestApp::onKeyDown( int key, long mod) {
+	if (appMode == hexMode) {
+		hexWorld.onKeyDown(key, mod);
+		return;
+	}
+
+
 	if (key == 'R' && mod == GLFW_MOD_CONTROL) {
 		if (appMode == textMode) {
 			vm.reset();
@@ -595,7 +612,7 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 		fpsOn = !fpsOn;
 		if (fpsOn) {
 			
-			//renderer.setCurrentCamera(&playerObject.povCam);
+			renderer.setCurrentCamera(&playerObject.povCam);
 			playerPhys->asleep = false;
 		}
 		else
@@ -679,7 +696,7 @@ void C3DtestApp::draw() {
 	if (appMode == hexMode) {
 		Engine.Renderer.setBackColour((rgba&)uialmostBlack);
 		Engine.Renderer.clearFrame();
-		hexRenderer.draw();
+		hexWorld.draw();
 		return;
 	}
 	
@@ -718,11 +735,11 @@ void C3DtestApp::draw() {
 	Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstNormalModelToCameraMatrix, tmp);
 	Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstMVP, mvp);
 
-	glEnable(GL_PRIMITIVE_RESTART);
+	//glEnable(GL_PRIMITIVE_RESTART);
 
 	//	terrain.drawTrees(mvp, terrain.visibleSClist);
 
-	glDisable(GL_PRIMITIVE_RESTART);
+	//glDisable(GL_PRIMITIVE_RESTART);
 
 	t = Engine.Time.milliseconds() - t;
 
@@ -982,13 +999,17 @@ void C3DtestApp::advance(Tdirection direction) {
 		terrain.scrollTriggerPoint = pos;
 		vec3 translation =  vec3(terrain.chunkOriginInt *  cubesPerChunkEdge) * cubeSize ;
 		terrain.chunkOrigin[3] = vec4(translation, 1);
+	
 		terrain.advance(direction); 
+
 		onTerrainAdvance(direction);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
 	vec3 playerMovement = dirToVec(direction) * 1.0f;  
+
 	terrain2.playerWalk(playerMovement);
+
 	//TERRAIN2
 }
 
@@ -1065,7 +1086,7 @@ void C3DtestApp::Update() {
 					direction = west;
 				terrain.chunkOriginInt += dirToVec(flipDir(direction));
 				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt), 1);
-				terrain.advance(direction);
+				//terrain.advance(direction);
 				//return;
 			}
 
@@ -1076,7 +1097,7 @@ void C3DtestApp::Update() {
 					direction = down;
 				terrain.chunkOriginInt += dirToVec(flipDir(direction));
 				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt), 1);
-				terrain.advance(direction);
+			//	terrain.advance(direction);
 				//return;
 			}
 
@@ -1088,7 +1109,7 @@ void C3DtestApp::Update() {
 					direction = north;
 				terrain.chunkOriginInt += dirToVec(flipDir(direction));
 				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt) , 1);
-				terrain.advance(direction);
+			//	terrain.advance(direction);
 			}
 
 			onTerrainAdvance(direction);
@@ -1341,6 +1362,7 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 	CBuf* srcBuf = &((CRenderModel*)terrain.shaderChunkGrid)->buf;
 	unsigned int primitives = Engine.Renderer.getGeometryFeedback(*srcBuf, drawLinesAdjacency, (CBuf&)* tempFeedbackBuf2, drawTris);
 
+
 	if (primitives) {
 		int outSize = primitives * 3 * sizeof(vBuf::T3DnormVert);
 		totalbufsize += outSize;
@@ -1348,10 +1370,11 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 
 		terrainBuf->copyBuf(*tempFeedbackBuf2, outSize);
 
-		chunk.id = terrainBuf->getLastId();
+
+		chunk.bufId = terrainBuf->getLastId();
 
 		TDrawDetails* details = &chunk.drawDetails;
-		terrainBuf->getElementData(chunk.id, details->vertStart, details->vertCount, details->childBufNo);
+		terrainBuf->getElementData(chunk.bufId, details->vertStart, details->vertCount, details->childBufNo);
 		details->colour = chunk.colour;
 
 	//	if (chunk.LoD == 1) {
@@ -1360,7 +1383,8 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 	//	}
 	}
 	else
-		chunk.id = NULL;
+		chunk.bufId = NULL;
+
 	chunk.status = chSkinned;
 
 
@@ -1371,8 +1395,10 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 
 void C3DtestApp::deleteChunkMesh(Chunk2& chunk) {
 	CBaseBuf* terrainBuf = &multiBuf;
-	if (chunk.id != 0) //TO DO: temp bug tracking! Should never happen!
-		terrainBuf->deleteBlock(chunk.id);
+
+	//if (chunk.bufId != 0) //TO DO: temp bug tracking! Should never happen!
+		terrainBuf->deleteBlock(chunk.bufId);
+	chunk.bufId = 0;
 }
 
 void C3DtestApp::drawVisibleChunks() {
@@ -1390,6 +1416,8 @@ void C3DtestApp::drawVisibleChunks() {
 	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hLightAmbient, glm::vec4(0.2f, 0.2f, 0.2f, 1));
 
 	Engine.Renderer.attachTexture(0, Engine.Renderer.texture1x1->handle);
+	
+
 
 
 //	CSuperChunk* sc;
@@ -1405,10 +1433,13 @@ void C3DtestApp::drawVisibleChunks() {
 				continue;
 			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatDiffuse, chunk->drawDetails.colour);
 			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatAmbient, chunk->drawDetails.colour);
-			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatSpecular, glm::vec4(0.0f, 0.0f, 0.0f, 1));
+			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatSpecular, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatShininess, 32.0f);
 			Engine.Renderer.drawMultiBufChildVerts(drawTris, multiBuf, chunk->drawDetails.childBufNo, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
+
 		}
+
+
 	//}
 }
 
@@ -1447,19 +1478,22 @@ void C3DtestApp::onTerrainScroll(glm::vec3& movement) {
 	liveLog << "\nThe earth moved " << movement;
 	building.translate(movement);
 	playerObject.translate(movement);
+	oldPos += movement;
 	playerPhys->position += movement;
 }
 
 void C3DtestApp::onResize(int width, int height) {
-	hexRenderer.setAspectRatio(glm::vec2(width, height));
+	hexWorld.setAspectRatio(glm::vec2(width, height));
 }
 
-/** Get the hexRenderer ready for use. */
-void C3DtestApp::initHexRenderer() {
-	hexRenderer.setCallbackApp(this);
+/** Get the hexWorld ready for use. */
+void C3DtestApp::initHexWorld() {
+	hexWorld.setCallbackApp(this);
 	importer.loadFile(dataPath + "models\\test.obj");
-	hexRenderer.addModels(importer.getMeshes());
+	hexWorld.addMesh("test",importer.getMeshes());
 	//... more models
+
+	hexWorld.start();
 }
 
 
@@ -1474,7 +1508,7 @@ void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	CBaseApp::OnMouseWheelMsg(xoffset, yoffset);
 
 	if (appMode == hexMode)
-		hexRenderer.onMouseWheel(yoffset);
+		hexWorld.onMouseWheel(yoffset);
 }
 
 

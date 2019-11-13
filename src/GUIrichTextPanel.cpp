@@ -1,6 +1,9 @@
 #include "GUIrichTextPanel.h"
 #include "..\3DEngine\src\UI\GUIroot.h"
 
+#include <iostream> //for cerr
+
+
 CGUIrichTextPanel::CGUIrichTextPanel(int x, int y, int w, int h) : CGUIgamePanel(x,y,w,h) {
 	setLocalPos(x, y);
 	drawBorder = false;
@@ -221,7 +224,9 @@ bool CGUIrichTextPanel::busy() {
 /** Pass the given text on to the rich text control, either immediately or via a buffer,
 	depending on delivery style.*/
 void CGUIrichTextPanel::displayText(std::string text) {
+	
 	richText->appendMarkedUpText(text);
+
 	return;
 
 	if (deliveryMode == noDelivery) {
@@ -229,6 +234,7 @@ void CGUIrichTextPanel::displayText(std::string text) {
 		return;
 	}
 	deliveryBuffer += text;
+	//didn't get here
 }
 
 /** Break the text in deliveryBuffer into clauses and send them individually to the rich text control to

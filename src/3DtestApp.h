@@ -33,6 +33,7 @@
 #include "physics/terrainPhysObj2.h"
 
 #include "hexRenderer.h"
+#include "hexWorld.h" //replaces the above
 
 extern CSuperChunk* dbgSC;
 
@@ -41,8 +42,8 @@ extern CSuperChunk* dbgSC;
 
 enum TAppMode {terrainMode, textMode, texGenMode, hexMode};
 
-class C3DtestApp : public  CBaseApp , public ITerrainCallback,	
-	public IhexCallback {
+class C3DtestApp : public  CBaseApp , public ITerrainCallback,
+	public IhexWorldCallback {
 public:
 	C3DtestApp();
 	void OnMouseWheelMsg(float xoffset, float yoffset);
@@ -87,7 +88,7 @@ public:
 
 	bool hexKeyNowCallback(int key) { return keyNow(key); };
 
-	void initHexRenderer();
+	void initHexWorld();
 
 
 	string dataPath; ///<Filepath to the Data folder
@@ -209,7 +210,7 @@ public:
 	//TO DO: temp! Think where this should go, app or CTerrain
 
 	CHexRenderer hexRenderer;
-
+	CHexWorld hexWorld; //TO DO: replaces the above
 	
 };
 

@@ -37,12 +37,15 @@ void CWorldUI::init() {
 	showPlayerOpsId = pVM->getMemberId("showPlayerOptions");
 	gameStateId = pVM->getGlobalVar("gameStateObj").getObjId();
 	tidyModeMask = pVM->getFlagBitmask("tidyMode");
-
+	
+	//got here
 	createMainWindow();
+
 	createInventoryWindow();
+
 	pMenuWindow = NULL; //TO DO: should probably create and make invisible to be consistent
 	currentVariant = 0;
-
+	
 	createDistributor();
 	createHealthPanel();
 
@@ -347,7 +350,7 @@ void CWorldUI::createMainWindow() {
 	pApp->GUIroot.Add(mainTextPanel);
 	mainTextPanel->richText->transcriptLog = &transcript;
 	mainTextPanel->deliveryMode = byCharacter;// byClause;
-	mainTextPanel->setLineFadeIn(false);
+	mainTextPanel->setLineFadeIn(true);
 	mainTextPanel->setGUIcallback(this);
 }
 
@@ -361,15 +364,20 @@ void CWorldUI::createInventoryWindow() {
 	invPanel->hFormat = hRight;
 	invPanel->setRichtextInset(10);
 	invPanel->setTextColour(UIwhite);
+	
 	invPanel->setResizeMode(resizeByWidthMode);
+	//got here
 	invPanelID = invPanel->getUniqueID();
 	//invPanel->setTextStyles(&smallNormalTheme.styles);
 	invPanel->setTextTheme("smallNormal");
 	invPanel->setDefaultTextStyle("small");
 	invPanel->setTextStyle("smallHeader");
+	//got here
 	invPanel->displayText("Inventory:");
+	
 	pApp->GUIroot.Add(invPanel);
 	invPanel->setGUIcallback(this);
+	//didn't get here
 }
 
 

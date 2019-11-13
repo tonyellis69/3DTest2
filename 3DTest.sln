@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3DTest", "3DTest.vcxproj", "{C3F797E1-2AA4-4AFC-8843-B5A5DFBC713B}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -18,8 +18,8 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C3F797E1-2AA4-4AFC-8843-B5A5DFBC713B}.Debug|x64.ActiveCfg = Debug|x64
-		{C3F797E1-2AA4-4AFC-8843-B5A5DFBC713B}.Debug|x64.Build.0 = Debug|x64
+		{C3F797E1-2AA4-4AFC-8843-B5A5DFBC713B}.Debug|x64.ActiveCfg = Debug|Win32
+		{C3F797E1-2AA4-4AFC-8843-B5A5DFBC713B}.Debug|x64.Build.0 = Debug|Win32
 		{C3F797E1-2AA4-4AFC-8843-B5A5DFBC713B}.Debug|x86.ActiveCfg = Debug|Win32
 		{C3F797E1-2AA4-4AFC-8843-B5A5DFBC713B}.Debug|x86.Build.0 = Debug|Win32
 		{C3F797E1-2AA4-4AFC-8843-B5A5DFBC713B}.Release|x64.ActiveCfg = Release|x64
@@ -35,6 +35,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FF749E21-B18F-41B9-860F-EAF7C1898BCD}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

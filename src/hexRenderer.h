@@ -10,53 +10,56 @@
 #include "renderer/buf.h"
 #include "importer/simpleMesh.h"
 #include "hex/hexArray.h"
+#include "hex/hexObject.h"
+
 
 /**	A class for drawing 3D hex-based graphics. */
-class IhexCallback;
+class IhexRendererCallback;
 class CHexRenderer {
 public:
 	CHexRenderer();
-	void init();
+	void start();
 	void setMap();
 	void draw();
-	void setCallbackApp(IhexCallback* pApp);
-	void fillFloorplanBuffer();
+	void setCallbackApp(IhexRendererCallback* pObj);
+	void dollyCamera(float delta);
+	void pitchCamera(float delta);
+	void moveCamera(const glm::vec3& move);
+	void setCameraAspectRatio(glm::vec2 ratio);
+
+private:
 	void tmpCreateArray();
-	void addModels(std::vector<CMesh>& meshes);
+	void tmpCreateHexagonModel();
 
-	void onMouseWheel(float delta);
-	void keyCheck();
-
-
-	void tmpCreateHexModel();
+	void fillFloorplanLineBuffer();
+	void fillFloorplanSolidBuffer();
 	void createLineShader();
-
-	void setAspectRatio(glm::vec2 ratio);
+	void drawFloorPlan();
+	void drawEntities();
 
 	CRenderer* pRenderer;
-
-	CBuf floorplanBuf;
+	CBuf floorplanLineBuf;
+	CBuf floorplanSolidBuf;
 	std::vector<glm::vec3> hexModel;
 
 	CShader* lineShader;
 	unsigned int hMVP;
 
 	CCamera camera;
+	float cameraStep; ///<Amount by which camera moves in WASD.
+	float cameraPitch;
 
 	CHexArray hexArray;
 
-	IhexCallback* pCallbackApp; ///<Pointer to app used for callbacks.
+	IhexRendererCallback* pCallbackObj; ///<Pointer to obj used for callbacks.
 
-	float cameraStep; ///<Amount by which camera moves in WASD.
-	float cameraPitch; 
 
-	CBuf tmpModelBuf;
 };
 
 
-class IhexCallback {
+class IhexRendererCallback {
 public:
-	virtual bool hexKeyNowCallback(int key) { return false; };
+	virtual CHexObject* getEntity() { return NULL; };
 };
 
-#define GLFW_KEY_LEFT_SHIFT         340
+
