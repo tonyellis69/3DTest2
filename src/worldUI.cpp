@@ -395,6 +395,7 @@ CGUIrichTextPanel* CWorldUI::spawnPopText(bool modal) {
 	popupPanel->setGUIcallback(this);
 	popupPanel->setVisible(false);
 	//popupPanel->setTextStyles(&smallNormalTheme.styles);
+	mainTextPanel->setTextTheme("gameNormal");
 	popupPanel->setTextTheme("smallNormal");
 
 	//if (modal)
@@ -456,7 +457,7 @@ void CWorldUI::createTextStyles() {
 
 
 	pApp->sysStyleSheet.addToTheme("smallNormal", { "small","small",darkGray });
-	pApp->sysStyleSheet.addToTheme("smallNormal", { "smallHeader","small",darkGray });
+	pApp->sysStyleSheet.addToTheme("smallNormal", { "smallHeader","smallHeader",darkGray });
 	pApp->sysStyleSheet.addToTheme("smallNormal", { "hot", "small", hottextColour });
 	pApp->sysStyleSheet.addToTheme("smallNormal", { "hotSelected", "small", hottextSelectedColour });
 

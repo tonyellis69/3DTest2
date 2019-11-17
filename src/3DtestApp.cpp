@@ -37,7 +37,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //hexMode;
+	appMode = terrainMode;// texGenMode;// terrainMode; //textMode; //hexMode;
 
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));
@@ -49,8 +49,7 @@ void C3DtestApp::onStart() {
 	dataPath = homeDir + "Data\\";
 	lastMousePos = glm::vec2(0, 0);
 
-	
-
+	fatalLog << glm::vec4(1);
 
 	//test objects, temporary
 	//cube = Engine.createCube(vec3(-3, 300, -3), vec3(1.0f)); Engine.modelDrawList.push_back(cube);
@@ -684,6 +683,7 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 
 /** Called when mouse moves. */
 void C3DtestApp::mouseMove(int x, int y, int key) {
+	hexWorld.onMouseMove(x, y, key);
 }
 
 /*
@@ -839,7 +839,7 @@ void C3DtestApp::terrain2TestDraw() {
 			scM = translate(mat4(1), SCorigin);
 			wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * scM * SCshape;
 			wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
-			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
+			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z)->colour);
 			if (shell == 0 || shell == 1)
 				 renderer.drawBuf(wireCube, drawLinesStrip);
 
@@ -856,7 +856,7 @@ void C3DtestApp::terrain2TestDraw() {
 				chunkM = translate(mat4(1), chunkOrigin);
 				wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * chunkM * chunkShape;
 				wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
-				wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z).colour);
+				wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z)->colour);
 				//renderer.drawBuf(wireCube, drawLinesStrip);
 			}
 
@@ -1402,6 +1402,7 @@ void C3DtestApp::deleteChunkMesh(Chunk2& chunk) {
 }
 
 void C3DtestApp::drawVisibleChunks() {
+	glDisable(GL_PRIMITIVE_RESTART);
 	mat4 mvp = Engine.Renderer.currentCamera->clipMatrix * terrain2.chunkOrigin;
 
 	//draw chunks
@@ -1441,6 +1442,7 @@ void C3DtestApp::drawVisibleChunks() {
 
 
 	//}
+		glEnable(GL_PRIMITIVE_RESTART);
 }
 
 /** Create a playable terrain region, with a start point, end point and path. */

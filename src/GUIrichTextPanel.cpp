@@ -63,9 +63,7 @@ void CGUIrichTextPanel::setText(std::string newText) {
 	richText->setText(newText);
 }
 
-void CGUIrichTextPanel::appendText(std::string newText) {
-	richText->appendText(newText);
-}
+
 
 void CGUIrichTextPanel::clear() {
 	richText->clear();

@@ -13,12 +13,19 @@ void CHexWorld::setCallbackApp(IhexWorldCallback* pApp) {
 /**	Load the line meshes we're going to use. */
 void CHexWorld::addMesh(const std::string& name, std::vector<CMesh>& meshes) {
 	meshes[0].writeToBufferv3i(modelBuffers[name]);
+
+	//TO DO: buffers should probably belong to hexRenderer.
+	//hexWorld should create the hex objects, asking hexRenderer to supply the named buffer
 }
 
 void CHexWorld::start() {
 	//create player object
 	playerModel.buf = &modelBuffers["test"];
 	playerModel.setPosition(-3, -3, 6);
+
+	hexCursor.buf = &modelBuffers["test"];
+	hexCursor.setPosition(0, 0, 0);
+
 
 	hexRenderer.start();
 }
@@ -52,6 +59,13 @@ void CHexWorld::onMouseWheel(float delta) {
 		hexRenderer.dollyCamera(delta);
 }
 
+void CHexWorld::onMouseMove(int x, int y, int key) {
+	//update the hex cursor
+	CHex selectedHex = hexRenderer.pickHex(x, y);
+	setHexCursor(selectedHex);
+}
+
+
 void CHexWorld::onKeyDown(int key, long mod) {
 	switch (key) {
 	case GLFW_KEY_KP_9:
@@ -80,6 +94,14 @@ void CHexWorld::setAspectRatio(glm::vec2 ratio) {
 	hexRenderer.setCameraAspectRatio(ratio);
 }
 
+CHexObject* CHexWorld::getCursorObj() {
+	return &hexCursor;
+}
+
 CHexObject* CHexWorld::getEntity() {
 	return &playerModel;
+}
+
+void CHexWorld::setHexCursor(CHex& pos) {
+	hexCursor.setPosition(pos.x,pos.y,pos.z);
 }

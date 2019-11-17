@@ -13,18 +13,21 @@ public:
 	void start();
 	void keyCheck();
 	void onMouseWheel(float delta);
+	void onMouseMove(int x, int y, int key);
 	void onKeyDown(int key, long mod);
 	void draw();
 	void setAspectRatio(glm::vec2 ratio);
-	
+	CHexObject* getCursorObj();
 
 private:
 	CHexObject* getEntity();
+	void setHexCursor(CHex& pos);
 	IhexWorldCallback* pCallbackApp; ///<Pointer to app used for callbacks.
 	CHexRenderer hexRenderer;
 
 	std::map<std::string, CBuf> modelBuffers;
 	CHexObject playerModel;
+	CHexObject hexCursor;
 
 };
 

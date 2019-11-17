@@ -26,6 +26,8 @@ public:
 	void pitchCamera(float delta);
 	void moveCamera(const glm::vec3& move);
 	void setCameraAspectRatio(glm::vec2 ratio);
+	CHex pickHex(int screenX, int screenY);
+	void setMouseHex(CHex& hex);
 
 private:
 	void tmpCreateArray();
@@ -33,13 +35,16 @@ private:
 
 	void fillFloorplanLineBuffer();
 	void fillFloorplanSolidBuffer();
+	void createSolidHexModel();
 	void createLineShader();
 	void drawFloorPlan();
+	void drawHighlights();
 	void drawEntities();
 
 	CRenderer* pRenderer;
 	CBuf floorplanLineBuf;
 	CBuf floorplanSolidBuf;
+	CBuf solidHexBuf;
 	std::vector<glm::vec3> hexModel;
 
 	CShader* lineShader;
@@ -53,13 +58,14 @@ private:
 
 	IhexRendererCallback* pCallbackObj; ///<Pointer to obj used for callbacks.
 
-
+	CHex mouseHex; ///<Hex mouse is over
 };
 
 
 class IhexRendererCallback {
 public:
-	virtual CHexObject* getEntity() { return NULL; };
+	virtual CHexObject* getEntity() { return NULL; }
+	virtual CHexObject* getCursorObj() { return NULL; }
 };
 
 

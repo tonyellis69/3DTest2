@@ -16,7 +16,6 @@ public:
 	void setTextColour(float r, float g, float b, float a);
 	void setTextColour(UIcolour colour);
 	void setText(std::string newText);
-	void appendText(std::string newText);
 	void clear();
 	void setResizeMode(TResizeMode mode);
 	void setShortestSpaceBreak(int lineWidth);
