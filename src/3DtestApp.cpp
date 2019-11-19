@@ -37,7 +37,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = terrainMode;// texGenMode;// terrainMode; //textMode; //hexMode;
+	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //hexMode;
 
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));
@@ -49,7 +49,6 @@ void C3DtestApp::onStart() {
 	dataPath = homeDir + "Data\\";
 	lastMousePos = glm::vec2(0, 0);
 
-	fatalLog << glm::vec4(1);
 
 	//test objects, temporary
 	//cube = Engine.createCube(vec3(-3, 300, -3), vec3(1.0f)); Engine.modelDrawList.push_back(cube);
@@ -678,7 +677,11 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 
 
 
-};
+}
+void C3DtestApp::onMouseButton(int button, int action, int mods) {
+	hexWorld.onMouseButton(button, action, mods);
+}
+;
 
 
 /** Called when mouse moves. */

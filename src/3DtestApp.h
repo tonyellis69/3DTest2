@@ -54,6 +54,7 @@ public:
 	void keyCheck();
 	void mouseMove(int x, int y, int key);
 	void onKeyDown( int key, long mod);
+	void onMouseButton(int button, int action, int mods);
 	//void onResize(int width, int height);
 	void draw();
 	void terrain2TestDraw();

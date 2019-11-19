@@ -24,6 +24,8 @@ CHexRenderer::CHexRenderer() : hexModel(6) {
 	cameraPitch = 45;
 	camera.pitch(cameraPitch);
 
+	floorplanColour = glm::vec4(0, 1, 0, 1);
+
 }
 
 
@@ -44,22 +46,38 @@ void CHexRenderer::drawFloorPlan() {
 	glm::mat4 mvp = camera.clipMatrix;
 	pRenderer->setShader(lineShader);
 	lineShader->setShaderValue(hMVP, mvp);
+	lineShader->setShaderValue(hColour, floorplanColour);
 	pRenderer->drawLineStripBuf(floorplanLineBuf);
 	pRenderer->drawTriStripBuf(floorplanSolidBuf);
 }
 
-/** Draw any hey highlighting. */
+/** Draw any hey highlighting, such as the cursor. */
 void CHexRenderer::drawHighlights() {
 	CHexObject* cursorObj = pCallbackObj->getCursorObj();
 	glm::mat4 mvp = camera.clipMatrix * cursorObj->worldMatrix;
+	lineShader->setShaderValue(hColour, floorplanColour);
 	lineShader->setShaderValue(hMVP, mvp);
-	pRenderer->drawTriStripBuf(solidHexBuf);
+//	pRenderer->drawTriStripBuf(solidHexBuf);
+
+	glm::vec4 pathStartColour(0, 1, 0, 0.1f);
+	glm::vec4 pathEndColour(0, 1, 0, 0.75f);
+	float inc = 1.0 / cursorPath.size();  float t = 0;
+	for (auto hex : cursorPath) {
+		glm::mat4 worldPos = glm::translate(glm::mat4(1), hexArray.getWorldPos(hex));
+		mvp = camera.clipMatrix * worldPos;
+		lineShader->setShaderValue(hMVP, mvp);
+		glm::vec4 pathColour = glm::mix(pathStartColour, pathEndColour, t);
+		lineShader->setShaderValue(hColour, pathColour);
+		pRenderer->drawTriStripBuf(solidHexBuf);
+		t += inc;
+	}
 }
 
 void CHexRenderer::drawEntities() {
 	CHexObject* playerObj = pCallbackObj->getEntity();
 	glm::mat4 mvp = camera.clipMatrix * playerObj->worldMatrix;
 	lineShader->setShaderValue(hMVP, mvp);
+	lineShader->setShaderValue(hColour, floorplanColour);
 	pRenderer->drawLineStripBuf(*playerObj->buf);
 }
 
@@ -107,10 +125,10 @@ void CHexRenderer::fillFloorplanLineBuffer() {
 	int index = 0; int vNum = 0;
 	for (int x = 0; x < hexArray.width; x++) {
 		for (int y = 0; y < hexArray.height; y++) {
-			if (hexArray.hex(x, y).content == 1) {
+			if (hexArray.getHex(x, y).content == 1) {
 				glm::vec3 pos;
 				for (auto corner : hexModel) {
-					pos = corner + hexArray.hex(x, y).position;
+					pos = corner + hexArray.getHex(x, y).position;
 					verts.push_back(pos);
 					indices.push_back(vNum++);
 					index++;
@@ -135,10 +153,10 @@ void CHexRenderer::fillFloorplanSolidBuffer() {
 	int vNum = 0;
 	for (int x = 0; x < hexArray.width; x++) {
 		for (int y = 0; y < hexArray.height; y++) {
-			if (hexArray.hex(x, y).content == 2) {
+			if (hexArray.getHex(x, y).content == 2) {
 				glm::vec3 pos;
 				for (auto corner : hexModel) {
-					pos = corner + hexArray.hex(x, y).position;
+					pos = corner + hexArray.getHex(x, y).position;
 					verts.push_back(pos);
 					vNum++;
 				}
@@ -183,7 +201,7 @@ void CHexRenderer::createSolidHexModel() {
 
 void CHexRenderer::tmpCreateArray() {
 	hexArray.init(40, 40);
-	hexArray.hex(10, 10).content = 2;
+	hexArray.getHex(10, 10).content = 2;
 }
 
 
@@ -216,6 +234,7 @@ void CHexRenderer::tmpCreateHexagonModel() {
 void CHexRenderer::createLineShader() {
 	lineShader = pRenderer->createShader("lineModel");
 	hMVP = lineShader->getUniformHandle("mvpMatrix");
+	hColour = lineShader->getUniformHandle("colour");
 }
 
 void CHexRenderer::setCameraAspectRatio(glm::vec2 ratio) {
@@ -255,6 +274,16 @@ CHex CHexRenderer::pickHex(int screenX, int screenY) {
 }
 
 
-void CHexRenderer::setMouseHex(CHex& hex) {
-	mouseHex = hex;
+/** Create a buffer identified by the given name, and return a pointer to it. */
+CBuf* CHexRenderer::addBuffer(const std::string& name) {
+	return &modelBuffers[name];
+}
+
+CBuf* CHexRenderer::getBuffer(const std::string& name) {
+	return &modelBuffers[name];
+}
+
+/** Fill the structure used for drawing the path between player and cursor. */
+void CHexRenderer::setCursorPath(CHex& playerPos, CHex& cursorPos) {
+	cursorPath = *hexLine(playerPos, cursorPos);;
 }

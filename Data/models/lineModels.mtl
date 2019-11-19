@@ -1,2 +1,13 @@
-# Blender MTL File: 'None'
-# Material Count: 0
+# Blender MTL File: 'lineModels.blend'
+# Material Count: 1
+
+newmtl Material.001
+Ns 96.078431
+Ka 0.597315 0.597315 0.597315
+Kd 0.640000 0.487070 0.122376
+Ks 0.500000 0.062918 0.036722
+Ke 0.056000 0.042619 0.010708
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd -s 5.499999 2.600000 6.400000 C:\\Users\\Tony\\Desktop\\Azul-Platino-Granite.jpg

@@ -11,6 +11,7 @@
 #include "importer/simpleMesh.h"
 #include "hex/hexArray.h"
 #include "hex/hexObject.h"
+#include "hex/hex.h"
 
 
 /**	A class for drawing 3D hex-based graphics. */
@@ -27,7 +28,10 @@ public:
 	void moveCamera(const glm::vec3& move);
 	void setCameraAspectRatio(glm::vec2 ratio);
 	CHex pickHex(int screenX, int screenY);
-	void setMouseHex(CHex& hex);
+	CBuf* addBuffer(const std::string& name);
+	CBuf* getBuffer(const std::string& name);
+	void setCursorPath(CHex& playerPos, CHex& cursorPos);
+	THexList& getCursorPath() { return cursorPath; }
 
 private:
 	void tmpCreateArray();
@@ -49,6 +53,9 @@ private:
 
 	CShader* lineShader;
 	unsigned int hMVP;
+	unsigned int hColour;
+
+	glm::vec4 floorplanColour;
 
 	CCamera camera;
 	float cameraStep; ///<Amount by which camera moves in WASD.
@@ -58,7 +65,8 @@ private:
 
 	IhexRendererCallback* pCallbackObj; ///<Pointer to obj used for callbacks.
 
-	CHex mouseHex; ///<Hex mouse is over
+	std::map<std::string, CBuf> modelBuffers;
+	THexList cursorPath;
 };
 
 
