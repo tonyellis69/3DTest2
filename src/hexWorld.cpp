@@ -25,8 +25,16 @@ void CHexWorld::start() {
 	hexCursor.buf = hexRenderer.getBuffer("test");
 	hexCursor.setPosition(0, 0, 0);
 
+	resolving = false;
+	leftMouseDown = false;
+
+
+	tmpCreateArray();
+	hexRenderer.setMap(&hexArray);
 
 	hexRenderer.start();
+
+	path = hexArray.breadthFirstPath(CHex(0, 0, 0), CHex(12, 0, -12));
 }
 
 void CHexWorld::keyCheck() {
@@ -84,9 +92,14 @@ void CHexWorld::onKeyDown(int key, long mod) {
 
 void CHexWorld::onMouseButton(int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT &&  action == GLFW_PRESS) {
-		movePlayerDownPath();
-
+		if (!resolving)
+			movePlayerDownPath();
+		leftMouseDown = true;
 	}
+	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+		leftMouseDown = false;
+	}
+
 }
 
 
@@ -99,9 +112,35 @@ void CHexWorld::setAspectRatio(glm::vec2 ratio) {
 	hexRenderer.setCameraAspectRatio(ratio);
 }
 
-CHexObject* CHexWorld::getCursorObj() {
+CHexObject* CHexWorld::getCursorObj(){
 	return &hexCursor;
 }
+
+/** Called every frame to get the hex world up to date.*/
+void CHexWorld::update(float dT) {
+	resolving = false;
+	
+	//cycle through all entities
+	resolving = resolving || playerModel.update(dT);
+
+	//ensure displayed path doesn't jiggle away from travel path
+	if (playerModel.moving)
+		hexRenderer.setCursorPath(playerModel.getTravelPath());
+	//TO DO: travel path and cursor path should ultimately be two different 
+	//paths we display
+
+	if (!resolving && leftMouseDown) {
+		playerModel.moveOrder();
+	}
+}
+
+///////////////////////Private functions/////////////////////////////////
+
+void CHexWorld::tmpCreateArray() {
+	hexArray.init(40, 40);
+	hexArray.getHex(10, 10).content = 2;
+}
+
 
 CHexObject* CHexWorld::getEntity() {
 	return &playerModel;
@@ -118,11 +157,9 @@ void CHexWorld::updateCursorPath() {
 
 /** Move the player object to the first hex on the cursor path. */
 void CHexWorld::movePlayerDownPath() {
-	THexList& cursorPath = hexRenderer.getCursorPath();
-	if (cursorPath.size() < 2)
-		return;
-	CHex& nextHex = cursorPath[1];
-	THexDir dir = neighbourDirection(playerModel.hexPosition, nextHex);
-	playerModel.move(dir);
-	updateCursorPath();
+
+	playerModel.setTravelPath(hexRenderer.getCursorPath());
+
+	playerModel.moveOrder();
+
 }

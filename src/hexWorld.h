@@ -19,14 +19,20 @@ public:
 	void draw();
 	void setAspectRatio(glm::vec2 ratio);
 	CHexObject* getCursorObj();
+	void update(float dt);
 
 private:
+	void tmpCreateArray();
 	CHexObject* getEntity();
 	void setHexCursor(CHex& pos);
 	void updateCursorPath();
 	void movePlayerDownPath();
+	THexList* getPath() {
+		return &path;
+	};
 
 
+	CHexArray hexArray;
 
 	IhexWorldCallback* pCallbackApp; ///<Pointer to app used for callbacks.
 	CHexRenderer hexRenderer;
@@ -35,6 +41,10 @@ private:
 	CHexObject playerModel;
 	CHexObject hexCursor;
 
+	bool leftMouseDown;
+
+	bool resolving; ///<Player can't act while true.
+	THexList path;
 };
 
 class IhexWorldCallback {

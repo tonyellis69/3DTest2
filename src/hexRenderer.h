@@ -20,7 +20,7 @@ class CHexRenderer {
 public:
 	CHexRenderer();
 	void start();
-	void setMap();
+	void setMap(CHexArray* hexArray);
 	void draw();
 	void setCallbackApp(IhexRendererCallback* pObj);
 	void dollyCamera(float delta);
@@ -31,6 +31,7 @@ public:
 	CBuf* addBuffer(const std::string& name);
 	CBuf* getBuffer(const std::string& name);
 	void setCursorPath(CHex& playerPos, CHex& cursorPos);
+	void setCursorPath(THexList& path);
 	THexList& getCursorPath() { return cursorPath; }
 
 private:
@@ -61,7 +62,7 @@ private:
 	float cameraStep; ///<Amount by which camera moves in WASD.
 	float cameraPitch;
 
-	CHexArray hexArray;
+	CHexArray* hexArray;
 
 	IhexRendererCallback* pCallbackObj; ///<Pointer to obj used for callbacks.
 
@@ -74,6 +75,7 @@ class IhexRendererCallback {
 public:
 	virtual CHexObject* getEntity() { return NULL; }
 	virtual CHexObject* getCursorObj() { return NULL; }
+	virtual THexList* getPath() { return NULL; }
 };
 
 

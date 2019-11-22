@@ -1016,7 +1016,7 @@ void C3DtestApp::advance(Tdirection direction) {
 	//TERRAIN2
 }
 
-/** Called every frame. Mainly use this to scroll terrain if we're moving in first-person mode*/
+/** Called every frame. Mainly tells other entities to update. */
 void C3DtestApp::Update() {
 	vmUpdate();
 	
@@ -1028,6 +1028,8 @@ void C3DtestApp::Update() {
 	//terrain.update(); //commented out to speed up tests on terrain2
 
 	terrain2.update(dT);
+
+	hexWorld.update(dT);
 
 	vec3 pos = Engine.getCurrentCamera()->getPos();
 
