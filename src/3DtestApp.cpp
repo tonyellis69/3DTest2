@@ -159,8 +159,8 @@ void C3DtestApp::onStart() {
 
 	terrainBuf2->storeLayout(3, 3, 0, 0);
 
-	tempFeedbackBuf2 = Engine.createBuffer();
-	tempFeedbackBuf2->setSize(1000000);
+	//tempFeedbackBuf2 = Engine.createBuffer();
+	tempFeedbackBuf2.setSize(1000000);
 
 
 
@@ -1365,7 +1365,7 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 
 	CBaseBuf* terrainBuf = &multiBuf;
 	CBuf* srcBuf = &((CRenderModel*)terrain.shaderChunkGrid)->buf;
-	unsigned int primitives = Engine.Renderer.getGeometryFeedback(*srcBuf, drawLinesAdjacency, (CBuf&)* tempFeedbackBuf2, drawTris);
+	unsigned int primitives = Engine.Renderer.getGeometryFeedback(*srcBuf, drawLinesAdjacency,tempFeedbackBuf2, drawTris);
 
 
 	if (primitives) {
@@ -1373,15 +1373,21 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 		totalbufsize += outSize;
 		totalchunks++;
 
-		terrainBuf->copyBuf(*tempFeedbackBuf2, outSize);
-
-
-		chunk.bufId = terrainBuf->getLastId();
+		//terrainBuf->copyBuf(tempFeedbackBuf2, outSize);
+		//chunk.bufId = terrainBuf->getLastId();
 
 		TDrawDetails* details = &chunk.drawDetails;
-		terrainBuf->getElementData(chunk.bufId, details->vertStart, details->vertCount, details->childBufNo);
-		details->colour = chunk.colour;
+		//terrainBuf->getElementData(chunk.bufId, details->vertStart, details->vertCount, details->childBufNo);
+		//details->colour = chunk.colour;
 
+		//terrain2 stuff
+		details = &chunk.drawDetails2;
+		int addr = terrain2.multiBuf.copyBuf(tempFeedbackBuf2, outSize);
+		details->vertStart = addr / sizeof(vBuf::T3DnormVert);;
+		details->colour = chunk.colour;
+		details->vertCount = outSize / sizeof(vBuf::T3DnormVert);
+		chunk.bufId = addr;
+		sysLog << "\nchunk buf set to " << (unsigned int)addr;
 	//	if (chunk.LoD == 1) {
 	//		findTreePoints(chunk);
 	//		//	findGrassPoints(chunk);
@@ -1402,7 +1408,8 @@ void C3DtestApp::deleteChunkMesh(Chunk2& chunk) {
 	CBaseBuf* terrainBuf = &multiBuf;
 
 	//if (chunk.bufId != 0) //TO DO: temp bug tracking! Should never happen!
-		terrainBuf->deleteBlock(chunk.bufId);
+		//terrainBuf->deleteBlock(chunk.bufId);
+		terrain2.multiBuf.freeBlock(chunk.bufId);
 	chunk.bufId = 0;
 }
 
@@ -1433,15 +1440,21 @@ void C3DtestApp::drawVisibleChunks() {
 	//	sc = visibleSClist[scNo];
 	//	int clSize = sc->chunkList.size();
 	//	for (int chunkNo = 0; chunkNo < clSize; chunkNo++) {
+
+
+	
+		Engine.Renderer.setVAO(terrain2.multiBuf.getVAO());
+
 		for (int chunkNo = 0; chunkNo < terrain2.chunks.size(); chunkNo++) {
 			Chunk2* chunk = &terrain2.chunks[chunkNo];
 			if (chunk->status != chSkinned)
 				continue;
-			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatDiffuse, chunk->drawDetails.colour);
-			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatAmbient, chunk->drawDetails.colour);
+			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatDiffuse, chunk->drawDetails2.colour);
+			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatAmbient, chunk->drawDetails2.colour);
 			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatSpecular, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatShininess, 32.0f);
-			Engine.Renderer.drawMultiBufChildVerts(drawTris, multiBuf, chunk->drawDetails.childBufNo, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
+			//Engine.Renderer.drawMultiBufChildVerts(drawTris, multiBuf, chunk->drawDetails.childBufNo, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
+			Engine.Renderer.drawMultiBufChildVerts(drawTris, multiBuf, chunk->drawDetails.childBufNo, chunk->drawDetails2.vertStart, chunk->drawDetails2.vertCount);
 
 		}
 

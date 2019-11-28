@@ -15,6 +15,7 @@ CHexRenderer::CHexRenderer() : hexModel(6) {
 
 	createLineShader();
 
+	camera.setNearFar(0.1f, 1000.0f);
 	camera.setPos(glm::vec3(0, -0, 12));
 	cameraStep = 0.01f;
 	cameraPitch = 45;
@@ -59,7 +60,7 @@ void CHexRenderer::drawHighlights() {
 	glm::mat4 mvp = camera.clipMatrix * cursorObj->worldMatrix;
 	lineShader->setShaderValue(hColour, floorplanColour);
 	lineShader->setShaderValue(hMVP, mvp);
-//	pRenderer->drawTriStripBuf(solidHexBuf);
+	pRenderer->drawTriStripBuf(solidHexBuf);
 
 
 	glm::vec4 pathStartColour(0, 1, 0, 0.1f);
@@ -144,12 +145,12 @@ void CHexRenderer::fillFloorplanLineBuffer() {
 	std::vector<glm::vec3> verts;
 	std::vector<unsigned int> indices;
 	int index = 0; int vNum = 0;
-	for (int x = 0; x < hexArray->width; x++) {
-		for (int y = 0; y < hexArray->height; y++) {
-			if (hexArray->getHex(x, y).content == 1) {
+	for (int y = 0; y < hexArray->height; y++) {
+		for (int x= 0; x < hexArray->width; x++) {
+			if (hexArray->getHexOffset(x, y).content == 1) {
 				glm::vec3 pos;
 				for (auto corner : hexModel) {
-					pos = corner + hexArray->getHex(x, y).position;
+					pos = corner + hexArray->getHexOffset(x, y).position;
 					verts.push_back(pos);
 					indices.push_back(vNum++);
 					index++;
@@ -174,10 +175,10 @@ void CHexRenderer::fillFloorplanSolidBuffer() {
 	int vNum = 0;
 	for (int x = 0; x < hexArray->width; x++) {
 		for (int y = 0; y < hexArray->height; y++) {
-			if (hexArray->getHex(x, y).content == 2) {
+			if (hexArray->getHexOffset(x, y).content == 2) {
 				glm::vec3 pos;
 				for (auto corner : hexModel) {
-					pos = corner + hexArray->getHex(x, y).position;
+					pos = corner + hexArray->getHexOffset(x, y).position;
 					verts.push_back(pos);
 					vNum++;
 				}

@@ -346,7 +346,7 @@ void CWorldUI::createMainWindow() {
 	//mainTextPanel->setTextStyles(&normalTheme.styles);
 	mainTextPanel->setTextTheme("gameNormal");
 	//mainTextPanel->setTextStyle("mainBody");
-	mainTextPanel->setDefaultTextStyle("mainBody");
+	///////////////mainTextPanel->setDefaultTextStyle("mainBody");
 	pApp->GUIroot.Add(mainTextPanel);
 	mainTextPanel->richText->transcriptLog = &transcript;
 	mainTextPanel->deliveryMode = byCharacter;// byClause;
@@ -370,7 +370,7 @@ void CWorldUI::createInventoryWindow() {
 	invPanelID = invPanel->getUniqueID();
 	//invPanel->setTextStyles(&smallNormalTheme.styles);
 	invPanel->setTextTheme("smallNormal");
-	invPanel->setDefaultTextStyle("small");
+	//////////////////////invPanel->setDefaultTextStyle("small");
 	invPanel->setTextStyle("smallHeader");
 	//got here
 	invPanel->displayText("Inventory:");

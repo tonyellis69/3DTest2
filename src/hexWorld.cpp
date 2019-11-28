@@ -34,7 +34,11 @@ void CHexWorld::start() {
 
 	hexRenderer.start();
 
-	path = hexArray.breadthFirstPath(CHex(0, 0, 0), CHex(12, 0, -12));
+
+	//path = hexArray.breadthFirstPath(CHex(0, 0, 0), CHex(12, 0, -12));
+	//path = hexArray.breadthFirstPath(CHex(0, 0, 0), CHex(0,-12, 12));
+	path = hexArray.breadthFirstPath(CHex(0, 0, 0), CHex(-1, 2, -1));
+	//path = hexArray.aStarPath(CHex(0, 0, 0), CHex(0, -12, 12));
 }
 
 void CHexWorld::keyCheck() {
@@ -63,9 +67,13 @@ void CHexWorld::onMouseWheel(float delta) {
 void CHexWorld::onMouseMove(int x, int y, int key) {
 	//update the hex cursor
 	CHex selectedHex = hexRenderer.pickHex(x, y);
-	setHexCursor(selectedHex);
-	
-	updateCursorPath();
+	if (selectedHex != hexCursor.hexPosition) {
+		setHexCursor(selectedHex);
+		liveLog << "\n" << selectedHex.getCubeVec();
+		if (selectedHex == CHex(5, -1, -4))
+			int b = 0;
+		updateCursorPath();
+	}
 	
 }
 
@@ -119,26 +127,44 @@ CHexObject* CHexWorld::getCursorObj(){
 /** Called every frame to get the hex world up to date.*/
 void CHexWorld::update(float dT) {
 	resolving = false;
+	CHex playerOldHex = playerModel.hexPosition;
 	
 	//cycle through all entities
 	resolving = resolving || playerModel.update(dT);
 
+
+
+	if (!resolving && leftMouseDown) {
+		//hexRenderer.setCursorPath(playerModel.getTravelPath());
+		playerModel.moveOrder();
+	}
+
+
 	//ensure displayed path doesn't jiggle away from travel path
 	if (playerModel.moving)
 		hexRenderer.setCursorPath(playerModel.getTravelPath());
+	else
+		if (playerModel.hexPosition != playerOldHex)
+			updateCursorPath();
 	//TO DO: travel path and cursor path should ultimately be two different 
 	//paths we display
-
-	if (!resolving && leftMouseDown) {
-		playerModel.moveOrder();
-	}
+	//display the travel path OR the cursor path
 }
 
 ///////////////////////Private functions/////////////////////////////////
 
 void CHexWorld::tmpCreateArray() {
 	hexArray.init(40, 40);
-	hexArray.getHex(10, 10).content = 2;
+	hexArray.getHexOffset(10, 10).content = 2;
+
+
+	for (int q = -1; q < 9; q++) {
+		hexArray.getHexAxial(q, -4).content = 2;
+	}
+	hexArray.getHexAxial(0, 0).content = 2;
+	
+
+	
 }
 
 
@@ -151,8 +177,11 @@ void CHexWorld::setHexCursor(CHex& pos) {
 }
 
 void CHexWorld::updateCursorPath() {
-	hexRenderer.setCursorPath(playerModel.hexPosition, hexCursor.hexPosition);
-
+	THexList path;
+	//if (!hexArray.outsideArray(hexCursor.hexPosition) && hexArray.getHexCube(hexCursor.hexPosition).content != 2)
+		 path = hexArray.aStarPath(playerModel.hexPosition, hexCursor.hexPosition);
+	hexRenderer.setCursorPath(path);
+	liveLog << "\npath length " << path.size();
 }
 
 /** Move the player object to the first hex on the cursor path. */

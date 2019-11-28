@@ -40,6 +40,7 @@ private:
 
 	CHexObject playerModel;
 	CHexObject hexCursor;
+	
 
 	bool leftMouseDown;
 
@@ -51,6 +52,7 @@ class IhexWorldCallback {
 public:
 	virtual bool hexKeyNowCallback(int key) { return false; };
 };
+
 
 #define GLFW_KEY_KP_0               320
 #define GLFW_KEY_KP_1               321

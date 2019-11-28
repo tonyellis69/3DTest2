@@ -126,7 +126,7 @@ public:
 	int chunkCall;
 
 	CBaseBuf* tempFeedbackBuf; 
-	CBaseBuf* tempFeedbackBuf2;
+	CBuf tempFeedbackBuf2;
 
 	float bigGap;
 
