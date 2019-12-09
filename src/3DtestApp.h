@@ -88,6 +88,7 @@ public:
 	void onResize(int width, int height);
 
 	bool hexKeyNowCallback(int key) { return keyNow(key); };
+	bool hexMouseButtonNowCallback(int button) { return mouseButtonNow(button); };
 
 	void initHexWorld();
 

@@ -4,41 +4,28 @@
 
 CHexWorld::CHexWorld() {
 	hexRenderer.setCallbackApp(this);
+	resolving = false;
+	leftMouseHeldDown = false;
 }
 
+/** Provide a pointer to the game app to check for mouse input, etc. */
 void CHexWorld::setCallbackApp(IhexWorldCallback* pApp) {
 	pCallbackApp = pApp;
 }
 
-/**	Load the line meshes we're going to use. */
+/**	Load a mesh for storage under the given name. */
 void CHexWorld::addMesh(const std::string& name, std::vector<CMesh>& meshes) {
 	CBuf* meshBuf = hexRenderer.addBuffer(name);
 	meshes[0].writeToBufferv3i(*meshBuf);
 }
 
 void CHexWorld::start() {
-	//create player object
-	playerModel.buf = hexRenderer.getBuffer("test");
-	playerModel.setPosition(0, 0, 0);
-	playerModel.setZheight(0.05f);
+	createHexObjects();
 
-	hexCursor.buf = hexRenderer.getBuffer("test");
-	hexCursor.setPosition(0, 0, 0);
-
-	resolving = false;
-	leftMouseDown = false;
-
-
-	tmpCreateArray();
+	createRoom(31,21);
 	hexRenderer.setMap(&hexArray);
 
-	hexRenderer.start();
-
-
-	//path = hexArray.breadthFirstPath(CHex(0, 0, 0), CHex(12, 0, -12));
-	//path = hexArray.breadthFirstPath(CHex(0, 0, 0), CHex(0,-12, 12));
-	path = hexArray.breadthFirstPath(CHex(0, 0, 0), CHex(-1, 2, -1));
-	//path = hexArray.aStarPath(CHex(0, 0, 0), CHex(0, -12, 12));
+	hexRenderer.start();	
 }
 
 void CHexWorld::keyCheck() {
@@ -54,6 +41,12 @@ void CHexWorld::keyCheck() {
 	else if (pCallbackApp->hexKeyNowCallback('D')) {
 		hexRenderer.moveCamera({ 1,0,0 });
 	}
+
+	if (pCallbackApp->hexMouseButtonNowCallback(GLFW_MOUSE_BUTTON_LEFT)) {
+		if (!playerModel.moving) {
+			playerModel.startTravel();
+		}
+	}
 }
 
 void CHexWorld::onMouseWheel(float delta) {
@@ -65,51 +58,27 @@ void CHexWorld::onMouseWheel(float delta) {
 }
 
 void CHexWorld::onMouseMove(int x, int y, int key) {
-	//update the hex cursor
-	CHex selectedHex = hexRenderer.pickHex(x, y);
-	if (selectedHex != hexCursor.hexPosition) {
-		setHexCursor(selectedHex);
-		liveLog << "\n" << selectedHex.getCubeVec();
-		if (selectedHex == CHex(5, -1, -4))
-			int b = 0;
-		updateCursorPath();
-	}
-	
+	CHex mouseHex = hexRenderer.pickHex(x, y);
+	if (mouseHex != hexCursor.hexPosition)
+		onCursorMove(mouseHex);
 }
 
 
 void CHexWorld::onKeyDown(int key, long mod) {
-	switch (key) {
-	case GLFW_KEY_KP_9:
-		playerModel.move(hexNE); break;
-	case GLFW_KEY_KP_6:
-		playerModel.move(hexEast); break;
-	case GLFW_KEY_KP_3:
-		playerModel.move(hexSE); break;
-	case GLFW_KEY_KP_1:
-		playerModel.move(hexSW); break;
-	case GLFW_KEY_KP_4:
-		playerModel.move(hexWest); break;
-	case GLFW_KEY_KP_7:
-		playerModel.move(hexNW); break;
-
-	}
-
-	updateCursorPath();
+	
 }
 
 void CHexWorld::onMouseButton(int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT &&  action == GLFW_PRESS) {
-		if (!resolving)
-			movePlayerDownPath();
-		leftMouseDown = true;
+		if (!resolving) {
+			playerModel.startTravel();
+		}
+		leftMouseHeldDown = true;
 	}
 	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-		leftMouseDown = false;
+		leftMouseHeldDown = false;
 	}
-
 }
-
 
 
 void CHexWorld::draw() {
@@ -128,67 +97,104 @@ CHexObject* CHexWorld::getCursorObj(){
 void CHexWorld::update(float dT) {
 	resolving = false;
 	CHex playerOldHex = playerModel.hexPosition;
-	
-	//cycle through all entities
-	resolving = resolving || playerModel.update(dT);
 
-
-
-	if (!resolving && leftMouseDown) {
-		//hexRenderer.setCursorPath(playerModel.getTravelPath());
-		playerModel.moveOrder();
+	for (auto entity : entities) {
+		resolving |= entity->update(dT);
 	}
 
+	if (playerModel.hexPosition != playerOldHex) {
+		gameTurn();
+	}
+}
 
-	//ensure displayed path doesn't jiggle away from travel path
-	if (playerModel.moving)
-		hexRenderer.setCursorPath(playerModel.getTravelPath());
-	else
-		if (playerModel.hexPosition != playerOldHex)
-			updateCursorPath();
-	//TO DO: travel path and cursor path should ultimately be two different 
-	//paths we display
-	//display the travel path OR the cursor path
+/** Provides a callback function for using hexArray's pathfinding facility. */
+THexList CHexWorld::getPathCallback(CHex& start, CHex& end) {
+	return hexArray.aStarPath(start,end);
 }
 
 ///////////////////////Private functions/////////////////////////////////
 
-void CHexWorld::tmpCreateArray() {
-	hexArray.init(40, 40);
-	hexArray.getHexOffset(10, 10).content = 2;
+void CHexWorld::createHexObjects() {
+	playerModel.buf = hexRenderer.getBuffer("test");
+	playerModel.setPosition(0, 0, 0);
+	playerModel.setCallbackObj(this);
 
+	robot.buf = hexRenderer.getBuffer("test");
+	robot.setPosition(-5, -5);
+	robot.isRobot = true;
+	robot.setCallbackObj(this);
 
-	for (int q = -1; q < 9; q++) {
-		hexArray.getHexAxial(q, -4).content = 2;
+	robot2.buf = hexRenderer.getBuffer("test");
+	robot2.setPosition(5, -5);
+	robot2.isRobot = true;
+	robot2.setCallbackObj(this);
+
+	entities.push_back(&playerModel);
+	entities.push_back(&robot);
+	entities.push_back(&robot2);
+
+	hexCursor.buf = hexRenderer.getBuffer("cursor");
+	hexCursor.setPosition(0, 0, 0);
+}
+
+void CHexWorld::createRoom(int w, int h) {
+	glm::i32vec2 margin(1);
+	glm::i32vec2 boundingBox = glm::i32vec2(w,h) + margin * 2;
+
+	hexArray.init(boundingBox.x, boundingBox.y);
+
+	glm::i32vec2 tL = margin;
+	glm::i32vec2 bR = boundingBox - margin;
+
+	for (int y = 0; y < boundingBox.y; y++) {
+		for (int x = 0; x < boundingBox.x; x++) {
+			if (x < tL.x || x >= bR.x || y < tL.y || y >= bR.y)
+				hexArray.getHexOffset(x, y).content = 2;
+			else
+				hexArray.getHexOffset(x, y).content = 1;
+		}
 	}
-	hexArray.getHexAxial(0, 0).content = 2;
-	
 
+	//create a few walls
+	for (int s = 0; s < 8; s++) {
+		hexArray.getHexOffset(7 + s, 7).content = 2;
+		hexArray.getHexOffset(14, 7+s).content = 2;
+
+		hexArray.getHexOffset(18 + s, 14).content = 2;
+		hexArray.getHexOffset(25, 14 + s).content = 2;
+
+	}
 	
 }
 
+/** Respend to cursor moving to a new hex. */
+void CHexWorld::onCursorMove(CHex& mouseHex) {
+	setHexCursor(mouseHex);
+	playerModel.findTravelPath(hexCursor.hexPosition);	
+}
 
-CHexObject* CHexWorld::getEntity() {
-	return &playerModel;
+
+TEntities* CHexWorld::getEntities() {
+	return &entities;
+}
+
+/** Return the player object's current travel path. */
+THexList* CHexWorld::getPlayerPath() {
+	return &playerModel.getTravelPath();
 }
 
 void CHexWorld::setHexCursor(CHex& pos) {
 	hexCursor.setPosition(pos.x,pos.y,pos.z);
 }
 
-void CHexWorld::updateCursorPath() {
-	THexList path;
-	//if (!hexArray.outsideArray(hexCursor.hexPosition) && hexArray.getHexCube(hexCursor.hexPosition).content != 2)
-		 path = hexArray.aStarPath(playerModel.hexPosition, hexCursor.hexPosition);
-	hexRenderer.setCursorPath(path);
-	liveLog << "\npath length " << path.size();
-}
 
-/** Move the player object to the first hex on the cursor path. */
-void CHexWorld::movePlayerDownPath() {
+/** Perform all the actions of a game turn. */
+void CHexWorld::gameTurn() {
+	//robot default actions - temp!
+	robot.findTravelPath(playerModel.hexPosition);
+	robot.startTravel();
 
-	playerModel.setTravelPath(hexRenderer.getCursorPath());
-
-	playerModel.moveOrder();
+	robot2.findTravelPath(playerModel.hexPosition);
+	robot2.startTravel();
 
 }

@@ -2,10 +2,11 @@
 
 #include "hexRenderer.h"
 #include "hex/hexObject.h"
+#include "robot.h"
 
 /** A class encapsulating the hex-based representation of the world. */
 class IhexWorldCallback;
-class CHexWorld : public IhexRendererCallback {
+class CHexWorld : public IhexRendererCallback, public IhexObjectCallback {
 public:
 	CHexWorld();
 	void setCallbackApp(IhexWorldCallback* pApp);
@@ -20,16 +21,17 @@ public:
 	void setAspectRatio(glm::vec2 ratio);
 	CHexObject* getCursorObj();
 	void update(float dt);
+	THexList getPathCallback(CHex& start, CHex& end);
 
 private:
-	void tmpCreateArray();
-	CHexObject* getEntity();
+	void createHexObjects();
+	void createRoom(int w, int h);
+	void onCursorMove(CHex& mouseHex);
+	TEntities* getEntities();
+	THexList* getPlayerPath();
 	void setHexCursor(CHex& pos);
-	void updateCursorPath();
-	void movePlayerDownPath();
-	THexList* getPath() {
-		return &path;
-	};
+	void gameTurn();
+
 
 
 	CHexArray hexArray;
@@ -40,17 +42,24 @@ private:
 
 	CHexObject playerModel;
 	CHexObject hexCursor;
+	CRobot robot;
+	CRobot robot2;
+
+	TEntities entities; ///<Live objects in the hex world.
 	
 
-	bool leftMouseDown;
+	bool leftMouseHeldDown;
+
+	//THexList playerTravelPath;  ///<Route player object will follow if moving.
 
 	bool resolving; ///<Player can't act while true.
-	THexList path;
+
 };
 
 class IhexWorldCallback {
 public:
 	virtual bool hexKeyNowCallback(int key) { return false; };
+	virtual bool hexMouseButtonNowCallback(int button) { return false; }
 };
 
 

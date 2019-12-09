@@ -126,6 +126,7 @@
     <ClCompile Include="src\hexWorld.cpp" />
     <ClCompile Include="src\localHotList.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\robot.cpp" />
     <ClCompile Include="src\worldUI.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +139,7 @@
     <ClInclude Include="src\hexRenderer.h" />
     <ClInclude Include="src\hexWorld.h" />
     <ClInclude Include="src\localHotList.h" />
+    <ClInclude Include="src\robot.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3DEngine\3DEngine\3DEngine.vcxproj">

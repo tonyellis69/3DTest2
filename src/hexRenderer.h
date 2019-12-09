@@ -39,7 +39,7 @@ private:
 	void tmpCreateHexagonModel();
 
 	void fillFloorplanLineBuffer();
-	void fillFloorplanSolidBuffer();
+	void fillFloorplanSolidBuffer(CBuf& buf, int drawValue, float scale);
 	void createSolidHexModel();
 	void createLineShader();
 	void drawFloorPlan();
@@ -48,7 +48,9 @@ private:
 
 	CRenderer* pRenderer;
 	CBuf floorplanLineBuf;
+	CBuf floorplanSpaceBuf;
 	CBuf floorplanSolidBuf;
+
 	CBuf solidHexBuf;
 	std::vector<glm::vec3> hexModel;
 
@@ -56,7 +58,9 @@ private:
 	unsigned int hMVP;
 	unsigned int hColour;
 
-	glm::vec4 floorplanColour;
+	glm::vec4 floorplanLineColour;
+	glm::vec4 floorplanSpaceColour;
+	glm::vec4 floorplanSolidColour;
 
 	CCamera camera;
 	float cameraStep; ///<Amount by which camera moves in WASD.
@@ -72,10 +76,11 @@ private:
 
 
 class IhexRendererCallback {
-public:
-	virtual CHexObject* getEntity() { return NULL; }
+	public:
+
+	virtual TEntities* getEntities() { return NULL; }
 	virtual CHexObject* getCursorObj() { return NULL; }
-	virtual THexList* getPath() { return NULL; }
+	virtual THexList* getPlayerPath() { return NULL; }
 };
 
 

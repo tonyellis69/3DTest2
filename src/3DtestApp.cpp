@@ -51,25 +51,19 @@ void C3DtestApp::onStart() {
 
 
 	//test objects, temporary
-	//cube = Engine.createCube(vec3(-3, 300, -3), vec3(1.0f)); Engine.modelDrawList.push_back(cube);
-
 	cube.loadMesh(shape::cubeMesh());
 	cube.setPos(vec3(-3, 300, -3));
 	Engine.modelDrawList.push_back(&cube);
 
-//	Engine.modelDrawList.push_back(Engine.createCube(vec3(3, 300, -3), vec3(1.0f)));
 	cube2.loadMesh(shape::cubeMesh());
 	cube2.setPos(vec3(3, 300, -3));
 	Engine.modelDrawList.push_back(&cube2);
 
-
-//	Engine.createCylinder(vec3(0, 300, -4), 1, 2, 30);
 	cylinder.loadMesh(shape::cylinderMesh(1,2,30));
 	cylinder.setPos(vec3(0, 300, -4));
 	Engine.modelDrawList.push_back(&cylinder);
 
 	//position the default camera
-	
 	Engine.getCurrentCamera()->setPos(vec3(-3, 300, 3));
 	Engine.getCurrentCamera()->lookAt(vec3(0.0746933, -0.291096, 0.953797));
 
@@ -1379,7 +1373,7 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 		TDrawDetails* details = &chunk.drawDetails;
 		//terrainBuf->getElementData(chunk.bufId, details->vertStart, details->vertCount, details->childBufNo);
 		//details->colour = chunk.colour;
-
+		
 		//terrain2 stuff
 		details = &chunk.drawDetails2;
 		int addr = terrain2.multiBuf.copyBuf(tempFeedbackBuf2, outSize);
@@ -1511,6 +1505,9 @@ void C3DtestApp::initHexWorld() {
 	hexWorld.setCallbackApp(this);
 	importer.loadFile(dataPath + "models\\test.obj");
 	hexWorld.addMesh("test",importer.getMeshes());
+	importer.loadFile(dataPath + "models\\cursor.obj");
+	hexWorld.addMesh("cursor", importer.getMeshes());
+
 	//... more models
 
 	hexWorld.start();

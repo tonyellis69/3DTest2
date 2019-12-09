@@ -21,15 +21,19 @@ CHexRenderer::CHexRenderer() : hexModel(6) {
 	cameraPitch = 45;
 	camera.pitch(cameraPitch);
 
-	floorplanColour = glm::vec4(0, 1, 0, 1);
-
+	floorplanLineColour = glm::vec4(0.3, 1, 0.3, 1);
+	floorplanSpaceColour = glm::vec4(0.6431, 0.7412, 0.9882, 0.03);
+	floorplanSpaceColour = glm::vec4(0, 0, 0, 1);
+	floorplanSolidColour = glm::vec4(0, 0.65f, 0, 1);
+	floorplanSolidColour = glm::vec4(0, 0.47f, 0.16f, 1);
 }
 
 
 void CHexRenderer::start() {
 	
 	fillFloorplanLineBuffer();
-	fillFloorplanSolidBuffer();
+	fillFloorplanSolidBuffer(floorplanSolidBuf,2,1);
+	fillFloorplanSolidBuffer(floorplanSpaceBuf, 1,0.9f);
 
 }
 
@@ -49,46 +53,44 @@ void CHexRenderer::drawFloorPlan() {
 	glm::mat4 mvp = camera.clipMatrix;
 	pRenderer->setShader(lineShader);
 	lineShader->setShaderValue(hMVP, mvp);
-	lineShader->setShaderValue(hColour, floorplanColour);
-	pRenderer->drawLineStripBuf(floorplanLineBuf);
+	
+	glDisable(GL_DEPTH_TEST);
+	lineShader->setShaderValue(hColour, floorplanSpaceColour);
+	pRenderer->drawTriStripBuf(floorplanSpaceBuf);
+
+	lineShader->setShaderValue(hColour, floorplanSolidColour);
 	pRenderer->drawTriStripBuf(floorplanSolidBuf);
+
+
+	lineShader->setShaderValue(hColour, floorplanLineColour);
+	pRenderer->drawLineStripBuf(floorplanLineBuf);
+	glEnable(GL_DEPTH_TEST);
 }
 
 /** Draw any hey highlighting, such as the cursor. */
 void CHexRenderer::drawHighlights() {
 	CHexObject* cursorObj = pCallbackObj->getCursorObj();
 	glm::mat4 mvp = camera.clipMatrix * cursorObj->worldMatrix;
-	lineShader->setShaderValue(hColour, floorplanColour);
+	lineShader->setShaderValue(hColour, floorplanLineColour);
 	lineShader->setShaderValue(hMVP, mvp);
-	pRenderer->drawTriStripBuf(solidHexBuf);
+	pRenderer->drawLinesBuf(*cursorObj->buf);
 
 
-	glm::vec4 pathStartColour(0, 1, 0, 0.1f);
-	glm::vec4 pathEndColour(0, 1, 0, 0.75f);
-	float inc = 1.0 / cursorPath.size();  float t = 0;
-	for (auto hex : cursorPath) {
-		glm::mat4 worldPos = glm::translate(glm::mat4(1), hexArray->getWorldPos(hex));
-		mvp = camera.clipMatrix * worldPos;
-		lineShader->setShaderValue(hMVP, mvp);
-		glm::vec4 pathColour = glm::mix(pathStartColour, pathEndColour, t);
-		lineShader->setShaderValue(hColour, pathColour);
-		pRenderer->drawTriStripBuf(solidHexBuf);
-		t += inc;
-	}
-
-	THexList* path = pCallbackObj->getPath();
-	pathStartColour = { 1,0, 0, 0.1f };
-	pathEndColour = { 1,0, 0, 0.75f };
-	 inc = 1.0 / path->size();   t = 0;
+	glm::vec4 pathStartColour(0.6, 0.4, 1, 0.1f);
+	glm::vec4 pathEndColour(0.6, 0.4, 1, 0.75f);
+	THexList* path = pCallbackObj->getPlayerPath();
+	float inc = 1.0 / path->size();  float t = 0;
 	for (auto hex : *path) {
 		glm::mat4 worldPos = glm::translate(glm::mat4(1), hexArray->getWorldPos(hex));
 		mvp = camera.clipMatrix * worldPos;
 		lineShader->setShaderValue(hMVP, mvp);
-		glm::vec4 pathColour = glm::mix(pathStartColour, pathEndColour, t);
+		glm::vec4 pathColour = glm::mix(pathStartColour, pathEndColour, 1-t);
 		lineShader->setShaderValue(hColour, pathColour);
 		pRenderer->drawTriStripBuf(solidHexBuf);
 		t += inc;
 	}
+
+
 
 
 
@@ -96,11 +98,21 @@ void CHexRenderer::drawHighlights() {
 }
 
 void CHexRenderer::drawEntities() {
-	CHexObject* playerObj = pCallbackObj->getEntity();
+	TEntities* entities = pCallbackObj->getEntities();
+	for (auto entity : *entities) {
+		glm::mat4 mvp = camera.clipMatrix * entity->worldMatrix;
+		lineShader->setShaderValue(hMVP, mvp);
+		lineShader->setShaderValue(hColour, floorplanLineColour);
+		pRenderer->drawLineStripBuf(*entity->buf);
+	}
+
+	/*CHexObject* playerObj = pCallbackObj->getEntities();
 	glm::mat4 mvp = camera.clipMatrix * playerObj->worldMatrix;
 	lineShader->setShaderValue(hMVP, mvp);
-	lineShader->setShaderValue(hColour, floorplanColour);
+	lineShader->setShaderValue(hColour, floorplanLineColour);
 	pRenderer->drawLineStripBuf(*playerObj->buf);
+
+	*/
 }
 
 
@@ -147,7 +159,7 @@ void CHexRenderer::fillFloorplanLineBuffer() {
 	int index = 0; int vNum = 0;
 	for (int y = 0; y < hexArray->height; y++) {
 		for (int x= 0; x < hexArray->width; x++) {
-			if (hexArray->getHexOffset(x, y).content == 1) {
+			if (hexArray->getHexOffset(x, y).content != 0) {
 				glm::vec3 pos;
 				for (auto corner : hexModel) {
 					pos = corner + hexArray->getHexOffset(x, y).position;
@@ -169,16 +181,16 @@ void CHexRenderer::fillFloorplanLineBuffer() {
 
 
 /** Fill the floorplan solid buffer with solid hexagon polys translated to worldspace. */
-void CHexRenderer::fillFloorplanSolidBuffer() {
+void CHexRenderer::fillFloorplanSolidBuffer(CBuf& buf, int drawValue, float scale) {
 	std::vector<glm::vec3> verts;
 	std::vector<unsigned int> indices;
 	int vNum = 0;
 	for (int x = 0; x < hexArray->width; x++) {
 		for (int y = 0; y < hexArray->height; y++) {
-			if (hexArray->getHexOffset(x, y).content == 2) {
+			if (hexArray->getHexOffset(x, y).content == drawValue) {
 				glm::vec3 pos;
 				for (auto corner : hexModel) {
-					pos = corner + hexArray->getHexOffset(x, y).position;
+					pos = (corner * scale) + hexArray->getHexOffset(x, y).position;
 					verts.push_back(pos);
 					vNum++;
 				}
@@ -194,9 +206,9 @@ void CHexRenderer::fillFloorplanSolidBuffer() {
 
 	}
 
-	floorplanSolidBuf.storeVertexes((void*)verts.data(), sizeof(glm::vec3) * verts.size(), verts.size());
-	floorplanSolidBuf.storeIndex(indices.data(), indices.size());
-	floorplanSolidBuf.storeLayout(3, 0, 0, 0);
+	buf.storeVertexes((void*)verts.data(), sizeof(glm::vec3) * verts.size(), verts.size());
+	buf.storeIndex(indices.data(), indices.size());
+	buf.storeLayout(3, 0, 0, 0);
 }
 
 void CHexRenderer::createSolidHexModel() {
