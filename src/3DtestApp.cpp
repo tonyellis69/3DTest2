@@ -37,7 +37,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //hexMode;
+	appMode = textMode;// texGenMode;// terrainMode; //textMode; //hexMode;
 
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));
@@ -1179,6 +1179,8 @@ void C3DtestApp::updateHeightmapImage() {
 	//heightmapImage->setTexture((CBaseTexture&)mainFont.texture);
 	heightmapImage->setTexture((CBaseTexture&)terrain.tmpTerrainMap);
 
+	
+
 	return;
 
 
@@ -1507,6 +1509,11 @@ void C3DtestApp::initHexWorld() {
 	hexWorld.addMesh("test",importer.getMeshes());
 	importer.loadFile(dataPath + "models\\cursor.obj");
 	hexWorld.addMesh("cursor", importer.getMeshes());
+
+	importer.loadFile(dataPath + "models\\player.obj");
+	hexWorld.addMesh("player", importer.getSingleMesh());
+	importer.loadFile(dataPath + "models\\robot.obj");
+	hexWorld.addMesh("robot", importer.getSingleMesh());
 
 	//... more models
 

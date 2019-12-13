@@ -23,8 +23,16 @@ void main()
 	
 	
 	
-	alpha *= 1.0 - fade;
+	
+	
+	
+	////////////////!!!!!!!!!removed while remaking lineBuffer
+	//alpha *= 1.0 - fade;
 	
 	colour =  vec4(textColour.rgb, alpha * textColour.a );
+	
+	
+	
+	
 	
 };

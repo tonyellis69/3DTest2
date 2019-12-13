@@ -28,17 +28,16 @@ CHexRenderer::CHexRenderer() : hexModel(6) {
 	floorplanSolidColour = glm::vec4(0, 0.47f, 0.16f, 1);
 }
 
-
+/** Set up stuff based on the map we're on, etc. */
 void CHexRenderer::start() {
-	
 	fillFloorplanLineBuffer();
 	fillFloorplanSolidBuffer(floorplanSolidBuf,2,1);
 	fillFloorplanSolidBuffer(floorplanSpaceBuf, 1,0.9f);
-
 }
 
 void CHexRenderer::setMap(CHexArray* hexArray){
 	this->hexArray = hexArray;
+	hexArray->setEntityList(pCallbackObj->getEntities());
 }
 
 
@@ -103,7 +102,8 @@ void CHexRenderer::drawEntities() {
 		glm::mat4 mvp = camera.clipMatrix * entity->worldMatrix;
 		lineShader->setShaderValue(hMVP, mvp);
 		lineShader->setShaderValue(hColour, floorplanLineColour);
-		pRenderer->drawLineStripBuf(*entity->buf);
+		//pRenderer->drawLineStripBuf(*entity->buf);
+		pRenderer->drawLinesBuf(*entity->buf);
 	}
 
 	/*CHexObject* playerObj = pCallbackObj->getEntities();

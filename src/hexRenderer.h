@@ -35,7 +35,6 @@ public:
 	THexList& getCursorPath() { return cursorPath; }
 
 private:
-	void tmpCreateArray();
 	void tmpCreateHexagonModel();
 
 	void fillFloorplanLineBuffer();

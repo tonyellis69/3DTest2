@@ -40,7 +40,9 @@ extern CSuperChunk* dbgSC;
 //extern float xAdj;
 //extern float yAdj;
 
-enum TAppMode {terrainMode, textMode, texGenMode, hexMode};
+enum TAppMode { terrainMode, textMode, texGenMode, hexMode };
+
+
 
 class C3DtestApp : public  CBaseApp , public ITerrainCallback,
 	public IhexWorldCallback {
@@ -191,7 +193,7 @@ public:
 	Compositor texCompositor;
 	CTexGenUI texGenUI;
 
-	TAppMode appMode;
+	
 	CBuf wireCube;
 	CShader* wire2Shader;
 	unsigned int hWireMVP;
@@ -213,6 +215,8 @@ public:
 
 	CHexRenderer hexRenderer;
 	CHexWorld hexWorld; //TO DO: replaces the above
+
+	TAppMode appMode;
 	
 };
 

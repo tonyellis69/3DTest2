@@ -1,4 +1,24 @@
+A short first line. 
+This is a longer second line, about three times as long at least, definitely. 
+Another short line. 
+And another long line, are we seeing any kind of pattern yet in all of this?
 
+That was a line gap, did it make a difference?
+
+
+And that was a double line gap. 
+Now here is a section of text that is going to run on for some lines, on and on and on in the interest of seeing what difference that makes. Of the trail of ink there is no end, as the man said. How many lines is this, I wonder. Enough to make a difference? We shall see. 
+
+Another line gap. Done. 
+line one
+line two
+line three
+line five
+line six
+line seven
+line eight
+one more line to cause a scroll... 
+...this one
 
 Bare room
 This is a plain, unremarkable room. Exits lead south and southwest. 

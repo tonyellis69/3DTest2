@@ -11,6 +11,7 @@ public:
 	CHexWorld();
 	void setCallbackApp(IhexWorldCallback* pApp);
 	void addMesh(const std::string& name, std::vector<CMesh>& meshes);
+	void addMesh(const std::string& name, CMesh& mesh);
 	void start();
 	void keyCheck();
 	void onMouseWheel(float delta);
@@ -53,7 +54,7 @@ private:
 	//THexList playerTravelPath;  ///<Route player object will follow if moving.
 
 	bool resolving; ///<Player can't act while true.
-
+	bool gameTurnActive;
 };
 
 class IhexWorldCallback {

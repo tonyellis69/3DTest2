@@ -350,7 +350,7 @@ void CWorldUI::createMainWindow() {
 	pApp->GUIroot.Add(mainTextPanel);
 	mainTextPanel->richText->transcriptLog = &transcript;
 	mainTextPanel->deliveryMode = byCharacter;// byClause;
-	mainTextPanel->setLineFadeIn(true);
+	mainTextPanel->setLineFadeIn(false);
 	mainTextPanel->setGUIcallback(this);
 }
 

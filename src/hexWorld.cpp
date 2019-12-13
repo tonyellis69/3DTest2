@@ -6,6 +6,7 @@ CHexWorld::CHexWorld() {
 	hexRenderer.setCallbackApp(this);
 	resolving = false;
 	leftMouseHeldDown = false;
+	gameTurnActive = false;
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
@@ -17,6 +18,12 @@ void CHexWorld::setCallbackApp(IhexWorldCallback* pApp) {
 void CHexWorld::addMesh(const std::string& name, std::vector<CMesh>& meshes) {
 	CBuf* meshBuf = hexRenderer.addBuffer(name);
 	meshes[0].writeToBufferv3i(*meshBuf);
+}
+
+/**	Load a mesh for storage under the given name. */
+void CHexWorld::addMesh(const std::string& name, CMesh& mesh) {
+	CBuf* meshBuf = hexRenderer.addBuffer(name);
+	mesh.writeToBufferv3i(*meshBuf);
 }
 
 void CHexWorld::start() {
@@ -43,7 +50,7 @@ void CHexWorld::keyCheck() {
 	}
 
 	if (pCallbackApp->hexMouseButtonNowCallback(GLFW_MOUSE_BUTTON_LEFT)) {
-		if (!playerModel.moving) {
+		if (!resolving && !playerModel.moving && !gameTurnActive) {
 			playerModel.startTravel();
 		}
 	}
@@ -103,8 +110,14 @@ void CHexWorld::update(float dT) {
 	}
 
 	if (playerModel.hexPosition != playerOldHex) {
+		gameTurnActive = true;
+	}
+
+	if (gameTurnActive) {
 		gameTurn();
 	}
+	//need to find another way to do this. 
+	//A turn shouln't be driven by the player moving one hex
 }
 
 /** Provides a callback function for using hexArray's pathfinding facility. */
@@ -115,16 +128,16 @@ THexList CHexWorld::getPathCallback(CHex& start, CHex& end) {
 ///////////////////////Private functions/////////////////////////////////
 
 void CHexWorld::createHexObjects() {
-	playerModel.buf = hexRenderer.getBuffer("test");
+	playerModel.buf = hexRenderer.getBuffer("player");
 	playerModel.setPosition(0, 0, 0);
 	playerModel.setCallbackObj(this);
 
-	robot.buf = hexRenderer.getBuffer("test");
+	robot.buf = hexRenderer.getBuffer("robot");
 	robot.setPosition(-5, -5);
 	robot.isRobot = true;
 	robot.setCallbackObj(this);
 
-	robot2.buf = hexRenderer.getBuffer("test");
+	robot2.buf = hexRenderer.getBuffer("robot");
 	robot2.setPosition(5, -5);
 	robot2.isRobot = true;
 	robot2.setCallbackObj(this);
@@ -191,10 +204,17 @@ void CHexWorld::setHexCursor(CHex& pos) {
 /** Perform all the actions of a game turn. */
 void CHexWorld::gameTurn() {
 	//robot default actions - temp!
+	if (resolving) {
+		return;
+	}
+		
+
 	robot.findTravelPath(playerModel.hexPosition);
 	robot.startTravel();
+	
 
 	robot2.findTravelPath(playerModel.hexPosition);
 	robot2.startTravel();
 
+	gameTurnActive = false;
 }
