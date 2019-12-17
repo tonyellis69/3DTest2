@@ -126,6 +126,7 @@
     <ClCompile Include="src\hexWorld.cpp" />
     <ClCompile Include="src\localHotList.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\playerHexObj.cpp" />
     <ClCompile Include="src\robot.cpp" />
     <ClCompile Include="src\worldUI.cpp" />
   </ItemGroup>
@@ -139,6 +140,7 @@
     <ClInclude Include="src\hexRenderer.h" />
     <ClInclude Include="src\hexWorld.h" />
     <ClInclude Include="src\localHotList.h" />
+    <ClInclude Include="src\playerHexObj.h" />
     <ClInclude Include="src\robot.h" />
   </ItemGroup>
   <ItemGroup>

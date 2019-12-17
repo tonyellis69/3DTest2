@@ -1,4 +1,4 @@
-*** Friday December 13, 2019  time: 19:29:04 ***
+*** Tuesday December 17, 2019  time: 17:28:55 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
@@ -9,7 +9,6 @@ BaseApp constructor finished. Yay!
 
 Player offence 0 defence 0
 Player offence 0 defence 0
-scroll: 8
 splitting! highest reserved addr 36864 freeblocks 1 reserved blocks 1
 chunk buf set to 0
 splitting! highest reserved addr 73728 freeblocks 1 reserved blocks 2
@@ -30,7 +29,6 @@ splitting! highest reserved addr 331776 freeblocks 1 reserved blocks 9
 chunk buf set to 294912
 splitting! highest reserved addr 368640 freeblocks 1 reserved blocks 10
 chunk buf set to 331776
-scroll: 8
 splitting! highest reserved addr 405504 freeblocks 1 reserved blocks 11
 chunk buf set to 368640
 splitting! highest reserved addr 442368 freeblocks 1 reserved blocks 12
@@ -51,7 +49,6 @@ splitting! highest reserved addr 672768 freeblocks 1 reserved blocks 19
 chunk buf set to 635904
 splitting! highest reserved addr 709632 freeblocks 1 reserved blocks 20
 chunk buf set to 672768
-scroll: 8
 splitting! highest reserved addr 746496 freeblocks 1 reserved blocks 21
 chunk buf set to 709632
 splitting! highest reserved addr 783360 freeblocks 1 reserved blocks 22
@@ -72,7 +69,6 @@ splitting! highest reserved addr 1034496 freeblocks 1 reserved blocks 29
 chunk buf set to 997632
 splitting! highest reserved addr 1071360 freeblocks 1 reserved blocks 30
 chunk buf set to 1034496
-scroll: 8
 splitting! highest reserved addr 1108224 freeblocks 1 reserved blocks 31
 chunk buf set to 1071360
 splitting! highest reserved addr 1138176 freeblocks 1 reserved blocks 32
@@ -93,7 +89,6 @@ splitting! highest reserved addr 1396224 freeblocks 1 reserved blocks 39
 chunk buf set to 1359360
 splitting! highest reserved addr 1433088 freeblocks 1 reserved blocks 40
 chunk buf set to 1396224
-scroll: 6
 splitting! highest reserved addr 1469952 freeblocks 1 reserved blocks 41
 chunk buf set to 1433088
 splitting! highest reserved addr 1506816 freeblocks 1 reserved blocks 42
@@ -114,7 +109,6 @@ splitting! highest reserved addr 1764864 freeblocks 1 reserved blocks 49
 chunk buf set to 1728000
 splitting! highest reserved addr 1801728 freeblocks 1 reserved blocks 50
 chunk buf set to 1764864
-scroll: 0
 splitting! highest reserved addr 1838592 freeblocks 1 reserved blocks 51
 chunk buf set to 1801728
 splitting! highest reserved addr 1875456 freeblocks 1 reserved blocks 52

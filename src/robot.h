@@ -6,8 +6,9 @@
 	behaviour. */
 class CRobot : public CHexObject {
 public:
+	void chooseTurnAction();
+	bool update(float dT);
 
-	
 
 
 

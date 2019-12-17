@@ -5,7 +5,6 @@
 CHexWorld::CHexWorld() {
 	hexRenderer.setCallbackApp(this);
 	resolving = false;
-	leftMouseHeldDown = false;
 	gameTurnActive = false;
 }
 
@@ -50,8 +49,8 @@ void CHexWorld::keyCheck() {
 	}
 
 	if (pCallbackApp->hexMouseButtonNowCallback(GLFW_MOUSE_BUTTON_LEFT)) {
-		if (!resolving && !playerModel.moving && !gameTurnActive) {
-			playerModel.startTravel();
+		if (!resolving && !playerObj.moving && !gameTurnActive) {
+			playerObj.newMove();
 		}
 	}
 }
@@ -71,19 +70,11 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 }
 
 
-void CHexWorld::onKeyDown(int key, long mod) {
-	
-}
-
 void CHexWorld::onMouseButton(int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT &&  action == GLFW_PRESS) {
 		if (!resolving) {
-			playerModel.startTravel();
+			playerObj.newMove();
 		}
-		leftMouseHeldDown = true;
-	}
-	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-		leftMouseHeldDown = false;
 	}
 }
 
@@ -92,7 +83,8 @@ void CHexWorld::draw() {
 	hexRenderer.draw();
 }
 
-void CHexWorld::setAspectRatio(glm::vec2 ratio) {
+/** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
+void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 	hexRenderer.setCameraAspectRatio(ratio);
 }
 
@@ -103,34 +95,47 @@ CHexObject* CHexWorld::getCursorObj(){
 /** Called every frame to get the hex world up to date.*/
 void CHexWorld::update(float dT) {
 	resolving = false;
-	CHex playerOldHex = playerModel.hexPosition;
+	CHex playerOldHex = playerObj.hexPosition;
 
 	for (auto entity : entities) {
 		resolving |= entity->update(dT);
 	}
 
-	if (playerModel.hexPosition != playerOldHex) {
-		gameTurnActive = true;
+	if (!resolving && gameTurnActive) {
+		gameWorldTurn();
 	}
-
-	if (gameTurnActive) {
-		gameTurn();
-	}
-	//need to find another way to do this. 
-	//A turn shouln't be driven by the player moving one hex
 }
 
 /** Provides a callback function for using hexArray's pathfinding facility. */
-THexList CHexWorld::getPathCallback(CHex& start, CHex& end) {
+THexList CHexWorld::getPathCB(CHex& start, CHex& end) {
 	return hexArray.aStarPath(start,end);
+}
+
+/** A callback function for finding what entity is at the given hex. */
+CHexObject* CHexWorld::getEntityAtCB(CHex& hex) {
+	for (auto entity : entities) {
+		if (entity->hexPosition == hex)
+			return entity;
+	}
+	return NULL;;
+}
+
+/** Called to initiate the rest of the world's turn to act. */
+void CHexWorld::onPlayerTurnDoneCB() {
+	gameTurnActive = true;
+}
+
+CHex CHexWorld::getPlayerPositionCB() {
+	return playerObj.hexPosition;
 }
 
 ///////////////////////Private functions/////////////////////////////////
 
+/** TO DO: temporary.This should not be hard-coded, but spun from a level-maker. */
 void CHexWorld::createHexObjects() {
-	playerModel.buf = hexRenderer.getBuffer("player");
-	playerModel.setPosition(0, 0, 0);
-	playerModel.setCallbackObj(this);
+	playerObj.buf = hexRenderer.getBuffer("player");
+	playerObj.setPosition(0, 0, 0);
+	playerObj.setCallbackObj(this);
 
 	robot.buf = hexRenderer.getBuffer("robot");
 	robot.setPosition(-5, -5);
@@ -142,7 +147,7 @@ void CHexWorld::createHexObjects() {
 	robot2.isRobot = true;
 	robot2.setCallbackObj(this);
 
-	entities.push_back(&playerModel);
+	entities.push_back(&playerObj);
 	entities.push_back(&robot);
 	entities.push_back(&robot2);
 
@@ -182,39 +187,27 @@ void CHexWorld::createRoom(int w, int h) {
 
 /** Respend to cursor moving to a new hex. */
 void CHexWorld::onCursorMove(CHex& mouseHex) {
-	setHexCursor(mouseHex);
-	playerModel.findTravelPath(hexCursor.hexPosition);	
+	hexCursor.setPosition(mouseHex);
+	playerObj.findTravelPath(hexCursor.hexPosition);	
 }
 
-
+/** Return a pointer to the list of entities for the current map. */
 TEntities* CHexWorld::getEntities() {
 	return &entities;
 }
 
 /** Return the player object's current travel path. */
 THexList* CHexWorld::getPlayerPath() {
-	return &playerModel.getTravelPath();
-}
-
-void CHexWorld::setHexCursor(CHex& pos) {
-	hexCursor.setPosition(pos.x,pos.y,pos.z);
+	return &playerObj.getTravelPath();
 }
 
 
-/** Perform all the actions of a game turn. */
-void CHexWorld::gameTurn() {
-	//robot default actions - temp!
-	if (resolving) {
-		return;
+/** Ask game world entities to choose their actions for this turn. */
+void CHexWorld::gameWorldTurn() {
+
+	for (auto entity : entities) {
+		entity->chooseTurnAction();
 	}
-		
-
-	robot.findTravelPath(playerModel.hexPosition);
-	robot.startTravel();
-	
-
-	robot2.findTravelPath(playerModel.hexPosition);
-	robot2.startTravel();
 
 	gameTurnActive = false;
 }

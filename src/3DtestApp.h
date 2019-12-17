@@ -145,7 +145,7 @@ public:
 
 	bool tmp;
 
-	CPlayerObj playerObject;
+	CPlayerObj playerObj;
 	
 	CBasePhysObj* playerPhys;
 

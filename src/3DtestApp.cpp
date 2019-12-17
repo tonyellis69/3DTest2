@@ -170,7 +170,7 @@ void C3DtestApp::onStart() {
 
 	terrain2.fillShells();
 
-	//terrain2.getInnerBounds(1);
+	renderer.tmpPtr = &terrain2.multiBuf.buffer;
 
 
 	CTerrainPhysObj2* terrainPhysObj2 = new CTerrainPhysObj2();
@@ -189,15 +189,15 @@ void C3DtestApp::onStart() {
 	supWire = false;
 
 	//initialise player object
-	playerObject.model.loadMesh(shape::cubeMesh()); 
+	playerObj.model.loadMesh(shape::cubeMesh()); 
 	//= Engine.createCube(vec3(0), vec3(playerObject.width * 1, playerObject.height, playerObject.width * 1));
-	playerObject.model.scale(vec3(playerObject.width * 1, playerObject.height, playerObject.width * 1));
-	playerObject.setPos(vec3(0, 237, 0));
-	playerObject.setPos(vec3(-490, 13900, -490));
-	playerObject.setPos(vec3(0, 0, 0));
+	playerObj.model.scale(vec3(playerObj.width * 1, playerObj.height, playerObj.width * 1));
+	playerObj.setPos(vec3(0, 237, 0));
+	playerObj.setPos(vec3(-490, 13900, -490));
+	playerObj.setPos(vec3(0, 0, 0));
 
 
-	playerPhys = Engine.addPhysics(&playerObject);
+	playerPhys = Engine.addPhysics(&playerObj);
 	playerPhys->setMass(10);
 	playerPhys->AABB.setSize(1, 1);
 	playerPhys->asleep = true;
@@ -428,9 +428,9 @@ void C3DtestApp::keyCheck() {
 			else {
 
 
-				vec3 dir = playerObject.povCam.getTargetDir();
+				vec3 dir = playerObj.povCam.getTargetDir();
 				vec3 groundNormal = playerPhys->currentContactNormal;
-				vec3 eyeLine = playerObject.povCam.getTargetDir();
+				vec3 eyeLine = playerObj.povCam.getTargetDir();
 				vec3 flip;
 
 				if (keyNow(' ') && physCube == NULL) {
@@ -571,7 +571,7 @@ void C3DtestApp::keyCheck() {
 /** Triggered *when* a key is pressed, not while it is held down. This is not 'whileKeyDown'. */
 void C3DtestApp::onKeyDown( int key, long mod) {
 	if (appMode == hexMode) {
-		hexWorld.onKeyDown(key, mod);
+		//hexWorld.onKeyDown(key, mod);
 		return;
 	}
 
@@ -604,7 +604,7 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 		fpsOn = !fpsOn;
 		if (fpsOn) {
 			
-			renderer.setCurrentCamera(&playerObject.povCam);
+			renderer.setCurrentCamera(&playerObj.povCam);
 			playerPhys->asleep = false;
 		}
 		else
@@ -707,7 +707,7 @@ void C3DtestApp::draw() {
 	///////////////////////////tmpModel2.draw();
 	building.draw();
 
-	mat4 fpsCam = playerObject.povCam.clipMatrix;// *terrain->chunkOrigin;
+	mat4 fpsCam = playerObj.povCam.clipMatrix;// *terrain->chunkOrigin;
 	terrain.updateVisibleSClist(fpsCam);
 
 	double t = Engine.Time.milliseconds();
@@ -784,7 +784,7 @@ void C3DtestApp::draw() {
 	terrain2TestDraw();
 
 	if (!fpsOn) {
-		playerObject.model.draw();
+		playerObj.model.draw();
 	}
 
 	///watch::watch1 << "text";
@@ -1013,7 +1013,7 @@ void C3DtestApp::advance(Tdirection direction) {
 /** Called every frame. Mainly tells other entities to update. */
 void C3DtestApp::Update() {
 	vmUpdate();
-	
+
 	worldUI.update((float)dT);
 
 	if (skyDome)
@@ -1040,7 +1040,7 @@ void C3DtestApp::Update() {
 		float chunkDist = cubesPerChunkEdge * cubeSize;
 
 		vec3 pos;
-		pos = playerObject.getPos();
+		pos = playerObj.getPos();
 
 
 		bvec3 outsideChunkBoundary = glm::greaterThan(glm::abs(pos), vec3(chunkDist));
@@ -1336,6 +1336,7 @@ unsigned int C3DtestApp::getChunkTrisCallback(int chunkId, TChunkVert* buf) {
 
 /*  Create a mesh for this chunk, and register it with the renderer.  */
 void C3DtestApp::createChunkMesh(Chunk2& chunk) {
+
 	Engine.Renderer.setShader(terrain.chunkShader);
 	terrain.chunkShader->setShaderValue(terrain.hChunkCubeSize, chunk.cubeSize);
 
@@ -1378,9 +1379,10 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 		
 		//terrain2 stuff
 		details = &chunk.drawDetails2;
+
 		int addr = terrain2.multiBuf.copyBuf(tempFeedbackBuf2, outSize);
 		details->vertStart = addr / sizeof(vBuf::T3DnormVert);;
-		details->colour = chunk.colour;
+		details->colour = chunk.colour;;
 		details->vertCount = outSize / sizeof(vBuf::T3DnormVert);
 		chunk.bufId = addr;
 		sysLog << "\nchunk buf set to " << (unsigned int)addr;
@@ -1393,8 +1395,6 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 		chunk.bufId = NULL;
 
 	chunk.status = chSkinned;
-
-
 
 	//totalTris += (primitives * 3);
 }
@@ -1493,7 +1493,7 @@ void C3DtestApp::createRegion() {
 void C3DtestApp::onTerrainScroll(glm::vec3& movement) {
 	liveLog << "\nThe earth moved " << movement;
 	building.translate(movement);
-	playerObject.translate(movement);
+	playerObj.translate(movement);
 	oldPos += movement;
 	playerPhys->position += movement;
 }

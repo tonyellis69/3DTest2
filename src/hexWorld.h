@@ -3,6 +3,7 @@
 #include "hexRenderer.h"
 #include "hex/hexObject.h"
 #include "robot.h"
+#include "playerHexObj.h"
 
 /** A class encapsulating the hex-based representation of the world. */
 class IhexWorldCallback;
@@ -16,22 +17,26 @@ public:
 	void keyCheck();
 	void onMouseWheel(float delta);
 	void onMouseMove(int x, int y, int key);
-	void onKeyDown(int key, long mod);
 	void onMouseButton(int button, int action, int mods);
 	void draw();
-	void setAspectRatio(glm::vec2 ratio);
+	void setAspectRatio(glm::vec2& ratio);
 	CHexObject* getCursorObj();
 	void update(float dt);
-	THexList getPathCallback(CHex& start, CHex& end);
+	
+
 
 private:
+	THexList getPathCB(CHex& start, CHex& end);
+	CHexObject* getEntityAtCB(CHex& hex);
+	void onPlayerTurnDoneCB();
+	CHex getPlayerPositionCB();
 	void createHexObjects();
 	void createRoom(int w, int h);
 	void onCursorMove(CHex& mouseHex);
 	TEntities* getEntities();
 	THexList* getPlayerPath();
-	void setHexCursor(CHex& pos);
-	void gameTurn();
+
+	void gameWorldTurn();
 
 
 
@@ -41,16 +46,13 @@ private:
 	CHexRenderer hexRenderer;
 
 
-	CHexObject playerModel;
+	CPlayerObject playerObj;
 	CHexObject hexCursor;
 	CRobot robot;
 	CRobot robot2;
 
 	TEntities entities; ///<Live objects in the hex world.
 	
-
-	bool leftMouseHeldDown;
-
 	//THexList playerTravelPath;  ///<Route player object will follow if moving.
 
 	bool resolving; ///<Player can't act while true.
