@@ -149,9 +149,9 @@ void C3DtestApp::onStart() {
 	CBaseBuf* terrainBuf2 = &multiBuf; //TO DO: ugh, make a setter
 //((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
 
-	terrainBuf2->setSize(175000000); //175000000
+	terrain2.setInitialChunkStorageSize(27650512); //175000000
 
-	terrainBuf2->storeLayout(3, 3, 0, 0);
+	terrain2.setChunkVertLayout({ 3, 3, 0, 0 });
 
 	//tempFeedbackBuf2 = Engine.createBuffer();
 	tempFeedbackBuf2.setSize(1000000);
@@ -170,7 +170,6 @@ void C3DtestApp::onStart() {
 
 	terrain2.fillShells();
 
-	renderer.tmpPtr = &terrain2.multiBuf.buffer;
 
 
 	CTerrainPhysObj2* terrainPhysObj2 = new CTerrainPhysObj2();
@@ -574,6 +573,8 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 		//hexWorld.onKeyDown(key, mod);
 		return;
 	}
+
+
 
 
 	if (key == 'R' && mod == GLFW_MOD_CONTROL) {
@@ -1005,7 +1006,7 @@ void C3DtestApp::advance(Tdirection direction) {
 	///////////////////////////////////////////////////////////////////////////////////
 	vec3 playerMovement = dirToVec(direction) * 1.0f;  
 
-	terrain2.playerWalk(playerMovement);
+	terrain2.onPlayerMove(playerMovement);
 
 	//TERRAIN2
 }
@@ -1049,7 +1050,7 @@ void C3DtestApp::Update() {
 		/////////////////////////////////////////////////////////////
 		vec3 dPos = pos - oldPos;
 		oldPos = pos;
-		terrain2.playerWalk(dPos);
+		terrain2.onPlayerMove(dPos);
 		///tell the terrain about the move so that it can scroll etc
 		//return;
 
@@ -1385,7 +1386,6 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 		details->colour = chunk.colour;;
 		details->vertCount = outSize / sizeof(vBuf::T3DnormVert);
 		chunk.bufId = addr;
-		sysLog << "\nchunk buf set to " << (unsigned int)addr;
 	//	if (chunk.LoD == 1) {
 	//		findTreePoints(chunk);
 	//		//	findGrassPoints(chunk);

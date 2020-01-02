@@ -10,9 +10,12 @@ uniform vec2 blockSize;
 
 
 void main() {
-	vec2 blockCoord = texCoordFrag * blockSize;
-	blockCoord += blockOffset;
-	colour = texture(textureUnit, blockOffset + blockSize * texCoordFrag.st );
-	colour.r = 1.0;
+
+	//colour = texture(textureUnit, blockOffset + blockSize * texCoordFrag.st );
+	
+	ivec2 coords = ivec2(blockOffset + blockSize * texCoordFrag.st );
+	colour = texelFetch(textureUnit, coords,0);
+	
+	//colour.r = 1.0;
 
 };

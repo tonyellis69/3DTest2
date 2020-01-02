@@ -51,6 +51,7 @@ void CHexWorld::keyCheck() {
 	if (pCallbackApp->hexMouseButtonNowCallback(GLFW_MOUSE_BUTTON_LEFT)) {
 		if (!resolving && !playerObj.moving && !gameTurnActive) {
 			playerObj.newMove();
+			gameTurnActive = true;
 		}
 	}
 }
@@ -74,6 +75,7 @@ void CHexWorld::onMouseButton(int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT &&  action == GLFW_PRESS) {
 		if (!resolving) {
 			playerObj.newMove();
+			gameTurnActive = true;
 		}
 	}
 }
@@ -122,7 +124,7 @@ CHexObject* CHexWorld::getEntityAtCB(CHex& hex) {
 
 /** Called to initiate the rest of the world's turn to act. */
 void CHexWorld::onPlayerTurnDoneCB() {
-	gameTurnActive = true;
+	//gameTurnActive = true;
 }
 
 CHex CHexWorld::getPlayerPositionCB() {
