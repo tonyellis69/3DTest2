@@ -25,7 +25,7 @@ public:
 	void setCallbackApp(IhexRendererCallback* pObj);
 	void dollyCamera(float delta);
 	void pitchCamera(float delta);
-	void moveCamera(const glm::vec3& move);
+	void moveCamera(glm::vec3& move);
 	void setCameraAspectRatio(glm::vec2 ratio);
 	CHex pickHex(int screenX, int screenY);
 	CBuf* addBuffer(const std::string& name);
@@ -62,7 +62,6 @@ private:
 	glm::vec4 floorplanSolidColour;
 
 	CCamera camera;
-	float cameraStep; ///<Amount by which camera moves in WASD.
 	float cameraPitch;
 
 	CHexArray* hexArray;

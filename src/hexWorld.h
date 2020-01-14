@@ -5,6 +5,8 @@
 #include "robot.h"
 #include "playerHexObj.h"
 
+enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
+
 /** A class encapsulating the hex-based representation of the world. */
 class IhexWorldCallback;
 class CHexWorld : public IhexRendererCallback, public IhexObjectCallback {
@@ -30,6 +32,8 @@ private:
 	CHexObject* getEntityAtCB(CHex& hex);
 	void onPlayerTurnDoneCB();
 	CHex getPlayerPositionCB();
+	CHex getPlayerDestinationCB();
+	bool isEntityDestinationCB(CHex& hex);
 	void createHexObjects();
 	void createRoom(int w, int h);
 	void onCursorMove(CHex& mouseHex);
@@ -37,6 +41,8 @@ private:
 	THexList* getPlayerPath();
 
 	void gameWorldTurn();
+	void chooseActions();
+	void startActionPhase();
 
 
 
@@ -52,11 +58,17 @@ private:
 	CRobot robot2;
 
 	TEntities entities; ///<Live objects in the hex world.
+	TEntities serialActions; ///<Entities performing serial actions this round.
+	TEntities simulActions; ///<Entities performing simultaneous actions this round.
 	
 	//THexList playerTravelPath;  ///<Route player object will follow if moving.
 
 	bool resolving; ///<Player can't act while true.
-	bool gameTurnActive;
+	//bool gameTurnActive;
+
+	TTurnPhase turnPhase;
+
+	float dT; ///<Interval since last app loop.
 };
 
 class IhexWorldCallback {

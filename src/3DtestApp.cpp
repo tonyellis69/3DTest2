@@ -37,7 +37,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = textMode;// texGenMode;// terrainMode; //textMode; //hexMode;
+	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //hexMode;
 
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));
@@ -159,16 +159,16 @@ void C3DtestApp::onStart() {
 
 
 	shellTotalVerts = terrain.shellTotalVerts;
-	int LoD1shellSCs = 5;
+	int numCentralShellSCs = 5;
 	terrain2.setSampleSpacePosition(terrain.sampleOffset);
 	terrain2.setWorldScale(2560);
 	terrain2.setCallbackApp(this);
-	terrain2.createLoD1shell(cubeSize, cubesPerChunkEdge, chunksPerSuperChunkEdge, LoD1shellSCs);
+	terrain2.createCentralShell(cubeSize, cubesPerChunkEdge, chunksPerSuperChunkEdge, numCentralShellSCs);
 	terrain2.addShell(1);
 	terrain2.addShell(1);
 	terrain2.addShell(2);
 
-	terrain2.fillShells();
+	terrain2.createTerrain();
 
 
 
@@ -606,6 +606,7 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 		if (fpsOn) {
 			
 			renderer.setCurrentCamera(&playerObj.povCam);
+			terrain2.setViewpoint(playerObj.getPos());
 			playerPhys->asleep = false;
 		}
 		else
@@ -1013,6 +1014,10 @@ void C3DtestApp::advance(Tdirection direction) {
 
 /** Called every frame. Mainly tells other entities to update. */
 void C3DtestApp::Update() {
+
+
+
+
 	vmUpdate();
 
 	worldUI.update((float)dT);
@@ -1023,6 +1028,9 @@ void C3DtestApp::Update() {
 	//terrain.update(); //commented out to speed up tests on terrain2
 
 	terrain2.update(dT);
+
+
+
 
 	hexWorld.update(dT);
 
@@ -1115,6 +1123,12 @@ void C3DtestApp::Update() {
 			onTerrainAdvance(direction);
 
 		}
+	}
+
+
+	if (appMode == terrainMode) {
+		sysLog << "\nplayerObj " << playerObj.getPos() << " viewpoint "
+			<< terrain2.viewpoint;
 	}
 }
 
@@ -1276,7 +1290,7 @@ bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & nwSamplePos, float SCsa
 	
 
 	//float LoDscale = (SC.sampleStep) / (cubesPerChunkEdge);
-	float chunkShellVertCount = (float)terrain2.chunkCubes;
+	float chunkShellVertCount = (float)terrain2.numChunkCubes;
 	//This is simply the number of divisions chunkShell has, because normally it is used to check MC cube
 	//points on the surface of a chunk-sized volume. 
 	//Here we are abusing it to check points on the surface of a SC-sized volume.
@@ -1306,7 +1320,7 @@ bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & nwSamplePos, float SCsa
 bool C3DtestApp::chunkCheckCallback(glm::vec3 & chunkSamplePos, float chunkSampleSize) {
 	Engine.Renderer.setShader(terrain.chunkCheckShader);
 	
-	float chunkShellVertCount = (float)terrain2.chunkCubes; ///<Gives number of divisions in the shell
+	float chunkShellVertCount = (float)terrain2.numChunkCubes; ///<Gives number of divisions in the shell
 	
 	terrain.chunkCheckShader->setShaderValue(terrain.hNWsamplePos, chunkSamplePos);
 	terrain.chunkCheckShader->setShaderValue(terrain.hLoDscale, chunkSampleSize / chunkShellVertCount);
@@ -1330,8 +1344,8 @@ bool C3DtestApp::chunkCheckCallback(glm::vec3 & chunkSamplePos, float chunkSampl
 
 /** copy the data from the multibuf to system memory */
 unsigned int C3DtestApp::getChunkTrisCallback(int chunkId, TChunkVert* buf) {
-	multiBuf.copyBlock(chunkId, (char*)buf);
-	return multiBuf.getBlockSize(chunkId);
+	//multiBuf.copyBlock(chunkId, (char*)buf);
+	return 0;// multiBuf.getBlockSize(chunkId);
 }
 
 
@@ -1381,7 +1395,7 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 		//terrain2 stuff
 		details = &chunk.drawDetails2;
 
-		int addr = terrain2.multiBuf.copyBuf(tempFeedbackBuf2, outSize);
+		int addr = terrain2.storeChunkMesh(tempFeedbackBuf2, outSize);
 		details->vertStart = addr / sizeof(vBuf::T3DnormVert);;
 		details->colour = chunk.colour;;
 		details->vertCount = outSize / sizeof(vBuf::T3DnormVert);
@@ -1405,7 +1419,7 @@ void C3DtestApp::deleteChunkMesh(Chunk2& chunk) {
 
 	//if (chunk.bufId != 0) //TO DO: temp bug tracking! Should never happen!
 		//terrainBuf->deleteBlock(chunk.bufId);
-		terrain2.multiBuf.freeBlock(chunk.bufId);
+		terrain2.freeChunkMesh(chunk.bufId);
 	chunk.bufId = 0;
 }
 
@@ -1439,7 +1453,7 @@ void C3DtestApp::drawVisibleChunks() {
 
 
 	
-		Engine.Renderer.setVAO(terrain2.multiBuf.getVAO());
+		Engine.Renderer.setVAO(terrain2.getChunkMeshVAO());
 
 		for (int chunkNo = 0; chunkNo < terrain2.chunks.size(); chunkNo++) {
 			Chunk2* chunk = &terrain2.chunks[chunkNo];

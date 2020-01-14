@@ -17,7 +17,6 @@ CHexRenderer::CHexRenderer() : hexModel(6) {
 
 	camera.setNearFar(0.1f, 1000.0f);
 	camera.setPos(glm::vec3(0, -0, 12));
-	cameraStep = 0.01f;
 	cameraPitch = 45;
 	camera.pitch(cameraPitch);
 
@@ -246,9 +245,8 @@ void CHexRenderer::pitchCamera(float delta) {
 	camera.pitch(delta);
 }
 
-void CHexRenderer::moveCamera(const glm::vec3& move) {
-	glm::vec3 newMove = move * cameraStep;
-	camera.translate(newMove);
+void CHexRenderer::moveCamera(glm::vec3& move) {
+	camera.translate(move);
 }
 
 void CHexRenderer::tmpCreateHexagonModel() {

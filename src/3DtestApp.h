@@ -44,7 +44,7 @@ enum TAppMode { terrainMode, textMode, texGenMode, hexMode };
 
 
 
-class C3DtestApp : public  CBaseApp , public ITerrainCallback,
+class C3DtestApp : public  CBaseApp , public ITerrainAppCallback,
 	public IhexWorldCallback {
 public:
 	C3DtestApp();

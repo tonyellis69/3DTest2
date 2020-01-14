@@ -1,4 +1,4 @@
-*** Thursday January 02, 2020  time: 11:32:06 ***
+*** Tuesday January 14, 2020  time: 15:01:32 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
@@ -9,3 +9,505 @@ BaseApp constructor finished. Yay!
 
 Player offence 0 defence 0
 Player offence 0 defence 0
+Click!
+Begin player move!
+Begin action phase!
+Chase player!
+Hit player!
+travelVec: 0
+travelVec: 0.108879
+travelVec: 0.218461
+travelVec: 0.334746
+travelVec: 0.458595
+travelVec: 0.590936
+travelVec: 0.734822
+travelVec: 0.893552
+travelVec: 1.07562
+travelVec: 1.30142
+travelVec: 1.68828
+travelVec: 1.2874
+travelVec: 1.06743
+travelVec: 0.883984
+travelVec: 0.727393
+travelVec: 0.58505
+travelVec: 0.452127
+travelVec: 0.329671
+travelVec: 0.212409
+travelVec: 0.102154
+bot worldPos: x 1.73205 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 1.73277
+bot velocity x 0.116643 y 0 z 0
+bot worldPos: x 1.84869 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 1.61618
+bot velocity x 0.116804 y 0 z 0
+bot worldPos: x 1.9655 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 1.49944
+bot velocity x 0.116685 y 0 z 0
+bot worldPos: x 2.08218 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 1.38282
+bot velocity x 0.117405 y 0 z 0
+bot worldPos: x 2.19959 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 1.2655
+bot velocity x 0.116649 y 0 z 0
+bot worldPos: x 2.31624 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 1.14895
+bot velocity x 0.124032 y 0 z 0
+bot worldPos: x 2.44027 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 1.02505
+bot velocity x 0.110442 y 0 z 0
+bot worldPos: x 2.55071 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 0.914756
+bot velocity x 0.11639 y 0 z 0
+bot worldPos: x 2.6671 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 0.798566
+bot velocity x 0.117991 y 0 z 0
+bot worldPos: x 2.78509 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 0.680847
+bot velocity x 0.115684 y 0 z 0
+bot worldPos: x 2.90078 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 0.565539
+bot velocity x 0.116772 y 0 z 0
+bot worldPos: x 3.01755 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 0.449343
+bot velocity x 0.11738 y 0 z 0
+bot worldPos: x 3.13493 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 0.332948
+bot velocity x 0.116474 y 0 z 0
+bot worldPos: x 3.2514 y 3 z 0.05 destination x 3.4641 y 3 z 0 dist 0.218497
+bot velocity x 0.116675 y 0 z 0
+Robot reached destination!
+Click!
+Begin player move!
+Begin action phase!
+Chase player!
+Chase player!
+bot worldPos: x 3.4641 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 1.73277
+bot velocity x 0.119501 y 0 z 0
+bot worldPos: x 4.33013 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 1.73277
+bot velocity x 0.119501 y 0 z 0
+bot worldPos: x 3.5836 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 1.61332
+bot velocity x 0.114597 y 0 z 0
+bot worldPos: x 4.44963 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 1.61332
+bot velocity x 0.114597 y 0 z 0
+bot worldPos: x 3.6982 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 1.49879
+bot velocity x 0.116085 y 0 z 0
+bot worldPos: x 4.56423 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 1.49879
+bot velocity x 0.116085 y 0 z 0
+bot worldPos: x 3.81429 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 1.38277
+bot velocity x 0.116536 y 0 z 0
+bot worldPos: x 4.68031 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 1.38277
+bot velocity x 0.116536 y 0 z 0
+bot worldPos: x 3.93082 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 1.26632
+bot velocity x 0.116997 y 0 z 0
+bot worldPos: x 4.79685 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 1.26632
+bot velocity x 0.116997 y 0 z 0
+bot worldPos: x 4.04782 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 1.14942
+bot velocity x 0.116747 y 0 z 0
+bot worldPos: x 4.91384 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 1.14942
+bot velocity x 0.116747 y 0 z 0
+bot worldPos: x 4.16457 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 1.0328
+bot velocity x 0.11706 y 0 z 0
+bot worldPos: x 5.03059 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 1.0328
+bot velocity x 0.11706 y 0 z 0
+bot worldPos: x 4.28163 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 0.915893
+bot velocity x 0.116831 y 0 z 0
+bot worldPos: x 5.14765 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 0.915893
+bot velocity x 0.116831 y 0 z 0
+bot worldPos: x 4.39846 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 0.799261
+bot velocity x 0.117151 y 0 z 0
+bot worldPos: x 5.26448 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 0.799261
+bot velocity x 0.117151 y 0 z 0
+bot worldPos: x 4.51561 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 0.682379
+bot velocity x 0.118226 y 0 z 0
+bot worldPos: x 5.38163 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 0.682379
+bot velocity x 0.118226 y 0 z 0
+bot worldPos: x 4.63383 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 0.564537
+bot velocity x 0.117083 y 0 z 0
+bot worldPos: x 5.49986 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 0.564537
+bot velocity x 0.117083 y 0 z 0
+bot worldPos: x 4.75092 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 0.448033
+bot velocity x 0.115865 y 0 z 0
+bot worldPos: x 5.61694 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 0.448033
+bot velocity x 0.115865 y 0 z 0
+bot worldPos: x 4.86678 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 0.333144
+bot velocity x 0.116271 y 0 z 0
+bot worldPos: x 5.73281 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 0.333144
+bot velocity x 0.116271 y 0 z 0
+bot worldPos: x 4.98305 y 3 z 0.05 destination x 5.19615 y 3 z 0 dist 0.218886
+bot velocity x 0.117606 y 0 z 0
+bot worldPos: x 5.84908 y 4.5 z 0.05 destination x 6.06218 y 4.5 z 0 dist 0.218886
+bot velocity x 0.117606 y 0 z 0
+Robot reached destination!
+Robot reached destination!
+Click!
+Begin player move!
+Begin action phase!
+Chase player!
+Chase player!
+bot worldPos: x 5.19615 y 3 z 0.05 destination x 6.06218 y 1.5 z 0 dist 1.73277
+bot velocity x 0.0583555 y -0.101075 z 0
+bot worldPos: x 6.06218 y 4.5 z 0.05 destination x 6.9282 y 3 z 0 dist 1.73277
+bot velocity x 0.0583555 y -0.101075 z 0
+bot worldPos: x 5.25451 y 2.89893 z 0.05 destination x 6.06218 y 1.5 z 0 dist 1.61611
+bot velocity x 0.0592767 y -0.10267 z 0
+bot worldPos: x 6.12053 y 4.39893 z 0.05 destination x 6.9282 y 3 z 0 dist 1.61611
+bot velocity x 0.0592767 y -0.10267 z 0
+bot worldPos: x 5.31378 y 2.79626 z 0.05 destination x 6.06218 y 1.5 z 0 dist 1.49762
+bot velocity x 0.059101 y -0.102366 z 0
+bot worldPos: x 6.17981 y 4.29626 z 0.05 destination x 6.9282 y 3 z 0 dist 1.49762
+bot velocity x 0.059101 y -0.102366 z 0
+bot worldPos: x 5.37289 y 2.69389 z 0.05 destination x 6.06218 y 1.5 z 0 dist 1.37949
+bot velocity x 0.0571235 y -0.0989408 z 0
+bot worldPos: x 6.23891 y 4.19389 z 0.05 destination x 6.9282 y 3 z 0 dist 1.37949
+bot velocity x 0.0571235 y -0.0989408 z 0
+bot worldPos: x 5.43001 y 2.59495 z 0.05 destination x 6.06218 y 1.5 z 0 dist 1.26533
+bot velocity x 0.0584454 y -0.10123 z 0
+bot worldPos: x 6.29603 y 4.09495 z 0.05 destination x 6.9282 y 3 z 0 dist 1.26533
+bot velocity x 0.0584454 y -0.10123 z 0
+bot worldPos: x 5.48845 y 2.49372 z 0.05 destination x 6.06218 y 1.5 z 0 dist 1.14854
+bot velocity x 0.0583548 y -0.101073 z 0
+bot worldPos: x 6.35448 y 3.99372 z 0.05 destination x 6.9282 y 3 z 0 dist 1.14854
+bot velocity x 0.0583548 y -0.101073 z 0
+bot worldPos: x 5.54681 y 2.39264 z 0.05 destination x 6.06218 y 1.5 z 0 dist 1.03195
+bot velocity x 0.0592249 y -0.102581 z 0
+bot worldPos: x 6.41283 y 3.89264 z 0.05 destination x 6.9282 y 3 z 0 dist 1.03195
+bot velocity x 0.0592249 y -0.102581 z 0
+bot worldPos: x 5.60603 y 2.29006 z 0.05 destination x 6.06218 y 1.5 z 0 dist 0.913656
+bot velocity x 0.0586232 y -0.101538 z 0
+bot worldPos: x 6.47206 y 3.79006 z 0.05 destination x 6.9282 y 3 z 0 dist 0.913656
+bot velocity x 0.0586232 y -0.101538 z 0
+bot worldPos: x 5.66466 y 2.18853 z 0.05 destination x 6.06218 y 1.5 z 0 dist 0.796611
+bot velocity x 0.058624 y -0.10154 z 0
+bot worldPos: x 6.53068 y 3.68853 z 0.05 destination x 6.9282 y 3 z 0 dist 0.796611
+bot velocity x 0.058624 y -0.10154 z 0
+bot worldPos: x 5.72328 y 2.08699 z 0.05 destination x 6.06218 y 1.5 z 0 dist 0.679635
+bot velocity x 0.0574952 y -0.0995846 z 0
+bot worldPos: x 6.58931 y 3.58699 z 0.05 destination x 6.9282 y 3 z 0 dist 0.679635
+bot velocity x 0.0574952 y -0.0995846 z 0
+bot worldPos: x 5.78078 y 1.9874 z 0.05 destination x 6.06218 y 1.5 z 0 dist 0.565019
+bot velocity x 0.0587304 y -0.101724 z 0
+bot worldPos: x 6.6468 y 3.4874 z 0.05 destination x 6.9282 y 3 z 0 dist 0.565019
+bot velocity x 0.0587304 y -0.101724 z 0
+bot worldPos: x 5.83951 y 1.88568 z 0.05 destination x 6.06218 y 1.5 z 0 dist 0.44814
+bot velocity x 0.0584633 y -0.101261 z 0
+bot worldPos: x 6.70553 y 3.38568 z 0.05 destination x 6.9282 y 3 z 0 dist 0.44814
+bot velocity x 0.0584633 y -0.101261 z 0
+bot worldPos: x 5.89797 y 1.78442 z 0.05 destination x 6.06218 y 1.5 z 0 dist 0.3322
+bot velocity x 0.0583153 y -0.101005 z 0
+bot worldPos: x 6.764 y 3.28442 z 0.05 destination x 6.9282 y 3 z 0 dist 0.3322
+bot velocity x 0.0583153 y -0.101005 z 0
+bot worldPos: x 5.95628 y 1.68341 z 0.05 destination x 6.06218 y 1.5 z 0 dist 0.217607
+bot velocity x 0.0578592 y -0.100215 z 0
+bot worldPos: x 6.82231 y 3.18341 z 0.05 destination x 6.9282 y 3 z 0 dist 0.217607
+bot velocity x 0.0578592 y -0.100215 z 0
+Robot reached destination!
+Robot reached destination!
+Click!
+Begin player move!
+Begin action phase!
+Chase player!
+Chase player!
+bot worldPos: x 6.06218 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 1.73277
+bot velocity x 0.116936 y 0 z 0
+bot worldPos: x 6.9282 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 1.73277
+bot velocity x 0.116936 y 0 z 0
+bot worldPos: x 6.17911 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 1.61589
+bot velocity x 0.116293 y 0 z 0
+bot worldPos: x 7.04514 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 1.61589
+bot velocity x 0.116293 y 0 z 0
+bot worldPos: x 6.29541 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 1.49966
+bot velocity x 0.116761 y 0 z 0
+bot worldPos: x 7.16143 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 1.49966
+bot velocity x 0.116761 y 0 z 0
+bot worldPos: x 6.41217 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 1.38297
+bot velocity x 0.118243 y 0 z 0
+bot worldPos: x 7.27819 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 1.38297
+bot velocity x 0.118243 y 0 z 0
+bot worldPos: x 6.53041 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 1.26481
+bot velocity x 0.115361 y 0 z 0
+bot worldPos: x 7.39644 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 1.26481
+bot velocity x 0.115361 y 0 z 0
+bot worldPos: x 6.64577 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 1.14955
+bot velocity x 0.118062 y 0 z 0
+bot worldPos: x 7.5118 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 1.14955
+bot velocity x 0.118062 y 0 z 0
+bot worldPos: x 6.76383 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 1.03161
+bot velocity x 0.116209 y 0 z 0
+bot worldPos: x 7.62986 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 1.03161
+bot velocity x 0.116209 y 0 z 0
+bot worldPos: x 6.88004 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 0.915553
+bot velocity x 0.116598 y 0 z 0
+bot worldPos: x 7.74607 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 0.915553
+bot velocity x 0.116598 y 0 z 0
+bot worldPos: x 6.99664 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 0.799155
+bot velocity x 0.119776 y 0 z 0
+bot worldPos: x 7.86267 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 0.799154
+bot velocity x 0.119776 y 0 z 0
+bot worldPos: x 7.11642 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 0.679654
+bot velocity x 0.114799 y 0 z 0
+bot worldPos: x 7.98244 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 0.679654
+bot velocity x 0.114799 y 0 z 0
+bot worldPos: x 7.23121 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 0.56523
+bot velocity x 0.11669 y 0 z 0
+bot worldPos: x 8.09724 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 0.565229
+bot velocity x 0.11669 y 0 z 0
+bot worldPos: x 7.3479 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 0.449116
+bot velocity x 0.117718 y 0 z 0
+bot worldPos: x 8.21393 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 0.449115
+bot velocity x 0.117718 y 0 z 0
+bot worldPos: x 7.46562 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 0.332388
+bot velocity x 0.116873 y 0 z 0
+bot worldPos: x 8.33165 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 0.332388
+bot velocity x 0.116873 y 0 z 0
+bot worldPos: x 7.5825 y 1.5 z 0.05 destination x 7.79423 y 1.5 z 0 dist 0.217556
+bot velocity x 0.115496 y 0 z 0
+bot worldPos: x 8.44852 y 3 z 0.05 destination x 8.66025 y 3 z 0 dist 0.217556
+bot velocity x 0.115496 y 0 z 0
+Robot reached destination!
+Robot reached destination!
+Click!
+Begin player move!
+Begin action phase!
+Chase player!
+Chase player!
+bot worldPos: x 7.79423 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 1.73277
+bot velocity x 0.118821 y 0 z 0
+bot worldPos: x 8.66025 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 1.73277
+bot velocity x 0.118821 y 0 z 0
+bot worldPos: x 7.91305 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 1.614
+bot velocity x 0.114859 y 0 z 0
+bot worldPos: x 8.77908 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 1.614
+bot velocity x 0.114859 y 0 z 0
+bot worldPos: x 8.02791 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 1.49921
+bot velocity x 0.116704 y 0 z 0
+bot worldPos: x 8.89394 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 1.4992
+bot velocity x 0.116704 y 0 z 0
+bot worldPos: x 8.14461 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 1.38257
+bot velocity x 0.11719 y 0 z 0
+bot worldPos: x 9.01064 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 1.38257
+bot velocity x 0.11719 y 0 z 0
+bot worldPos: x 8.2618 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 1.26547
+bot velocity x 0.116446 y 0 z 0
+bot worldPos: x 9.12783 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 1.26546
+bot velocity x 0.116446 y 0 z 0
+bot worldPos: x 8.37825 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 1.14912
+bot velocity x 0.116915 y 0 z 0
+bot worldPos: x 9.24428 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 1.14912
+bot velocity x 0.116915 y 0 z 0
+bot worldPos: x 8.49516 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 1.03233
+bot velocity x 0.119046 y 0 z 0
+bot worldPos: x 9.36119 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 1.03233
+bot velocity x 0.119046 y 0 z 0
+bot worldPos: x 8.61421 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 0.913439
+bot velocity x 0.114745 y 0 z 0
+bot worldPos: x 9.48024 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 0.913437
+bot velocity x 0.114745 y 0 z 0
+bot worldPos: x 8.72896 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 0.79889
+bot velocity x 0.119813 y 0 z 0
+bot worldPos: x 9.59498 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 0.798889
+bot velocity x 0.119813 y 0 z 0
+bot worldPos: x 8.84877 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 0.679354
+bot velocity x 0.119444 y 0 z 0
+bot worldPos: x 9.7148 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 0.679352
+bot velocity x 0.119444 y 0 z 0
+bot worldPos: x 8.96821 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 0.560303
+bot velocity x 0.113568 y 0 z 0
+bot worldPos: x 9.83424 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 0.560301
+bot velocity x 0.113568 y 0 z 0
+bot worldPos: x 9.08178 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 0.447302
+bot velocity x 0.11574 y 0 z 0
+bot worldPos: x 9.94781 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 0.4473
+bot velocity x 0.11574 y 0 z 0
+bot worldPos: x 9.19752 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 0.33254
+bot velocity x 0.116457 y 0 z 0
+bot worldPos: x 10.0635 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 0.332538
+bot velocity x 0.116457 y 0 z 0
+bot worldPos: x 9.31398 y 1.5 z 0.05 destination x 9.52628 y 1.5 z 0 dist 0.218111
+bot velocity x 0.116544 y 0 z 0
+bot worldPos: x 10.18 y 3 z 0.05 destination x 10.3923 y 3 z 0 dist 0.218109
+bot velocity x 0.116544 y 0 z 0
+Robot reached destination!
+Robot reached destination!
+Click!
+Begin player move!
+Begin action phase!
+Chase player!
+Chase player!
+bot worldPos: x 9.52628 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 1.73277
+bot velocity x 0.118622 y 0 z 0
+bot worldPos: x 9.6449 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 1.6142
+bot velocity x 0.114713 y 0 z 0
+bot worldPos: x 9.75961 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 1.49955
+bot velocity x 0.116752 y 0 z 0
+bot worldPos: x 9.87637 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 1.38287
+bot velocity x 0.116859 y 0 z 0
+bot worldPos: x 9.99323 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 1.26609
+bot velocity x 0.116885 y 0 z 0
+bot worldPos: x 10.1101 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 1.14931
+bot velocity x 0.117121 y 0 z 0
+bot worldPos: x 10.2272 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 1.03231
+bot velocity x 0.116978 y 0 z 0
+bot worldPos: x 10.3442 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 0.915488
+bot velocity x 0.116418 y 0 z 0
+bot worldPos: x 10.4606 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 0.799268
+bot velocity x 0.116868 y 0 z 0
+bot worldPos: x 10.5775 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 0.682668
+bot velocity x 0.117184 y 0 z 0
+bot worldPos: x 10.6947 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 0.565863
+bot velocity x 0.11769 y 0 z 0
+bot worldPos: x 10.8124 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 0.448755
+bot velocity x 0.118604 y 0 z 0
+bot worldPos: x 10.931 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 0.331153
+bot velocity x 0.114583 y 0 z 0
+bot worldPos: x 11.0456 y 1.5 z 0.05 destination x 11.2583 y 1.5 z 0 dist 0.218569
+bot velocity x 0.117242 y 0 z 0
+Robot reached destination!
+Click!
+Begin player move!
+Begin action phase!
+Hit player!
+Hit player!
+travelVec: 0
+travelVec: 0.107113
+travelVec: 0.217195
+travelVec: 0.3342
+travelVec: 0.457296
+travelVec: 0.589753
+travelVec: 0.733285
+travelVec: 0.892342
+travelVec: 1.07505
+travelVec: 1.30154
+travelVec: 1.6999
+travelVec: 1.29182
+travelVec: 1.06837
+travelVec: 0.885371
+travelVec: 0.72687
+travelVec: 0.584403
+travelVec: 0.454162
+travelVec: 0.329747
+travelVec: 0.213935
+travelVec: 0.102903
+travelVec: 0
+travelVec: 0.10602
+travelVec: 0.216808
+travelVec: 0.333635
+travelVec: 0.458355
+travelVec: 0.590951
+travelVec: 0.733566
+travelVec: 0.892982
+travelVec: 1.0745
+travelVec: 1.29981
+travelVec: 1.70051
+travelVec: 1.29291
+travelVec: 1.06896
+travelVec: 0.887793
+travelVec: 0.728793
+travelVec: 0.586177
+travelVec: 0.453145
+travelVec: 0.32965
+travelVec: 0.213698
+travelVec: 0.100737
+Click!
+Begin player move!
+Begin action phase!
+Chase player!
+Hit player!
+travelVec: 0
+travelVec: 0.107841
+travelVec: 0.21674
+travelVec: 0.334042
+travelVec: 0.457556
+travelVec: 0.589975
+travelVec: 0.733038
+travelVec: 0.891738
+travelVec: 1.07363
+travelVec: 1.29911
+travelVec: 1.69803
+travelVec: 1.29205
+travelVec: 1.06873
+travelVec: 0.886593
+travelVec: 0.729319
+travelVec: 0.585363
+travelVec: 0.453761
+travelVec: 0.330713
+travelVec: 0.214084
+travelVec: 0.102963
+bot worldPos: x 11.2583 y 1.5 z 0.05 destination x 12.1244 y 3 z 0 dist 1.73277
+bot velocity x 0.0584059 y 0.101162 z 0
+bot worldPos: x 11.3167 y 1.60116 z 0.05 destination x 12.1244 y 3 z 0 dist 1.61601
+bot velocity x 0.0583845 y 0.101125 z 0
+bot worldPos: x 11.3751 y 1.70229 z 0.05 destination x 12.1244 y 3 z 0 dist 1.4993
+bot velocity x 0.0587646 y 0.101783 z 0
+bot worldPos: x 11.4339 y 1.80407 z 0.05 destination x 12.1244 y 3 z 0 dist 1.38185
+bot velocity x 0.0604677 y 0.104733 z 0
+bot worldPos: x 11.4944 y 1.9088 z 0.05 destination x 12.1244 y 3 z 0 dist 1.261
+bot velocity x 0.056792 y 0.0983667 z 0
+bot worldPos: x 11.5511 y 2.00717 z 0.05 destination x 12.1244 y 3 z 0 dist 1.14751
+bot velocity x 0.0578917 y 0.100271 z 0
+bot worldPos: x 11.609 y 2.10744 z 0.05 destination x 12.1244 y 3 z 0 dist 1.03185
+bot velocity x 0.0585627 y 0.101434 z 0
+bot worldPos: x 11.6676 y 2.20888 z 0.05 destination x 12.1244 y 3 z 0 dist 0.914879
+bot velocity x 0.058269 y 0.100925 z 0
+bot worldPos: x 11.7259 y 2.3098 z 0.05 destination x 12.1244 y 3 z 0 dist 0.798541
+bot velocity x 0.0585564 y 0.101423 z 0
+bot worldPos: x 11.7844 y 2.41122 z 0.05 destination x 12.1244 y 3 z 0 dist 0.681697
+bot velocity x 0.0587436 y 0.101747 z 0
+bot worldPos: x 11.8432 y 2.51297 z 0.05 destination x 12.1244 y 3 z 0 dist 0.564592
+bot velocity x 0.0579677 y 0.100403 z 0
+bot worldPos: x 11.9011 y 2.61337 z 0.05 destination x 12.1244 y 3 z 0 dist 0.449229
+bot velocity x 0.0585571 y 0.101424 z 0
+bot worldPos: x 11.9597 y 2.7148 z 0.05 destination x 12.1244 y 3 z 0 dist 0.333097
+bot velocity x 0.0583849 y 0.101126 z 0
+bot worldPos: x 12.0181 y 2.81592 z 0.05 destination x 12.1244 y 3 z 0 dist 0.218355
+bot velocity x 0.0584402 y 0.101221 z 0
+Robot reached destination!
+Click!
+Begin player move!
+Begin action phase!
+Chase player!
+Chase player!
+bot worldPos: x 12.1244 y 3 z 0.05 destination x 11.2583 y 4.5 z 0 dist 1.73277
+bot velocity x -0.0585655 y 0.101438 z 0
+bot worldPos: x 10.3923 y 3 z 0.05 destination x 9.52628 y 4.5 z 0 dist 1.73277
+bot velocity x -0.0585655 y 0.101438 z 0
+bot worldPos: x 12.0658 y 3.10144 z 0.05 destination x 11.2583 y 4.5 z 0 dist 1.61569
+bot velocity x -0.0583803 y 0.101118 z 0
+bot worldPos: x 10.3337 y 3.10144 z 0.05 destination x 9.52628 y 4.5 z 0 dist 1.61569
+bot velocity x -0.0583803 y 0.101118 z 0
+bot worldPos: x 12.0074 y 3.20256 z 0.05 destination x 11.2583 y 4.5 z 0 dist 1.49899
+bot velocity x -0.0584979 y 0.101321 z 0
+bot worldPos: x 10.2754 y 3.20256 z 0.05 destination x 9.52628 y 4.5 z 0 dist 1.49899
+bot velocity x -0.0584979 y 0.101321 z 0
+bot worldPos: x 11.9489 y 3.30388 z 0.05 destination x 11.2583 y 4.5 z 0 dist 1.38207
+bot velocity x -0.0585634 y 0.101435 z 0
+bot worldPos: x 10.2169 y 3.30388 z 0.05 destination x 9.52628 y 4.5 z 0 dist 1.38207
+bot velocity x -0.0585634 y 0.101435 z 0
+bot worldPos: x 11.8903 y 3.40531 z 0.05 destination x 11.2583 y 4.5 z 0 dist 1.26502
+bot velocity x -0.0598398 y 0.103646 z 0
+bot worldPos: x 10.1583 y 3.40531 z 0.05 destination x 9.52628 y 4.5 z 0 dist 1.26502
+bot velocity x -0.0598398 y 0.103646 z 0
+bot worldPos: x 11.8305 y 3.50896 z 0.05 destination x 11.2583 y 4.5 z 0 dist 1.14545
+bot velocity x -0.0592203 y 0.102573 z 0
+bot worldPos: x 10.0985 y 3.50896 z 0.05 destination x 9.52628 y 4.5 z 0 dist 1.14545
+bot velocity x -0.0592203 y 0.102573 z 0
+bot worldPos: x 11.7713 y 3.61153 z 0.05 destination x 11.2583 y 4.5 z 0 dist 1.02713
+bot velocity x -0.0564294 y 0.0977387 z 0
+bot worldPos: x 10.0392 y 3.61153 z 0.05 destination x 9.52628 y 4.5 z 0 dist 1.02713
+bot velocity x -0.0564294 y 0.0977387 z 0
+bot worldPos: x 11.7149 y 3.70927 z 0.05 destination x 11.2583 y 4.5 z 0 dist 0.914425
+bot velocity x -0.0581318 y 0.100687 z 0
+bot worldPos: x 9.98281 y 3.70927 z 0.05 destination x 9.52628 y 4.5 z 0 dist 0.914425
+bot velocity x -0.0581318 y 0.100687 z 0
+bot worldPos: x 11.6567 y 3.80996 z 0.05 destination x 11.2583 y 4.5 z 0 dist 0.79836
+bot velocity x -0.058451 y 0.10124 z 0
+bot worldPos: x 9.92467 y 3.80996 z 0.05 destination x 9.52628 y 4.5 z 0 dist 0.79836
+bot velocity x -0.058451 y 0.10124 z 0
+bot worldPos: x 11.5983 y 3.9112 z 0.05 destination x 11.2583 y 4.5 z 0 dist 0.681727
+bot velocity x -0.0583831 y 0.101123 z 0
+bot worldPos: x 9.86622 y 3.9112 z 0.05 destination x 9.52628 y 4.5 z 0 dist 0.681727
+bot velocity x -0.0583831 y 0.101123 z 0
+bot worldPos: x 11.5399 y 4.01232 z 0.05 destination x 11.2583 y 4.5 z 0 dist 0.56534
+bot velocity x -0.0584027 y 0.101157 z 0
+bot worldPos: x 9.80784 y 4.01232 z 0.05 destination x 9.52628 y 4.5 z 0 dist 0.56534
+bot velocity x -0.0584027 y 0.101157 z 0
+bot worldPos: x 11.4815 y 4.11348 z 0.05 destination x 11.2583 y 4.5 z 0 dist 0.449111
+bot velocity x -0.0584251 y 0.101195 z 0
+bot worldPos: x 9.74944 y 4.11348 z 0.05 destination x 9.52628 y 4.5 z 0 dist 0.449111
+bot velocity x -0.0584251 y 0.101195 z 0
+bot worldPos: x 11.4231 y 4.21467 z 0.05 destination x 11.2583 y 4.5 z 0 dist 0.333241
+bot velocity x -0.0586358 y 0.10156 z 0
+bot worldPos: x 9.69101 y 4.21467 z 0.05 destination x 9.52628 y 4.5 z 0 dist 0.333241
+bot velocity x -0.0586358 y 0.10156 z 0
+bot worldPos: x 11.3644 y 4.31623 z 0.05 destination x 11.2583 y 4.5 z 0 dist 0.218009
+bot velocity x -0.058345 y 0.101057 z 0
+bot worldPos: x 9.63238 y 4.31623 z 0.05 destination x 9.52628 y 4.5 z 0 dist 0.218009
+bot velocity x -0.058345 y 0.101057 z 0
+Robot reached destination!
+Robot reached destination!

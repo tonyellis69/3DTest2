@@ -6,7 +6,7 @@ bool CPlayerObject::update(float dT) {
 	bool result = CHexObject::update(dT);
 
 	if (hexPosition != playerOldHex) {
-		callbackObj->onPlayerTurnDoneCB();
+		hexWorld->onPlayerTurnDoneCB();
 	}
 
 	return result;
