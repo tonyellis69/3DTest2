@@ -4,8 +4,6 @@
 
 CHexWorld::CHexWorld() {
 	hexRenderer.setCallbackApp(this);
-	resolving = false;
-	//gameTurnActive = false;
 	turnPhase = chooseActionPhase;
 }
 
@@ -14,18 +12,19 @@ void CHexWorld::setCallbackApp(IhexWorldCallback* pApp) {
 	pCallbackApp = pApp;
 }
 
-/**	Load a mesh for storage under the given name. */
+/**	Load a single mesh for storage under the given name. */
 void CHexWorld::addMesh(const std::string& name, std::vector<CMesh>& meshes) {
 	CBuf* meshBuf = hexRenderer.addBuffer(name);
 	meshes[0].writeToBufferv3i(*meshBuf);
 }
 
-/**	Load a mesh for storage under the given name. */
+/**	Load a multipart mesh for storage under the given name. */
 void CHexWorld::addMesh(const std::string& name, CMesh& mesh) {
 	CBuf* meshBuf = hexRenderer.addBuffer(name);
 	mesh.writeToBufferv3i(*meshBuf);
 }
 
+/** Late set-up stuff. */
 void CHexWorld::start() {
 	createHexObjects();
 
@@ -35,6 +34,7 @@ void CHexWorld::start() {
 	hexRenderer.start();	
 }
 
+/** Check and respond to keys being pressed this frame. */
 void CHexWorld::keyCheck() {
 	float camSpeed = 6.0f * dT;
 
@@ -52,9 +52,8 @@ void CHexWorld::keyCheck() {
 	}
 
 	if (pCallbackApp->hexMouseButtonNowCallback(GLFW_MOUSE_BUTTON_LEFT)) {
-		if (!resolving && !playerObj.moving) {
-			if (playerObj.beginMove())
-				startActionPhase();
+		if ( turnPhase == playerChoosePhase &&  !playerObj.moving) {
+			beginLeftClickAction();
 		}
 	}
 }
@@ -76,12 +75,8 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 
 void CHexWorld::onMouseButton(int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT &&  action == GLFW_PRESS) {
-		sysLog << "\nClick!";
-		if (!resolving) {
-			sysLog << "\nBegin player move!";
-			if (playerObj.beginMove())
-				startActionPhase();
-		}
+		if  (turnPhase == playerChoosePhase)   //(!resolvingActions)
+			beginLeftClickAction();	
 	}
 }
 
@@ -95,51 +90,23 @@ void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 	hexRenderer.setCameraAspectRatio(ratio);
 }
 
-CHexObject* CHexWorld::getCursorObj(){
-	return &hexCursor;
-}
 
 /** Called every frame to get the hex world up to date.*/
 void CHexWorld::update(float dT) {
 	this->dT = dT;
-	resolving = false;
-	CHex playerOldHex = playerObj.hexPosition;
 
-	if (turnPhase == actionPhase) {
-		//complete all serial actions first
-		for (auto entity = serialActions.begin(); entity != serialActions.end(); entity++) {
-			if (!(*entity)->update(dT)) {
-				serialActions.erase(entity);
-			}
-			return;	
-		}
+	if (turnPhase == actionPhase) { 		
+		if (resolvingSerialActions())
+			return;
 
-
-		//for (auto entity : simulActions) {	
-		for (auto entity : entities) {
-			if (entity->isRobot)
-				int b = 0;
-			resolving |= entity->update(dT);
-		}
-
-	/*	if (!resolving) { //check for end of action actions
-			for (auto entity : entities) {
-				resolving |= entity->update(dT);
-			}
-		}
-		*/
-
-
-		if (!resolving) {
-			turnPhase = chooseActionPhase;
+		if (resolvingSimulActions()) {
+			return;
 		}
 	}
 
-
-	if (turnPhase == chooseActionPhase) {
+	else if (turnPhase == chooseActionPhase) {
 		chooseActions();
 	}
-
 }
 
 /** Provides a callback function for using hexArray's pathfinding facility. */
@@ -148,17 +115,17 @@ THexList CHexWorld::getPathCB(CHex& start, CHex& end) {
 }
 
 /** A callback function for finding what entity is at the given hex. */
-CHexObject* CHexWorld::getEntityAtCB(CHex& hex) {
+CHexObject* CHexWorld::getEntityAt(CHex& hex) {
 	for (auto entity : entities) {
 		if (entity->hexPosition == hex)
 			return entity;
 	}
-	return NULL;;
+	return NULL;
 }
 
 /** Called to initiate the rest of the world's turn to act. */
 void CHexWorld::onPlayerTurnDoneCB() {
-	//gameTurnActive = true;
+	
 }
 
 CHex CHexWorld::getPlayerPositionCB() {
@@ -231,9 +198,7 @@ void CHexWorld::createRoom(int w, int h) {
 
 		hexArray.getHexOffset(18 + s, 14).content = 2;
 		hexArray.getHexOffset(25, 14 + s).content = 2;
-
-	}
-	
+	}	
 }
 
 /** Respend to cursor moving to a new hex. */
@@ -252,36 +217,75 @@ THexList* CHexWorld::getPlayerPath() {
 	return &playerObj.getTravelPath();
 }
 
-
-/** Ask game world entities to choose their actions for this turn. */
-void CHexWorld::gameWorldTurn() {
-
-	for (auto entity : entities) {
-		entity->chooseTurnAction();
-	}
-
-	//gameTurnActive = false;
+CHexObject* CHexWorld::getCursorObj(){
+	return &hexCursor;
 }
+
+
 
 /** All entities choose their action for the coming turn. */
 void CHexWorld::chooseActions() {
 	serialActions.clear();
-	simulActions.clear();
 	for (auto entity : entities) {
 		entity->chooseTurnAction();
 		if (entity->resolvingSerialAction())
 			serialActions.push_back(entity);
-		else
-			simulActions.push_back(entity);
 	}
 	turnPhase = playerChoosePhase;
 }
 
 /** Ask all entities to initiate their chosen action for this turn. */
 void CHexWorld::startActionPhase() {
-	sysLog << "\nBegin action phase!";
 	turnPhase = actionPhase;
 	for (auto entity : entities) {
 		entity->beginTurnAction();
 	}
+}
+
+/** Begin a player left-click action. */
+void CHexWorld::beginLeftClickAction() {
+	CHexObject* entity = getEntityAt(hexCursor.hexPosition);
+	if (entity && entity->isNeighbour(playerObj.hexPosition) )
+		beginPlayerLunge(*entity);
+	else 
+		beginPlayerMove();
+	
+	startActionPhase();
+}
+
+
+/** Initiate a player lunge attack on the target. */
+void CHexWorld::beginPlayerLunge(CHexObject& target) {
+	playerObj.beginAttack(target);
+	serialActions.insert(serialActions.begin(), &playerObj);
+}
+
+/** Start the player down its travel path, if any. */
+bool CHexWorld::beginPlayerMove() {
+	 return playerObj.beginMove();
+}
+
+/** If any entity is performing a serial action, update the lead one and return true. */
+bool CHexWorld::resolvingSerialActions() {
+	for (auto entity = serialActions.begin(); entity != serialActions.end(); entity++) {
+		if (!(*entity)->update(dT)) {
+			serialActions.erase(entity);
+		}
+		return true;
+	}
+	return false;
+}
+
+/** If any entity is performing a simultaneous action, update each one and return true. */
+bool CHexWorld::resolvingSimulActions() {
+	bool resolvingActions = false;
+	for (auto entity : entities) {
+		resolvingActions |= entity->update(dT);
+	}
+
+	if (resolvingActions)
+		return true;
+
+	turnPhase = chooseActionPhase;
+	return false;
 }

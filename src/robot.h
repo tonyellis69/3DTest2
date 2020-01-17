@@ -15,8 +15,7 @@ public:
 
 
 private:
-	THexDir targetDirection;
-	float animCycle; ///<Records how far through an animation we are.
+
 
 
 };

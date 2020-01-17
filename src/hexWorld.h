@@ -22,14 +22,13 @@ public:
 	void onMouseButton(int button, int action, int mods);
 	void draw();
 	void setAspectRatio(glm::vec2& ratio);
-	CHexObject* getCursorObj();
 	void update(float dt);
 	
 
 
 private:
 	THexList getPathCB(CHex& start, CHex& end);
-	CHexObject* getEntityAtCB(CHex& hex);
+	CHexObject* getEntityAt(CHex& hex);
 	void onPlayerTurnDoneCB();
 	CHex getPlayerPositionCB();
 	CHex getPlayerDestinationCB();
@@ -39,11 +38,18 @@ private:
 	void onCursorMove(CHex& mouseHex);
 	TEntities* getEntities();
 	THexList* getPlayerPath();
+	CHexObject* getCursorObj();
 
-	void gameWorldTurn();
+
 	void chooseActions();
 	void startActionPhase();
 
+	void beginLeftClickAction();
+	void beginPlayerLunge(CHexObject& target);
+	bool beginPlayerMove();
+
+	bool resolvingSerialActions();
+	bool resolvingSimulActions();
 
 
 	CHexArray hexArray;
@@ -61,11 +67,6 @@ private:
 	TEntities serialActions; ///<Entities performing serial actions this round.
 	TEntities simulActions; ///<Entities performing simultaneous actions this round.
 	
-	//THexList playerTravelPath;  ///<Route player object will follow if moving.
-
-	bool resolving; ///<Player can't act while true.
-	//bool gameTurnActive;
-
 	TTurnPhase turnPhase;
 
 	float dT; ///<Interval since last app loop.

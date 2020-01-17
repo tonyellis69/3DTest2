@@ -7,7 +7,7 @@
 class CPlayerObject : public CHexObject {
 public:
 	bool update(float dT);
-	
+	void beginAttack(CHexObject& target);
 
 
 

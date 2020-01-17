@@ -29,8 +29,6 @@ void CRobot::beginTurnAction() {
 	travelPath.clear();
 
 	if (action == actChasePlayer) {
-		sysLog << "\nChase player!";
-	
 		THexDir playerAdjacent = neighbourDirection(hexPosition, playerDestination);
 		if (playerAdjacent == hexNone) {
 			findTravelPath(hexWorld->getPlayerPositionCB());
@@ -41,7 +39,6 @@ void CRobot::beginTurnAction() {
 		
 	} 
 	else if (action == actAttackPlayer) {
-		sysLog << "\nHit player!";
 		targetDirection = neighbourDirection(hexPosition, playerPos);
 		animCycle = 0;
 		moveVector = directionToVec(targetDirection);
@@ -93,28 +90,7 @@ bool CRobot::update(float dT) {
 	bool resolving = CHexObject::update(dT);
 
 	if (action == actAttackPlayer) {
-		//advance the attack animation
-		//use a 1-0 counter to say where we are in the animation
-		float travel = animCycle *2.0f - 1.0f;
-		float sign = travel > 0 ? 1.0f : -1.0f;
-	//	travel = cos(travel * M_PI * 0.5f);
-
-		//travel = pow(4.0 * animCycle * (1.0 - animCycle), 5) ;
-		
-		travel = 1.0f - pow(abs(travel), 0.6f);
-	
-		travel *= hexWidth;
-
-		glm::vec3 travelVec = moveVector * travel;
-		sysLog << "\ntravelVec: " << travel;
-
-		worldPos = cubeToWorldSpace(hexPosition) + travelVec;
-
-		buildWorldMatrix();
-		animCycle += dT * 3.0f; 
-		if (animCycle > 1.0f) {
-			action = actNone;
-			setPosition(hexPosition); //ensures we don't drift.
+		if (!attack()) {
 			onEndOfAction(); 
 			return false;
 		}
@@ -140,7 +116,7 @@ bool CRobot::update(float dT) {
 		//then turn to face him before we end our turn
 		for (int neighbourDir = hexEast; neighbourDir <= hexNE; neighbourDir++) {
 			CHex neighbour = getNeighbour(hexPosition, (THexDir)neighbourDir);
-			CHexObject* entity = hexWorld->getEntityAtCB(neighbour);
+			CHexObject* entity = hexWorld->getEntityAt(neighbour);
 			if (entity && !entity->isRobot) {
 				if (facing != neighbourDir) {
 					destinationDirection = (THexDir)neighbourDir;
