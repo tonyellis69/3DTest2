@@ -27,10 +27,11 @@ public:
 
 
 private:
-	THexList getPathCB(CHex& start, CHex& end);
+	THexList calcPath(CHex& start, CHex& end);
 	CHexObject* getEntityAt(CHex& hex);
+	CHexObject* entityMovingTo(CHex& hex);
 	void onPlayerTurnDoneCB();
-	CHex getPlayerPositionCB();
+	CHex getPlayerPosition();
 	CHex getPlayerDestinationCB();
 	bool isEntityDestinationCB(CHex& hex);
 	void createHexObjects();

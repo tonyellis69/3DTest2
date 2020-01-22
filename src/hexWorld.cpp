@@ -110,7 +110,7 @@ void CHexWorld::update(float dT) {
 }
 
 /** Provides a callback function for using hexArray's pathfinding facility. */
-THexList CHexWorld::getPathCB(CHex& start, CHex& end) {
+THexList CHexWorld::calcPath(CHex& start, CHex& end) {
 	return hexArray.aStarPath(start,end);
 }
 
@@ -123,12 +123,20 @@ CHexObject* CHexWorld::getEntityAt(CHex& hex) {
 	return NULL;
 }
 
+CHexObject* CHexWorld::entityMovingTo(CHex& hex) {
+	for (auto entity : entities) {
+		if (entity->destination == hex)
+			return entity;
+	}
+	return NULL;
+}
+
 /** Called to initiate the rest of the world's turn to act. */
 void CHexWorld::onPlayerTurnDoneCB() {
 	
 }
 
-CHex CHexWorld::getPlayerPositionCB() {
+CHex CHexWorld::getPlayerPosition() {
 	return playerObj.hexPosition;
 }
 
@@ -150,7 +158,7 @@ bool CHexWorld::isEntityDestinationCB(CHex& hex) {
 void CHexWorld::createHexObjects() {
 	playerObj.buf = hexRenderer.getBuffer("player");
 	//playerObj.setPosition(0, 0, 0);
-	playerObj.setPosition(4, -2, -2);
+	playerObj.setPosition(5, -3, -2);
 	playerObj.setCallbackObj(this);
 
 	robot.buf = hexRenderer.getBuffer("robot");
@@ -204,7 +212,7 @@ void CHexWorld::createRoom(int w, int h) {
 /** Respend to cursor moving to a new hex. */
 void CHexWorld::onCursorMove(CHex& mouseHex) {
 	hexCursor.setPosition(mouseHex);
-	playerObj.findTravelPath(hexCursor.hexPosition);	
+	playerObj.calcTravelPath(hexCursor.hexPosition);	
 }
 
 /** Return a pointer to the list of entities for the current map. */
@@ -228,7 +236,7 @@ void CHexWorld::chooseActions() {
 	serialActions.clear();
 	for (auto entity : entities) {
 		entity->chooseTurnAction();
-		if (entity->resolvingSerialAction())
+		if (entity->isResolvingSerialAction())
 			serialActions.push_back(entity);
 	}
 	turnPhase = playerChoosePhase;

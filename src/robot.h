@@ -9,8 +9,7 @@ public:
 	CRobot();
 	void chooseTurnAction();
 	void beginTurnAction();
-	void beginTurnToPlayer();
-	void onEndOfAction();
+	bool postAction();
 	bool update(float dT);
 
 

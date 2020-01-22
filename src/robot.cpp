@@ -4,140 +4,85 @@
 
 
 CRobot::CRobot() {
-	action = actNone;
+
 }
 
+/** Choose an action for the upcoming turn. */
 void CRobot::chooseTurnAction() {
-	//is player in adjacent hex? Attack!
-	CHex playerPos = hexWorld->getPlayerPositionCB();
-	THexDir playerAdjacent = neighbourDirection(hexPosition, playerPos);
-
-	if (playerAdjacent != hexNone) {
+	if ( isNeighbour(hexWorld->getPlayerPosition()) ) 
 		action = actAttackPlayer;
-
-	}
-	else {
+	else 
 		 action = actChasePlayer;
-	}
-
+	
 }
 
-
+/** Initiate this turn's action. */
 void CRobot::beginTurnAction() {
-	CHex playerPos = hexWorld->getPlayerPositionCB();
-	CHex playerDestination = hexWorld->getPlayerDestinationCB();
+	CHex playerPos = hexWorld->getPlayerPosition();
 	travelPath.clear();
 
 	if (action == actChasePlayer) {
-		THexDir playerAdjacent = neighbourDirection(hexPosition, playerDestination);
-		if (playerAdjacent == hexNone) {
-			findTravelPath(hexWorld->getPlayerPositionCB());
-		}
+		calcTravelPath(playerPos);
 		if (!beginMove()) {
-			onEndOfAction();
-		}
-		
+			postAction();
+		}	
 	} 
 	else if (action == actAttackPlayer) {
-		targetDirection = neighbourDirection(hexPosition, playerPos);
+		destinationDirection = neighbourDirection(hexPosition, playerPos);
 		animCycle = 0;
-		moveVector = directionToVec(targetDirection);
+		moveVector = directionToVec(destinationDirection);
 	}
-
 }
 
-/** Start an action where the robot will turn on the spot to face the player. */
-void CRobot::beginTurnToPlayer() {
-	CHex playerDestination = hexWorld->getPlayerDestinationCB();
-	destinationDirection = neighbourDirection(hexPosition, playerDestination);
-	float rotationDir = shortestRotation(facing, destinationDirection);
-	if (rotationDir == 0.0f)
-		return;
-	turning = true;
-	moving = true;
-	rotationalVelocity = (rotationDir > 0) - (rotationDir < 0);
-	destinationAngle = dirToAngle(destinationDirection);
-}
+
 
 /** Set up any necessary cosmetic action required before the turn ends, such as turning to face
 	an adjacent player. */
-void CRobot::onEndOfAction() {
-	action = actNone;
-	//are we adjacent to player?
-	CHex playerDestination = hexWorld->getPlayerDestinationCB();
-	THexDir playerAdjacent = neighbourDirection(hexPosition, playerDestination);
-	if (playerAdjacent != hexNone) {
-		destinationDirection = playerAdjacent;
-		float rotationDir = shortestRotation(facing, destinationDirection);
-		if (rotationDir == 0.0f)
-			return;
-		rotationalVelocity = (rotationDir > 0) - (rotationDir < 0);
-		destinationAngle = dirToAngle(destinationDirection);
-		action = actTrackPlayer;
-		moving = true;
-		turning = true;
-		return;
+bool CRobot::postAction() {
+	if (action == actTrackPlayer) {
+		action = actNone;
+		moving = false;
+		return false;
 	}
+	
+	bool wasResolvingSerial = isResolvingSerialAction();
 
-
-	return ;
+	action = actNone;
+	CHex playerDestination = hexWorld->getPlayerDestinationCB();
+	if ( isNeighbour(playerDestination) ) {
+		if (initTurnToAdjacent(playerDestination)) {
+			action = actTrackPlayer;
+			return wasResolvingSerial ? false : true; //Sign off any previous serial action as resolved
+		}
+	}
+	return false;
 }
 
 bool CRobot::update(float dT) {
-//	if (action == actNone)
-	//	return false;
+	if (action == actNone)
+		return false;
+	
+	bool resolving = false;
 
-	bool resolving = CHexObject::update(dT);
+	if (action == actChasePlayer)
+		resolving = updateMove(dT);
+	
 
 	if (action == actAttackPlayer) {
-		if (!attack()) {
-			onEndOfAction(); 
-			return false;
-		}
-		else {
-			
-			return true;
-		}
+		resolving = updateLunge(dT);////////////
+		if (!resolving)
+			int b = 0;
 	}
+
 
 	if (action == actTrackPlayer) {
-		if (!turning) {
-			action = actNone;
-			moving = false;
-			return false;
-		}
-
+		resolving = updateRotation(dT);
 	}
 
-
-	
-	/*if (!moving) {
-		//are we adjacent to player?
-		//then turn to face him before we end our turn
-		for (int neighbourDir = hexEast; neighbourDir <= hexNE; neighbourDir++) {
-			CHex neighbour = getNeighbour(hexPosition, (THexDir)neighbourDir);
-			CHexObject* entity = hexWorld->getEntityAt(neighbour);
-			if (entity && !entity->isRobot) {
-				if (facing != neighbourDir) {
-					destinationDirection = (THexDir)neighbourDir;
-					float rotationDir = shortestRotation(facing, destinationDirection);
-					moving = true;
-					turning = true;
-					rotationalVelocity = (rotationDir > 0) - (rotationDir < 0);
-					destinationAngle = dirToAngle(destinationDirection);
-					return false;
-
-				}
-
-			}
-				
-		}
-	}*/
 
 	if (!resolving) {
-		onEndOfAction();
+		return postAction();
 	}
-
 
 	return resolving;
 }

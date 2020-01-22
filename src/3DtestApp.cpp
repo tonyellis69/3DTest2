@@ -1125,11 +1125,6 @@ void C3DtestApp::Update() {
 		}
 	}
 
-
-	if (appMode == terrainMode) {
-		sysLog << "\nplayerObj " << playerObj.getPos() << " viewpoint "
-			<< terrain2.viewpoint;
-	}
 }
 
 
