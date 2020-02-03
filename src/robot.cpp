@@ -4,16 +4,17 @@
 
 
 CRobot::CRobot() {
-
+	hitPoints = 2;
 }
 
 /** Choose an action for the upcoming turn. */
 void CRobot::chooseTurnAction() {
-	if ( isNeighbour(hexWorld->getPlayerPosition()) ) 
-		action = actAttackPlayer;
+	if (action == actDead)
+		return;
+	else if (isNeighbour(hexWorld->getPlayerPosition()))
+		action = attackOrNot(); // actAttackPlayer;
 	else 
 		 action = actChasePlayer;
-	
 }
 
 /** Initiate this turn's action. */
@@ -28,9 +29,11 @@ void CRobot::beginTurnAction() {
 		}	
 	} 
 	else if (action == actAttackPlayer) {
+		attackTarget = hexWorld->getPlayerObj();
 		destinationDirection = neighbourDirection(hexPosition, playerPos);
 		animCycle = 0;
 		moveVector = directionToVec(destinationDirection);
+		liveLog << "\nA robot hits you!";
 	}
 }
 
@@ -59,7 +62,7 @@ bool CRobot::postAction() {
 }
 
 bool CRobot::update(float dT) {
-	if (action == actNone)
+	if (action == actNone || action == actDead)
 		return false;
 	
 	bool resolving = false;
@@ -70,8 +73,6 @@ bool CRobot::update(float dT) {
 
 	if (action == actAttackPlayer) {
 		resolving = updateLunge(dT);////////////
-		if (!resolving)
-			int b = 0;
 	}
 
 
@@ -88,5 +89,25 @@ bool CRobot::update(float dT) {
 }
 
 
+void CRobot::receiveDamage(CHexObject& attacker, int damage) {
+	if (action == actDead) {
+		liveLog << "\nYou're flogging a dead robot";
+		return;
+	}
 
+	hitPoints -= damage;
+	if (hitPoints <= 0) {
+		liveLog << "\nYou trash the robot!";
+		action = actDead;
+	}
+}
+
+int CRobot::attackOrNot() {
+	int roll = hexWorld->diceRoll(2);
+	if (roll == 1) {
+		liveLog << "\nRobot dithers!";
+		return actDither;
+	}
+	return actAttackPlayer;
+}
 

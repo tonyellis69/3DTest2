@@ -11,10 +11,10 @@ public:
 	void beginTurnAction();
 	bool postAction();
 	bool update(float dT);
-
+	void receiveDamage(CHexObject& attacker, int damage);
 
 private:
-
+	int attackOrNot();
 
 
 };

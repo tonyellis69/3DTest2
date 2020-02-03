@@ -5,6 +5,7 @@
 CHexWorld::CHexWorld() {
 	hexRenderer.setCallbackApp(this);
 	turnPhase = chooseActionPhase;
+	CHexObject::setHexRenderer(&hexRenderer);
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
@@ -56,6 +57,29 @@ void CHexWorld::keyCheck() {
 			beginLeftClickAction();
 		}
 	}
+
+	
+}
+
+void CHexWorld::onKeyDown(int key, long mod) {
+	if (key == GLFW_KEY_KP_6) {
+		playerObj.setShield(hexEast);
+	}
+	else if (key == GLFW_KEY_KP_3) {
+		playerObj.setShield(hexSE);
+	}
+	else if (key == GLFW_KEY_KP_1) {
+		playerObj.setShield(hexSW);
+	}
+	else if (key == GLFW_KEY_KP_4) {
+		playerObj.setShield(hexWest);
+	}
+	else if (key == GLFW_KEY_KP_7) {
+		playerObj.setShield(hexNW);
+	}
+	else if (key == GLFW_KEY_KP_9) {
+		playerObj.setShield(hexNE);
+	}
 }
 
 void CHexWorld::onMouseWheel(float delta) {
@@ -83,6 +107,8 @@ void CHexWorld::onMouseButton(int button, int action, int mods) {
 
 void CHexWorld::draw() {
 	hexRenderer.draw();
+	for (auto entity : entities)
+		entity->draw();
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
@@ -156,29 +182,31 @@ bool CHexWorld::isEntityDestinationCB(CHex& hex) {
 
 /** TO DO: temporary.This should not be hard-coded, but spun from a level-maker. */
 void CHexWorld::createHexObjects() {
-	playerObj.buf = hexRenderer.getBuffer("player");
+	playerObj.setBuffer(hexRenderer.getBuffer("player"));
 	//playerObj.setPosition(0, 0, 0);
 	playerObj.setPosition(5, -3, -2);
-	playerObj.setCallbackObj(this);
+	playerObj.setHexWorld(this);
+	playerObj.shieldBuf = hexRenderer.getBuffer("shield");
 
-	robot.buf = hexRenderer.getBuffer("robot");
+	robot.setBuffer(hexRenderer.getBuffer("robot"));
 	//robot.setPosition(-5, -5);
 	robot.setPosition(2, 0,-2);
 	robot.isRobot = true;
-	robot.setCallbackObj(this);
+	robot.setHexWorld(this);
 
-	robot2.buf = hexRenderer.getBuffer("robot");
+	robot2.setBuffer(hexRenderer.getBuffer("robot"));
 	//robot2.setPosition(5, -5);
 	robot2.setPosition(4, -1,-3);
 	robot2.isRobot = true;
-	robot2.setCallbackObj(this);
+	robot2.setHexWorld(this);
 
 	entities.push_back(&playerObj);
 	entities.push_back(&robot);
 	entities.push_back(&robot2);
 
-	hexCursor.buf = hexRenderer.getBuffer("cursor");
+	hexCursor.setBuffer(hexRenderer.getBuffer("cursor"));
 	hexCursor.setPosition(0, 0, 0);
+
 }
 
 void CHexWorld::createRoom(int w, int h) {
@@ -227,6 +255,15 @@ THexList* CHexWorld::getPlayerPath() {
 
 CHexObject* CHexWorld::getCursorObj(){
 	return &hexCursor;
+}
+
+CHexObject* CHexWorld::getPlayerObj() {
+	return &playerObj;
+}
+
+int CHexWorld::diceRoll(int dice) {
+	std::uniform_int_distribution roll{ 1,dice };
+	return roll(randEngine);
 }
 
 

@@ -32,7 +32,7 @@
 
 #include "physics/terrainPhysObj2.h"
 
-#include "hexRenderer.h"
+//#include "hex/hexRenderer.h"
 #include "hexWorld.h" //replaces the above
 
 extern CSuperChunk* dbgSC;
@@ -45,6 +45,7 @@ enum TAppMode { terrainMode, textMode, texGenMode, hexMode };
 
 
 class C3DtestApp : public  CBaseApp , public ITerrainAppCallback,
+//class C3DtestApp : public  CBaseApp, public ITerrainCallback,
 	public IhexWorldCallback {
 public:
 	C3DtestApp();

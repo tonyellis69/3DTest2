@@ -1,6 +1,8 @@
 #pragma once
 
-#include "hexRenderer.h"
+#include <random>
+
+#include "hex/hexRenderer.h"
 #include "hex/hexObject.h"
 #include "robot.h"
 #include "playerHexObj.h"
@@ -17,6 +19,7 @@ public:
 	void addMesh(const std::string& name, CMesh& mesh);
 	void start();
 	void keyCheck();
+	void onKeyDown(int key, long mod);
 	void onMouseWheel(float delta);
 	void onMouseMove(int x, int y, int key);
 	void onMouseButton(int button, int action, int mods);
@@ -40,6 +43,8 @@ private:
 	TEntities* getEntities();
 	THexList* getPlayerPath();
 	CHexObject* getCursorObj();
+	CHexObject* getPlayerObj();
+	int diceRoll(int dice);
 
 
 	void chooseActions();
@@ -64,6 +69,7 @@ private:
 	CRobot robot;
 	CRobot robot2;
 
+
 	TEntities entities; ///<Live objects in the hex world.
 	TEntities serialActions; ///<Entities performing serial actions this round.
 	TEntities simulActions; ///<Entities performing simultaneous actions this round.
@@ -71,6 +77,8 @@ private:
 	TTurnPhase turnPhase;
 
 	float dT; ///<Interval since last app loop.
+
+	std::mt19937 randEngine;
 };
 
 class IhexWorldCallback {

@@ -37,12 +37,10 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //hexMode;
+	appMode = textMode;// texGenMode;// terrainMode; //textMode; //hexMode;
 
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));
-	
-	//GUIroot.add(uiButton, "Save");
 
 	chunkCall = 0;
 
@@ -149,7 +147,7 @@ void C3DtestApp::onStart() {
 	CBaseBuf* terrainBuf2 = &multiBuf; //TO DO: ugh, make a setter
 //((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
 
-	terrain2.setInitialChunkStorageSize(27650512); //175000000
+	terrain2.setInitialChunkStorageSize(27650512); //175000000 27650512
 
 	terrain2.setChunkVertLayout({ 3, 3, 0, 0 });
 
@@ -570,7 +568,7 @@ void C3DtestApp::keyCheck() {
 /** Triggered *when* a key is pressed, not while it is held down. This is not 'whileKeyDown'. */
 void C3DtestApp::onKeyDown( int key, long mod) {
 	if (appMode == hexMode) {
-		//hexWorld.onKeyDown(key, mod);
+		hexWorld.onKeyDown(key, mod);
 		return;
 	}
 
@@ -861,7 +859,7 @@ void C3DtestApp::terrain2TestDraw() {
 
 		}
 		
-
+	
 
 		/*
 
@@ -1523,6 +1521,9 @@ void C3DtestApp::initHexWorld() {
 	hexWorld.addMesh("player", importer.getSingleMesh());
 	importer.loadFile(dataPath + "models\\robot.obj");
 	hexWorld.addMesh("robot", importer.getSingleMesh());
+
+	importer.loadFile(dataPath + "models\\shield.obj");
+	hexWorld.addMesh("shield", importer.getSingleMesh());
 
 	//... more models
 
