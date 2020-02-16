@@ -9,7 +9,7 @@ int CLocalHotList::addObject(int objId) {
 	return objectIds.size();
 }
 
-int CLocalHotList::addObject(CObjInstance* obj) {
+int CLocalHotList::addObject(CTigObj* obj) {
 	objectIds.push_back(obj->id);
 	return objectIds.size();
 }
@@ -28,7 +28,7 @@ int CLocalHotList::getLocalId(int objId) {
 	return 0;
 }
 
-int CLocalHotList::getLocalId(CObjInstance* obj) {
+int CLocalHotList::getLocalId(CTigObj* obj) {
 	for (int i = 0; i < objectIds.size(); i++) {
 		if (objectIds[i] == obj->id)
 			return i + 1;

@@ -9,10 +9,10 @@ class CLocalHotList {
 public:
 	void clear();
 	int addObject(int objId);
-	int addObject(CObjInstance * obj);
+	int addObject(CTigObj * obj);
 	int getObjectId(int localId);
 	int getLocalId(int objId);
-	int getLocalId(CObjInstance * obj);
+	int getLocalId(CTigObj* obj);
 
 
 private:

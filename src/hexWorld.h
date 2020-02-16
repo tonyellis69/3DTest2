@@ -2,6 +2,10 @@
 
 #include <random>
 
+#include "Ivm.h"
+
+#include "mapMaker.h"
+
 #include "hex/hexRenderer.h"
 #include "hex/hexObject.h"
 #include "robot.h"
@@ -11,10 +15,12 @@ enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
 
 /** A class encapsulating the hex-based representation of the world. */
 class IhexWorldCallback;
-class CHexWorld : public IhexRendererCallback, public IhexObjectCallback {
+class CHexWorld : public IhexRendererCallback, public IhexObjectCallback,
+	CTigObjptr {
 public:
 	CHexWorld();
 	void setCallbackApp(IhexWorldCallback* pApp);
+	void setVM(Ivm* pVM);
 	void addMesh(const std::string& name, std::vector<CMesh>& meshes);
 	void addMesh(const std::string& name, CMesh& mesh);
 	void start();
@@ -26,8 +32,7 @@ public:
 	void draw();
 	void setAspectRatio(glm::vec2& ratio);
 	void update(float dt);
-	
-
+	void setMap(ITigObj* map);
 
 private:
 	THexList calcPath(CHex& start, CHex& end);
@@ -38,7 +43,6 @@ private:
 	CHex getPlayerDestinationCB();
 	bool isEntityDestinationCB(CHex& hex);
 	void createHexObjects();
-	void createRoom(int w, int h);
 	void onCursorMove(CHex& mouseHex);
 	TEntities* getEntities();
 	THexList* getPlayerPath();
@@ -57,6 +61,9 @@ private:
 	bool resolvingSerialActions();
 	bool resolvingSimulActions();
 
+	void populateMap();
+
+	void tigCall(int memberId) ;
 
 	CHexArray hexArray;
 
@@ -79,6 +86,10 @@ private:
 	float dT; ///<Interval since last app loop.
 
 	std::mt19937 randEngine;
+
+	CMapMaker mapMaker;
+
+	Ivm* vm; ///<Interface to the virtual machine/
 };
 
 class IhexWorldCallback {

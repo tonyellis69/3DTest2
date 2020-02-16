@@ -1,4 +1,4 @@
-*** Monday February 03, 2020  time: 21:09:36 ***
+*** Sunday February 16, 2020  time: 11:31:10 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
@@ -9,3 +9,5 @@ BaseApp constructor finished. Yay!
 
 Player offence 0 defence 0
 Player offence 0 defence 0
+Buffer before 27
+Buffer after 457

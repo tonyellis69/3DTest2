@@ -45,7 +45,6 @@ enum TAppMode { terrainMode, textMode, texGenMode, hexMode };
 
 
 class C3DtestApp : public  CBaseApp , public ITerrainAppCallback,
-//class C3DtestApp : public  CBaseApp, public ITerrainCallback,
 	public IhexWorldCallback {
 public:
 	C3DtestApp();
@@ -63,6 +62,8 @@ public:
 	void terrain2TestDraw();
 	void advance(Tdirection direction);
 	void Update();
+
+	void GUImsg(int ctrlId, TGUImessage& msg);
 	
 	void initWireSCs();
 	void onTerrainAdvance(Tdirection direction);

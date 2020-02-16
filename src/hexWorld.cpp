@@ -6,11 +6,19 @@ CHexWorld::CHexWorld() {
 	hexRenderer.setCallbackApp(this);
 	turnPhase = chooseActionPhase;
 	CHexObject::setHexRenderer(&hexRenderer);
+	
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
 void CHexWorld::setCallbackApp(IhexWorldCallback* pApp) {
 	pCallbackApp = pApp;
+	
+}
+
+void CHexWorld::setVM(Ivm* pVM) {
+	vm = pVM;
+	mapMaker.attachVM(pVM);
+	setTigObj(vm->getObject("CConsole")); ///TO DO: temp!
 }
 
 /**	Load a single mesh for storage under the given name. */
@@ -29,7 +37,11 @@ void CHexWorld::addMesh(const std::string& name, CMesh& mesh) {
 void CHexWorld::start() {
 	createHexObjects();
 
-	createRoom(31,21);
+	hexArray = mapMaker.createMap();
+
+	populateMap();
+
+
 	hexRenderer.setMap(&hexArray);
 
 	hexRenderer.start();	
@@ -135,6 +147,13 @@ void CHexWorld::update(float dT) {
 	}
 }
 
+void CHexWorld::setMap(ITigObj* map) {
+	mapMaker.attachMapObject(map);
+}
+
+
+
+
 /** Provides a callback function for using hexArray's pathfinding facility. */
 THexList CHexWorld::calcPath(CHex& start, CHex& end) {
 	return hexArray.aStarPath(start,end);
@@ -187,9 +206,9 @@ void CHexWorld::createHexObjects() {
 	playerObj.setPosition(5, -3, -2);
 	playerObj.setHexWorld(this);
 	playerObj.shieldBuf = hexRenderer.getBuffer("shield");
+	playerObj.setTigObj(vm->getObject("player"));
 
-	robot.setBuffer(hexRenderer.getBuffer("robot"));
-	//robot.setPosition(-5, -5);
+	/*robot.setBuffer(hexRenderer.getBuffer("robot"));
 	robot.setPosition(2, 0,-2);
 	robot.isRobot = true;
 	robot.setHexWorld(this);
@@ -198,44 +217,18 @@ void CHexWorld::createHexObjects() {
 	//robot2.setPosition(5, -5);
 	robot2.setPosition(4, -1,-3);
 	robot2.isRobot = true;
-	robot2.setHexWorld(this);
+	robot2.setHexWorld(this);*/
 
 	entities.push_back(&playerObj);
-	entities.push_back(&robot);
-	entities.push_back(&robot2);
+	//entities.push_back(&robot);
+	//entities.push_back(&robot2);
 
 	hexCursor.setBuffer(hexRenderer.getBuffer("cursor"));
 	hexCursor.setPosition(0, 0, 0);
 
 }
 
-void CHexWorld::createRoom(int w, int h) {
-	glm::i32vec2 margin(1);
-	glm::i32vec2 boundingBox = glm::i32vec2(w,h) + margin * 2;
 
-	hexArray.init(boundingBox.x, boundingBox.y);
-
-	glm::i32vec2 tL = margin;
-	glm::i32vec2 bR = boundingBox - margin;
-
-	for (int y = 0; y < boundingBox.y; y++) {
-		for (int x = 0; x < boundingBox.x; x++) {
-			if (x < tL.x || x >= bR.x || y < tL.y || y >= bR.y)
-				hexArray.getHexOffset(x, y).content = 2;
-			else
-				hexArray.getHexOffset(x, y).content = 1;
-		}
-	}
-
-	//create a few walls
-	for (int s = 0; s < 8; s++) {
-		hexArray.getHexOffset(7 + s, 7).content = 2;
-		hexArray.getHexOffset(14, 7+s).content = 2;
-
-		hexArray.getHexOffset(18 + s, 14).content = 2;
-		hexArray.getHexOffset(25, 14 + s).content = 2;
-	}	
-}
 
 /** Respend to cursor moving to a new hex. */
 void CHexWorld::onCursorMove(CHex& mouseHex) {
@@ -333,4 +326,34 @@ bool CHexWorld::resolvingSimulActions() {
 
 	turnPhase = chooseActionPhase;
 	return false;
+}
+
+/** Fill the map with its entities. */
+void CHexWorld::populateMap() {
+	//get pointers to robots
+	ITigObj* pRobot = vm->getObject("botA");
+
+	robot.setBuffer(hexRenderer.getBuffer("robot"));
+	robot.setPosition(2, 0, -2);
+	robot.isRobot = true;
+	robot.setHexWorld(this);
+	robot.setTigObj(pRobot);
+
+	pRobot = vm->getObject("botB");
+
+	robot2.setBuffer(hexRenderer.getBuffer("robot"));
+	robot2.setPosition(4, -1, -3);
+	robot2.isRobot = true;
+	robot2.setHexWorld(this);
+	robot2.setTigObj(pRobot);
+
+	entities.push_back(&robot);
+	entities.push_back(&robot2);
+
+}
+
+void CHexWorld::tigCall(int memberId) {
+	//get stack values from some friendly vm interface func
+	std::string msg = vm->getStackValueStr();
+	
 }

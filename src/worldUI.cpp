@@ -4,6 +4,7 @@
 #include "worldUI.h"
 #include "worldUI.h"
 #include "worldUI.h"
+#include "worldUI.h"
 
 
 #include <ctype.h>
@@ -58,6 +59,7 @@ void CWorldUI::start() {
 	updateDistributorGUI();
 	updateHealthGUI();
 }
+
 
 
 bool CWorldUI::writeText(std::string & text, int window) {

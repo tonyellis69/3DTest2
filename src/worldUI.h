@@ -13,6 +13,8 @@
 #include "GUIdistributor.h"
 #include "GUIhealthPanel.h"
 
+
+
  
 struct TObjWindow {
 	CGUIrichTextPanel* win;

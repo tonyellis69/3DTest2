@@ -95,7 +95,13 @@ void CRobot::receiveDamage(CHexObject& attacker, int damage) {
 		return;
 	}
 
-	hitPoints -= damage;
+	int prevhitPoints = tigObj->getMemberInt("hitPoints");
+
+	tigObj->call("receiveDamage", attacker, damage );
+	
+
+	int posthitPoints = tigObj->getMemberInt("hitPoints");
+
 	if (hitPoints <= 0) {
 		liveLog << "\nYou trash the robot!";
 		action = actDead;

@@ -16,7 +16,7 @@ CGUIrichTextPanel::CGUIrichTextPanel(int x, int y, int w, int h) : CGUIgamePanel
 
 	inset = 10;
 	richText = new CGUIrichText(inset, inset, w - inset*2, h - inset);
-	richText->setMultiLine(true);
+	//richText->setMultiLine(true);
 	richText->anchorRight = inset;
 	richText->anchorLeft = inset;
 	richText->anchorBottom = inset;

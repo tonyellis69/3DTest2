@@ -28,7 +28,6 @@ using namespace glm;
 
 
 C3DtestApp::C3DtestApp() {
-	
 	tmpSCno = 0;
 	tmp = false;
 	physCube = NULL;
@@ -37,7 +36,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = textMode;// texGenMode;// terrainMode; //textMode; //hexMode;
+	appMode = terrainMode;// texGenMode;// terrainMode; //textMode; //hexMode;
 
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));
@@ -341,6 +340,8 @@ void C3DtestApp::onStart() {
 
 	tmpModel2.scale(vec3(3000, 3000, 3000));
 	tmpModel2.rotate(45, vec3(1, 0, 0));
+
+
 
 	initHexWorld();
 	
@@ -1125,6 +1126,12 @@ void C3DtestApp::Update() {
 
 }
 
+/** Handle messages from GUI controls. */
+void C3DtestApp::GUImsg(int ctrlId, TGUImessage& msg) {
+	if (msg.msg == uiMsgHotTextClick)
+		liveLog << "\nHot text " << msg.value << " clicked!";
+}
+
 
 
 /** Create a model for drawing superChunk positions in wireframe. */
@@ -1512,6 +1519,7 @@ void C3DtestApp::onResize(int width, int height) {
 /** Get the hexWorld ready for use. */
 void C3DtestApp::initHexWorld() {
 	hexWorld.setCallbackApp(this);
+	hexWorld.setVM(&vm);
 	importer.loadFile(dataPath + "models\\test.obj");
 	hexWorld.addMesh("test",importer.getMeshes());
 	importer.loadFile(dataPath + "models\\cursor.obj");
@@ -1527,6 +1535,8 @@ void C3DtestApp::initHexWorld() {
 
 	//... more models
 
+	ITigObj* map = vm.getObject("testRoom");
+	hexWorld.setMap(map);
 	hexWorld.start();
 }
 

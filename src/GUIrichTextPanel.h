@@ -61,7 +61,7 @@ public:
 	bool setLineFadeIn(bool onOff) {
 		if (richText->isBusy())
 			return false;
-		richText->enableLineFadeIn = onOff;
+		//richText->enableLineFadeIn = onOff;
 		return true;
 	}
 

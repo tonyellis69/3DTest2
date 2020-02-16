@@ -23,6 +23,13 @@ one more line to cause a scroll...
 Another line gap. Done. x
 line one x
 line twox
+line three x
+line five x
+line six x
+line seven x
+line eight x
+one more line to cause a scroll... x
+...this one x
 
 Bare room
 This is a plain, unremarkable room. Exits lead south and southwest. 
