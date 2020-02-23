@@ -9,12 +9,17 @@ CRobot::CRobot() {
 
 /** Choose an action for the upcoming turn. */
 void CRobot::chooseTurnAction() {
-	if (action == actDead)
-		return;
-	else if (isNeighbour(hexWorld->getPlayerPosition()))
-		action = attackOrNot(); // actAttackPlayer;
+
+	callTig("chooseTurnAction");
+
+	/*int action = getMemberInt("action");
+	if (action == tig::actDead)
+		return; //TO DO never seem to get here!!!!
+	else if (isNeighbour(*hexWorld->getPlayerObj()))
+		setMember("action",attackOrNot()); 
 	else 
-		 action = actChasePlayer;
+		setMember("action",tig::actChasePlayer);
+	*/		
 }
 
 /** Initiate this turn's action. */
@@ -22,13 +27,14 @@ void CRobot::beginTurnAction() {
 	CHex playerPos = hexWorld->getPlayerPosition();
 	travelPath.clear();
 
-	if (action == actChasePlayer) {
+	int action = getMemberInt("action");
+	if (action == tig::actChasePlayer) {
 		calcTravelPath(playerPos);
 		if (!beginMove()) {
 			postAction();
 		}	
 	} 
-	else if (action == actAttackPlayer) {
+	else if (action == tig::actAttackPlayer) {
 		attackTarget = hexWorld->getPlayerObj();
 		destinationDirection = neighbourDirection(hexPosition, playerPos);
 		animCycle = 0;
@@ -42,19 +48,20 @@ void CRobot::beginTurnAction() {
 /** Set up any necessary cosmetic action required before the turn ends, such as turning to face
 	an adjacent player. */
 bool CRobot::postAction() {
-	if (action == actTrackPlayer) {
-		action = actNone;
+	int action = getMemberInt("action");
+	if (action ==  tig::actTrackPlayer) {
+		setMember("action", tig::actNone);
 		moving = false;
 		return false;
 	}
 	
 	bool wasResolvingSerial = isResolvingSerialAction();
 
-	action = actNone;
+	setMember("action", tig::actNone);
 	CHex playerDestination = hexWorld->getPlayerDestinationCB();
-	if ( isNeighbour(playerDestination) ) {
+	if ( isNeighbour(*hexWorld->getPlayerObj()) ) {
 		if (initTurnToAdjacent(playerDestination)) {
-			action = actTrackPlayer;
+			setMember("action", tig::actTrackPlayer);
 			return wasResolvingSerial ? false : true; //Sign off any previous serial action as resolved
 		}
 	}
@@ -62,23 +69,25 @@ bool CRobot::postAction() {
 }
 
 bool CRobot::update(float dT) {
-	if (action == actNone || action == actDead)
+	int action = getMemberInt("action");
+	if (action == tig::actNone || action == tig::actDead )
 		return false;
 	
 	bool resolving = false;
 
-	if (action == actChasePlayer)
+	if (action == tig::actChasePlayer)
 		resolving = updateMove(dT);
 	
 
-	if (action == actAttackPlayer) {
+	if (action == tig::actAttackPlayer) {
 		resolving = updateLunge(dT);////////////
 	}
 
 
-	if (action == actTrackPlayer) {
+	if (action ==  tig::actTrackPlayer) {
 		resolving = updateRotation(dT);
 	}
+
 
 
 	if (!resolving) {
@@ -89,22 +98,18 @@ bool CRobot::update(float dT) {
 }
 
 
-void CRobot::receiveDamage(CHexObject& attacker, int damage) {
-	if (action == actDead) {
+void CRobot::receiveDamage(CGameHexObj& attacker, int damage) {
+	int action = getMemberInt("action");
+	if (action == tig::actDead) {
 		liveLog << "\nYou're flogging a dead robot";
 		return;
 	}
 
-	int prevhitPoints = tigObj->getMemberInt("hitPoints");
-
-	tigObj->call("receiveDamage", attacker, damage );
+	callTig("receiveDamage", attacker, damage);
 	
-
-	int posthitPoints = tigObj->getMemberInt("hitPoints");
-
 	if (hitPoints <= 0) {
 		liveLog << "\nYou trash the robot!";
-		action = actDead;
+		setMember("action", tig::actDead);
 	}
 }
 
@@ -112,8 +117,20 @@ int CRobot::attackOrNot() {
 	int roll = hexWorld->diceRoll(2);
 	if (roll == 1) {
 		liveLog << "\nRobot dithers!";
-		return actDither;
+		return  tig::actDither;
 	}
-	return actAttackPlayer;
+	return tig::actAttackPlayer;
+}
+
+int CRobot::tigCall(int memberId) {
+	if (memberId == getMemberId("isNeighbour")) {
+		int objId = getParamInt(0);
+		ITigObj* tigObj = getObject(objId);
+		CTigObjptr* gameObj = tigObj->getCppObj();
+		CGameHexObj* hexObj = (CGameHexObj*) gameObj;
+		int result = isNeighbour(*hexObj);
+		return result;
+	}
+
 }
 

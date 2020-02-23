@@ -11,8 +11,7 @@ CHexWorld::CHexWorld() {
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
 void CHexWorld::setCallbackApp(IhexWorldCallback* pApp) {
-	pCallbackApp = pApp;
-	
+	pCallbackApp = pApp;	
 }
 
 void CHexWorld::setVM(Ivm* pVM) {
@@ -41,8 +40,9 @@ void CHexWorld::start() {
 
 	populateMap();
 
-
 	hexRenderer.setMap(&hexArray);
+
+	hexArray.setEntityList(&entities);
 
 	hexRenderer.start();	
 }
@@ -160,7 +160,7 @@ THexList CHexWorld::calcPath(CHex& start, CHex& end) {
 }
 
 /** A callback function for finding what entity is at the given hex. */
-CHexObject* CHexWorld::getEntityAt(CHex& hex) {
+CGameHexObj* CHexWorld::getEntityAt(CHex& hex) {
 	for (auto entity : entities) {
 		if (entity->hexPosition == hex)
 			return entity;
@@ -208,20 +208,9 @@ void CHexWorld::createHexObjects() {
 	playerObj.shieldBuf = hexRenderer.getBuffer("shield");
 	playerObj.setTigObj(vm->getObject("player"));
 
-	/*robot.setBuffer(hexRenderer.getBuffer("robot"));
-	robot.setPosition(2, 0,-2);
-	robot.isRobot = true;
-	robot.setHexWorld(this);
-
-	robot2.setBuffer(hexRenderer.getBuffer("robot"));
-	//robot2.setPosition(5, -5);
-	robot2.setPosition(4, -1,-3);
-	robot2.isRobot = true;
-	robot2.setHexWorld(this);*/
 
 	entities.push_back(&playerObj);
-	//entities.push_back(&robot);
-	//entities.push_back(&robot2);
+;
 
 	hexCursor.setBuffer(hexRenderer.getBuffer("cursor"));
 	hexCursor.setPosition(0, 0, 0);
@@ -236,10 +225,7 @@ void CHexWorld::onCursorMove(CHex& mouseHex) {
 	playerObj.calcTravelPath(hexCursor.hexPosition);	
 }
 
-/** Return a pointer to the list of entities for the current map. */
-TEntities* CHexWorld::getEntities() {
-	return &entities;
-}
+
 
 /** Return the player object's current travel path. */
 THexList* CHexWorld::getPlayerPath() {
@@ -250,7 +236,7 @@ CHexObject* CHexWorld::getCursorObj(){
 	return &hexCursor;
 }
 
-CHexObject* CHexWorld::getPlayerObj() {
+CGameHexObj* CHexWorld::getPlayerObj() {
 	return &playerObj;
 }
 
@@ -282,8 +268,8 @@ void CHexWorld::startActionPhase() {
 
 /** Begin a player left-click action. */
 void CHexWorld::beginLeftClickAction() {
-	CHexObject* entity = getEntityAt(hexCursor.hexPosition);
-	if (entity && entity->isNeighbour(playerObj.hexPosition) )
+	CGameHexObj* entity = getEntityAt(hexCursor.hexPosition);
+	if (entity && entity->isNeighbour(playerObj) )
 		beginPlayerLunge(*entity);
 	else 
 		beginPlayerMove();
@@ -293,7 +279,7 @@ void CHexWorld::beginLeftClickAction() {
 
 
 /** Initiate a player lunge attack on the target. */
-void CHexWorld::beginPlayerLunge(CHexObject& target) {
+void CHexWorld::beginPlayerLunge(CGameHexObj& target) {
 	playerObj.beginAttack(target);
 	serialActions.insert(serialActions.begin(), &playerObj);
 }
@@ -352,8 +338,10 @@ void CHexWorld::populateMap() {
 
 }
 
-void CHexWorld::tigCall(int memberId) {
-	//get stack values from some friendly vm interface func
-	std::string msg = vm->getStackValueStr();
-	
+int CHexWorld::tigCall(int memberId) {
+	std::string msg = vm->getParamStr(0);
+	liveLog << "\n" << msg;
+	return 1;
 }
+
+

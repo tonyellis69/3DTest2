@@ -36,7 +36,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = terrainMode;// texGenMode;// terrainMode; //textMode; //hexMode;
+	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //hexMode;
 
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));
@@ -313,6 +313,10 @@ void C3DtestApp::onStart() {
 	//worldUI.setHottextColour(hot);
 	//worldUI.setHottextSelectColour(hotSelect);
 
+	
+	initHexWorld();
+	
+	
 	worldUI.start();
 
 	//texCompositor.init(this);
@@ -343,7 +347,7 @@ void C3DtestApp::onStart() {
 
 
 
-	initHexWorld();
+	
 	
 	return;
 }

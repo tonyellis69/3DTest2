@@ -5,6 +5,8 @@
 
 #include "utils/log.h"
 
+#include "tigConst.h"
+
 CPlayerObject::CPlayerObject() {
 	hitPoints = 6;
 	
@@ -15,13 +17,13 @@ bool CPlayerObject::update(float dT) {
 
 	bool resolving = false;
 	resolving = updateMove(dT);
-
-	if (action == actPlayerTurnToAttack && !turning) {
+	int action = getMemberInt("action");
+	if (action ==  tig::actPlayerTurnToAttack && !turning) {
 		moving = false;
-		action = actPlayerAttack;
+		setMember("action", tig::actPlayerAttack);
 	}
 
-	if (action == actPlayerAttack) {
+	if (action ==  tig::actPlayerAttack) {
 		resolving = updateLunge(dT);
 	}
 
@@ -31,20 +33,19 @@ bool CPlayerObject::update(float dT) {
 
 	//TO DO: can do post actions here
 	if (!resolving)
-		action = actNone;
+		setMember("action", tig::actNone);
 
 	return resolving;
 }
 
-void CPlayerObject::beginAttack(CHexObject& target) {
+void CPlayerObject::beginAttack(CGameHexObj& target) {
 	attackTarget = &target;
-	action = actPlayerAttack;
+	setMember("action", tig::actPlayerAttack);
 	if (initTurnToAdjacent(target.hexPosition))
-		action = actPlayerTurnToAttack;
+		setMember("action", tig::actPlayerTurnToAttack);
 
 	animCycle = 0;
 	moveVector = directionToVec(destinationDirection);
-	liveLog << "\nYou hit the robot!";
 }
 
 void CPlayerObject::receiveDamage(CHexObject& attacker, int damage) {
@@ -72,7 +73,8 @@ void CPlayerObject::draw() {
 	CHexObject::draw();
 
 	//draw shield:
-	if (action == actPlayerAttack)
+	int action = getMemberInt("action");
+	if (action ==  tig::actPlayerAttack)
 		return;
 
 	THexDraw drawData;

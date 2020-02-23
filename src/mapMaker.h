@@ -5,7 +5,7 @@
 
 
 
-#include "hex/hexArray.h"
+#include "gameHexArray.h"
 
 /** A class for creating maps of individual rooms or areas. */
 class CMapMaker {
@@ -13,7 +13,7 @@ public:
 
 	void attachVM(Ivm* pVM);
 	void attachMapObject(ITigObj* mapObj);
-	CHexArray createMap();
+	CGameHexArray createMap();
 
 
 private:

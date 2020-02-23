@@ -1,14 +1,14 @@
 #pragma once
 
-#include "hex/hexObject.h"
+#include "gamehextObj.h"
 
 /** A class describing characteristics and behaviour unique to
 	the player hex-world object. */
-class CPlayerObject : public CHexObject {
+class CPlayerObject : public CGameHexObj {
 public:
 	CPlayerObject();
 	bool update(float dT);
-	void beginAttack(CHexObject& target);
+	void beginAttack(CGameHexObj& target);
 	void receiveDamage(CHexObject& attacker, int damage);
 	void draw();
 	void setShield(THexDir shieldDir);

@@ -9,7 +9,7 @@ void CMapMaker::attachMapObject(ITigObj* mapObj) {
 	this->mapObj = mapObj;
 }
 
-CHexArray CMapMaker::createMap() {
+CGameHexArray CMapMaker::createMap() {
 	//read map object
 
 	//create hex array based on readings
@@ -18,13 +18,13 @@ CHexArray CMapMaker::createMap() {
 	int mapSize = mapObj->getMemberInt("size");
 
 	glm::i32vec2 arraySize;
-	if (mapSize == vm->getConst("large")) {
+	if (mapSize == vm->getConst("largeMap")) {
 		arraySize = { 30,30 };
 	}
-	else if (mapSize == vm->getConst("medium")) {
+	else if (mapSize == vm->getConst("mediumMap")) {
 		arraySize = { 20,20 };
 	}
-	else if (mapSize == vm->getConst("small")) {
+	else if (mapSize == vm->getConst("smallMap")) {
 		arraySize = { 10,10 };
 	}
 
@@ -32,7 +32,7 @@ CHexArray CMapMaker::createMap() {
 	glm::i32vec2 margin(1);
 	glm::i32vec2 boundingBox = arraySize + margin * 2;
 
-	CHexArray hexArray;
+	CGameHexArray hexArray;
 	hexArray.init(boundingBox.x, boundingBox.y);
 
 	glm::i32vec2 tL = margin;

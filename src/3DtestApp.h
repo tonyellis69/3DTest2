@@ -1,8 +1,6 @@
 #pragma once
 
-
-
-#include "..\3DEngine\src\BaseApp.h"
+#include "BaseApp.h"
 
 
 #include "gameTerrain.h"

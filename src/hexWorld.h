@@ -4,19 +4,24 @@
 
 #include "Ivm.h"
 
+#include "gameHexArray.h"
+
 #include "mapMaker.h"
 
 #include "hex/hexRenderer.h"
-#include "hex/hexObject.h"
+//#include "hex/hexObject.h"
+#include "gamehextObj.h"
 #include "robot.h"
 #include "playerHexObj.h"
+
+#include "tigConst.h"
 
 enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
 
 /** A class encapsulating the hex-based representation of the world. */
 class IhexWorldCallback;
 class CHexWorld : public IhexRendererCallback, public IhexObjectCallback,
-	CTigObjptr {
+	public CTigObjptr {
 public:
 	CHexWorld();
 	void setCallbackApp(IhexWorldCallback* pApp);
@@ -36,7 +41,7 @@ public:
 
 private:
 	THexList calcPath(CHex& start, CHex& end);
-	CHexObject* getEntityAt(CHex& hex);
+	CGameHexObj* getEntityAt(CHex& hex);
 	CHexObject* entityMovingTo(CHex& hex);
 	void onPlayerTurnDoneCB();
 	CHex getPlayerPosition();
@@ -44,10 +49,9 @@ private:
 	bool isEntityDestinationCB(CHex& hex);
 	void createHexObjects();
 	void onCursorMove(CHex& mouseHex);
-	TEntities* getEntities();
 	THexList* getPlayerPath();
 	CHexObject* getCursorObj();
-	CHexObject* getPlayerObj();
+	CGameHexObj* getPlayerObj();
 	int diceRoll(int dice);
 
 
@@ -55,7 +59,7 @@ private:
 	void startActionPhase();
 
 	void beginLeftClickAction();
-	void beginPlayerLunge(CHexObject& target);
+	void beginPlayerLunge(CGameHexObj& target);
 	bool beginPlayerMove();
 
 	bool resolvingSerialActions();
@@ -63,9 +67,12 @@ private:
 
 	void populateMap();
 
-	void tigCall(int memberId) ;
+	int tigCall(int memberId) ;
 
-	CHexArray hexArray;
+	bool entityCheck(CHex& hex);
+
+
+	CGameHexArray hexArray;
 
 	IhexWorldCallback* pCallbackApp; ///<Pointer to app used for callbacks.
 	CHexRenderer hexRenderer;

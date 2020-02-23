@@ -1,21 +1,23 @@
 #pragma once
 
-#include "hex/hexObject.h"
+#include "gamehextObj.h"
+
+#include "tigConst.h"
 
 /** A class describing basic robot characteristics and
 	behaviour. */
-class CRobot : public CHexObject {
+class CRobot : public CGameHexObj {
 public:
 	CRobot();
 	void chooseTurnAction();
 	void beginTurnAction();
 	bool postAction();
 	bool update(float dT);
-	void receiveDamage(CHexObject& attacker, int damage);
+	void receiveDamage(CGameHexObj& attacker, int damage);
 
 private:
 	int attackOrNot();
-
+	int tigCall(int memberId);
 
 };
 
