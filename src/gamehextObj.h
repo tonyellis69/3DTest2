@@ -3,6 +3,9 @@
 #include "hex/hexObject.h"
 #include "../VMtest/src/ITigObj.h"
 
+#include "tigConst.h"
+#include "tigExport.h"
+
 class IhexObjectCallback;
 /** Basic hex object to derive game hex objects from,
 	such as robots. */
@@ -18,9 +21,7 @@ public:
 	virtual void beginTurnAction() {};
 	virtual void hitTarget();
 	bool isNeighbour(CGameHexObj& obj);
-
-
-	//int action; ///<The action this entity is performing this turn.
+	int getCurrentAction();
 
 	bool isRobot;
 
@@ -35,7 +36,7 @@ protected:
 	int shields[6] = { 0 }; //TO DO: might not suit base class
 
 	float lungeSpeed;
-	int hitPoints;
+
 	int meleeDamage;
 
 

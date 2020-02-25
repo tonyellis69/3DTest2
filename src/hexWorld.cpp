@@ -17,7 +17,7 @@ void CHexWorld::setCallbackApp(IhexWorldCallback* pApp) {
 void CHexWorld::setVM(Ivm* pVM) {
 	vm = pVM;
 	mapMaker.attachVM(pVM);
-	setTigObj(vm->getObject("CConsole")); ///TO DO: temp!
+	setTigObj(vm->getObject(tig::CConsole)); ///TO DO: temp!
 }
 
 /**	Load a single mesh for storage under the given name. */
@@ -317,7 +317,7 @@ bool CHexWorld::resolvingSimulActions() {
 /** Fill the map with its entities. */
 void CHexWorld::populateMap() {
 	//get pointers to robots
-	ITigObj* pRobot = vm->getObject("botA");
+	ITigObj* pRobot = vm->getObject(tig::botA);
 
 	robot.setBuffer(hexRenderer.getBuffer("robot"));
 	robot.setPosition(2, 0, -2);
@@ -325,7 +325,7 @@ void CHexWorld::populateMap() {
 	robot.setHexWorld(this);
 	robot.setTigObj(pRobot);
 
-	pRobot = vm->getObject("botB");
+	pRobot = vm->getObject(tig::botB);
 
 	robot2.setBuffer(hexRenderer.getBuffer("robot"));
 	robot2.setPosition(4, -1, -3);

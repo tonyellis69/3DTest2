@@ -5,11 +5,10 @@
 
 #include "utils/log.h"
 
-#include "tigConst.h"
+
 
 CPlayerObject::CPlayerObject() {
-	hitPoints = 6;
-	
+
 }
 
 bool CPlayerObject::update(float dT) {
@@ -17,10 +16,10 @@ bool CPlayerObject::update(float dT) {
 
 	bool resolving = false;
 	resolving = updateMove(dT);
-	int action = getMemberInt("action");
+	int action = getCurrentAction();
 	if (action ==  tig::actPlayerTurnToAttack && !turning) {
 		moving = false;
-		setMember("action", tig::actPlayerAttack);
+		tigMemberInt(tig::action) = tig::actPlayerAttack;
 	}
 
 	if (action ==  tig::actPlayerAttack) {
@@ -33,39 +32,35 @@ bool CPlayerObject::update(float dT) {
 
 	//TO DO: can do post actions here
 	if (!resolving)
-		setMember("action", tig::actNone);
+		tigMemberInt(tig::action) = tig::actNone;
 
 	return resolving;
 }
 
 void CPlayerObject::beginAttack(CGameHexObj& target) {
 	attackTarget = &target;
-	setMember("action", tig::actPlayerAttack);
+	tigMemberInt(tig::action) = tig::actPlayerAttack;
 	if (initTurnToAdjacent(target.hexPosition))
-		setMember("action", tig::actPlayerTurnToAttack);
+		tigMemberInt(tig::action) = tig::actPlayerTurnToAttack;
 
 	animCycle = 0;
 	moveVector = directionToVec(destinationDirection);
 }
 
-void CPlayerObject::receiveDamage(CHexObject& attacker, int damage) {
+void CPlayerObject::receiveDamage(CGameHexObj& attacker, int damage) {
 	THexDir attackDir = neighbourDirection(hexPosition, attacker.hexPosition);
 
 	int shieldNo = (attackDir - facing) % 6;
 	if (shieldNo < 0)
 		shieldNo += 6;
 
+	callTig(tig::onReceiveDamage, attacker, damage);
+
 	if (shields[shieldNo] > 0) {
-		liveLog << "\nYou shield blocks the blow!";
+		liveLog << "\nYoue shield blocks the blow!";
 		return;
 	}
 
-
-	hitPoints -= damage;
-	if (hitPoints <= 0) {
-		liveLog << "\nOh no, you're dead!";
-
-	}
 }
 
 void CPlayerObject::draw() {
@@ -73,7 +68,7 @@ void CPlayerObject::draw() {
 	CHexObject::draw();
 
 	//draw shield:
-	int action = getMemberInt("action");
+	int action = tigMemberInt(tig::action);
 	if (action ==  tig::actPlayerAttack)
 		return;
 

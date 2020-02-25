@@ -15,7 +15,7 @@ CGameHexArray CMapMaker::createMap() {
 	//create hex array based on readings
 
 
-	int mapSize = mapObj->getMemberInt("size");
+	int mapSize = mapObj->tigMemberInt("size");
 
 	glm::i32vec2 arraySize;
 	if (mapSize == vm->getConst("largeMap")) {

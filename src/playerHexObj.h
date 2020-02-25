@@ -9,7 +9,7 @@ public:
 	CPlayerObject();
 	bool update(float dT);
 	void beginAttack(CGameHexObj& target);
-	void receiveDamage(CHexObject& attacker, int damage);
+	void receiveDamage(CGameHexObj& attacker, int damage);
 	void draw();
 	void setShield(THexDir shieldDir);
 
