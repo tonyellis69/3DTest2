@@ -6,7 +6,7 @@ CHexWorld::CHexWorld() {
 	hexRenderer.setCallbackApp(this);
 	turnPhase = chooseActionPhase;
 	CHexObject::setHexRenderer(&hexRenderer);
-	
+	CGameHexObj::setHexWorld(this);
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
@@ -92,6 +92,9 @@ void CHexWorld::onKeyDown(int key, long mod) {
 	else if (key == GLFW_KEY_KP_9) {
 		playerObj.setShield(hexNE);
 	}
+
+	if (key == 'I')
+		playerObj.showInventory();
 }
 
 void CHexWorld::onMouseWheel(float delta) {
@@ -111,7 +114,7 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 
 void CHexWorld::onMouseButton(int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT &&  action == GLFW_PRESS) {
-		if  (turnPhase == playerChoosePhase)   //(!resolvingActions)
+		if  (turnPhase == playerChoosePhase)  
 			beginLeftClickAction();	
 	}
 }
@@ -168,12 +171,12 @@ CGameHexObj* CHexWorld::getEntityAt(CHex& hex) {
 	return NULL;
 }
 
-CHexObject* CHexWorld::entityMovingTo(CHex& hex) {
+bool CHexWorld::isBlockerMovingTo(CHex& hex) {
 	for (auto entity : entities) {
-		if (entity->destination == hex)
-			return entity;
+		if (entity->destination == hex && entity->blocks)
+			return true;
 	}
-	return NULL;
+	return false;
 }
 
 /** Called to initiate the rest of the world's turn to act. */
@@ -202,15 +205,14 @@ bool CHexWorld::isEntityDestinationCB(CHex& hex) {
 /** TO DO: temporary.This should not be hard-coded, but spun from a level-maker. */
 void CHexWorld::createHexObjects() {
 	playerObj.setBuffer(hexRenderer.getBuffer("player"));
-	//playerObj.setPosition(0, 0, 0);
-	playerObj.setPosition(5, -3, -2);
-	playerObj.setHexWorld(this);
+	//playerObj.setPosition(5, -3, -2);
+	playerObj.setPosition(-9, 1, 8);
 	playerObj.shieldBuf = hexRenderer.getBuffer("shield");
 	playerObj.setTigObj(vm->getObject("player"));
 
 
 	entities.push_back(&playerObj);
-;
+
 
 	hexCursor.setBuffer(hexRenderer.getBuffer("cursor"));
 	hexCursor.setPosition(0, 0, 0);
@@ -269,9 +271,10 @@ void CHexWorld::startActionPhase() {
 /** Begin a player left-click action. */
 void CHexWorld::beginLeftClickAction() {
 	CGameHexObj* entity = getEntityAt(hexCursor.hexPosition);
-	if (entity && entity->isNeighbour(playerObj) )
-		beginPlayerLunge(*entity);
-	else 
+	if (entity )
+		entity->onLeftClick();
+	
+	if (!entity || !playerObj.isNeighbour(*entity))
 		beginPlayerMove();
 	
 	startActionPhase();
@@ -322,7 +325,6 @@ void CHexWorld::populateMap() {
 	robot.setBuffer(hexRenderer.getBuffer("robot"));
 	robot.setPosition(2, 0, -2);
 	robot.isRobot = true;
-	robot.setHexWorld(this);
 	robot.setTigObj(pRobot);
 
 	pRobot = vm->getObject(tig::botB);
@@ -330,18 +332,45 @@ void CHexWorld::populateMap() {
 	robot2.setBuffer(hexRenderer.getBuffer("robot"));
 	robot2.setPosition(4, -1, -3);
 	robot2.isRobot = true;
-	robot2.setHexWorld(this);
 	robot2.setTigObj(pRobot);
 
 	entities.push_back(&robot);
 	entities.push_back(&robot2);
 
+	wrench.setBuffer(hexRenderer.getBuffer("test"));
+	wrench.setPosition(-8, 0, 8);
+	wrench.setTigObj(vm->getObject(tig::monkeyWrench));
+	entities.push_back(&wrench);
+
+	shield.setBuffer(hexRenderer.getBuffer("test"));
+	shield.setPosition(-6, -2, 8);
+	shield.setTigObj(vm->getObject(tig::shield));
+	entities.push_back(&shield);
+
+	blaster.setBuffer(hexRenderer.getBuffer("test"));
+	blaster.setPosition(-7, -1, 8);
+	blaster.setTigObj(vm->getObject(tig::blaster));
+	entities.push_back(&blaster);
+
+
 }
 
 int CHexWorld::tigCall(int memberId) {
 	std::string msg = vm->getParamStr(0);
-	liveLog << "\n" << msg;
+	if (msg == "nope!")
+		int b = 9;
+	//liveLog << msg;
+	
 	return 1;
+}
+
+/** Cope with the player taking an item. */
+void CHexWorld::playerTake(CGameHexObj& item) {
+	auto it = std::find(entities.begin(), entities.end(), &item);
+	if (it != entities.end()) {
+		playerItems.push_back(&item);
+		entities.erase(it);
+	}
 }
 
 

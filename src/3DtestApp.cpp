@@ -36,7 +36,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //hexMode;
+	appMode = textMode;// texGenMode;// terrainMode; //textMode; //hexMode;
 
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));
@@ -674,6 +674,10 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 		//EatKeys();
 	}
 
+	if (key == 'J' && appMode == textMode) {
+		worldUI.mainTextPanel->richText->lineBuffer2.spriteBuffer.debug();
+	
+	}
 
 
 }
@@ -1564,12 +1568,6 @@ void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 
 C3DtestApp::~C3DtestApp() {
 	
-	//delete terrain;
-	//TO DO: since these are created with Engine.getModel, engine should handle deletion.
-	//delete chunkShell;
-//	delete shaderChunkGrid;
-	//delete chunkBB;
-//	delete tempFeedbackBuf;
 }
 
 

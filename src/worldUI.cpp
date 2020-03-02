@@ -164,7 +164,7 @@ void CWorldUI::handleRoomChange(int roomId) {
 
 /** Respond to a VM message updating the available power in the accumulator. */
 void CWorldUI::onVMaccumulatorUpdate(int powerUpdate) {
-	liveLog << "\naccumulator update of " << powerUpdate;
+	//liveLog << "\naccumulator update of " << powerUpdate;
 	distributor->setAvailablePower(powerUpdate);
 }
 

@@ -60,6 +60,9 @@
     <ClCompile Include="src\gameHexArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\hexItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -102,6 +105,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gameHexArray.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexItem.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

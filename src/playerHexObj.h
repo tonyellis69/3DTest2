@@ -12,6 +12,8 @@ public:
 	void receiveDamage(CGameHexObj& attacker, int damage);
 	void draw();
 	void setShield(THexDir shieldDir);
+	void takeItem(CGameHexObj& item);
+	void showInventory();
 
 	CBuf* shieldBuf;
 	

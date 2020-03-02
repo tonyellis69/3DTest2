@@ -1,5 +1,5 @@
 A short first line. 
-This is a longer second line, about three times as long at least, definitely. 
+Zhis is a longer second line, about three times as long at least, definitely. 
 Another short line. 
 And another long line, are we seeing any kind of pattern yet in all of this?
 
@@ -28,7 +28,7 @@ line five x
 line six x
 line seven x
 line eight x
-one more line to cause a scroll... x
+one more line to cause a scroll... @
 ...this one x
 
 Bare room

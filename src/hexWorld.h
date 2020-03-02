@@ -13,6 +13,7 @@
 #include "gamehextObj.h"
 #include "robot.h"
 #include "playerHexObj.h"
+#include "hexItem.h"
 
 #include "tigConst.h"
 
@@ -42,7 +43,7 @@ public:
 private:
 	THexList calcPath(CHex& start, CHex& end);
 	CGameHexObj* getEntityAt(CHex& hex);
-	CHexObject* entityMovingTo(CHex& hex);
+	bool isBlockerMovingTo(CHex& hex);
 	void onPlayerTurnDoneCB();
 	CHex getPlayerPosition();
 	CHex getPlayerDestinationCB();
@@ -69,7 +70,7 @@ private:
 
 	int tigCall(int memberId) ;
 
-	bool entityCheck(CHex& hex);
+	void playerTake(CGameHexObj& item);
 
 
 	CGameHexArray hexArray;
@@ -82,9 +83,13 @@ private:
 	CHexObject hexCursor;
 	CRobot robot;
 	CRobot robot2;
+	CHexItem wrench;
+	CHexItem shield;
+	CHexItem blaster;
 
 
 	TEntities entities; ///<Live objects in the hex world.
+	TEntities playerItems; ///<Items temporarily taken out of hex world by player
 	TEntities serialActions; ///<Entities performing serial actions this round.
 	TEntities simulActions; ///<Entities performing simultaneous actions this round.
 	

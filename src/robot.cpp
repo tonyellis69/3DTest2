@@ -93,6 +93,13 @@ void CRobot::receiveDamage(CGameHexObj& attacker, int damage) {
 }
 
 
+void CRobot::onLeftClick() {
+	if (isNeighbour(*hexWorld->getPlayerObj())) {
+		hexWorld->beginPlayerLunge(*this);
+	}
+
+}
+
 int CRobot::tigCall(int memberId) {
 	if (memberId == tig::isNeighbour) {
 		CTigObjptr* gameObj = getParamObj(0)->getCppObj();

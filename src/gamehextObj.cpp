@@ -6,6 +6,7 @@ CGameHexObj::CGameHexObj() {
 	isRobot = false;
 	lungeSpeed = 3.0f;
 	meleeDamage = 1;
+	blocks = true;
 }
 
 
@@ -35,7 +36,7 @@ void CGameHexObj::calcTravelPath(CHex& target) {
 /**	Initialise this object to start moving to the next hex on its current travel path when it gets
 	updated. This may include rotating to face that hex. */
 bool CGameHexObj::beginMove() {
-	if (travelPath.empty() || hexWorld->entityMovingTo(travelPath[0]))
+	if (travelPath.empty() || hexWorld->isBlockerMovingTo(travelPath[0]))
 		return false;
 	initMoveToAdjacent(travelPath[0]);
 	initTurnToAdjacent(travelPath[0]);
@@ -53,6 +54,10 @@ bool CGameHexObj::isNeighbour(CGameHexObj& obj) {
 
 int CGameHexObj::getCurrentAction() {
 	return tigMemberInt(tig::action);
+}
+
+std::string CGameHexObj::getName() {
+	return tigMemberString(tig::name);
 }
 
 

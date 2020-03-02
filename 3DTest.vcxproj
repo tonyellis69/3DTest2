@@ -124,6 +124,7 @@
     <ClCompile Include="src\GUIgamePanel.cpp" />
     <ClCompile Include="src\GUIhealthPanel.cpp" />
     <ClCompile Include="src\GUIrichTextPanel.cpp" />
+    <ClCompile Include="src\hexItem.cpp" />
     <ClCompile Include="src\hexWorld.cpp" />
     <ClCompile Include="src\localHotList.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="src\GUIgamePanel.h" />
     <ClInclude Include="src\GUIhealthPanel.h" />
     <ClInclude Include="src\GUIrichTextPanel.h" />
+    <ClInclude Include="src\hexItem.h" />
     <ClInclude Include="src\hexWorld.h" />
     <ClInclude Include="src\localHotList.h" />
     <ClInclude Include="src\mapMaker.h" />

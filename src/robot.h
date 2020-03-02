@@ -16,7 +16,8 @@ public:
 	void receiveDamage(CGameHexObj& attacker, int damage);
 
 private:
-	int attackOrNot();
+	void onLeftClick();
+
 	int tigCall(int memberId);
 
 };
