@@ -99,23 +99,12 @@ void CPlayerObject::takeItem(CGameHexObj& item) {
 }
 
 void CPlayerObject::showInventory() {
-	liveLog << "Test text";
-	return;
+	callTig(tig::onInventory);
+}
 
-	liveLog << "Test text that goes on for more than one line, causing word wrap. Does that cause a problem?";
-	return;
-	liveLog << " Apparently not.";
-	liveLog << "\nHow about now with a newline?";
-	liveLog << "\nOr now?";
-	liveLog << "\nOr now?";
-	liveLog << "\nOr now?";
-	liveLog << "\nOr now?";
-	liveLog << "\nOr now?";
-	liveLog << "\nAgain test text that goes on for more than one line, causing word wrap. Does that cause a problem?";
-	liveLog << "\nAnother new line";
-	liveLog << "\nAnother new line";
-	liveLog << "\nYet another line to force scrolling";
-	//callTig(tig::onInventory);
+void CPlayerObject::dropItem(int itemNo) {
+	ITigObj* item = callTigObj(tig::onDrop, itemNo);
+	hexWorld->playerDrop((CGameHexObj*)item->getCppObj());
 }
 
 

@@ -73,6 +73,7 @@ void CHexWorld::keyCheck() {
 	
 }
 
+/** Called when a key is pressed. */
 void CHexWorld::onKeyDown(int key, long mod) {
 	if (key == GLFW_KEY_KP_6) {
 		playerObj.setShield(hexEast);
@@ -95,6 +96,11 @@ void CHexWorld::onKeyDown(int key, long mod) {
 
 	if (key == 'I')
 		playerObj.showInventory();
+
+	if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9) {
+		int item = key - GLFW_KEY_1;
+		playerObj.dropItem(item);
+	}
 }
 
 void CHexWorld::onMouseWheel(float delta) {
@@ -357,10 +363,7 @@ void CHexWorld::populateMap() {
 
 int CHexWorld::tigCall(int memberId) {
 	std::string msg = vm->getParamStr(0);
-	if (msg == "nope!")
-		int b = 9;
-	//liveLog << msg;
-	
+	liveLog << msg;
 	return 1;
 }
 
@@ -370,6 +373,15 @@ void CHexWorld::playerTake(CGameHexObj& item) {
 	if (it != entities.end()) {
 		playerItems.push_back(&item);
 		entities.erase(it);
+	}
+}
+
+void CHexWorld::playerDrop(CGameHexObj* item) {
+	auto it = std::find(playerItems.begin(), playerItems.end(), item);
+	if (it != playerItems.end()) {
+		(*it)->setPosition(playerObj.hexPosition);
+		entities.push_back(item);
+		playerItems.erase(it);
 	}
 }
 

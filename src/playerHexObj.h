@@ -14,6 +14,7 @@ public:
 	void setShield(THexDir shieldDir);
 	void takeItem(CGameHexObj& item);
 	void showInventory();
+	void dropItem(int itemNo);
 
 	CBuf* shieldBuf;
 	

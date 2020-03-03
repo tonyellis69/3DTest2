@@ -63,4 +63,5 @@ public:
 	virtual int diceRoll(int dice) = 0;
 	virtual void playerTake(CGameHexObj& item) = 0;
 	virtual void beginPlayerLunge(CGameHexObj& target) = 0;
+	virtual void playerDrop(CGameHexObj* item) = 0;
 };

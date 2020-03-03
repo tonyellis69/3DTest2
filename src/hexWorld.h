@@ -71,6 +71,7 @@ private:
 	int tigCall(int memberId) ;
 
 	void playerTake(CGameHexObj& item);
+	void playerDrop(CGameHexObj* item);
 
 
 	CGameHexArray hexArray;
@@ -140,3 +141,14 @@ public:
 #define GLFW_RELEASE                0
 #define GLFW_PRESS                  1
 #define GLFW_REPEAT                 2
+
+#define GLFW_KEY_0                  48
+#define GLFW_KEY_1                  49
+#define GLFW_KEY_2                  50
+#define GLFW_KEY_3                  51
+#define GLFW_KEY_4                  52
+#define GLFW_KEY_5                  53
+#define GLFW_KEY_6                  54
+#define GLFW_KEY_7                  55
+#define GLFW_KEY_8                  56
+#define GLFW_KEY_9                  57
