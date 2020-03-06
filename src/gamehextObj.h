@@ -25,9 +25,13 @@ public:
 	std::string getName();
 	virtual void onLeftClick() {};
 	virtual void takeItem(CGameHexObj& item) {};
+	virtual void droppedOnBy(CGameHexObj& item) {};
+
+
 	bool isRobot;
 
 	bool blocks; ///<If true, blocks travel path
+	bool deleteMe;
 
 protected:
 	virtual bool updateLunge(float dT);
@@ -50,6 +54,7 @@ private:
 
 using TEntities = std::vector<CGameHexObj*>;
 
+class CGroupItem;
 class IhexObjectCallback {
 public:
 	virtual THexList calcPath(CHex& start, CHex& end) = 0;
@@ -64,4 +69,6 @@ public:
 	virtual void playerTake(CGameHexObj& item) = 0;
 	virtual void beginPlayerLunge(CGameHexObj& target) = 0;
 	virtual void playerDrop(CGameHexObj* item) = 0;
+	virtual CGroupItem* createGroupItem() = 0;
+	virtual void removeEntity(CGameHexObj& entity) = 0;
 };

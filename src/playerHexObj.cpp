@@ -103,6 +103,7 @@ void CPlayerObject::showInventory() {
 }
 
 void CPlayerObject::dropItem(int itemNo) {
+	
 	ITigObj* item = callTigObj(tig::onDrop, itemNo);
 	hexWorld->playerDrop((CGameHexObj*)item->getCppObj());
 }

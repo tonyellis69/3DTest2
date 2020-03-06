@@ -36,7 +36,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = textMode;// texGenMode;// terrainMode; //textMode; //hexMode;
+	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //;
 
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));

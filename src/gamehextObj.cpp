@@ -7,6 +7,7 @@ CGameHexObj::CGameHexObj() {
 	lungeSpeed = 3.0f;
 	meleeDamage = 1;
 	blocks = true;
+	deleteMe = false;
 }
 
 

@@ -14,6 +14,7 @@
 #include "robot.h"
 #include "playerHexObj.h"
 #include "hexItem.h"
+#include "groupItem.h"
 
 #include "tigConst.h"
 
@@ -73,6 +74,16 @@ private:
 	void playerTake(CGameHexObj& item);
 	void playerDrop(CGameHexObj* item);
 
+	CGroupItem* createGroupItem();
+
+	void removeEntity(CGameHexObj& entity);
+
+	CGameHexObj* getItemAt(CHex& position);
+
+	void tempGetGroupItem(int itemNo);
+
+	void removeDeletedEntities();
+
 
 	CGameHexArray hexArray;
 
@@ -80,13 +91,13 @@ private:
 	CHexRenderer hexRenderer;
 
 
-	CPlayerObject playerObj;
-	CHexObject hexCursor;
-	CRobot robot;
-	CRobot robot2;
-	CHexItem wrench;
-	CHexItem shield;
-	CHexItem blaster;
+	CPlayerObject* playerObj;
+	CHexObject* hexCursor;
+	CRobot* robot;
+	CRobot* robot2;
+	CHexItem* wrench;
+	CHexItem* shield;
+	CHexItem* blaster;
 
 
 	TEntities entities; ///<Live objects in the hex world.
@@ -152,3 +163,8 @@ public:
 #define GLFW_KEY_7                  55
 #define GLFW_KEY_8                  56
 #define GLFW_KEY_9                  57
+
+#define GLFW_MOD_SHIFT           0x0001
+#define GLFW_MOD_CONTROL         0x0002
+#define GLFW_MOD_ALT             0x0004
+#define GLFW_MOD_SUPER           0x0008
