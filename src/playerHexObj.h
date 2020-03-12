@@ -9,12 +9,14 @@ public:
 	CPlayerObject();
 	bool update(float dT);
 	void beginAttack(CGameHexObj& target);
+	void hitTarget();
 	void receiveDamage(CGameHexObj& attacker, int damage);
 	void draw();
 	void setShield(THexDir shieldDir);
 	void takeItem(CGameHexObj& item);
 	void showInventory();
 	void dropItem(int itemNo);
+	void equipItem(int itemNo);
 
 	CBuf* shieldBuf;
 	

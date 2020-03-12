@@ -2,6 +2,7 @@
 
 #include "utils/log.h"
 
+#include "ihexworld.h"
 
 CRobot::CRobot() {
 

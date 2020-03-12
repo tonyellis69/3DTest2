@@ -1,6 +1,8 @@
 #include "hexItem.h"
 #include "groupItem.h"
 
+#include "IHexWorld.h"
+
 CHexItem::CHexItem() {
 	blocks = false;
 }

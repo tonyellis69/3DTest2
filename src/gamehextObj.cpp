@@ -2,6 +2,8 @@
 
 #include "tigConst.h"
 
+#include "IHexWorld.h"
+
 CGameHexObj::CGameHexObj() {
 	isRobot = false;
 	lungeSpeed = 3.0f;
@@ -11,7 +13,7 @@ CGameHexObj::CGameHexObj() {
 }
 
 
-void CGameHexObj::setHexWorld(IhexObjectCallback* obj) {
+void CGameHexObj::setHexWorld(IHexWorld* obj) {
 	hexWorld = obj;
 }
 

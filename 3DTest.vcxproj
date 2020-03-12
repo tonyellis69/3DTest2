@@ -101,8 +101,8 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>D:\projects\VMtest\src;$(SolutionDir)..\SFML-1.6\include;$(SolutionDir)..\glew\include\GL;$(SolutionDir)..\glm;$(SolutionDir)..\3DEngine\src;D:\projects\glfw32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SoltionDir)..\3DEngine\src;$(SolutionDir)..\TC\Debug;$(SolutionDir)..\glm;$(SolutionDir)..\glew\include\GL;$(SolutionDir)..\SFML-1.6\include;$(SolutionDir)..\VMtest\src;$(SolutionDir)..\glfw32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -117,6 +117,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp" />
+    <ClCompile Include="src\bolt.cpp" />
     <ClCompile Include="src\gameHexArray.cpp" />
     <ClCompile Include="src\gamehextObj.cpp" />
     <ClCompile Include="src\gameTerrain.cpp" />
@@ -132,11 +133,13 @@
     <ClCompile Include="src\mapMaker.cpp" />
     <ClCompile Include="src\playerHexObj.cpp" />
     <ClCompile Include="src\robot.cpp" />
+    <ClCompile Include="src\gridObj.cpp" />
     <ClCompile Include="src\worldUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\TC\Debug\tigConst.h" />
     <ClInclude Include="src\3DtestApp.h" />
+    <ClInclude Include="src\bolt.h" />
     <ClInclude Include="src\gameHexArray.h" />
     <ClInclude Include="src\gamehextObj.h" />
     <ClInclude Include="src\gameTerrain.h" />
@@ -147,10 +150,12 @@
     <ClInclude Include="src\GUIrichTextPanel.h" />
     <ClInclude Include="src\hexItem.h" />
     <ClInclude Include="src\hexWorld.h" />
+    <ClInclude Include="src\IHexWorld.h" />
     <ClInclude Include="src\localHotList.h" />
     <ClInclude Include="src\mapMaker.h" />
     <ClInclude Include="src\playerHexObj.h" />
     <ClInclude Include="src\robot.h" />
+    <ClInclude Include="src\gridObj.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3DEngine\3DEngine\3DEngine.vcxproj">

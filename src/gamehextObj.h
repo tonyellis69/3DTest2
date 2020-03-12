@@ -3,10 +3,11 @@
 #include "hex/hexObject.h"
 #include "../VMtest/src/ITigObj.h"
 
+
 #include "tigConst.h"
 #include "tigExport.h"
 
-class IhexObjectCallback;
+class IHexWorld;
 /** Basic hex object to derive game hex objects from,
 	such as robots. */
 class CGameHexObj : public CHexObject, public CTigObjptr{
@@ -16,7 +17,7 @@ public:
 	bool beginMove();
 	virtual void receiveDamage(CGameHexObj& attacker, int damage);
 	virtual void chooseTurnAction() {};
-	static void setHexWorld(IhexObjectCallback* obj);
+	static void setHexWorld(IHexWorld* obj);
 	virtual bool isResolvingSerialAction();
 	virtual void beginTurnAction() {};
 	virtual void hitTarget();
@@ -37,7 +38,7 @@ protected:
 	virtual bool updateLunge(float dT);
 	int tigCall(int memberId) { return 0; };
 
-	inline static IhexObjectCallback* hexWorld;
+	inline static IHexWorld* hexWorld;
 
 	CGameHexObj* attackTarget;
 
@@ -55,20 +56,4 @@ private:
 using TEntities = std::vector<CGameHexObj*>;
 
 class CGroupItem;
-class IhexObjectCallback {
-public:
-	virtual THexList calcPath(CHex& start, CHex& end) = 0;
-	virtual CGameHexObj* getEntityAt(CHex& hex) = 0;
-	virtual bool isBlockerMovingTo(CHex& hex) = 0;
-	virtual void onPlayerTurnDoneCB() = 0;
-	virtual CGameHexObj* getPlayerObj() = 0;
-	virtual CHex getPlayerPosition() = 0;
-	virtual CHex getPlayerDestinationCB() = 0;
-	virtual bool isEntityDestinationCB(CHex& hex) = 0;
-	virtual int diceRoll(int dice) = 0;
-	virtual void playerTake(CGameHexObj& item) = 0;
-	virtual void beginPlayerLunge(CGameHexObj& target) = 0;
-	virtual void playerDrop(CGameHexObj* item) = 0;
-	virtual CGroupItem* createGroupItem() = 0;
-	virtual void removeEntity(CGameHexObj& entity) = 0;
-};
+

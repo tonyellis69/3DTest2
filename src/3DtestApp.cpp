@@ -36,7 +36,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //;
+	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //hexMode;
 
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));
@@ -1540,6 +1540,9 @@ void C3DtestApp::initHexWorld() {
 
 	importer.loadFile(dataPath + "models\\shield.obj");
 	hexWorld.addMesh("shield", importer.getSingleMesh());
+
+	importer.loadFile(dataPath + "models\\bolt.obj");
+	hexWorld.addMesh("bolt", importer.getSingleMesh());
 
 	//... more models
 

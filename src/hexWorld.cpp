@@ -6,6 +6,8 @@ CHexWorld::CHexWorld() {
 	hexRenderer.setCallbackApp(this);
 	turnPhase = chooseActionPhase;
 	CHexObject::setHexRenderer(&hexRenderer);
+	CGridObj::setHexRenderer(&hexRenderer);
+	CGridObj::setHexWorld(this);
 	CGameHexObj::setHexWorld(this);
 }
 
@@ -64,9 +66,10 @@ void CHexWorld::keyCheck() {
 		hexRenderer.moveCamera(glm::vec3{ camSpeed,0,0 });
 	}
 
-	if (pCallbackApp->hexMouseButtonNowCallback(GLFW_MOUSE_BUTTON_LEFT)) {
+	//happens if button held down
+	if (pCallbackApp->hexMouseButtonNowCallback(GLFW_MOUSE_BUTTON_RIGHT)) {
 		if ( turnPhase == playerChoosePhase &&  !playerObj->moving) {
-			beginLeftClickAction();
+			beginRightClickAction();
 		}
 	}
 
@@ -101,12 +104,15 @@ void CHexWorld::onKeyDown(int key, long mod) {
 		int item = key - GLFW_KEY_1;
 		if (mod == GLFW_MOD_SHIFT) {
 			tempGetGroupItem(item);
-
 		}
-			
+		else if (mod == GLFW_MOD_CONTROL)
+			playerObj->equipItem(item);
 		else
 			playerObj->dropItem(item);
 	}
+
+
+
 }
 
 void CHexWorld::onMouseWheel(float delta) {
@@ -125,9 +131,15 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 
 
 void CHexWorld::onMouseButton(int button, int action, int mods) {
-	if (button == GLFW_MOUSE_BUTTON_LEFT &&  action == GLFW_PRESS) {
-		if  (turnPhase == playerChoosePhase)  
-			beginLeftClickAction();	
+	if (turnPhase != playerChoosePhase)
+		return;
+	//happens when button initially pressed down
+	if (button == GLFW_MOUSE_BUTTON_RIGHT &&  action == GLFW_PRESS) {
+		beginRightClickAction();	
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		beginLeftClickAction();
 	}
 }
 
@@ -136,6 +148,8 @@ void CHexWorld::draw() {
 	hexRenderer.draw();
 	for (auto entity : entities)
 		entity->draw();
+	for (auto gridObj : gridObjects)
+		gridObj->draw();
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
@@ -150,7 +164,13 @@ void CHexWorld::update(float dT) {
 
 	removeDeletedEntities();
 
-	if (turnPhase == actionPhase) { 		
+	for (auto obj : gridObjects)
+		obj->update(dT);
+
+	if (turnPhase == actionPhase) { 	
+		if (resolvingGridObjActions())
+			return;
+
 		if (resolvingSerialActions())
 			return;
 
@@ -232,6 +252,9 @@ void CHexWorld::createHexObjects() {
 	hexCursor->setBuffer(hexRenderer.getBuffer("cursor"));
 	hexCursor->setPosition(0, 0, 0);
 
+
+
+
 }
 
 
@@ -284,10 +307,7 @@ void CHexWorld::startActionPhase() {
 }
 
 /** Begin a player left-click action. */
-void CHexWorld::beginLeftClickAction() {
-
-
-
+void CHexWorld::beginRightClickAction() {
 	CGameHexObj* entity = getEntityAt(hexCursor->hexPosition);
 	if (entity )
 		entity->onLeftClick();
@@ -298,6 +318,12 @@ void CHexWorld::beginLeftClickAction() {
 	startActionPhase();
 }
 
+/** Begin a player right-click action. */
+void CHexWorld::beginLeftClickAction() {
+	beginPlayerShot();
+	startActionPhase();
+}
+
 
 /** Initiate a player lunge attack on the target. */
 void CHexWorld::beginPlayerLunge(CGameHexObj& target) {
@@ -305,9 +331,27 @@ void CHexWorld::beginPlayerLunge(CGameHexObj& target) {
 	serialActions.insert(serialActions.begin(), playerObj);
 }
 
+/** Initiate a player shot action .*/
+void CHexWorld::beginPlayerShot() {
+	CHex endHex = hexArray.findLineEnd(playerObj->hexPosition, hexCursor->hexPosition);
+	CBolt* boltTmp = createBolt();
+	boltTmp->setPosition(playerObj->hexPosition);
+	boltTmp->fireAt(endHex);
+}
+
 /** Start the player down its travel path, if any. */
 bool CHexWorld::beginPlayerMove() {
 	 return playerObj->beginMove();
+}
+
+bool CHexWorld::resolvingGridObjActions() {
+	for (auto gridObj = gridObjects.begin(); gridObj != gridObjects.end(); gridObj++) {
+		if (!(*gridObj)->update(dT)) {
+			gridObjects.erase(gridObj);
+		}
+		return true;
+	}
+	return false;
 }
 
 /** If any entity is performing a serial action, update the lead one and return true. */
@@ -424,11 +468,18 @@ void CHexWorld::removeEntity(CGameHexObj& entity) {
 		entities.erase(removee);
 }
 
+/** Remove this grid object from the grid objects list. */
+void CHexWorld::removeGridObj(CGridObj& gridObj) {
+	auto removee = std::find(gridObjects.begin(), gridObjects.end(), (CGridObj*)&gridObj);
+	if (removee != gridObjects.end())
+		gridObjects.erase(removee);
+}
+
 /** Return the CItem or CGroupItem object found at this hex, if any. */
 CGameHexObj* CHexWorld::getItemAt(CHex& position) {
 	for (auto entity : entities) {
-		if (entity->hexPosition == position && (entity->tigMemberInt(tig::type) == tig::CItem
-			|| entity->tigMemberInt(tig::type) == tig::CGroupItem))
+		if (entity->hexPosition == position && (entity->isTigClass(tig::CItem)
+			|| entity->isTigClass(tig::CGroupItem)) )
 			return entity;
 	}
 	return NULL;
@@ -436,7 +487,7 @@ CGameHexObj* CHexWorld::getItemAt(CHex& position) {
 
 void CHexWorld::tempGetGroupItem(int itemNo) {
 	CGameHexObj* item = getItemAt(hexCursor->hexPosition);
-	if (item->tigMemberInt(tig::type) == tig::CGroupItem) {
+	if (item->isTigClass(tig::CGroupItem)) {
 		CGameHexObj*  gotItem = static_cast<CGroupItem*>(item)->removeItem(itemNo);
 		playerObj->takeItem(*gotItem);
 	}
@@ -449,4 +500,11 @@ void CHexWorld::removeDeletedEntities() {
 		else
 			entity++;
 	}
+}
+
+CBolt* CHexWorld::createBolt() {
+	CBolt* bolt = new CBolt();
+	bolt->setBuffer(hexRenderer.getBuffer("bolt"));
+	gridObjects.push_back(bolt);
+	return bolt;
 }

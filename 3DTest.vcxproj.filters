@@ -66,6 +66,12 @@
     <ClCompile Include="src\groupItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gridObj.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\bolt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -114,6 +120,15 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\groupItem.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gridObj.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\bolt.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IHexWorld.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

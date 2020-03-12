@@ -5,7 +5,7 @@
 
 #include "utils/log.h"
 
-
+#include "IHexWorld.h"
 
 CPlayerObject::CPlayerObject() {
 
@@ -47,8 +47,21 @@ void CPlayerObject::beginAttack(CGameHexObj& target) {
 	moveVector = directionToVec(destinationDirection);
 }
 
+/** Deliver damage to our current target. */
+void CPlayerObject::hitTarget() {
+	int weaponDamage = callTigInt(tig::getWeaponDamage);
+	attackTarget->receiveDamage(*this, weaponDamage);
+}
+
+
 void CPlayerObject::receiveDamage(CGameHexObj& attacker, int damage) {
 	THexDir attackDir = neighbourDirection(hexPosition, attacker.hexPosition);
+
+	if (tigMemberInt(tig::equippedShield) == 0) {
+		callTig(tig::onReceiveDamage, attacker, damage);
+		return;
+	}
+
 
 	int shieldNo = (attackDir - facing) % 6;
 	if (shieldNo < 0)
@@ -85,6 +98,11 @@ void CPlayerObject::draw() {
 
 
 void CPlayerObject::setShield(THexDir shieldDir) {
+
+	if (tigMemberInt(tig::equippedShield) == 0) {
+		return;
+	}
+
 	int shieldNo = (shieldDir - facing) % 6;
 	if (shieldNo < 0)
 		shieldNo += 6;
@@ -102,10 +120,13 @@ void CPlayerObject::showInventory() {
 	callTig(tig::onInventory);
 }
 
-void CPlayerObject::dropItem(int itemNo) {
-	
+void CPlayerObject::dropItem(int itemNo) {	
 	ITigObj* item = callTigObj(tig::onDrop, itemNo);
 	hexWorld->playerDrop((CGameHexObj*)item->getCppObj());
+}
+
+void CPlayerObject::equipItem(int itemNo) {
+	callTigObj(tig::onEquip, itemNo);
 }
 
 

@@ -9,12 +9,16 @@
 #include "mapMaker.h"
 
 #include "hex/hexRenderer.h"
-//#include "hex/hexObject.h"
+
+#include "IHexWorld.h"
+
 #include "gamehextObj.h"
 #include "robot.h"
 #include "playerHexObj.h"
 #include "hexItem.h"
 #include "groupItem.h"
+
+#include "bolt.h"
 
 #include "tigConst.h"
 
@@ -22,7 +26,7 @@ enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
 
 /** A class encapsulating the hex-based representation of the world. */
 class IhexWorldCallback;
-class CHexWorld : public IhexRendererCallback, public IhexObjectCallback,
+class CHexWorld : public IhexRendererCallback, public IHexWorld,
 	public CTigObjptr {
 public:
 	CHexWorld();
@@ -60,10 +64,14 @@ private:
 	void chooseActions();
 	void startActionPhase();
 
+	void beginRightClickAction();
 	void beginLeftClickAction();
+
 	void beginPlayerLunge(CGameHexObj& target);
+	void beginPlayerShot();
 	bool beginPlayerMove();
 
+	bool resolvingGridObjActions();
 	bool resolvingSerialActions();
 	bool resolvingSimulActions();
 
@@ -77,12 +85,15 @@ private:
 	CGroupItem* createGroupItem();
 
 	void removeEntity(CGameHexObj& entity);
+	void removeGridObj(CGridObj& gridObj);
 
 	CGameHexObj* getItemAt(CHex& position);
 
 	void tempGetGroupItem(int itemNo);
 
 	void removeDeletedEntities();
+
+	CBolt* createBolt();
 
 
 	CGameHexArray hexArray;
@@ -105,6 +116,8 @@ private:
 	TEntities serialActions; ///<Entities performing serial actions this round.
 	TEntities simulActions; ///<Entities performing simultaneous actions this round.
 	
+	std::vector<CGridObj*> gridObjects;
+
 	TTurnPhase turnPhase;
 
 	float dT; ///<Interval since last app loop.
