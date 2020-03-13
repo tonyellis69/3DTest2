@@ -22,6 +22,7 @@
 
 #include "shapes.h"
 
+#include "gameWin.h"
 
 using namespace glm;
 
@@ -33,6 +34,7 @@ C3DtestApp::C3DtestApp() {
 	physCube = NULL;
 	shownChoice = false;
 	oldPos = vec3(0);
+
 }
 
 void C3DtestApp::onStart() {
@@ -299,11 +301,11 @@ void C3DtestApp::onStart() {
 	//worldUI.setPopupTextWindow(popupPanel);
 	worldUI.init();
 	//didn't get here
-	//worldUI.setMainBodyStyle(mainFont, uiDarkGrey);
-	//worldUI.setMainHeaderStyle(mainFontBold, uiDarkGrey);
+	//worldUI.setMainBodyStyle(mainFont, style::uiDarkGrey);
+	//worldUI.setMainHeaderStyle(mainFontBold, style::uiDarkGrey);
 
-//	worldUI.setMainBodyStyle(renderer.fontManager.getFont("work16L"), uiDarkGrey);
-//	worldUI.setMainHeaderStyle(renderer.fontManager.getFont("work16"), uiDarkGrey);
+//	worldUI.setMainBodyStyle(renderer.fontManager.getFont("work16L"), style::uiDarkGrey);
+//	worldUI.setMainHeaderStyle(renderer.fontManager.getFont("work16"), style::uiDarkGrey);
 
 
 
@@ -700,14 +702,14 @@ void C3DtestApp::onResize(int width, int height) {
 void C3DtestApp::draw() {
 
 	if (appMode == hexMode) {
-		Engine.Renderer.setBackColour((rgba&)uialmostBlack);
+		Engine.Renderer.setBackColour((rgba&)style::uialmostBlack);
 		Engine.Renderer.clearFrame();
 		hexWorld.draw();
 		return;
 	}
 	
 	if (appMode != terrainMode) {
-		Engine.Renderer.setBackColour((rgba&)uialmostBlack);
+		Engine.Renderer.setBackColour((rgba&)style::uialmostBlack);
 		Engine.Renderer.setBackColour((rgba&)white);
 		Engine.Renderer.clearFrame();
 		return;
@@ -1522,6 +1524,10 @@ void C3DtestApp::onTerrainScroll(glm::vec3& movement) {
 
 void C3DtestApp::onResize(int width, int height) {
 	hexWorld.setAspectRatio(glm::vec2(width, height));
+}
+
+void C3DtestApp::addGameWindow(CGUIbase* gameWin) {
+	GUIroot.Add(gameWin);
 }
 
 /** Get the hexWorld ready for use. */

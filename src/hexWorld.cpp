@@ -2,6 +2,8 @@
 
 #include "utils/log.h"
 
+#include "gameTextWin.h"
+
 CHexWorld::CHexWorld() {
 	hexRenderer.setCallbackApp(this);
 	turnPhase = chooseActionPhase;
@@ -47,6 +49,11 @@ void CHexWorld::start() {
 	hexArray.setEntityList(&entities);
 
 	hexRenderer.start();	
+
+	//temp!!!!
+	CGameTextWin* textWin = new CGameTextWin();
+	textWin->addText("Here is some test text.");
+//	pCallbackApp->addGameWindow(textWin);
 }
 
 /** Check and respond to keys being pressed this frame. */
@@ -164,8 +171,7 @@ void CHexWorld::update(float dT) {
 
 	removeDeletedEntities();
 
-	for (auto obj : gridObjects)
-		obj->update(dT);
+
 
 	if (turnPhase == actionPhase) { 	
 		if (resolvingGridObjActions())
@@ -334,7 +340,7 @@ void CHexWorld::beginPlayerLunge(CGameHexObj& target) {
 /** Initiate a player shot action .*/
 void CHexWorld::beginPlayerShot() {
 	CHex endHex = hexArray.findLineEnd(playerObj->hexPosition, hexCursor->hexPosition);
-	CBolt* boltTmp = createBolt();
+	CBolt* boltTmp = (CBolt*)createBolt();
 	boltTmp->setPosition(playerObj->hexPosition);
 	boltTmp->fireAt(endHex);
 }
@@ -502,9 +508,14 @@ void CHexWorld::removeDeletedEntities() {
 	}
 }
 
-CBolt* CHexWorld::createBolt() {
+CGridObj* CHexWorld::createBolt() {
 	CBolt* bolt = new CBolt();
 	bolt->setBuffer(hexRenderer.getBuffer("bolt"));
 	gridObjects.push_back(bolt);
 	return bolt;
+}
+
+CHex CHexWorld::findLineEnd(CHex& start, CHex& target) {
+	return hexArray.findLineEnd(start, target);
+
 }

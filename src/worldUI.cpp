@@ -336,13 +336,13 @@ void CWorldUI::queueMsg(TvmAppMsg& msg) {
 /** Create the main text window. */
 void CWorldUI::createMainWindow() {
 	mainTextPanel = new CGUIrichTextPanel(200, 50, 800, 700);
-	//mainTextPanel->setBackColour1(uiWhite);
-	//mainTextPanel->setBackColour2(uiWhite);
+	//mainTextPanel->setBackColour1(style::uiWhite);
+	//mainTextPanel->setBackColour2(style::uiWhite);
 	
 	mainTextPanel->setBorderOn(true);
 	mainTextPanel->hFormat = hCentre;
 	mainTextPanel->setRichtextInset(10);
-	//mainTextPanel->setTextColour(UIwhite);
+	//mainTextPanel->setTextColour(style::uiWhite);
 	mainTextPanel->setResizeMode(resizeByWidthMode);
 	mainTextWindowID = mainTextPanel->getUniqueID();
 	//mainTextPanel->setTextStyles(&normalTheme.styles);
@@ -450,19 +450,19 @@ void CWorldUI::createTextStyles() {
 	hottextColour =  glm::vec4(0.28, 0.28, 0.47, 1);
 	hottextSelectedColour =  glm::vec4(1, 0.547, 0.0, 1);
 
+/*
+	pApp->gameStyleSheet.addToTheme("gameNormal", { "mainBody", "main", darkGray });
+	pApp->gameStyleSheet.addToTheme("gameNormal", { "mainHeader","mainHeader",darkGray });
+	pApp->gameStyleSheet.addToTheme("gameNormal", { "hot", "main", hottextColour });
+	pApp->gameStyleSheet.addToTheme("gameNormal", { "hotSelected", "main", hottextSelectedColour });
+	pApp->gameStyleSheet.addToTheme("gameNormal", { "choice", "main", choiceColour });
 
-	pApp->sysStyleSheet.addToTheme("gameNormal", { "mainBody", "main", darkGray });
-	pApp->sysStyleSheet.addToTheme("gameNormal", { "mainHeader","mainHeader",darkGray });
-	pApp->sysStyleSheet.addToTheme("gameNormal", { "hot", "main", hottextColour });
-	pApp->sysStyleSheet.addToTheme("gameNormal", { "hotSelected", "main", hottextSelectedColour });
-	pApp->sysStyleSheet.addToTheme("gameNormal", { "choice", "main", choiceColour });
 
-
-	pApp->sysStyleSheet.addToTheme("smallNormal", { "small","small",darkGray });
-	pApp->sysStyleSheet.addToTheme("smallNormal", { "smallHeader","smallHeader",darkGray });
-	pApp->sysStyleSheet.addToTheme("smallNormal", { "hot", "small", hottextColour });
-	pApp->sysStyleSheet.addToTheme("smallNormal", { "hotSelected", "small", hottextSelectedColour });
-
+	pApp->gameStyleSheet.addToTheme("smallNormal", { "small","small",darkGray });
+	pApp->gameStyleSheet.addToTheme("smallNormal", { "smallHeader","smallHeader",darkGray });
+	pApp->gameStyleSheet.addToTheme("smallNormal", { "hot", "small", hottextColour });
+	pApp->gameStyleSheet.addToTheme("smallNormal", { "hotSelected", "small", hottextSelectedColour });
+	*/
 }
 
 void CWorldUI::hide(bool onOff) {

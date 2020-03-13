@@ -121,6 +121,8 @@
     <ClCompile Include="src\gameHexArray.cpp" />
     <ClCompile Include="src\gamehextObj.cpp" />
     <ClCompile Include="src\gameTerrain.cpp" />
+    <ClCompile Include="src\gameTextWin.cpp" />
+    <ClCompile Include="src\gameWin.cpp" />
     <ClCompile Include="src\groupItem.cpp" />
     <ClCompile Include="src\GUIdistributor.cpp" />
     <ClCompile Include="src\GUIgamePanel.cpp" />
@@ -143,6 +145,8 @@
     <ClInclude Include="src\gameHexArray.h" />
     <ClInclude Include="src\gamehextObj.h" />
     <ClInclude Include="src\gameTerrain.h" />
+    <ClInclude Include="src\gameTextWin.h" />
+    <ClInclude Include="src\gameWin.h" />
     <ClInclude Include="src\groupItem.h" />
     <ClInclude Include="src\GUIdistributor.h" />
     <ClInclude Include="src\GUIgamePanel.h" />

@@ -4,6 +4,8 @@
 
 #include "ihexworld.h"
 
+#include "bolt.h"
+
 CRobot::CRobot() {
 
 }
@@ -31,6 +33,13 @@ void CRobot::beginTurnAction() {
 		animCycle = 0;
 		moveVector = directionToVec(destinationDirection);
 		callTig(tig::onHitPlayer);
+	}
+	else if (action == tig::actShootPlayer) {
+		CHex endHex = hexWorld->findLineEnd(hexPosition, hexWorld->getPlayerObj()->hexPosition);
+		CBolt* boltTmp = (CBolt*)hexWorld->createBolt();
+		boltTmp->setPosition(hexPosition);
+		boltTmp->fireAt(endHex);
+		tigMemberInt(tig::action) = tig::actNone;
 	}
 }
 

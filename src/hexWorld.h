@@ -93,7 +93,9 @@ private:
 
 	void removeDeletedEntities();
 
-	CBolt* createBolt();
+	CGridObj* createBolt();
+
+	CHex findLineEnd(CHex& start, CHex& target);
 
 
 	CGameHexArray hexArray;
@@ -129,10 +131,12 @@ private:
 	Ivm* vm; ///<Interface to the virtual machine/
 };
 
+class CGUIbase;
 class IhexWorldCallback {
 public:
 	virtual bool hexKeyNowCallback(int key) { return false; };
 	virtual bool hexMouseButtonNowCallback(int button) { return false; }
+	virtual void addGameWindow(CGUIbase* gameWin) = 0;
 };
 
 

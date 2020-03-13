@@ -33,6 +33,8 @@
 //#include "hex/hexRenderer.h"
 #include "hexWorld.h" //replaces the above
 
+//#include "gameStyleSheet.h"
+
 extern CSuperChunk* dbgSC;
 
 //extern float xAdj;
@@ -91,6 +93,7 @@ public:
 
 	bool hexKeyNowCallback(int key) { return keyNow(key); };
 	bool hexMouseButtonNowCallback(int button) { return mouseButtonNow(button); };
+	void addGameWindow(CGUIbase* gameWin);
 
 	void initHexWorld();
 
@@ -218,6 +221,7 @@ public:
 
 	TAppMode appMode;
 	
+	//CGameStyleSheet gameStyleSheet;
 };
 
 const float yawAng = 0.22f;

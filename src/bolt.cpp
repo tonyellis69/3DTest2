@@ -4,6 +4,7 @@
 #include "IHexWorld.h"
 CBolt::CBolt() {
 	moveSpeed = 30.0f;
+	
 }
 
 /** Initialise travel to the destination hex. */
@@ -21,7 +22,7 @@ void CBolt::fireAt(CHex& target) {
 }
 
 bool CBolt::update(float dT) {
-	float resolving = updateMove(dT);
+	bool resolving = updateMove(dT);
 
 	if (!resolving) {
 		CGameHexObj* targetObj = hexWorld->getEntityAt(worldSpaceToHex(worldPos));

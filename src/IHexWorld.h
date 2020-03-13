@@ -25,4 +25,6 @@ public:
 	virtual CGroupItem* createGroupItem() = 0;
 	virtual void removeEntity(CGameHexObj& entity) = 0;
 	virtual void removeGridObj(CGridObj& gridObj) = 0;
+	virtual CHex findLineEnd(CHex& start, CHex& target) = 0;
+	virtual CGridObj* createBolt() = 0;
 };

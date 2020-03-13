@@ -7,6 +7,6 @@ CGUIgamePanel::CGUIgamePanel(int x, int y, int w, int h) : CGUIpanel(x,y,w,h)
 
 void CGUIgamePanel::applyStyleSheet()
 {
-	setBackColour1(styleSheet->defaultBackgroundColour);
-	setBackColour2(styleSheet->defaultBackgroundColour);
+	setBackColour1(style::defaultBackgroundColour);
+	setBackColour2(style::defaultBackgroundColour);
 }

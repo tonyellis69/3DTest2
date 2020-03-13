@@ -36,6 +36,8 @@ protected:
 	float moveSpeed;
 	glm::vec3 worldSpaceDestination;
 
+	float prevTargetDist;
+
 	float rotation; ///<Angle of object's z-rotation in world space.
 	float zHeight; ///<Height above XY plane where drawn.
 

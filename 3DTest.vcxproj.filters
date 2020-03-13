@@ -72,6 +72,12 @@
     <ClCompile Include="src\bolt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gameWin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gameTextWin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -129,6 +135,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\IHexWorld.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameWin.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameTextWin.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

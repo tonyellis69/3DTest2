@@ -9,8 +9,8 @@ CGridObj::CGridObj() {
 
 	rotation = 0.0f;
 	proximityCutoff = 0.25f;
+	prevTargetDist = FLT_MAX;
 	moveSpeed = 7.0f;
-
 
 	drawData = { &worldMatrix,&colour,buf };
 
@@ -58,11 +58,13 @@ bool CGridObj::update(float dT) {
 bool CGridObj::updateMove(float dT) {
 	glm::vec3 velocity = moveVector * moveSpeed * dT;
 
-	if (glm::distance(worldPos, worldSpaceDestination) < proximityCutoff) {
+	if (glm::distance(worldPos, worldSpaceDestination) < proximityCutoff 
+		|| glm::distance(worldPos, worldSpaceDestination) > prevTargetDist) {
 		velocity = glm::vec3(0);
 		return false;
 	}
 	else {
+		prevTargetDist = glm::distance(worldPos, worldSpaceDestination);
 		worldPos += velocity;
 	}
 
