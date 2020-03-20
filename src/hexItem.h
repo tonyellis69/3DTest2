@@ -6,7 +6,7 @@
 class CHexItem : public CGameHexObj {
 public:
 	CHexItem();
-	void onLeftClick();
+	bool onLeftClick();
 	void droppedOnBy(CGameHexObj& item);
 
 

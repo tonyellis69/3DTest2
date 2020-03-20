@@ -14,8 +14,8 @@ CHexWorld::CHexWorld() {
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
-void CHexWorld::setCallbackApp(IhexWorldCallback* pApp) {
-	pCallbackApp = pApp;	
+void CHexWorld::setMainApp(IMainApp* pApp) {
+	this->mainApp = pApp;	
 }
 
 void CHexWorld::setVM(Ivm* pVM) {
@@ -24,86 +24,47 @@ void CHexWorld::setVM(Ivm* pVM) {
 	setTigObj(vm->getObject(tig::CConsole)); ///TO DO: temp!
 }
 
-/**	Load a single mesh for storage under the given name. */
-void CHexWorld::addMesh(const std::string& name, std::vector<CMesh>& meshes) {
-	CBuf* meshBuf = hexRenderer.addBuffer(name);
-	meshes[0].writeToBufferv3i(*meshBuf);
-}
-
 /**	Load a multipart mesh for storage under the given name. */
 void CHexWorld::addMesh(const std::string& name, CMesh& mesh) {
-	CBuf* meshBuf = hexRenderer.addBuffer(name);
-	mesh.writeToBufferv3i(*meshBuf);
+	CBuf* meshBuf = hexRenderer.createMeshBuffer(name);
+	mesh.exportToBuffer(*meshBuf);
+}
+
+void CHexWorld::makeMap(ITigObj* tigMap) {
+	mapMaker.attachMapObject(tigMap);
+	map = mapMaker.createMap();
 }
 
 /** Late set-up stuff. */
 void CHexWorld::start() {
-	createHexObjects();
+	temporaryCreateHexObjects();
 
-	hexArray = mapMaker.createMap();
+	
 
-	populateMap();
+	tempPopulateMap();
 
-	hexRenderer.setMap(&hexArray);
+	hexRenderer.setMap(&map);
 
-	hexArray.setEntityList(&entities);
+	map.setEntityList(&entities);
 
 	hexRenderer.start();	
 
 	//temp!!!!
 	CGameTextWin* textWin = new CGameTextWin();
 	textWin->addText("Here is some test text.");
-//	pCallbackApp->addGameWindow(textWin);
 }
 
-/** Check and respond to keys being pressed this frame. */
-void CHexWorld::keyCheck() {
+
+
+void CHexWorld::moveCamera(glm::vec3& direction) {
 	float camSpeed = 6.0f * dT;
-
-	if (pCallbackApp->hexKeyNowCallback('W')) {
-		hexRenderer.moveCamera(glm::vec3{ 0, camSpeed, 0 });
-	} 
-	else if (pCallbackApp->hexKeyNowCallback('S')) {
-		hexRenderer.moveCamera(glm::vec3{ 0, -camSpeed, 0 });
-	} 
-	else if (pCallbackApp->hexKeyNowCallback('A')) {
-		hexRenderer.moveCamera(glm::vec3{ -camSpeed,0,0 });
-	} 
-	else if (pCallbackApp->hexKeyNowCallback('D')) {
-		hexRenderer.moveCamera(glm::vec3{ camSpeed,0,0 });
-	}
-
-	//happens if button held down
-	if (pCallbackApp->hexMouseButtonNowCallback(GLFW_MOUSE_BUTTON_RIGHT)) {
-		if ( turnPhase == playerChoosePhase &&  !playerObj->moving) {
-			beginRightClickAction();
-		}
-	}
-
-	
+	glm::vec3 vector = direction *= camSpeed;
+	hexRenderer.moveCamera(vector);
 }
 
 /** Called when a key is pressed. */
 void CHexWorld::onKeyDown(int key, long mod) {
-	if (key == GLFW_KEY_KP_6) {
-		playerObj->setShield(hexEast);
-	}
-	else if (key == GLFW_KEY_KP_3) {
-		playerObj->setShield(hexSE);
-	}
-	else if (key == GLFW_KEY_KP_1) {
-		playerObj->setShield(hexSW);
-	}
-	else if (key == GLFW_KEY_KP_4) {
-		playerObj->setShield(hexWest);
-	}
-	else if (key == GLFW_KEY_KP_7) {
-		playerObj->setShield(hexNW);
-	}
-	else if (key == GLFW_KEY_KP_9) {
-		playerObj->setShield(hexNE);
-	}
-
+	//temp user interface stuff!
 	if (key == 'I')
 		playerObj->showInventory();
 
@@ -117,13 +78,14 @@ void CHexWorld::onKeyDown(int key, long mod) {
 		else
 			playerObj->dropItem(item);
 	}
+}
 
-
-
+void CHexWorld::setPlayerShield(THexDir direction) {
+	playerObj->setShield(direction);
 }
 
 void CHexWorld::onMouseWheel(float delta) {
-	if (pCallbackApp->hexKeyNowCallback(GLFW_KEY_LEFT_SHIFT)) {
+	if (mainApp->hexKeyNowCallback(GLFW_KEY_LEFT_SHIFT)) {
 		hexRenderer.pitchCamera(delta);
 	}
 	else
@@ -133,22 +95,9 @@ void CHexWorld::onMouseWheel(float delta) {
 void CHexWorld::onMouseMove(int x, int y, int key) {
 	CHex mouseHex = hexRenderer.pickHex(x, y);
 	if (mouseHex != hexCursor->hexPosition)
-		onCursorMove(mouseHex);
+		onNewMouseHex(mouseHex);
 }
 
-
-void CHexWorld::onMouseButton(int button, int action, int mods) {
-	if (turnPhase != playerChoosePhase)
-		return;
-	//happens when button initially pressed down
-	if (button == GLFW_MOUSE_BUTTON_RIGHT &&  action == GLFW_PRESS) {
-		beginRightClickAction();	
-	}
-
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-		beginLeftClickAction();
-	}
-}
 
 
 void CHexWorld::draw() {
@@ -171,8 +120,6 @@ void CHexWorld::update(float dT) {
 
 	removeDeletedEntities();
 
-
-
 	if (turnPhase == actionPhase) { 	
 		if (resolvingGridObjActions())
 			return;
@@ -190,19 +137,15 @@ void CHexWorld::update(float dT) {
 	}
 }
 
-void CHexWorld::setMap(ITigObj* map) {
-	mapMaker.attachMapObject(map);
-}
 
+/////////////public - private devide
 
-
-
-/** Provides a callback function for using hexArray's pathfinding facility. */
+/** Plot a navigable path from start to end on the current map. */
 THexList CHexWorld::calcPath(CHex& start, CHex& end) {
-	return hexArray.aStarPath(start,end);
+	return map.aStarPath(start,end);
 }
 
-/** A callback function for finding what entity is at the given hex. */
+/** Return the hex entity at the given hex, if any. */
 CGameHexObj* CHexWorld::getEntityAt(CHex& hex) {
 	for (auto entity : entities) {
 		if (entity->hexPosition == hex)
@@ -211,6 +154,7 @@ CGameHexObj* CHexWorld::getEntityAt(CHex& hex) {
 	return NULL;
 }
 
+/** Returns true if a path-blocking entity is currently moving to the given hex. */
 bool CHexWorld::isBlockerMovingTo(CHex& hex) {
 	for (auto entity : entities) {
 		if (entity->destination == hex && entity->blocks)
@@ -219,58 +163,40 @@ bool CHexWorld::isBlockerMovingTo(CHex& hex) {
 	return false;
 }
 
-/** Called to initiate the rest of the world's turn to act. */
-void CHexWorld::onPlayerTurnDoneCB() {
-	
-}
-
+/** Because lots of code want to know. */
 CHex CHexWorld::getPlayerPosition() {
 	return playerObj->hexPosition;
 }
 
-CHex CHexWorld::getPlayerDestinationCB() {
+
+CHex CHexWorld::getPlayerDestination() {
 	return playerObj->destination;
 }
 
-bool CHexWorld::isEntityDestinationCB(CHex& hex) {
-	for (auto entity : entities) {
-		if (hex == entity->destination)
-			return true;
-	}
-	return false;
-}
-
-///////////////////////Private functions/////////////////////////////////
 
 /** TO DO: temporary.This should not be hard-coded, but spun from a level-maker. */
-void CHexWorld::createHexObjects() {
+void CHexWorld::temporaryCreateHexObjects() {
 	playerObj = new CPlayerObject();
 	playerObj->setBuffer(hexRenderer.getBuffer("player"));
 	//playerObj->setPosition(5, -3, -2);
-	playerObj->setPosition(-9, 1, 8);
+	playerObj->setPosition(-1, 9, -8);
 	playerObj->shieldBuf = hexRenderer.getBuffer("shield");
 	playerObj->setTigObj(vm->getObject("player"));
-
+	playerObj->setMap(&map);
 
 	entities.push_back(playerObj);
 
 	hexCursor = new CHexObject();
 	hexCursor->setBuffer(hexRenderer.getBuffer("cursor"));
 	hexCursor->setPosition(0, 0, 0);
-
-
-
-
 }
 
 
-
-/** Respend to cursor moving to a new hex. */
-void CHexWorld::onCursorMove(CHex& mouseHex) {
+/** Respend to mouse cursor moving to a new hex. */
+void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	hexCursor->setPosition(mouseHex);
 	playerObj->calcTravelPath(hexCursor->hexPosition);	
 }
-
 
 
 /** Return the player object's current travel path. */
@@ -278,20 +204,13 @@ THexList* CHexWorld::getPlayerPath() {
 	return &playerObj->getTravelPath();
 }
 
-CHexObject* CHexWorld::getCursorObj(){
-	return hexCursor;
-}
-
 CGameHexObj* CHexWorld::getPlayerObj() {
 	return playerObj;
 }
 
-int CHexWorld::diceRoll(int dice) {
-	std::uniform_int_distribution roll{ 1,dice };
-	return roll(randEngine);
+CHexObject* CHexWorld::getCursorObj() {
+	return hexCursor;
 }
-
-
 
 /** All entities choose their action for the coming turn. */
 void CHexWorld::chooseActions() {
@@ -300,6 +219,8 @@ void CHexWorld::chooseActions() {
 		entity->chooseTurnAction();
 		if (entity->isResolvingSerialAction())
 			serialActions.push_back(entity);
+		//TO DO: have another list for simultaneous actions
+		//rather than checl all entities
 	}
 	turnPhase = playerChoosePhase;
 }
@@ -307,49 +228,45 @@ void CHexWorld::chooseActions() {
 /** Ask all entities to initiate their chosen action for this turn. */
 void CHexWorld::startActionPhase() {
 	turnPhase = actionPhase;
-	for (auto entity : entities) {
+	for (auto entity : entities) { //TO DO: make this redundant
 		entity->beginTurnAction();
 	}
 }
 
-/** Begin a player left-click action. */
-void CHexWorld::beginRightClickAction() {
-	CGameHexObj* entity = getEntityAt(hexCursor->hexPosition);
-	if (entity )
-		entity->onLeftClick();
-	
-	if (!entity || !playerObj->isNeighbour(*entity))
-		beginPlayerMove();
-	
-	startActionPhase();
-}
-
 /** Begin a player right-click action. */
-void CHexWorld::beginLeftClickAction() {
-	beginPlayerShot();
+void CHexWorld::beginRightClickAction() {
+	if (turnPhase != playerChoosePhase || playerObj->moving)
+		return;
+
+	CGameHexObj* clickedEntity = getEntityAt(hexCursor->hexPosition);
+	if (!clickedEntity || !playerObj->isNeighbour(*clickedEntity))
+		beginPlayerMove();
+
 	startActionPhase();
 }
 
+/** Begin a player left-click action. */
+void CHexWorld::beginLeftClickAction() {
+	if (turnPhase != playerChoosePhase)
+		return;
 
-/** Initiate a player lunge attack on the target. */
-void CHexWorld::beginPlayerLunge(CGameHexObj& target) {
-	playerObj->beginAttack(target);
-	serialActions.insert(serialActions.begin(), playerObj);
+	CGameHexObj* clickedEntity = getEntityAt(hexCursor->hexPosition);
+
+	if (clickedEntity && clickedEntity->isTigClass(tig::CItem) && playerObj->isNeighbour(*clickedEntity))
+		playerObj->takeItem(*clickedEntity);
+	else
+	if (!clickedEntity || !clickedEntity->onLeftClick())
+		playerObj->fireShot(hexCursor->hexPosition);
+	startActionPhase();
 }
 
-/** Initiate a player shot action .*/
-void CHexWorld::beginPlayerShot() {
-	CHex endHex = hexArray.findLineEnd(playerObj->hexPosition, hexCursor->hexPosition);
-	CBolt* boltTmp = (CBolt*)createBolt();
-	boltTmp->setPosition(playerObj->hexPosition);
-	boltTmp->fireAt(endHex);
-}
 
 /** Start the player down its travel path, if any. */
 bool CHexWorld::beginPlayerMove() {
 	 return playerObj->beginMove();
 }
 
+/** If there are any gridObjects, update the lead one and return true. */
 bool CHexWorld::resolvingGridObjActions() {
 	for (auto gridObj = gridObjects.begin(); gridObj != gridObjects.end(); gridObj++) {
 		if (!(*gridObj)->update(dT)) {
@@ -386,7 +303,7 @@ bool CHexWorld::resolvingSimulActions() {
 }
 
 /** Fill the map with its entities. */
-void CHexWorld::populateMap() {
+void CHexWorld::tempPopulateMap() {
 	//get pointers to robots
 	ITigObj* pRobot = vm->getObject(tig::botA);
 
@@ -395,6 +312,7 @@ void CHexWorld::populateMap() {
 	robot->setPosition(2, 0, -2);
 	robot->isRobot = true;
 	robot->setTigObj(pRobot);
+	robot->setMap(&map);
 
 	pRobot = vm->getObject(tig::botB);
 
@@ -403,9 +321,10 @@ void CHexWorld::populateMap() {
 	robot2->setPosition(4, -1, -3);
 	robot2->isRobot = true;
 	robot2->setTigObj(pRobot);
+	robot2->setMap(&map);
 
 	entities.push_back(robot);
-	entities.push_back(robot2);
+	//entities.push_back(robot2);
 
 	wrench = new CHexItem();
 	wrench->setBuffer(hexRenderer.getBuffer("test"));
@@ -435,28 +354,17 @@ int CHexWorld::tigCall(int memberId) {
 	return 1;
 }
 
-/** Cope with the player taking an item. */
-void CHexWorld::playerTake(CGameHexObj& item) {
-	removeEntity(item);
-	playerItems.push_back(&item);
-}
 
 /** Cope with the player dropping an item. */
-void CHexWorld::playerDrop(CGameHexObj* item) {
-	auto playerItem = std::find(playerItems.begin(), playerItems.end(), item);
-
-	//is there already an item where we're dropping?
-	CGameHexObj* existingItem = getItemAt(playerObj->hexPosition);
+void CHexWorld::dropItem(CGameHexObj* item, CHex& location) {
+	CGameHexObj* existingItem = getItemAt(location);
 	if (existingItem) {
 		existingItem->droppedOnBy(*item);
-		playerItems.erase(playerItem);
 		return;
 	}
 
-	(*playerItem)->setPosition(playerObj->hexPosition);
+	item->setPosition(location);
 	entities.push_back(item);
-	playerItems.erase(playerItem);
-
 }
 
 CGroupItem* CHexWorld::createGroupItem() {
@@ -515,7 +423,8 @@ CGridObj* CHexWorld::createBolt() {
 	return bolt;
 }
 
-CHex CHexWorld::findLineEnd(CHex& start, CHex& target) {
-	return hexArray.findLineEnd(start, target);
-
+void CHexWorld::addToSerialActions(CGameHexObj* entity) {
+	serialActions.insert(serialActions.begin(), entity);
 }
+
+

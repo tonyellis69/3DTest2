@@ -1,5 +1,7 @@
 #include "gamehextObj.h"
 
+#include <cmath>
+
 #include "tigConst.h"
 
 #include "IHexWorld.h"
@@ -10,6 +12,10 @@ CGameHexObj::CGameHexObj() {
 	meleeDamage = 1;
 	blocks = true;
 	deleteMe = false;
+}
+
+void CGameHexObj::setMap(IGameHexArray* map) {
+	this->map = map;
 }
 
 
@@ -51,11 +57,24 @@ void CGameHexObj::hitTarget() {
 	attackTarget->receiveDamage(*this, meleeDamage);
 }
 
+/** Initialise an action of rotating to face the given target. */
+void CGameHexObj::beginTurnToTarget(CHex& target) {
+	destinationAngle = 0;
+	destinationAngle = hexAngle(hexPosition, target);
+	float shortestRotation = fmod(2*M_PI + destinationAngle - rotation, 2*M_PI);
+	if (shortestRotation > M_PI)
+		shortestRotation = -(2 * M_PI - shortestRotation);
+
+	moving = true;
+	turning = true;
+	rotationalVelocity = (shortestRotation > 0) - (shortestRotation < 0);
+}
+
 bool CGameHexObj::isNeighbour(CGameHexObj& obj) {
 	return ::isNeighbour(hexPosition,obj.hexPosition);
 }
 
-int CGameHexObj::getCurrentAction() {
+int CGameHexObj::getChosenAction() {
 	return tigMemberInt(tig::action);
 }
 

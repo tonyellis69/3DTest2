@@ -3,8 +3,6 @@
 #include "ITigObj.h"
 #include "Ivm.h"
 
-
-
 #include "gameHexArray.h"
 
 /** A class for creating maps of individual rooms or areas. */

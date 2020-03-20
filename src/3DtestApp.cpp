@@ -362,7 +362,23 @@ void C3DtestApp::onStart() {
 /** Called every frame, provides a place for the user to check input where constant feedback is required. */
 void C3DtestApp::keyCheck() {
 	if (appMode == hexMode) {
-		hexWorld.keyCheck();
+		if (keyNow('W')) {
+			hexWorld.moveCamera(glm::vec3{ 0, 1, 0 });
+		}
+		else if (keyNow('S')) {
+			hexWorld.moveCamera(glm::vec3{ 0, -1, 0 });
+		}
+		else if (keyNow('A')) {
+			hexWorld.moveCamera(glm::vec3{ -1,0,0 });
+		}
+		else if (keyNow('D')) {
+			hexWorld.moveCamera(glm::vec3{ 1,0,0 });
+		}
+
+		//triggered if button held down
+		if (mouseButtonNow(GLFW_MOUSE_BUTTON_RIGHT)) {
+			hexWorld.beginRightClickAction();
+		}
 	}
 
 
@@ -575,6 +591,27 @@ void C3DtestApp::keyCheck() {
 /** Triggered *when* a key is pressed, not while it is held down. This is not 'whileKeyDown'. */
 void C3DtestApp::onKeyDown( int key, long mod) {
 	if (appMode == hexMode) {
+
+		if (key == GLFW_KEY_KP_6) {
+			hexWorld.setPlayerShield(hexEast);
+		}
+		else if (key == GLFW_KEY_KP_3) {
+			hexWorld.setPlayerShield(hexSE);
+		}
+		else if (key == GLFW_KEY_KP_1) {
+			hexWorld.setPlayerShield(hexSW);
+		}
+		else if (key == GLFW_KEY_KP_4) {
+			hexWorld.setPlayerShield(hexWest);
+		}
+		else if (key == GLFW_KEY_KP_7) {
+			hexWorld.setPlayerShield(hexNW);
+		}
+		else if (key == GLFW_KEY_KP_9) {
+			hexWorld.setPlayerShield(hexNE);
+		}
+
+
 		hexWorld.onKeyDown(key, mod);
 		return;
 	}
@@ -684,9 +721,13 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 
 }
 void C3DtestApp::onMouseButton(int button, int action, int mods) {
-	hexWorld.onMouseButton(button, action, mods);
-}
-;
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+		hexWorld.beginRightClickAction();
+	}
+	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		hexWorld.beginLeftClickAction();
+	}
+};
 
 
 /** Called when mouse moves. */
@@ -1532,12 +1573,12 @@ void C3DtestApp::addGameWindow(CGUIbase* gameWin) {
 
 /** Get the hexWorld ready for use. */
 void C3DtestApp::initHexWorld() {
-	hexWorld.setCallbackApp(this);
+	hexWorld.setMainApp(this);
 	hexWorld.setVM(&vm);
 	importer.loadFile(dataPath + "models\\test.obj");
-	hexWorld.addMesh("test",importer.getMeshes());
+	hexWorld.addMesh("test",importer.getSingleMesh());
 	importer.loadFile(dataPath + "models\\cursor.obj");
-	hexWorld.addMesh("cursor", importer.getMeshes());
+	hexWorld.addMesh("cursor", importer.getSingleMesh());
 
 	importer.loadFile(dataPath + "models\\player.obj");
 	hexWorld.addMesh("player", importer.getSingleMesh());
@@ -1553,7 +1594,7 @@ void C3DtestApp::initHexWorld() {
 	//... more models
 
 	ITigObj* map = vm.getObject("testRoom");
-	hexWorld.setMap(map);
+	hexWorld.makeMap(map);
 	hexWorld.start();
 }
 

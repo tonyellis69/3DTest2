@@ -8,7 +8,7 @@ class CPlayerObject : public CGameHexObj {
 public:
 	CPlayerObject();
 	bool update(float dT);
-	void beginAttack(CGameHexObj& target);
+	void beginLunge(CGameHexObj& target);
 	void hitTarget();
 	void receiveDamage(CGameHexObj& attacker, int damage);
 	void draw();
@@ -17,7 +17,9 @@ public:
 	void showInventory();
 	void dropItem(int itemNo);
 	void equipItem(int itemNo);
+	void fireShot(CHex& target);
 
 	CBuf* shieldBuf;
-	
+	TEntities playerItems; ///<Items temporarily taken out of hex world by player
+
 };

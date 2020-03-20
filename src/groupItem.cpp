@@ -12,12 +12,13 @@ void CGroupItem::droppedOnBy(CGameHexObj& item) {
 
 }
 
-void CGroupItem::onLeftClick() {
+bool CGroupItem::onLeftClick() {
 	liveLog << "\n";
 	for (auto item : items) {
 		liveLog << item->tigMemberString(tig::name);
 
 	}
+	return true;
 }
 
 CGameHexObj* CGroupItem::removeItem(int itemNo) {

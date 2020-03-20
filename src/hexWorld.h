@@ -4,6 +4,8 @@
 
 #include "Ivm.h"
 
+#include "IMainApp.h"
+
 #include "gameHexArray.h"
 
 #include "mapMaker.h"
@@ -25,62 +27,56 @@
 enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
 
 /** A class encapsulating the hex-based representation of the world. */
-class IhexWorldCallback;
+class IMainApp;
 class CHexWorld : public IhexRendererCallback, public IHexWorld,
 	public CTigObjptr {
 public:
 	CHexWorld();
-	void setCallbackApp(IhexWorldCallback* pApp);
+	void setMainApp(IMainApp* pApp);
 	void setVM(Ivm* pVM);
-	void addMesh(const std::string& name, std::vector<CMesh>& meshes);
 	void addMesh(const std::string& name, CMesh& mesh);
+	void makeMap(ITigObj* tigMap);
 	void start();
-	void keyCheck();
+	void moveCamera(glm::vec3& direction);
+	void beginRightClickAction();
+	void beginLeftClickAction();
 	void onKeyDown(int key, long mod);
+	void setPlayerShield(THexDir direction);
 	void onMouseWheel(float delta);
 	void onMouseMove(int x, int y, int key);
-	void onMouseButton(int button, int action, int mods);
 	void draw();
 	void setAspectRatio(glm::vec2& ratio);
 	void update(float dt);
-	void setMap(ITigObj* map);
 
 private:
 	THexList calcPath(CHex& start, CHex& end);
 	CGameHexObj* getEntityAt(CHex& hex);
 	bool isBlockerMovingTo(CHex& hex);
-	void onPlayerTurnDoneCB();
 	CHex getPlayerPosition();
-	CHex getPlayerDestinationCB();
-	bool isEntityDestinationCB(CHex& hex);
-	void createHexObjects();
-	void onCursorMove(CHex& mouseHex);
+	CHex getPlayerDestination();
+	void temporaryCreateHexObjects();
+	void onNewMouseHex(CHex& mouseHex);
 	THexList* getPlayerPath();
-	CHexObject* getCursorObj();
 	CGameHexObj* getPlayerObj();
-	int diceRoll(int dice);
+
+	CHexObject* getCursorObj();
+
 
 
 	void chooseActions();
 	void startActionPhase();
 
-	void beginRightClickAction();
-	void beginLeftClickAction();
-
-	void beginPlayerLunge(CGameHexObj& target);
-	void beginPlayerShot();
 	bool beginPlayerMove();
 
 	bool resolvingGridObjActions();
 	bool resolvingSerialActions();
 	bool resolvingSimulActions();
 
-	void populateMap();
+	void tempPopulateMap();
 
 	int tigCall(int memberId) ;
 
-	void playerTake(CGameHexObj& item);
-	void playerDrop(CGameHexObj* item);
+	void dropItem(CGameHexObj* item, CHex& location);
 
 	CGroupItem* createGroupItem();
 
@@ -95,12 +91,12 @@ private:
 
 	CGridObj* createBolt();
 
-	CHex findLineEnd(CHex& start, CHex& target);
+	void addToSerialActions(CGameHexObj* entity);
 
 
-	CGameHexArray hexArray;
+	CGameHexArray map;
 
-	IhexWorldCallback* pCallbackApp; ///<Pointer to app used for callbacks.
+	IMainApp* mainApp; ///<Pointer to app used for callbacks.
 	CHexRenderer hexRenderer;
 
 
@@ -114,7 +110,7 @@ private:
 
 
 	TEntities entities; ///<Live objects in the hex world.
-	TEntities playerItems; ///<Items temporarily taken out of hex world by player
+	//TEntities playerItems; ///<Items temporarily taken out of hex world by player
 	TEntities serialActions; ///<Entities performing serial actions this round.
 	TEntities simulActions; ///<Entities performing simultaneous actions this round.
 	
@@ -131,13 +127,7 @@ private:
 	Ivm* vm; ///<Interface to the virtual machine/
 };
 
-class CGUIbase;
-class IhexWorldCallback {
-public:
-	virtual bool hexKeyNowCallback(int key) { return false; };
-	virtual bool hexMouseButtonNowCallback(int button) { return false; }
-	virtual void addGameWindow(CGUIbase* gameWin) = 0;
-};
+
 
 
 #define GLFW_KEY_KP_0               320

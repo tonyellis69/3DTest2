@@ -7,10 +7,12 @@ CHexItem::CHexItem() {
 	blocks = false;
 }
 
-void CHexItem::onLeftClick() {
-	if (isNeighbour(*hexWorld->getPlayerObj())) {
-		hexWorld->getPlayerObj()->takeItem(*this);
-	}
+bool CHexItem::onLeftClick() {
+	//if (isNeighbour(*hexWorld->getPlayerObj())) {
+	//	hexWorld->getPlayerObj()->takeItem(*this);
+	//	return true;
+	//}
+	return false;
 }
 
 /** Respond to another item being dropped on us. */

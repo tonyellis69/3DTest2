@@ -143,5 +143,11 @@
     <ClInclude Include="src\gameTextWin.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ImainApp.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IGameHexArray.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -11,12 +11,15 @@ public:
 	CRobot();
 	void chooseTurnAction();
 	void beginTurnAction();
-	bool postAction();
 	bool update(float dT);
 	void receiveDamage(CGameHexObj& attacker, int damage);
 
 private:
-	void onLeftClick();
+	bool onLeftClick();
+	void beginChasePlayer();
+	void meleeAttackPlayer();
+	void shootPlayer();
+	bool afterResolving();
 
 	int tigCall(int memberId);
 

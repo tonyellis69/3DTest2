@@ -45,7 +45,7 @@ enum TAppMode { terrainMode, textMode, texGenMode, hexMode };
 
 
 class C3DtestApp : public  CBaseApp , public ITerrainAppCallback,
-	public IhexWorldCallback {
+	public IMainApp {
 public:
 	C3DtestApp();
 	void OnMouseWheelMsg(float xoffset, float yoffset);
@@ -92,7 +92,7 @@ public:
 	void onResize(int width, int height);
 
 	bool hexKeyNowCallback(int key) { return keyNow(key); };
-	bool hexMouseButtonNowCallback(int button) { return mouseButtonNow(button); };
+	//bool hexMouseButtonNowCallback(int button) { return mouseButtonNow(button); };
 	void addGameWindow(CGUIbase* gameWin);
 
 	void initHexWorld();

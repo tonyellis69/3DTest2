@@ -10,7 +10,7 @@ class CGroupItem : public CGameHexObj {
 public:
 	CGroupItem();
 	void droppedOnBy(CGameHexObj& item);
-	void onLeftClick();
+	bool onLeftClick();
 	CGameHexObj* removeItem(int itemNo);
 
 	std::vector<CGameHexObj*> items;

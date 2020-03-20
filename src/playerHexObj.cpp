@@ -7,27 +7,23 @@
 
 #include "IHexWorld.h"
 
-CPlayerObject::CPlayerObject() {
+#include "bolt.h"
+#include "IGameHexArray.h"
 
+CPlayerObject::CPlayerObject() {
+	//rotation = 45;
 }
 
 bool CPlayerObject::update(float dT) {
-	CHex playerOldHex = hexPosition;
+	bool resolving = updateMove(dT);
 
-	bool resolving = false;
-	resolving = updateMove(dT);
-	int action = getCurrentAction();
+	int action = getChosenAction();
 	if (action ==  tig::actPlayerTurnToAttack && !turning) {
 		moving = false;
-		tigMemberInt(tig::action) = tig::actPlayerAttack;
+		tigMemberInt(tig::action) = tig::actPlayerMeleeAttack;
 	}
-
-	if (action ==  tig::actPlayerAttack) {
+	else if (action ==  tig::actPlayerMeleeAttack) {
 		resolving = updateLunge(dT);
-	}
-
-	if (hexPosition != playerOldHex) {
-		hexWorld->onPlayerTurnDoneCB();
 	}
 
 	//TO DO: can do post actions here
@@ -37,17 +33,20 @@ bool CPlayerObject::update(float dT) {
 	return resolving;
 }
 
-void CPlayerObject::beginAttack(CGameHexObj& target) {
+/** Initiate a player lunge attack on the target. */
+void CPlayerObject::beginLunge(CGameHexObj& target) {
 	attackTarget = &target;
-	tigMemberInt(tig::action) = tig::actPlayerAttack;
+	tigMemberInt(tig::action) = tig::actPlayerMeleeAttack;
 	if (initTurnToAdjacent(target.hexPosition))
 		tigMemberInt(tig::action) = tig::actPlayerTurnToAttack;
 
 	animCycle = 0;
 	moveVector = directionToVec(destinationDirection);
+	hexWorld->addToSerialActions(this);
 }
 
-/** Deliver damage to our current target. */
+
+/** Deliver melee damage to our current target. */
 void CPlayerObject::hitTarget() {
 	int weaponDamage = callTigInt(tig::getWeaponDamage);
 	attackTarget->receiveDamage(*this, weaponDamage);
@@ -61,18 +60,16 @@ void CPlayerObject::receiveDamage(CGameHexObj& attacker, int damage) {
 		callTig(tig::onReceiveDamage, attacker, damage);
 		return;
 	}
-
-
 	int shieldNo = (attackDir - facing) % 6;
 	if (shieldNo < 0)
 		shieldNo += 6;
-
-	callTig(tig::onReceiveDamage, attacker, damage);
 
 	if (shields[shieldNo] > 0) {
 		liveLog << "\nYoue shield blocks the blow!";
 		return;
 	}
+
+	callTig(tig::onReceiveDamage, attacker, damage);
 
 }
 
@@ -82,7 +79,7 @@ void CPlayerObject::draw() {
 
 	//draw shield:
 	int action = tigMemberInt(tig::action);
-	if (action ==  tig::actPlayerAttack)
+	if (action ==  tig::actPlayerMeleeAttack)
 		return;
 
 	THexDraw drawData;
@@ -98,7 +95,6 @@ void CPlayerObject::draw() {
 
 
 void CPlayerObject::setShield(THexDir shieldDir) {
-
 	if (tigMemberInt(tig::equippedShield) == 0) {
 		return;
 	}
@@ -112,7 +108,9 @@ void CPlayerObject::setShield(THexDir shieldDir) {
 
 
 void CPlayerObject::takeItem(CGameHexObj& item) {
-	hexWorld->playerTake(item);
+	hexWorld->removeEntity(item);
+	playerItems.push_back(&item);
+
 	callTig(tig::onTake, item);
 }
 
@@ -122,11 +120,21 @@ void CPlayerObject::showInventory() {
 
 void CPlayerObject::dropItem(int itemNo) {	
 	ITigObj* item = callTigObj(tig::onDrop, itemNo);
-	hexWorld->playerDrop((CGameHexObj*)item->getCppObj());
+	CGameHexObj* gameObj = (CGameHexObj*)item->getCppObj();
+	auto playerItem = std::find(playerItems.begin(), playerItems.end(), gameObj);
+	hexWorld->dropItem((*playerItem), hexPosition);
+	playerItems.erase(playerItem);
 }
 
 void CPlayerObject::equipItem(int itemNo) {
 	callTigObj(tig::onEquip, itemNo);
+}
+
+void CPlayerObject::fireShot(CHex& target) {
+	CHex endHex = map->findLineEnd(hexPosition, target);
+	CBolt* boltTmp = (CBolt*)hexWorld->createBolt();
+	boltTmp->setPosition(hexPosition);
+	boltTmp->fireAt(endHex);
 }
 
 

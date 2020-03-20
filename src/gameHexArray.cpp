@@ -1,5 +1,7 @@
 #include "gameHexArray.h"
 
+//#include "gamehextObj.h"
+
 void CGameHexArray::setEntityList(TEntities* pEntities) {
 	entities = pEntities;
 }
@@ -11,4 +13,8 @@ bool CGameHexArray::entityCheck(CHex& hex) {
 			return true;
 	}
 	return false;
+}
+
+CHex CGameHexArray::findLineEnd(CHex& start, CHex& target) {
+	return CHexArray::findLineEnd(start, target);
 }

@@ -1,6 +1,6 @@
 #include "gameTextWin.h"
 
-#include "gameStyleSheet.h"
+
 
 CGameTextWin::CGameTextWin() {
 	//artbitrary size

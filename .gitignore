@@ -7,3 +7,4 @@ Backup*/
 [Rr]elease/
 *.obj
 *.pdb
+*.lib
