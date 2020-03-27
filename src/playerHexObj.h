@@ -7,6 +7,7 @@
 class CPlayerObject : public CGameHexObj {
 public:
 	CPlayerObject();
+	void stackAction(CAction chosenAction);
 	bool update(float dT);
 	void beginLunge(CGameHexObj& target);
 	void hitTarget();
@@ -22,4 +23,6 @@ public:
 	CBuf* shieldBuf;
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
 
+private:
+	void initialiseCurrentAction();
 };

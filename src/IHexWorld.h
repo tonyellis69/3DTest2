@@ -24,5 +24,6 @@ public:
 	virtual void removeEntity(CGameHexObj& entity) = 0;
 	virtual void removeGridObj(CGridObj& gridObj) = 0;
 	virtual void addToSerialActions(CGameHexObj* entity) = 0;
+	//virtual void addSerialAction(CGameHexObj* entity, CAction action) = 0;
 	virtual CGridObj* createBolt() = 0;
 };

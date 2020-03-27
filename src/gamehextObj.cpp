@@ -36,7 +36,7 @@ void CGameHexObj::calcTravelPath(CHex& target) {
 	//ordinarily, just find the path from where we are now.
 	//but if we've moving, makes sense that the new path will start
 	//where we end up
-	if (moving)
+	if (currentAction.actionId == tig::actPlayerMove)
 		travelPath = hexWorld->calcPath(destination, target);
 	else
 		travelPath = hexWorld->calcPath(hexPosition, target);
@@ -65,7 +65,7 @@ void CGameHexObj::beginTurnToTarget(CHex& target) {
 	if (shortestRotation > M_PI)
 		shortestRotation = -(2 * M_PI - shortestRotation);
 
-	moving = true;
+	//moving = true;
 	turning = true;
 	rotationalVelocity = (shortestRotation > 0) - (shortestRotation < 0);
 }

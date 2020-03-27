@@ -12,109 +12,59 @@ CRobot::CRobot() {
 
 /** Choose an action for the upcoming turn. */
 void CRobot::chooseTurnAction() {
+	currentAction = { tig::actNone, this };
 	callTig(tig::onChooseTurnAction);
-	currentAction = tig::actNone;
 	int chosenAction = getChosenAction();
-	if (chosenAction == tig::actChasePlayer) {
-		actions.push(tig::actTurnToTarget);
-		actions.push(tig::actChasePlayer);
+
+	switch (chosenAction) {
+	case tig::actChasePlayer:
+		actions.push({ tig::actTurnToTargetDest, NULL });
+		actions.push({ chosenAction,NULL });
 		return;
-	}
-	actions.push(getChosenAction());
-
-}
-
-/** Initiate this turn's action. */
-void CRobot::beginTurnAction() {
-	return;
-	//TO DO: scrap function!
-
-
-
-	CHex playerPos = hexWorld->getPlayerPosition();
-	travelPath.clear();
-
-	int action = getChosenAction();
-	if (action == tig::actChasePlayer) {
-		beginChasePlayer();
-	} 
-	else if (action == tig::actAttackPlayer) {
-		meleeAttackPlayer();
-	}
-	else if (action == tig::actShootPlayer) {
-		shootPlayer();
+	case tig::actAttackPlayer:
+		actions.push({ chosenAction, this });
+		actions.push({ tig::actTurnToTarget, this });
+		return;
+	case tig::actDither:
+		actions.push({ tig::actTurnToTargetDest, NULL });
+		return;
+	case tig::actShootPlayer:
+		actions.push({ tig::actShootPlayer, hexWorld->getPlayerObj() });
+		actions.push({ tig::actTurnToTarget, hexWorld->getPlayerObj() });
+		return;
+	default:
+		actions.push({ chosenAction, NULL });
 	}
 }
+
 
 bool CRobot::update(float dT) {
-	if (currentAction == tig::actNone) {
+	if (currentAction.actionId == tig::actNone) {
 		if (actions.empty())
 			return false; //TO DO: temp, removable if I implement a simulActions list
 		currentAction = actions.top();
 		actions.pop();
-
-		//setup - put in its own function
-		if (currentAction == tig::actChasePlayer) {
-			beginChasePlayer();
-		}
-		else if (currentAction == tig::actAttackPlayer) {
-			meleeAttackPlayer();
-		}
-		else if (currentAction == tig::actShootPlayer) {
-			shootPlayer();
-		}
-		else if (currentAction == tig::actTurnToTarget) {
-			beginTurnToTarget(hexWorld->getPlayerDestination());
-
-		}
-
+		initialiseCurrentAction();
 	}
 
 	bool resolving = false;
 
-	if (currentAction == tig::actChasePlayer || currentAction == tig::actTurnToTarget)
+	if (currentAction.actionId == tig::actTurnToTarget || currentAction.actionId == tig::actTurnToTargetDest)
+		resolving = updateRotationOnly(dT);
+
+	if (currentAction.actionId == tig::actChasePlayer )
 		resolving = updateMove(dT);
 
-	if (currentAction == tig::actAttackPlayer) {
+	if (currentAction.actionId == tig::actAttackPlayer) {
 		resolving = updateLunge(dT);
 	}
 
-	if (currentAction == tig::actTrackPlayer) {
-		resolving = updateRotation(dT);
-	}
-
 	if (!resolving) {
-		currentAction = tig::actNone;
+		currentAction.actionId = tig::actNone;
 		if (actions.empty())
 			return false;
 	}
-
 	return true;
-
-	/*
-	int action = getChosenAction();
-	if (action == tig::actNone || action == tig::actDead )
-		return false;
-	
-	bool resolving = false;
-
-	if (action == tig::actChasePlayer)
-		resolving = updateMove(dT);
-	
-	if (action == tig::actAttackPlayer) {
-		resolving = updateLunge(dT);
-	}
-
-	if (action ==  tig::actTrackPlayer) {
-		resolving = updateRotation(dT);
-	}
-
-
-	if (!resolving) {
-		return afterResolving();
-	}
-	*/
-	return resolving;
 }
 
 
@@ -122,23 +72,24 @@ void CRobot::receiveDamage(CGameHexObj& attacker, int damage) {
 	callTig(tig::onReceiveDamage, attacker, damage);
 }
 
+void CRobot::initialiseCurrentAction() {
+	switch (currentAction.actionId) {
+		case tig::actChasePlayer : beginChasePlayer(); break;
+		case tig::actAttackPlayer : meleeAttackPlayer(); break;
+		case tig::actShootPlayer : shootPlayer(); break;
+		case tig::actTurnToTarget : beginTurnToTarget(hexWorld->getPlayerPosition()); break;
+		case tig::actTurnToTargetDest : beginTurnToTarget(hexWorld->getPlayerDestination()); break;
+	}
+}
+
 
 bool CRobot::onLeftClick() {
-	CGameHexObj* playerObj = hexWorld->getPlayerObj();
-	if (isNeighbour(*playerObj)) {
-		playerObj->beginLunge(*this);
-		return true;
-	}
-
 	return false;
 }
 
 void CRobot::beginChasePlayer() {
-	calcTravelPath(hexWorld->getPlayerPosition());
-	///////////////////
-	if (!beginMove()) {
-		;// afterResolving();
-	}
+	calcTravelPath(hexWorld->getPlayerPosition());	
+	beginMove();
 }
 
 void CRobot::meleeAttackPlayer() {
@@ -157,27 +108,6 @@ void CRobot::shootPlayer() {
 	tigMemberInt(tig::action) = tig::actNone;
 }
 
-
-/** Set up any necessary cosmetic action required before the turn ends, such as turning to face
-	an adjacent player. */
-bool CRobot::afterResolving() {
-	if (getChosenAction() == tig::actTrackPlayer) {
-		tigMemberInt(tig::action) = tig::actNone;
-		moving = false;
-		return false;
-	}
-
-	bool wasResolvingSerial = isResolvingSerialAction();
-	tigMemberInt(tig::action) = tig::actNone;
-	CHex playerDestination = hexWorld->getPlayerDestination();
-	if (isNeighbour(*hexWorld->getPlayerObj())) {
-		//if (initTurnToAdjacent(playerDestination)) {
-		////	tigMemberInt(tig::action) = tig::actTrackPlayer;
-			return wasResolvingSerial ? false : true; //Sign off any previous serial action as resolved
-		//}
-	}
-	return false;
-}
 
 int CRobot::tigCall(int memberId) {
 	if (memberId == tig::isNeighbour) {

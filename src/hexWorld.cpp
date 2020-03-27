@@ -186,7 +186,7 @@ void CHexWorld::temporaryCreateHexObjects() {
 
 	entities.push_back(playerObj);
 
-	hexCursor = new CHexObject();
+	hexCursor = new CGameHexObj();
 	hexCursor->setBuffer(hexRenderer.getBuffer("cursor"));
 	hexCursor->setPosition(0, 0, 0);
 }
@@ -235,12 +235,12 @@ void CHexWorld::startActionPhase() {
 
 /** Begin a player right-click action. */
 void CHexWorld::beginRightClickAction() {
-	if (turnPhase != playerChoosePhase || playerObj->moving)
+	if (turnPhase != playerChoosePhase )
 		return;
 
 	CGameHexObj* clickedEntity = getEntityAt(hexCursor->hexPosition);
 	if (!clickedEntity || !playerObj->isNeighbour(*clickedEntity))
-		beginPlayerMove();
+		playerObj->stackAction({ tig::actPlayerMove,NULL });
 
 	startActionPhase();
 }
@@ -251,12 +251,20 @@ void CHexWorld::beginLeftClickAction() {
 		return;
 
 	CGameHexObj* clickedEntity = getEntityAt(hexCursor->hexPosition);
-
-	if (clickedEntity && clickedEntity->isTigClass(tig::CItem) && playerObj->isNeighbour(*clickedEntity))
-		playerObj->takeItem(*clickedEntity);
+	if (clickedEntity) {
+		if (playerObj->isNeighbour(*clickedEntity))
+			if (clickedEntity->isTigClass(tig::CItem))
+				playerObj->takeItem(*clickedEntity);
+			else
+				addSerialAction(playerObj, { tig::actPlayerMeleeAttack, clickedEntity });
+		else {
+			addSerialAction(playerObj, { tig::actPlayerShoot, hexCursor });
+		}
+	}
 	else
-	if (!clickedEntity || !clickedEntity->onLeftClick())
-		playerObj->fireShot(hexCursor->hexPosition);
+		addSerialAction(playerObj, { tig::actPlayerShoot, hexCursor });
+		
+		
 	startActionPhase();
 }
 
@@ -324,7 +332,7 @@ void CHexWorld::tempPopulateMap() {
 	robot2->setMap(&map);
 
 	entities.push_back(robot);
-	//entities.push_back(robot2);
+	entities.push_back(robot2);
 
 	wrench = new CHexItem();
 	wrench->setBuffer(hexRenderer.getBuffer("test"));
@@ -426,5 +434,16 @@ CGridObj* CHexWorld::createBolt() {
 void CHexWorld::addToSerialActions(CGameHexObj* entity) {
 	serialActions.insert(serialActions.begin(), entity);
 }
+
+/** Assign this entity the given action, and add it to
+	the list of entities with a serial action to perform. */
+void CHexWorld::addSerialAction(CGameHexObj* entity, CAction action) {
+	entity->stackAction(action);
+	serialActions.insert(serialActions.begin(), entity);
+	//TO DO: might be useful to ensure entities can only be added
+	//once, maybe use a set.
+}
+
+
 
 

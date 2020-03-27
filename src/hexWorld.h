@@ -92,7 +92,9 @@ private:
 	CGridObj* createBolt();
 
 	void addToSerialActions(CGameHexObj* entity);
+	void addSerialAction(CGameHexObj* entity, CAction action);
 
+	void initialiseCurrentAction(CAction action);
 
 	CGameHexArray map;
 
@@ -101,7 +103,7 @@ private:
 
 
 	CPlayerObject* playerObj;
-	CHexObject* hexCursor;
+	CGameHexObj* hexCursor;
 	CRobot* robot;
 	CRobot* robot2;
 	CHexItem* wrench;

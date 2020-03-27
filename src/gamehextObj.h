@@ -7,12 +7,15 @@
 #include "hex/hexObject.h"
 #include "../VMtest/src/ITigObj.h"
 
-//#include "gameHexArray.h"
-
 #include "tigConst.h"
 #include "tigExport.h"
 
-//#include "IGameHexArray.h"
+class CGameHexObj;
+class CAction {
+public:
+	int actionId;
+	CGameHexObj* object; ///<Target of action, if any.
+};
 
 class IHexWorld;
 class IGameHexArray;
@@ -24,6 +27,7 @@ public:
 	void setMap(IGameHexArray* map);
 	void calcTravelPath(CHex& target);
 	bool beginMove();
+	virtual void stackAction(CAction chosenAction) {};
 	virtual void receiveDamage(CGameHexObj& attacker, int damage);
 	virtual void chooseTurnAction() {};
 	static void setHexWorld(IHexWorld* obj);
@@ -61,8 +65,8 @@ protected:
 
 	IGameHexArray* map; ///<The map this object exists in.
 
-	std::stack<int> actions; ///<Actions to perform this turn, in order.
-	int currentAction; ///<The current action being resolved, if any.
+	std::stack<CAction> actions; ///<Actions to perform this turn, in order.
+	CAction currentAction; ///<The current action being resolved, if any.
 
 private:
 	virtual void beginAttack(CHexObject& target) {};

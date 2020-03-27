@@ -14,23 +14,55 @@ CPlayerObject::CPlayerObject() {
 	//rotation = 45;
 }
 
-bool CPlayerObject::update(float dT) {
-	bool resolving = updateMove(dT);
-
-	int action = getChosenAction();
-	if (action ==  tig::actPlayerTurnToAttack && !turning) {
-		moving = false;
-		tigMemberInt(tig::action) = tig::actPlayerMeleeAttack;
+/** Push the given action onto the player object's stack, with any supporting actions. */
+void CPlayerObject::stackAction(CAction chosenAction) {
+	currentAction.actionId = tig::actNone;
+	switch (chosenAction.actionId) {
+	case tig::actPlayerMove :
+			actions.push({ tig::actPlayerMove, NULL });
+			return;
+	case tig::actPlayerMeleeAttack :
+			actions.push({ tig::actPlayerMeleeAttack, chosenAction.object });
+			actions.push({ tig::actTurnToTarget, chosenAction.object });
+			return;
+	case tig::actPlayerShoot :
+			actions.push({ tig::actPlayerShoot, chosenAction.object });
+			actions.push({ tig::actTurnToTarget, chosenAction.object });
+			return;
 	}
-	else if (action ==  tig::actPlayerMeleeAttack) {
+}
+
+bool CPlayerObject::update(float dT) {
+	if (currentAction.actionId == tig::actNone) {
+		if (actions.empty())
+			return false; 
+		currentAction = actions.top();
+		actions.pop();
+		initialiseCurrentAction();
+	}
+
+	bool resolving = false;
+
+	if (currentAction.actionId == tig::actTurnToTarget)
+		resolving = updateRotationOnly(dT);
+
+	if (currentAction.actionId == tig::actPlayerMove)
+		resolving = updateMove(dT);
+
+	if (currentAction.actionId == tig::actPlayerMeleeAttack) {
 		resolving = updateLunge(dT);
 	}
 
-	//TO DO: can do post actions here
-	if (!resolving)
-		tigMemberInt(tig::action) = tig::actNone;
 
-	return resolving;
+	if (!resolving) {
+		currentAction.actionId = tig::actNone;
+		if (actions.empty())
+			return false;
+	}
+
+	return true;
+
+
 }
 
 /** Initiate a player lunge attack on the target. */
@@ -135,6 +167,15 @@ void CPlayerObject::fireShot(CHex& target) {
 	CBolt* boltTmp = (CBolt*)hexWorld->createBolt();
 	boltTmp->setPosition(hexPosition);
 	boltTmp->fireAt(endHex);
+}
+
+void CPlayerObject::initialiseCurrentAction() {
+	switch (currentAction.actionId) {
+		case tig::actPlayerMove: beginMove(); break;
+		case tig::actPlayerMeleeAttack: beginLunge(*currentAction.object); break;
+		case tig::actTurnToTarget: beginTurnToTarget(currentAction.object->hexPosition); break;
+		case tig::actPlayerShoot: fireShot(currentAction.object->hexPosition); break;
+	}
 }
 
 
