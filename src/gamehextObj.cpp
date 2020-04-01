@@ -82,6 +82,12 @@ std::string CGameHexObj::getName() {
 	return tigMemberString(tig::name);
 }
 
+/** Called when the mouse pointer enters this entity's hex. */
+void CGameHexObj::onMouseOver() {
+	callTigStr(tig::onMouseOver);
+
+}
+
 
 void CGameHexObj::receiveDamage(CGameHexObj& attacker, int damage) {
 	;// callTig("onReceiveDamage", attacker, damage);

@@ -42,6 +42,7 @@ public:
 	virtual bool onLeftClick() { return false; };
 	virtual void takeItem(CGameHexObj& item) {};
 	virtual void droppedOnBy(CGameHexObj& item) {};
+	virtual void onMouseOver();
 
 
 	bool isRobot;

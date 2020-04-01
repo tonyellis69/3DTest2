@@ -1,5 +1,7 @@
 #include "hexWorld.h"
 
+#include <string>
+
 #include "utils/log.h"
 
 #include "gameTextWin.h"
@@ -21,7 +23,7 @@ void CHexWorld::setMainApp(IMainApp* pApp) {
 void CHexWorld::setVM(Ivm* pVM) {
 	vm = pVM;
 	mapMaker.attachVM(pVM);
-	setTigObj(vm->getObject(tig::CConsole)); ///TO DO: temp!
+	setTigObj(vm->getObject(tig::IHexWorld)); 
 }
 
 /**	Load a multipart mesh for storage under the given name. */
@@ -49,9 +51,8 @@ void CHexWorld::start() {
 
 	hexRenderer.start();	
 
-	//temp!!!!
-	CGameTextWin* textWin = new CGameTextWin();
-	textWin->addText("Here is some test text.");
+
+
 }
 
 
@@ -196,6 +197,14 @@ void CHexWorld::temporaryCreateHexObjects() {
 void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	hexCursor->setPosition(mouseHex);
 	playerObj->calcTravelPath(hexCursor->hexPosition);	
+
+	for (auto win : popupWindows)
+		delete win;
+	popupWindows.clear();
+	
+	CGameHexObj* entity = getEntityAt(mouseHex);
+	if (entity)
+		entity->onMouseOver();
 }
 
 
@@ -357,8 +366,15 @@ void CHexWorld::tempPopulateMap() {
 
 /** Handle an 'external function call' from Tig. */
 int CHexWorld::tigCall(int memberId) {
-	std::string msg = vm->getParamStr(0);
-	liveLog << msg;
+	std::string strParam;
+	switch (memberId) {
+	case tig::msgFn : 
+		strParam = vm->getParamStr(0);
+		liveLog << strParam; break;
+	case tig::popupWin :
+		strParam = vm->getParamStr(0);
+		popupMsg(strParam); break;
+	}
 	return 1;
 }
 
@@ -442,6 +458,16 @@ void CHexWorld::addSerialAction(CGameHexObj* entity, CAction action) {
 	serialActions.insert(serialActions.begin(), entity);
 	//TO DO: might be useful to ensure entities can only be added
 	//once, maybe use a set.
+}
+
+/*** Create a popup window with the given text. */
+void CHexWorld::popupMsg(const std::string& text) {
+	CGameTextWin* textWin = new CGameTextWin();
+	textWin->addText(text);
+	mainApp->addGameWindow(textWin);
+	textWin->resizeToFit();
+	textWin->positionAtMousePointer();
+	popupWindows.push_back(textWin);
 }
 
 

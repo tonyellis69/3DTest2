@@ -24,6 +24,8 @@
 
 #include "tigConst.h"
 
+#include "gameTextWin.h"
+
 enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
 
 /** A class encapsulating the hex-based representation of the world. */
@@ -94,7 +96,7 @@ private:
 	void addToSerialActions(CGameHexObj* entity);
 	void addSerialAction(CGameHexObj* entity, CAction action);
 
-	void initialiseCurrentAction(CAction action);
+	void popupMsg(const std::string& text);
 
 	CGameHexArray map;
 
@@ -127,6 +129,8 @@ private:
 	CMapMaker mapMaker;
 
 	Ivm* vm; ///<Interface to the virtual machine/
+
+	std::vector< CGameTextWin*> popupWindows;
 };
 
 
