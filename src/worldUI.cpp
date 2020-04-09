@@ -216,6 +216,7 @@ void CWorldUI::spawnPopupWindow(int objId) {
 
 
 void CWorldUI::purgeMainPanel(unsigned int id) {
+	return;
 	vector<unsigned int> purgedIds = mainTextPanel->purgeHotText(id);
 	//whatever hot text was removed, remove also from the list of hot text function calls.
 	for (auto purgedId : purgedIds)

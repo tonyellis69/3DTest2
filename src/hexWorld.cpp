@@ -13,6 +13,9 @@ CHexWorld::CHexWorld() {
 	CGridObj::setHexRenderer(&hexRenderer);
 	CGridObj::setHexWorld(this);
 	CGameHexObj::setHexWorld(this);
+
+	mapMaker.entities = &entities;
+
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
@@ -24,6 +27,7 @@ void CHexWorld::setVM(Ivm* pVM) {
 	vm = pVM;
 	mapMaker.attachVM(pVM);
 	setTigObj(vm->getObject(tig::IHexWorld)); 
+	CGameTextWin::pVM = pVM;
 }
 
 /**	Load a multipart mesh for storage under the given name. */
@@ -34,11 +38,14 @@ void CHexWorld::addMesh(const std::string& name, CMesh& mesh) {
 
 void CHexWorld::makeMap(ITigObj* tigMap) {
 	mapMaker.attachMapObject(tigMap);
+
 	map = mapMaker.createMap();
 }
 
 /** Late set-up stuff. */
 void CHexWorld::start() {
+
+
 	temporaryCreateHexObjects();
 
 	
@@ -51,8 +58,9 @@ void CHexWorld::start() {
 
 	hexRenderer.start();	
 
-
-
+	hexPosLbl = new CGUIlabel2(10, 10, 280, 30);
+	hexPosLbl->setTextColour(glm::vec4( 1.0f, 1.0f, 1.0f, 1.0f ));
+	mainApp->addGameWindow(hexPosLbl);
 }
 
 
@@ -79,6 +87,12 @@ void CHexWorld::onKeyDown(int key, long mod) {
 		else
 			playerObj->dropItem(item);
 	}
+
+	if (key == 'F') {
+		hexRenderer.toggleFollowCam();
+		hexRenderer.followTarget(playerObj->worldPos);
+	}
+
 }
 
 void CHexWorld::setPlayerShield(THexDir direction) {
@@ -120,6 +134,9 @@ void CHexWorld::update(float dT) {
 	this->dT = dT;
 
 	removeDeletedEntities();
+
+	if (hexRenderer.following())
+		hexRenderer.followTarget(playerObj->worldPos);
 
 	if (turnPhase == actionPhase) { 	
 		if (resolvingGridObjActions())
@@ -190,6 +207,8 @@ void CHexWorld::temporaryCreateHexObjects() {
 	hexCursor = new CGameHexObj();
 	hexCursor->setBuffer(hexRenderer.getBuffer("cursor"));
 	hexCursor->setPosition(0, 0, 0);
+
+
 }
 
 
@@ -205,6 +224,13 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	CGameHexObj* entity = getEntityAt(mouseHex);
 	if (entity)
 		entity->onMouseOver();
+
+	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
+	glm::i32vec2 offset = cubeToOffset(mouseHex);
+	coords << "  offset " << offset.x << ", " << offset.y;
+	glm::i32vec2 index = map.cubeToIndex(mouseHex);
+	coords << " index " << index.x << " " << index.y;
+	hexPosLbl->setText(coords.str());
 }
 
 
@@ -361,7 +387,11 @@ void CHexWorld::tempPopulateMap() {
 	blaster->setTigObj(vm->getObject(tig::blaster));
 	entities.push_back(blaster);
 
-
+	//desk = new CHexItem();
+	//desk->setBuffer(hexRenderer.getBuffer("desk"));
+	//desk->setPosition(0,0,0);
+	//desk->setTigObj(vm->getObject(tig::blaster));
+	//entities.push_back(desk);
 }
 
 /** Handle an 'external function call' from Tig. */

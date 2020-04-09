@@ -26,6 +26,8 @@
 
 #include "gameTextWin.h"
 
+#include "UI/GUIlabel2.h"
+
 enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
 
 /** A class encapsulating the hex-based representation of the world. */
@@ -111,6 +113,7 @@ private:
 	CHexItem* wrench;
 	CHexItem* shield;
 	CHexItem* blaster;
+	CHexItem* desk;
 
 
 	TEntities entities; ///<Live objects in the hex world.
@@ -131,6 +134,8 @@ private:
 	Ivm* vm; ///<Interface to the virtual machine/
 
 	std::vector< CGameTextWin*> popupWindows;
+
+	CGUIlabel2 *hexPosLbl;
 };
 
 

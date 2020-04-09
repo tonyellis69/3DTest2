@@ -15,6 +15,7 @@ public:
 
 	void positionAtMousePointer();
 
+	inline static Ivm* pVM; ///<Virtual machine to send hot text calls to.
 
 private:
 	CGUIrichText* richText;

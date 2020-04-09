@@ -11,6 +11,7 @@ CGameTextWin::CGameTextWin() {
 		500, 100);
 	richText->resizeMax = { 400, 500 };
 	richText->setTextTheme("gameTheme");
+	richText->setHotTextVM(pVM);
 	Add(richText);
 
 }
