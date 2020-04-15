@@ -58,7 +58,7 @@ void CHexWorld::start() {
 
 	hexRenderer.start();	
 
-	hexPosLbl = new CGUIlabel2(10, 10, 280, 30);
+	hexPosLbl = new CGUIlabel2(10, 10, 480, 30);
 	hexPosLbl->setTextColour(glm::vec4( 1.0f, 1.0f, 1.0f, 1.0f ));
 	mainApp->addGameWindow(hexPosLbl);
 }
@@ -108,6 +108,7 @@ void CHexWorld::onMouseWheel(float delta) {
 }
 
 void CHexWorld::onMouseMove(int x, int y, int key) {
+	mousePos = { x,y };
 	CHex mouseHex = hexRenderer.pickHex(x, y);
 	if (mouseHex != hexCursor->hexPosition)
 		onNewMouseHex(mouseHex);
@@ -137,6 +138,8 @@ void CHexWorld::update(float dT) {
 
 	if (hexRenderer.following())
 		hexRenderer.followTarget(playerObj->worldPos);
+	else
+		hexRenderer.attemptScreenScroll(mainApp->getMousePos(),dT);
 
 	if (turnPhase == actionPhase) { 	
 		if (resolvingGridObjActions())
@@ -230,6 +233,8 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	coords << "  offset " << offset.x << ", " << offset.y;
 	glm::i32vec2 index = map.cubeToIndex(mouseHex);
 	coords << " index " << index.x << " " << index.y;
+	glm::vec3 worldSpace = cubeToWorldSpace(mouseHex);
+	coords << " worldPos " << worldSpace.x << " " << worldSpace.y << " " << worldSpace.z;
 	hexPosLbl->setText(coords.str());
 }
 
@@ -499,6 +504,8 @@ void CHexWorld::popupMsg(const std::string& text) {
 	textWin->positionAtMousePointer();
 	popupWindows.push_back(textWin);
 }
+
+
 
 
 

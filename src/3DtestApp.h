@@ -30,17 +30,16 @@
 
 #include "physics/terrainPhysObj2.h"
 
-//#include "hex/hexRenderer.h"
-#include "hexWorld.h" //replaces the above
+#include "hexWorld.h" 
 
-//#include "gameStyleSheet.h"
+#include "physics2/physEng.h"
 
-extern CSuperChunk* dbgSC;
 
-//extern float xAdj;
-//extern float yAdj;
 
-enum TAppMode { terrainMode, textMode, texGenMode, hexMode };
+extern CSuperChunk* dbgSC;;
+
+enum TAppMode { terrainMode, textMode, texGenMode, hexMode,
+	physicsMode};
 
 
 
@@ -96,6 +95,8 @@ public:
 	void addGameWindow(CGUIbase* gameWin);
 
 	void initHexWorld();
+
+	glm::i32vec2 getMousePos();
 
 
 	string dataPath; ///<Filepath to the Data folder
@@ -221,7 +222,9 @@ public:
 
 	TAppMode appMode;
 	
-	//CGameStyleSheet gameStyleSheet;
+	CModel2 platform; //temp!!!!!!!!!!!!
+
+	CPhysEng physEng;
 };
 
 const float yawAng = 0.22f;

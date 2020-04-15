@@ -100,6 +100,7 @@ private:
 
 	void popupMsg(const std::string& text);
 
+
 	CGameHexArray map;
 
 	IMainApp* mainApp; ///<Pointer to app used for callbacks.
@@ -136,6 +137,8 @@ private:
 	std::vector< CGameTextWin*> popupWindows;
 
 	CGUIlabel2 *hexPosLbl;
+
+	glm::i32vec2 mousePos;
 };
 
 

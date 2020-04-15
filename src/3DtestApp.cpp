@@ -348,6 +348,18 @@ void C3DtestApp::onStart() {
 	tmpModel2.rotate(45, vec3(1, 0, 0));
 
 
+	if (appMode == physicsMode) {
+		//create a big platforn
+
+		platform.loadMesh(shape::cubeMesh());
+		platform.scale(vec3{ 3000, 100, 3000 });
+		platform.setPos(vec3(0, 0, 0));
+		Engine.modelDrawList.push_back(&platform);
+
+
+
+	}
+
 
 	
 	
@@ -382,7 +394,7 @@ void C3DtestApp::keyCheck() {
 	}
 
 
-	if (appMode == terrainMode) {
+	if (appMode == terrainMode || appMode == physicsMode) {
 
 		CCamera* currentCamera = Engine.getCurrentCamera();
 		float moveInc = float(dT * 1000.0); // 0.05125f;
@@ -675,17 +687,13 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 	}
 
 	if (key == 'C') {
-		/*	vec3 pos = currentCamera->getPos();
-		pos = pos + currentCamera->getTargetDir() * 200.0f;
-		CModel* cube = Engine.createCube(pos, vec3(40));
-		physCube = Engine.addPhysics(cube);
-		physCube->setMass(10);
-		physCube->bSphere.setRadius(35);
-		physCube->AABB.setSize(40, 40);*/
-
-		terrain.createAllChunks();
-
-		//EatKeys();
+		vec3 pos = renderer.currentCamera->getPos();
+		pos = pos + renderer.currentCamera->getTargetDir() * 200.0f;
+		CPhysModel* cube = new CPhysModel();
+		cube->loadMesh(shape::cubeMesh());
+		cube->scale(vec3{ 40, 40, 40 });
+		cube->setPos(pos);
+		Engine.modelDrawList.push_back(cube);
 	}
 
 	if (key == 'B') {
@@ -749,12 +757,16 @@ void C3DtestApp::draw() {
 		return;
 	}
 	
-	if (appMode != terrainMode) {
+	if (appMode != terrainMode && appMode != physicsMode ) {
 		Engine.Renderer.setBackColour((rgba&)style::uialmostBlack);
 		Engine.Renderer.setBackColour((rgba&)white);
 		Engine.Renderer.clearFrame();
 		return;
 	}
+
+	if (appMode != terrainMode)
+		return;
+
 
 	///////////////////////////tmpModel2.draw();
 	building.draw();
@@ -1599,6 +1611,10 @@ void C3DtestApp::initHexWorld() {
 	ITigObj* map = vm.getObject("testRoom");
 	hexWorld.makeMap(map);
 	hexWorld.start();
+}
+
+glm::i32vec2 C3DtestApp::getMousePos() {
+	return CBaseApp::getMousePos();
 }
 
 
