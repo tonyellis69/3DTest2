@@ -38,7 +38,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //hexMode;
+	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //hexMode; //physicsMode;
 
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));
@@ -315,8 +315,8 @@ void C3DtestApp::onStart() {
 	//worldUI.setHottextColour(hot);
 	//worldUI.setHottextSelectColour(hotSelect);
 
-	
-	initHexWorld();
+	if (appMode == hexMode)
+		initHexWorld();
 	
 	
 	worldUI.start();
@@ -352,10 +352,10 @@ void C3DtestApp::onStart() {
 		//create a big platforn
 
 		platform.loadMesh(shape::cubeMesh());
-		platform.scale(vec3{ 3000, 100, 3000 });
+		platform.scale(vec3{ 3000, 1000, 3000 });
 		platform.setPos(vec3(0, 0, 0));
 		Engine.modelDrawList.push_back(&platform);
-
+		physEng.addObj(&platform);
 
 
 	}
@@ -688,12 +688,16 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 
 	if (key == 'C') {
 		vec3 pos = renderer.currentCamera->getPos();
-		pos = pos + renderer.currentCamera->getTargetDir() * 200.0f;
+		glm::vec3 cameraDir = renderer.currentCamera->getTargetDir();
+		pos = pos + cameraDir * 200.0f;
 		CPhysModel* cube = new CPhysModel();
 		cube->loadMesh(shape::cubeMesh());
 		cube->scale(vec3{ 40, 40, 40 });
 		cube->setPos(pos);
+		cube->setMass(10);
+		cube->setVelocity(cameraDir * 50.0f);
 		Engine.modelDrawList.push_back(cube);
+		physEng.addObj(cube);
 	}
 
 	if (key == 'B') {
@@ -740,7 +744,8 @@ void C3DtestApp::onMouseButton(int button, int action, int mods) {
 
 /** Called when mouse moves. */
 void C3DtestApp::mouseMove(int x, int y, int key) {
-	hexWorld.onMouseMove(x, y, key);
+	if (appMode == hexMode)
+		hexWorld.onMouseMove(x, y, key);
 }
 
 /*
@@ -1093,8 +1098,8 @@ void C3DtestApp::Update() {
 
 
 
-
-	hexWorld.update(dT);
+	if (appMode == hexMode)
+		hexWorld.update(dT);
 
 	vec3 pos = Engine.getCurrentCamera()->getPos();
 
@@ -1587,24 +1592,17 @@ void C3DtestApp::addGameWindow(CGUIbase* gameWin) {
 void C3DtestApp::initHexWorld() {
 	hexWorld.setMainApp(this);
 	hexWorld.setVM(&vm);
-	importer.loadFile(dataPath + "models\\test.obj");
-	hexWorld.addMesh("test",importer.getSingleMesh());
-	importer.loadFile(dataPath + "models\\cursor.obj");
-	hexWorld.addMesh("cursor", importer.getSingleMesh());
+	
+	hexWorld.addMesh("test", dataPath + "models\\test.obj");
+	hexWorld.addMesh("cursor", dataPath + "models\\cursor.obj");
+	hexWorld.addMesh("player", dataPath + "models\\player.obj");
+	hexWorld.addMesh("robot", dataPath + "models\\robot.obj");
+	hexWorld.addMesh("shield", dataPath + "models\\shield.obj");
+	hexWorld.addMesh("bolt", dataPath + "models\\bolt.obj");
+	hexWorld.addMesh("desk", dataPath + "models\\desk.obj");
 
-	importer.loadFile(dataPath + "models\\player.obj");
-	hexWorld.addMesh("player", importer.getSingleMesh());
-	importer.loadFile(dataPath + "models\\robot.obj");
-	hexWorld.addMesh("robot", importer.getSingleMesh());
+	hexWorld.addMesh("door", dataPath + "models\\door.dae");
 
-	importer.loadFile(dataPath + "models\\shield.obj");
-	hexWorld.addMesh("shield", importer.getSingleMesh());
-
-	importer.loadFile(dataPath + "models\\bolt.obj");
-	hexWorld.addMesh("bolt", importer.getSingleMesh());
-
-	importer.loadFile(dataPath + "models\\desk.obj");
-	hexWorld.addMesh("desk", importer.getSingleMesh());
 
 	//... more models
 

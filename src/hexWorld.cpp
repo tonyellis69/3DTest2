@@ -36,6 +36,10 @@ void CHexWorld::addMesh(const std::string& name, CMesh& mesh) {
 	mesh.exportToBuffer(*meshBuf);
 }
 
+void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
+	hexRenderer.loadMesh(name, fileName);
+}
+
 void CHexWorld::makeMap(ITigObj* tigMap) {
 	mapMaker.attachMapObject(tigMap);
 
@@ -198,17 +202,20 @@ CHex CHexWorld::getPlayerDestination() {
 /** TO DO: temporary.This should not be hard-coded, but spun from a level-maker. */
 void CHexWorld::temporaryCreateHexObjects() {
 	playerObj = new CPlayerObject();
-	playerObj->setBuffer(hexRenderer.getBuffer("player"));
+	//playerObj->setBuffer(hexRenderer.getBuffer("player"));
+	playerObj->setLineModel(hexRenderer.getLineModel("player"));
 	//playerObj->setPosition(5, -3, -2);
 	playerObj->setPosition(-1, 9, -8);
-	playerObj->shieldBuf = hexRenderer.getBuffer("shield");
+	//playerObj->shieldBuf = hexRenderer.getBuffer("shield");
+	playerObj->shieldModel = hexRenderer.getLineModel("shield");
 	playerObj->setTigObj(vm->getObject("player"));
 	playerObj->setMap(&map);
 
 	entities.push_back(playerObj);
 
 	hexCursor = new CGameHexObj();
-	hexCursor->setBuffer(hexRenderer.getBuffer("cursor"));
+	//hexCursor->setBuffer(hexRenderer.getBuffer("cursor"));
+	hexCursor->setLineModel(hexRenderer.getLineModel("cursor"));
 	hexCursor->setPosition(0, 0, 0);
 
 
@@ -356,7 +363,8 @@ void CHexWorld::tempPopulateMap() {
 	ITigObj* pRobot = vm->getObject(tig::botA);
 
 	robot = new CRobot();
-	robot->setBuffer(hexRenderer.getBuffer("robot"));
+	//robot->setBuffer(hexRenderer.getBuffer("robot"));
+	robot->setLineModel(hexRenderer.getLineModel("robot"));
 	robot->setPosition(2, 0, -2);
 	robot->isRobot = true;
 	robot->setTigObj(pRobot);
@@ -365,7 +373,8 @@ void CHexWorld::tempPopulateMap() {
 	pRobot = vm->getObject(tig::botB);
 
 	robot2 = new CRobot();
-	robot2->setBuffer(hexRenderer.getBuffer("robot"));
+	//robot2->setBuffer(hexRenderer.getBuffer("robot"));
+	robot2->setLineModel(hexRenderer.getLineModel("robot"));
 	robot2->setPosition(4, -1, -3);
 	robot2->isRobot = true;
 	robot2->setTigObj(pRobot);
@@ -375,28 +384,33 @@ void CHexWorld::tempPopulateMap() {
 	entities.push_back(robot2);
 
 	wrench = new CHexItem();
-	wrench->setBuffer(hexRenderer.getBuffer("test"));
+	//wrench->setBuffer(hexRenderer.getBuffer("test"));
+	wrench->setLineModel(hexRenderer.getLineModel("test"));
 	wrench->setPosition(-8, 0, 8);
 	wrench->setTigObj(vm->getObject(tig::monkeyWrench));
 	entities.push_back(wrench);
 
 	shield = new CHexItem();
-	shield->setBuffer(hexRenderer.getBuffer("test"));
+	//shield->setBuffer(hexRenderer.getBuffer("test"));
+	shield->setLineModel(hexRenderer.getLineModel("test"));
 	shield->setPosition(-6, -2, 8);
 	shield->setTigObj(vm->getObject(tig::shield));
 	entities.push_back(shield);
 
 	blaster = new CHexItem();
-	blaster->setBuffer(hexRenderer.getBuffer("test"));
+	//blaster->setBuffer(hexRenderer.getBuffer("test"));
+	blaster->setLineModel(hexRenderer.getLineModel("test"));
 	blaster->setPosition(-7, -1, 8);
 	blaster->setTigObj(vm->getObject(tig::blaster));
 	entities.push_back(blaster);
 
-	//desk = new CHexItem();
-	//desk->setBuffer(hexRenderer.getBuffer("desk"));
-	//desk->setPosition(0,0,0);
-	//desk->setTigObj(vm->getObject(tig::blaster));
-	//entities.push_back(desk);
+	door = new CHexItem();
+	//door->setBuffer(hexRenderer.getBuffer("door"));
+	door->setLineModel(hexRenderer.getLineModel("door"));
+	door->setPosition(0,0,0);
+	door->setTigObj(vm->getObject(tig::CDoor));
+	door->setZheight(0.01f); //TO DO: sort this!!!!!
+	entities.push_back(door);
 }
 
 /** Handle an 'external function call' from Tig. */
@@ -477,7 +491,8 @@ void CHexWorld::removeDeletedEntities() {
 
 CGridObj* CHexWorld::createBolt() {
 	CBolt* bolt = new CBolt();
-	bolt->setBuffer(hexRenderer.getBuffer("bolt"));
+	//bolt->setBuffer(hexRenderer.getBuffer("bolt"));
+	bolt->setLineModel(hexRenderer.getLineModel("bolt"));
 	gridObjects.push_back(bolt);
 	return bolt;
 }

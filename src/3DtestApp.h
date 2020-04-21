@@ -32,7 +32,7 @@
 
 #include "hexWorld.h" 
 
-#include "physics2/physEng.h"
+
 
 
 
@@ -222,9 +222,9 @@ public:
 
 	TAppMode appMode;
 	
-	CModel2 platform; //temp!!!!!!!!!!!!
+	CPhysModel platform; //temp!!!!!!!!!!!!
 
-	CPhysEng physEng;
+
 };
 
 const float yawAng = 0.22f;

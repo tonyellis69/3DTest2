@@ -172,7 +172,8 @@ void CMapMaker::tmpAddDesks() {
 
 CGameHexObj* CMapMaker::tmpCreateDesk() {
 	CGameHexObj* desk = new CGameHexObj();
-	desk->setBuffer("desk");
+	//desk->setBuffer("desk");
+	desk->setLineModel("desk");
 	desk->setTigObj(vm->getObject(tig::desk));
 	entities->push_back(desk);
 	return desk;

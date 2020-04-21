@@ -120,15 +120,15 @@ void CPlayerObject::draw() {
 			continue;
 		float rotation = face * -60;
 		glm::mat4 rot = glm::rotate(worldMatrix, glm::radians(rotation), glm::vec3(0, 0, 1));
-		drawData = { &rot, &colour, shieldBuf };
-		hexRendr->drawLines(drawData);
+		drawData = { &rot, &colour, shieldBuf, &shieldModel };
+		hexRendr->drawLineModel(drawData);
 	}
 }
 
 
 void CPlayerObject::setShield(THexDir shieldDir) {
 	if (tigMemberInt(tig::equippedShield) == 0) {
-		return;
+		;// return;
 	}
 
 	int shieldNo = (shieldDir - facing) % 6;

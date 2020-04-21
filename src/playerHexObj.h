@@ -21,6 +21,7 @@ public:
 	void fireShot(CHex& target);
 
 	CBuf* shieldBuf;
+	CLineModel shieldModel;
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
 
 private:

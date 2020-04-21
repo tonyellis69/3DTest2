@@ -12,7 +12,7 @@ CGridObj::CGridObj() {
 	prevTargetDist = FLT_MAX;
 	moveSpeed = 7.0f;
 
-	drawData = { &worldMatrix,&colour,buf };
+	drawData = { &worldMatrix,&colour,buf,&lineModel };
 
 	buildWorldMatrix();
 }
@@ -36,6 +36,11 @@ void CGridObj::setBuffer(CBuf* buffer) {
 	drawData.buf = buf;
 }
 
+void CGridObj::setLineModel(CLineModel& lineModel) {
+	this->lineModel = lineModel;
+	//drawData.lineModel = this->lineModal;
+}
+
 void CGridObj::setPosition(int x, int y) {
 	worldPos = { x,y,zHeight };
 	buildWorldMatrix();
@@ -48,7 +53,8 @@ void CGridObj::setPosition(CHex& hex) {
 }
 
 void CGridObj::draw() {
-	hexRendr->drawLines(drawData);
+	//hexRendr->drawLines(drawData);
+	hexRendr->drawLineModel(drawData);
 }
 
 bool CGridObj::update(float dT) {

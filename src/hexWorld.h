@@ -39,6 +39,7 @@ public:
 	void setMainApp(IMainApp* pApp);
 	void setVM(Ivm* pVM);
 	void addMesh(const std::string& name, CMesh& mesh);
+	void addMesh(const std::string& name, const std::string& fileName);
 	void makeMap(ITigObj* tigMap);
 	void start();
 	void moveCamera(glm::vec3& direction);
@@ -115,6 +116,7 @@ private:
 	CHexItem* shield;
 	CHexItem* blaster;
 	CHexItem* desk;
+	CHexItem* door;
 
 
 	TEntities entities; ///<Live objects in the hex world.

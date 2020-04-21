@@ -8,6 +8,8 @@
 //#include "IHexWorld.h"
 #include "hex/hex.h"
 
+#include "hex/lineModel.h"
+
 
 /** A base class for 3D grid objects. */
 class IHexWorld;
@@ -18,6 +20,7 @@ public:
 	static void setHexWorld(IHexWorld* obj);
 	void setZheight(float height);
 	void setBuffer(CBuf* buffer);
+	void setLineModel(CLineModel& lineModel);
 	void setPosition(int x, int y);
 	void setPosition(CHex& hex);
 	virtual void draw();
@@ -28,6 +31,7 @@ public:
 	CBuf* buf; ///<Identifies the graphics buffer to use for drawing this object 
 	glm::mat4 worldMatrix; ///<Position and orientation in the 3D universe.
 	glm::vec3 worldPos; ///<Position in world space.
+	CLineModel lineModel;
 
 protected:
 	void buildWorldMatrix();
