@@ -11,7 +11,7 @@
 class CGameHexArray : public CHexArray, public IGameHexArray {
 public:
 	void setEntityList(TEntities* pEntities);
-	bool entityBlockCheck(CHex& hex);
+	bool entityBlockCheck(CHex& current, CHex& hex);
 	bool isEmpty(glm::i32vec2& hex);
 	CHex findLineEnd(CHex& start, CHex& target);
 

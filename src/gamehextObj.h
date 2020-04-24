@@ -44,11 +44,16 @@ public:
 	virtual void droppedOnBy(CGameHexObj& item) {};
 	virtual void onMouseOver();
 
+	virtual void frameUpdate(float dT) {};
+
 
 	bool isRobot;
 
 	bool blocks; ///<If true, blocks travel path
 	bool deleteMe;
+
+	IGameHexArray* map; ///<The map this object exists in.
+
 
 protected:
 	virtual bool updateLunge(float dT);
@@ -64,7 +69,6 @@ protected:
 
 	int meleeDamage;
 
-	IGameHexArray* map; ///<The map this object exists in.
 
 	std::stack<CAction> actions; ///<Actions to perform this turn, in order.
 	CAction currentAction; ///<The current action being resolved, if any.

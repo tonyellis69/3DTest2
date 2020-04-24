@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
     </contributor>
-    <created>2020-04-20T17:35:31</created>
-    <modified>2020-04-20T17:35:31</modified>
+    <created>2020-04-24T10:33:47</created>
+    <modified>2020-04-24T10:33:47</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -15,7 +15,7 @@
     <geometry id="Circle_007-mesh" name="Circle.007">
       <mesh>
         <source id="Circle_007-mesh-positions">
-          <float_array id="Circle_007-mesh-positions-array" count="12">-0.04999995 0.5 0 -0.04999995 -0.5 0 0.04999995 -0.5 0 0.04999995 0.5 0</float_array>
+          <float_array id="Circle_007-mesh-positions-array" count="12">0.05000007 -0.5 0 0.04999989 0.5 0 -0.05000007 0.5 0 -0.04999989 -0.5 0</float_array>
           <technique_common>
             <accessor source="#Circle_007-mesh-positions-array" count="4" stride="3">
               <param name="X" type="float"/>
@@ -82,7 +82,7 @@
         <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
         <instance_geometry url="#Circle_005-mesh" name="Doorframe"/>
         <node id="Door" name="Door" type="NODE">
-          <matrix sid="transform">7.54979e-8 1 0 0 -1 7.54979e-8 0 0 0 0 1 0 0 0 0 1</matrix>
+          <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
           <instance_geometry url="#Circle_007-mesh" name="Door"/>
         </node>
       </node>

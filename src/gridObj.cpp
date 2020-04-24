@@ -5,14 +5,13 @@
 
 CGridObj::CGridObj() {
 	worldPos = glm::vec3(0);
+	worldMatrix = &lineModel.model.matrix;
 	setZheight(0.05f);
 
 	rotation = 0.0f;
 	proximityCutoff = 0.25f;
 	prevTargetDist = FLT_MAX;
 	moveSpeed = 7.0f;
-
-	drawData = { &worldMatrix,&colour,buf,&lineModel };
 
 	buildWorldMatrix();
 }
@@ -31,10 +30,6 @@ void CGridObj::setZheight(float height) {
 	worldPos.z = height;
 }
 
-void CGridObj::setBuffer(CBuf* buffer) {
-	buf = buffer;
-	drawData.buf = buf;
-}
 
 void CGridObj::setLineModel(CLineModel& lineModel) {
 	this->lineModel = lineModel;
@@ -54,7 +49,7 @@ void CGridObj::setPosition(CHex& hex) {
 
 void CGridObj::draw() {
 	//hexRendr->drawLines(drawData);
-	hexRendr->drawLineModel(drawData);
+	hexRendr->drawLineModel(lineModel);
 }
 
 bool CGridObj::update(float dT) {
@@ -79,7 +74,7 @@ bool CGridObj::updateMove(float dT) {
 }
 
 void CGridObj::buildWorldMatrix() {
-	worldMatrix = glm::translate(glm::mat4(1), worldPos);
-	worldMatrix = glm::rotate(worldMatrix, rotation, glm::vec3(0, 0, -1));
+	*worldMatrix = glm::translate(glm::mat4(1), worldPos);
+	*worldMatrix = glm::rotate(*worldMatrix, rotation, glm::vec3(0, 0, -1));
 
 }

@@ -12,6 +12,7 @@ class IHexWorld {
 public:
 	virtual THexList calcPath(CHex& start, CHex& end) = 0;
 	virtual CGameHexObj* getEntityAt(CHex& hex) = 0;
+	virtual CGameHexObj* getBlockingEntityAt(CHex& hex) = 0;
 	virtual CGameHexObj* getItemAt(CHex& position) = 0;
 	virtual bool isBlockerMovingTo(CHex& hex) = 0;
 	virtual CGameHexObj* getPlayerObj() = 0;

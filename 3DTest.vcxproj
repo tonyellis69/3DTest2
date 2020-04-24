@@ -118,6 +118,7 @@
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp" />
     <ClCompile Include="src\bolt.cpp" />
+    <ClCompile Include="src\door.cpp" />
     <ClCompile Include="src\gameHexArray.cpp" />
     <ClCompile Include="src\gamehextObj.cpp" />
     <ClCompile Include="src\gameTerrain.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="..\TC\Debug\tigConst.h" />
     <ClInclude Include="src\3DtestApp.h" />
     <ClInclude Include="src\bolt.h" />
+    <ClInclude Include="src\door.h" />
     <ClInclude Include="src\gameHexArray.h" />
     <ClInclude Include="src\gamehextObj.h" />
     <ClInclude Include="src\gameTerrain.h" />

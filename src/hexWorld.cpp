@@ -31,11 +31,6 @@ void CHexWorld::setVM(Ivm* pVM) {
 }
 
 /**	Load a multipart mesh for storage under the given name. */
-void CHexWorld::addMesh(const std::string& name, CMesh& mesh) {
-	CBuf* meshBuf = hexRenderer.createMeshBuffer(name);
-	mesh.exportToBuffer(*meshBuf);
-}
-
 void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
 	hexRenderer.loadMesh(name, fileName);
 }
@@ -145,6 +140,9 @@ void CHexWorld::update(float dT) {
 	else
 		hexRenderer.attemptScreenScroll(mainApp->getMousePos(),dT);
 
+	for (auto entity : entities)
+		entity->frameUpdate(dT);
+
 	if (turnPhase == actionPhase) { 	
 		if (resolvingGridObjActions())
 			return;
@@ -179,6 +177,14 @@ CGameHexObj* CHexWorld::getEntityAt(CHex& hex) {
 	return NULL;
 }
 
+CGameHexObj* CHexWorld::getBlockingEntityAt(CHex& hex) {
+	for (auto entity : entities) {
+		if (entity->hexPosition == hex && entity->blocks)
+			return entity;
+	}
+	return NULL;
+}
+
 /** Returns true if a path-blocking entity is currently moving to the given hex. */
 bool CHexWorld::isBlockerMovingTo(CHex& hex) {
 	for (auto entity : entities) {
@@ -202,11 +208,9 @@ CHex CHexWorld::getPlayerDestination() {
 /** TO DO: temporary.This should not be hard-coded, but spun from a level-maker. */
 void CHexWorld::temporaryCreateHexObjects() {
 	playerObj = new CPlayerObject();
-	//playerObj->setBuffer(hexRenderer.getBuffer("player"));
 	playerObj->setLineModel(hexRenderer.getLineModel("player"));
-	//playerObj->setPosition(5, -3, -2);
-	playerObj->setPosition(-1, 9, -8);
-	//playerObj->shieldBuf = hexRenderer.getBuffer("shield");
+	//playerObj->setPosition(-1, 9, -8);
+	playerObj->setPosition(-1, 2, -1);
 	playerObj->shieldModel = hexRenderer.getLineModel("shield");
 	playerObj->setTigObj(vm->getObject("player"));
 	playerObj->setMap(&map);
@@ -214,7 +218,6 @@ void CHexWorld::temporaryCreateHexObjects() {
 	entities.push_back(playerObj);
 
 	hexCursor = new CGameHexObj();
-	//hexCursor->setBuffer(hexRenderer.getBuffer("cursor"));
 	hexCursor->setLineModel(hexRenderer.getLineModel("cursor"));
 	hexCursor->setPosition(0, 0, 0);
 
@@ -404,9 +407,9 @@ void CHexWorld::tempPopulateMap() {
 	blaster->setTigObj(vm->getObject(tig::blaster));
 	entities.push_back(blaster);
 
-	door = new CHexItem();
+	door = new CDoor();
 	//door->setBuffer(hexRenderer.getBuffer("door"));
-	door->setLineModel(hexRenderer.getLineModel("door"));
+	door->setLineModel("door");
 	door->setPosition(0,0,0);
 	door->setTigObj(vm->getObject(tig::CDoor));
 	door->setZheight(0.01f); //TO DO: sort this!!!!!
@@ -442,7 +445,8 @@ void CHexWorld::dropItem(CGameHexObj* item, CHex& location) {
 
 CGroupItem* CHexWorld::createGroupItem() {
 	CGroupItem* groupItem = new CGroupItem();
-	groupItem->setBuffer(hexRenderer.getBuffer("test"));
+	//groupItem->setBuffer(hexRenderer.getBuffer("test"));
+	groupItem->setLineModel("test");
 	groupItem->setTigObj(vm->getObject(tig::CGroupItem));
 	entities.push_back(groupItem);
 	return groupItem;

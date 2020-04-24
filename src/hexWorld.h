@@ -28,6 +28,8 @@
 
 #include "UI/GUIlabel2.h"
 
+#include "door.h" //hopefully *temporary* 
+  
 enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
 
 /** A class encapsulating the hex-based representation of the world. */
@@ -38,7 +40,6 @@ public:
 	CHexWorld();
 	void setMainApp(IMainApp* pApp);
 	void setVM(Ivm* pVM);
-	void addMesh(const std::string& name, CMesh& mesh);
 	void addMesh(const std::string& name, const std::string& fileName);
 	void makeMap(ITigObj* tigMap);
 	void start();
@@ -56,6 +57,7 @@ public:
 private:
 	THexList calcPath(CHex& start, CHex& end);
 	CGameHexObj* getEntityAt(CHex& hex);
+	CGameHexObj* getBlockingEntityAt(CHex& hex);
 	bool isBlockerMovingTo(CHex& hex);
 	CHex getPlayerPosition();
 	CHex getPlayerDestination();
@@ -116,7 +118,7 @@ private:
 	CHexItem* shield;
 	CHexItem* blaster;
 	CHexItem* desk;
-	CHexItem* door;
+	CDoor* door;
 
 
 	TEntities entities; ///<Live objects in the hex world.

@@ -114,14 +114,13 @@ void CPlayerObject::draw() {
 	if (action ==  tig::actPlayerMeleeAttack)
 		return;
 
-	THexDraw drawData;
 	for (int face = 0; face < 6; face++) {
 		if (shields[face] == 0)
 			continue;
 		float rotation = face * -60;
-		glm::mat4 rot = glm::rotate(worldMatrix, glm::radians(rotation), glm::vec3(0, 0, 1));
-		drawData = { &rot, &colour, shieldBuf, &shieldModel };
-		hexRendr->drawLineModel(drawData);
+		glm::mat4 rot = glm::rotate(*worldMatrix, glm::radians(rotation), glm::vec3(0, 0, 1));
+		shieldModel.model.matrix = rot;
+		hexRendr->drawLineModel(shieldModel);
 	}
 }
 

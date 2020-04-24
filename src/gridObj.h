@@ -19,7 +19,6 @@ public:
 	static void setHexRenderer(IHexRenderer* rendrObj);
 	static void setHexWorld(IHexWorld* obj);
 	void setZheight(float height);
-	void setBuffer(CBuf* buffer);
 	void setLineModel(CLineModel& lineModel);
 	void setPosition(int x, int y);
 	void setPosition(CHex& hex);
@@ -29,7 +28,7 @@ public:
 
 
 	CBuf* buf; ///<Identifies the graphics buffer to use for drawing this object 
-	glm::mat4 worldMatrix; ///<Position and orientation in the 3D universe.
+	glm::mat4* worldMatrix; ///<Position and orientation in the 3D universe.
 	glm::vec3 worldPos; ///<Position in world space.
 	CLineModel lineModel;
 
@@ -49,13 +48,9 @@ protected:
 	inline static IHexWorld* hexWorld;
 
 private:
-	
-
 	inline static IHexRenderer* hexRendr;
 
 	float proximityCutoff;
 
-
 	glm::vec4 colour;
-	THexDraw drawData;
 };
