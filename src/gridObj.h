@@ -5,7 +5,7 @@
 
 #include "renderer/buf.h"
 #include "hex/IHexRenderer.h"
-//#include "IHexWorld.h"
+#include "IGameHexArray.h"
 #include "hex/hex.h"
 
 #include "hex/lineModel.h"
@@ -31,6 +31,8 @@ public:
 	glm::mat4* worldMatrix; ///<Position and orientation in the 3D universe.
 	glm::vec3 worldPos; ///<Position in world space.
 	CLineModel lineModel;
+
+	IGameHexArray* map; ///<The map this object exists in.
 
 protected:
 	void buildWorldMatrix();

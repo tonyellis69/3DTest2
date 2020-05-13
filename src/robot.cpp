@@ -6,8 +6,13 @@
 #include "bolt.h"
 #include "gameHexArray.h"
 
-CRobot::CRobot() {
+TPlayerDefence& operator++(TPlayerDefence& def, int) {
+	//return def = (def == defFeint) ? defNone : static_cast<TPlayerDefence>(static_cast<int>(def) + 1);
+	return def = (def == defFeint) ? defNone : TPlayerDefence(def + 1);
+}
 
+CRobot::CRobot() {
+	playerDefence = defNone;
 }
 
 /** Choose an action for the upcoming turn. */
@@ -78,7 +83,8 @@ void CRobot::initialiseCurrentAction() {
 		case tig::actAttackPlayer : meleeAttackPlayer(); break;
 		case tig::actShootPlayer : shootPlayer(); break;
 		case tig::actTurnToTarget : beginTurnToTarget(hexWorld->getPlayerPosition()); break;
-		case tig::actTurnToTargetDest : beginTurnToTarget(hexWorld->getPlayerDestination()); break;
+		//case tig::actTurnToTargetDest : beginTurnToTarget(hexWorld->getPlayerDestination()); break;
+		case tig::actTurnToTargetDest: beginTurnToTarget(hexWorld->getPlayerPosition()); break;
 	}
 }
 
@@ -87,8 +93,21 @@ bool CRobot::onLeftClick() {
 	return false;
 }
 
+void CRobot::onMouseWheel(float delta) {
+	if (hexWorld->isStrategyMode()) {
+		playerDefence++;
+		spawnDefencePanel();
+
+	}
+}
+
+bool CRobot::beginMove() {
+	return CGameHexObj::beginMove();
+}
+
 void CRobot::beginChasePlayer() {
 	calcTravelPath(hexWorld->getPlayerPosition());	
+	movePoints = 4;
 	beginMove();
 }
 
@@ -116,5 +135,18 @@ int CRobot::tigCall(int memberId) {
 		return isNeighbour(*hexObj);
 	}
 
+}
+
+/** Create a panel for the currently selected player defence against this robot.
+	This will delete any current panel. */
+void CRobot::spawnDefencePanel() {
+	defencePanel = new CDefencePanel();
+
+	defencePanel->addText("New defence panel " + std::to_string(defencePanel->uniqueID));
+
+	hexWorld->addWindow(defencePanel);
+
+	defencePanel->resizeToFit();
+	defencePanel->positionAtMousePointer();
 }
 

@@ -4,7 +4,7 @@
 #include "IHexWorld.h"
 
 CHexItem::CHexItem() {
-	blocks = false;
+	mBlocks = blocksNone;
 }
 
 bool CHexItem::onLeftClick() {

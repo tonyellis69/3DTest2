@@ -5,14 +5,18 @@
 #include "tigConst.h"
 
 #include "IHexWorld.h"
+#include "IGameHexArray.h"
 
 CGameHexObj::CGameHexObj() {
 	isRobot = false;
 	lungeSpeed = 3.0f;
 	meleeDamage = 1;
-	blocks = true;
+	mBlocks = blocksAll;
 	deleteMe = false;
+	currentAction = { tig::actNone,NULL };
 }
+
+
 
 void CGameHexObj::setMap(IGameHexArray* map) {
 	this->map = map;
@@ -45,8 +49,24 @@ void CGameHexObj::calcTravelPath(CHex& target) {
 /**	Initialise this object to start moving to the next hex on its current travel path when it gets
 	updated. This may include rotating to face that hex. */
 bool CGameHexObj::beginMove() {
-	if (travelPath.empty() || hexWorld->isBlockerMovingTo(travelPath[0]))
+	if (travelPath.empty() || movePoints == 0)
 		return false;
+
+	CGameHexObj* entity = map->getBlockingEntityAt(travelPath[0]);
+	if (entity && !entity->isTigClass(tig::CDoor)) {
+
+		if (entity->getCurrentAction() == tig::actNone) {
+			currentAction.actionId = tig::actNone;
+			return false; //entity not moving, give up
+		}
+
+		return true; //try again next update
+	}
+
+	movePoints--;
+
+	map->moveEntity(this, travelPath[0]);
+
 	initMoveToAdjacent(travelPath[0]);
 	initTurnToAdjacent(travelPath[0]);
 	return true;
@@ -86,6 +106,28 @@ std::string CGameHexObj::getName() {
 void CGameHexObj::onMouseOver() {
 	callTigStr(tig::onMouseOver);
 
+}
+
+/** Returns full blocking details as bit flags. */
+unsigned int CGameHexObj::blocks() {
+	return mBlocks;
+}
+
+/** Returns true if this entity blocks entry from the given direction. */
+bool CGameHexObj::blocks(THexDir direction) {
+	unsigned int dirBit = 1 << direction;
+
+	return blocks() & dirBit;
+}
+
+int CGameHexObj::getCurrentAction() {
+	return currentAction.actionId;
+}
+
+int CGameHexObj::getNextAction() {
+	if (actions.empty())
+		return tig::actNone;
+	return actions.top().actionId;
 }
 
 

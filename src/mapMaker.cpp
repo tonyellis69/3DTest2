@@ -164,15 +164,15 @@ void CMapMaker::tmpAddDesks() {
 	for (int d = 0; d < numDesks; d++) {
 		CHex deskPos = hexArray.indexToCube(randomFreeHex());
 		CGameHexObj* desk = tmpCreateDesk();
-		desk->setPosition(deskPos);
-
+		//desk->setPosition(deskPos);
+		hexArray.add(desk, deskPos);
 	}
 
 }
 
 CGameHexObj* CMapMaker::tmpCreateDesk() {
 	CGameHexObj* desk = new CGameHexObj();
-	//desk->setBuffer("desk");
+	//desk->setMap(&hexArray);
 	desk->setLineModel("desk");
 	desk->setTigObj(vm->getObject(tig::desk));
 	entities->push_back(desk);

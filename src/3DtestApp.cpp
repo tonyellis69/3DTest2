@@ -24,6 +24,8 @@
 
 #include "gameWin.h"
 
+#include "buf2.h"
+
 using namespace glm;
 
 
@@ -38,7 +40,8 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = hexMode;// texGenMode;// terrainMode; //textMode; //hexMode; //physicsMode;
+	appMode = hexMode;// texGenMode;// terrainMode; 
+					  //textMode; //hexMode; //physicsMode;
 
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));
@@ -360,8 +363,16 @@ void C3DtestApp::onStart() {
 
 	}
 
+	std::vector<glm::vec3> testVec = { glm::vec3(1), glm::vec3(2), glm::vec3(3) };
+	std::vector<unsigned short> testIndex = { 1,2,3,4 };
 
-	
+	CBuf2 buf2;
+	buf2.storeVerts(testVec,testIndex,3,2);
+
+	//CBuf2 newBuf = buf2;
+	buf2.setSize(200);
+	int b = 9;
+
 	
 	return;
 }

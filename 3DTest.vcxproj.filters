@@ -81,6 +81,9 @@
     <ClCompile Include="src\door.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\defencePanels.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -153,6 +156,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\door.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\defencePanels.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -170,7 +170,9 @@ void CPlayerObject::fireShot(CHex& target) {
 
 void CPlayerObject::initialiseCurrentAction() {
 	switch (currentAction.actionId) {
-		case tig::actPlayerMove: beginMove(); break;
+	case tig::actPlayerMove:	movePoints = 20;
+								setTravelPath(*hexWorld->getCursorPath());
+								beginMove(); break;
 		case tig::actPlayerMeleeAttack: beginLunge(*currentAction.object); break;
 		case tig::actTurnToTarget: beginTurnToTarget(currentAction.object->hexPosition); break;
 		case tig::actPlayerShoot: fireShot(currentAction.object->hexPosition); break;

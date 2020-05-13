@@ -3,7 +3,7 @@
 #include "utils/log.h"
 
 CGroupItem::CGroupItem() {
-	blocks = false;
+	mBlocks = false;
 }
 
 /** Respond to another item being dropped on us. */

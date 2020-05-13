@@ -25,7 +25,7 @@ bool CBolt::update(float dT) {
 	bool resolving = updateMove(dT);
 
 	if (!resolving) {
-		CGameHexObj* targetObj = hexWorld->getEntityAt(worldSpaceToHex(worldPos));
+		CGameHexObj* targetObj = map->getEntityAt(worldSpaceToHex(worldPos));
 		if (targetObj) {
 			targetObj->receiveDamage(*hexWorld->getPlayerObj(), 1);
 		}

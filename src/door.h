@@ -11,6 +11,8 @@ public:
 	void setLineModel(const std::string& name);
 	void frameUpdate(float dT);
 
+	unsigned int blocks();
+
 	TModelNode* doorNode;
 
 	TDoorStatus status;

@@ -6,10 +6,13 @@
 
 #include "hex/hex.h"
 
+#include "IGameHexArray.h"
+
 CDoor::CDoor() {
 	status = doorClosed;
 	anim = 0;
 	doorSpeed = 4.0f;
+	mBlocks = blocksAll; 
 }
 
 
@@ -52,19 +55,20 @@ void CDoor::frameUpdate(float dT) {
 	//check facing and opposite hexes for presence
 	CHex facingHex = getNeighbour(hexPosition, facing);
 	CHex oppositeHex = getNeighbour(hexPosition,opposite(facing));
-	if (hexWorld->getEntityAt(facingHex) || hexWorld->getEntityAt(oppositeHex)) {
+	CGameHexObj* blocker = map->getEntityNotSelf(this);
+	if (map->getEntityAt(facingHex) || map->getEntityAt(oppositeHex) || blocker) {
 		
-		if (/*status != doorOpening && */status == doorClosed) {
-			blocks = false;
+		if (status == doorClosed) {
+			mBlocks = blocksAsDoor;
 			anim = 0;
 			status = doorOpening;
 		}
 	}
 	else { //no one there. Close?
-		if (status == doorOpen && hexWorld->getBlockingEntityAt(hexPosition) == NULL) {
-			blocks = true;
+		if (status == doorOpen){
+			mBlocks = blocksAll;
 			anim = 0;
-			status = doorClosing;
+			status = doorClosing;		
 		}
 
 
@@ -73,4 +77,12 @@ void CDoor::frameUpdate(float dT) {
 
 
 	return ;
+}
+
+unsigned int CDoor::blocks() {
+	unsigned char rot = mBlocks;
+	for (int dir = hexEast; dir < facing; dir++) {
+		rot = (rot << 1) | (rot >> 5);
+	}
+	return rot;
 }

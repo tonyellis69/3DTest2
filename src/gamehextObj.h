@@ -18,7 +18,7 @@ public:
 };
 
 class IHexWorld;
-class IGameHexArray;
+
 /** Basic hex object to derive game hex objects from,
 	such as robots. */
 class CGameHexObj : public CHexObject, public CTigObjptr{
@@ -43,17 +43,20 @@ public:
 	virtual void takeItem(CGameHexObj& item) {};
 	virtual void droppedOnBy(CGameHexObj& item) {};
 	virtual void onMouseOver();
+	virtual void onMouseWheel(float delta) {};
 
 	virtual void frameUpdate(float dT) {};
-
+	virtual unsigned int blocks() ;
+	bool blocks(THexDir direction);
+	int getCurrentAction();
+	int getNextAction();
 
 	bool isRobot;
 
-	bool blocks; ///<If true, blocks travel path
+	unsigned int mBlocks; ///<If true, blocks travel path
 	bool deleteMe;
 
-	IGameHexArray* map; ///<The map this object exists in.
-
+	
 
 protected:
 	virtual bool updateLunge(float dT);
@@ -72,6 +75,8 @@ protected:
 
 	std::stack<CAction> actions; ///<Actions to perform this turn, in order.
 	CAction currentAction; ///<The current action being resolved, if any.
+
+	int movePoints; ///<Number of hexes we can travel in one move.
 
 private:
 	virtual void beginAttack(CHexObject& target) {};

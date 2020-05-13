@@ -32,6 +32,8 @@
   
 enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
 
+enum TScreenMode { strategyMode, normalMode };
+
 /** A class encapsulating the hex-based representation of the world. */
 class IMainApp;
 class CHexWorld : public IhexRendererCallback, public IHexWorld,
@@ -53,17 +55,15 @@ public:
 	void draw();
 	void setAspectRatio(glm::vec2& ratio);
 	void update(float dt);
+	bool isStrategyMode();
 
 private:
 	THexList calcPath(CHex& start, CHex& end);
-	CGameHexObj* getEntityAt(CHex& hex);
-	CGameHexObj* getBlockingEntityAt(CHex& hex);
-	bool isBlockerMovingTo(CHex& hex);
 	CHex getPlayerPosition();
 	CHex getPlayerDestination();
 	void temporaryCreateHexObjects();
 	void onNewMouseHex(CHex& mouseHex);
-	THexList* getPlayerPath();
+	THexList* getCursorPath();
 	CGameHexObj* getPlayerObj();
 
 	CHexObject* getCursorObj();
@@ -102,6 +102,9 @@ private:
 	void addSerialAction(CGameHexObj* entity, CAction action);
 
 	void popupMsg(const std::string& text);
+	void addWindow(CGameWin* win);
+
+	void changeMode();
 
 
 	CGameHexArray map;
@@ -143,6 +146,10 @@ private:
 	CGUIlabel2 *hexPosLbl;
 
 	glm::i32vec2 mousePos;
+
+	THexList cursorPath;
+
+	TScreenMode mode;
 };
 
 
@@ -160,6 +167,7 @@ private:
 #define GLFW_KEY_KP_9               329
 
 #define GLFW_KEY_LEFT_SHIFT         340
+#define GLFW_KEY_LEFT_CONTROL       341
 
 #define GLFW_MOUSE_BUTTON_1         0
 #define GLFW_MOUSE_BUTTON_2         1

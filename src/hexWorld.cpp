@@ -16,6 +16,7 @@ CHexWorld::CHexWorld() {
 
 	mapMaker.entities = &entities;
 
+	mode = normalMode;
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
@@ -102,8 +103,15 @@ void CHexWorld::onMouseWheel(float delta) {
 	if (mainApp->hexKeyNowCallback(GLFW_KEY_LEFT_SHIFT)) {
 		hexRenderer.pitchCamera(delta);
 	}
-	else
+	else if (mainApp->hexKeyNowCallback(GLFW_KEY_LEFT_CONTROL))
 		hexRenderer.dollyCamera(delta);
+	else {
+		CGameHexObj* entity = map.getEntityAt(hexCursor->hexPosition);
+		if (entity == NULL)
+			changeMode();
+		else
+			entity->onMouseWheel(delta);
+	}
 }
 
 void CHexWorld::onMouseMove(int x, int y, int key) {
@@ -116,7 +124,11 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 
 
 void CHexWorld::draw() {
-	hexRenderer.draw();
+	if (turnPhase == playerChoosePhase)
+		hexRenderer.draw();
+	else
+		hexRenderer.draw2();
+
 	for (auto entity : entities)
 		entity->draw();
 	for (auto gridObj : gridObjects)
@@ -156,8 +168,13 @@ void CHexWorld::update(float dT) {
 	}
 
 	else if (turnPhase == chooseActionPhase) {
+		map.updateBlocking();
 		chooseActions();
 	}
+}
+
+bool CHexWorld::isStrategyMode() {
+	return mode == strategyMode;
 }
 
 
@@ -168,31 +185,10 @@ THexList CHexWorld::calcPath(CHex& start, CHex& end) {
 	return map.aStarPath(start,end);
 }
 
-/** Return the hex entity at the given hex, if any. */
-CGameHexObj* CHexWorld::getEntityAt(CHex& hex) {
-	for (auto entity : entities) {
-		if (entity->hexPosition == hex)
-			return entity;
-	}
-	return NULL;
-}
 
-CGameHexObj* CHexWorld::getBlockingEntityAt(CHex& hex) {
-	for (auto entity : entities) {
-		if (entity->hexPosition == hex && entity->blocks)
-			return entity;
-	}
-	return NULL;
-}
 
-/** Returns true if a path-blocking entity is currently moving to the given hex. */
-bool CHexWorld::isBlockerMovingTo(CHex& hex) {
-	for (auto entity : entities) {
-		if (entity->destination == hex && entity->blocks)
-			return true;
-	}
-	return false;
-}
+
+
 
 /** Because lots of code want to know. */
 CHex CHexWorld::getPlayerPosition() {
@@ -208,18 +204,19 @@ CHex CHexWorld::getPlayerDestination() {
 /** TO DO: temporary.This should not be hard-coded, but spun from a level-maker. */
 void CHexWorld::temporaryCreateHexObjects() {
 	playerObj = new CPlayerObject();
-	playerObj->setLineModel(hexRenderer.getLineModel("player"));
-	//playerObj->setPosition(-1, 9, -8);
-	playerObj->setPosition(-1, 2, -1);
+	playerObj->setLineModel("player");
+	//playerObj->setPosition(-1, 2, -1);
+	//playerObj->setMap(&map);
+	map.add(playerObj, CHex(-1, 2 - 1));
 	playerObj->shieldModel = hexRenderer.getLineModel("shield");
 	playerObj->setTigObj(vm->getObject("player"));
-	playerObj->setMap(&map);
+
 
 	entities.push_back(playerObj);
 
 	hexCursor = new CGameHexObj();
-	hexCursor->setLineModel(hexRenderer.getLineModel("cursor"));
-	hexCursor->setPosition(0, 0, 0);
+	hexCursor->setLineModel("cursor");
+	hexCursor->setPosition(CHex(0, 0, 0));
 
 
 }
@@ -228,15 +225,19 @@ void CHexWorld::temporaryCreateHexObjects() {
 /** Respend to mouse cursor moving to a new hex. */
 void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	hexCursor->setPosition(mouseHex);
-	playerObj->calcTravelPath(hexCursor->hexPosition);	
+
+	cursorPath = calcPath(playerObj->hexPosition, hexCursor->hexPosition);
+
 
 	for (auto win : popupWindows)
 		delete win;
 	popupWindows.clear();
+
+	auto [first, last] = map.getEntitiesAt(mouseHex);
+	for (auto it = first; it != last; it++)
+		it->second->onMouseOver();
 	
-	CGameHexObj* entity = getEntityAt(mouseHex);
-	if (entity)
-		entity->onMouseOver();
+	
 
 	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
 	glm::i32vec2 offset = cubeToOffset(mouseHex);
@@ -245,13 +246,15 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	coords << " index " << index.x << " " << index.y;
 	glm::vec3 worldSpace = cubeToWorldSpace(mouseHex);
 	coords << " worldPos " << worldSpace.x << " " << worldSpace.y << " " << worldSpace.z;
+	coords << " " << map.getHexCube(mouseHex).content;
 	hexPosLbl->setText(coords.str());
 }
 
 
 /** Return the player object's current travel path. */
-THexList* CHexWorld::getPlayerPath() {
-	return &playerObj->getTravelPath();
+THexList* CHexWorld::getCursorPath() {
+	return &cursorPath;
+	//return &playerObj->getTravelPath();
 }
 
 CGameHexObj* CHexWorld::getPlayerObj() {
@@ -273,14 +276,17 @@ void CHexWorld::chooseActions() {
 		//rather than checl all entities
 	}
 	turnPhase = playerChoosePhase;
+
+	//refresh cursor path
+	cursorPath = calcPath(playerObj->hexPosition, hexCursor->hexPosition);
 }
 
 /** Ask all entities to initiate their chosen action for this turn. */
 void CHexWorld::startActionPhase() {
 	turnPhase = actionPhase;
-	for (auto entity : entities) { //TO DO: make this redundant
-		entity->beginTurnAction();
-	}
+	//for (auto entity : entities) { //TO DO: make this redundant
+	//	entity->beginTurnAction();
+	//}
 }
 
 /** Begin a player right-click action. */
@@ -288,9 +294,11 @@ void CHexWorld::beginRightClickAction() {
 	if (turnPhase != playerChoosePhase )
 		return;
 
-	CGameHexObj* clickedEntity = getEntityAt(hexCursor->hexPosition);
-	if (!clickedEntity || !playerObj->isNeighbour(*clickedEntity))
-		playerObj->stackAction({ tig::actPlayerMove,NULL });
+	CGameHexObj* clickedEntity = map.getEntityAt(hexCursor->hexPosition);
+	if (!clickedEntity || !playerObj->isNeighbour(*clickedEntity)
+		|| clickedEntity->blocks() != blocksAll)
+		/*playerObj->stackAction({ tig::actPlayerMove,NULL });*/
+		addSerialAction(playerObj, { tig::actPlayerMove, NULL });
 
 	startActionPhase();
 }
@@ -300,7 +308,7 @@ void CHexWorld::beginLeftClickAction() {
 	if (turnPhase != playerChoosePhase)
 		return;
 
-	CGameHexObj* clickedEntity = getEntityAt(hexCursor->hexPosition);
+	CGameHexObj* clickedEntity = map.getEntityAt(hexCursor->hexPosition);
 	if (clickedEntity) {
 		if (playerObj->isNeighbour(*clickedEntity))
 			if (clickedEntity->isTigClass(tig::CItem))
@@ -338,6 +346,10 @@ bool CHexWorld::resolvingGridObjActions() {
 /** If any entity is performing a serial action, update the lead one and return true. */
 bool CHexWorld::resolvingSerialActions() {
 	for (auto entity = serialActions.begin(); entity != serialActions.end(); entity++) {
+		if (*entity == playerObj && playerObj->getNextAction() == tig::actPlayerMove
+			&& serialActions.size() > 1)
+			continue; //player only moves after other serial action (eg, combat)
+
 		if (!(*entity)->update(dT)) {
 			serialActions.erase(entity);
 		}
@@ -366,51 +378,56 @@ void CHexWorld::tempPopulateMap() {
 	ITigObj* pRobot = vm->getObject(tig::botA);
 
 	robot = new CRobot();
-	//robot->setBuffer(hexRenderer.getBuffer("robot"));
-	robot->setLineModel(hexRenderer.getLineModel("robot"));
-	robot->setPosition(2, 0, -2);
+	robot->setLineModel("robot");
+	//robot->setPosition(2, 0, -2);
+	//robot->setMap(&map);
+	map.add(robot, CHex(2, 0, -2));
 	robot->isRobot = true;
 	robot->setTigObj(pRobot);
-	robot->setMap(&map);
+	
 
 	pRobot = vm->getObject(tig::botB);
 
 	robot2 = new CRobot();
-	//robot2->setBuffer(hexRenderer.getBuffer("robot"));
-	robot2->setLineModel(hexRenderer.getLineModel("robot"));
-	robot2->setPosition(4, -1, -3);
+	robot2->setLineModel("robot");
+	//robot2->setPosition(4, -1, -3);
+	//robot2->setMap(&map);
+	map.add(robot2, CHex(4, -1, -3));
 	robot2->isRobot = true;
 	robot2->setTigObj(pRobot);
-	robot2->setMap(&map);
 
 	entities.push_back(robot);
 	entities.push_back(robot2);
 
 	wrench = new CHexItem();
-	//wrench->setBuffer(hexRenderer.getBuffer("test"));
-	wrench->setLineModel(hexRenderer.getLineModel("test"));
-	wrench->setPosition(-8, 0, 8);
+	wrench->setLineModel("test");
+	//wrench->setPosition(-8, 0, 8);
+	//wrench->setMap(&map);
+	map.add(wrench, CHex(-7, 0, 7));
 	wrench->setTigObj(vm->getObject(tig::monkeyWrench));
 	entities.push_back(wrench);
 
 	shield = new CHexItem();
-	//shield->setBuffer(hexRenderer.getBuffer("test"));
-	shield->setLineModel(hexRenderer.getLineModel("test"));
-	shield->setPosition(-6, -2, 8);
+	shield->setLineModel("test");
+	//shield->setPosition(-6, -2, 8);
+	//shield->setMap(&map);
+	map.add(shield, CHex(-5, -2, 7));
 	shield->setTigObj(vm->getObject(tig::shield));
 	entities.push_back(shield);
 
 	blaster = new CHexItem();
-	//blaster->setBuffer(hexRenderer.getBuffer("test"));
-	blaster->setLineModel(hexRenderer.getLineModel("test"));
-	blaster->setPosition(-7, -1, 8);
+	blaster->setLineModel("test");
+	//blaster->setPosition(-7, -1, 8);
+	//blaster->setMap(&map);
+	map.add(blaster, CHex(-6, -1, 7));
 	blaster->setTigObj(vm->getObject(tig::blaster));
 	entities.push_back(blaster);
 
 	door = new CDoor();
-	//door->setBuffer(hexRenderer.getBuffer("door"));
 	door->setLineModel("door");
-	door->setPosition(0,0,0);
+	//door->setPosition(0,0,0);
+	//door->setMap(&map);
+	map.add(door, CHex(0, 0, 0));
 	door->setTigObj(vm->getObject(tig::CDoor));
 	door->setZheight(0.01f); //TO DO: sort this!!!!!
 	entities.push_back(door);
@@ -495,6 +512,7 @@ void CHexWorld::removeDeletedEntities() {
 
 CGridObj* CHexWorld::createBolt() {
 	CBolt* bolt = new CBolt();
+	bolt->map = &map;
 	//bolt->setBuffer(hexRenderer.getBuffer("bolt"));
 	bolt->setLineModel(hexRenderer.getLineModel("bolt"));
 	gridObjects.push_back(bolt);
@@ -522,6 +540,23 @@ void CHexWorld::popupMsg(const std::string& text) {
 	textWin->resizeToFit();
 	textWin->positionAtMousePointer();
 	popupWindows.push_back(textWin);
+}
+
+/** Add this window to the main GUI. */
+void CHexWorld::addWindow(CGameWin* win) {
+	mainApp->addGameWindow(win);
+}
+
+/** Toggle the screen mode, and make any changes necessary. */
+void CHexWorld::changeMode() {
+	if (mode == normalMode) {
+		mode = strategyMode;
+		liveLog << "\nstrategy mode!";
+	}
+	else {
+		mode = normalMode;
+		liveLog << "\nnormal mode!";
+	}
 }
 
 
