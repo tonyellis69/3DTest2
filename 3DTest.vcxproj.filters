@@ -81,7 +81,7 @@
     <ClCompile Include="src\door.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\defencePanels.cpp">
+    <ClCompile Include="src\shieldPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -158,7 +158,7 @@
     <ClInclude Include="src\door.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\defencePanels.h">
+    <ClInclude Include="src\shieldPanel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

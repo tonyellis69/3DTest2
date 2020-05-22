@@ -82,11 +82,19 @@ TRange CGameHexArray::getEntitiesAt(CHex& hex) {
 CGameHexObj* CGameHexArray::getEntityAt(CHex& hex) {
 	auto [first, last] = getEntitiesAt(hex);
 	for (auto it = first; it != last; it++) {
-		//if (!it->second->isTigClass(tig::CDoor))
 			return it->second;
 	}
 
 	return NULL;;
+}
+
+CGameHexObj* CGameHexArray::getEntityClassAt(int classId, CHex& hex) {
+	auto [first, last] = getEntitiesAt(hex);
+	for (auto it = first; it != last; it++) {
+		if (it->second->isTigClass(classId))
+		return it->second;
+	}
+	return NULL;
 }
 
 

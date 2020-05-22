@@ -103,8 +103,8 @@ std::string CGameHexObj::getName() {
 }
 
 /** Called when the mouse pointer enters this entity's hex. */
-void CGameHexObj::onMouseOver() {
-	callTigStr(tig::onMouseOver);
+void CGameHexObj::onMouseOverNorm() {
+	callTig(tig::onMouseOver);
 
 }
 

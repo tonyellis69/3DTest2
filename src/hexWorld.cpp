@@ -17,6 +17,9 @@ CHexWorld::CHexWorld() {
 	mapMaker.entities = &entities;
 
 	mode = normalMode;
+
+	shieldPanel = new CShieldPanel();
+	CRobot::shield = shieldPanel;
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
@@ -58,9 +61,13 @@ void CHexWorld::start() {
 
 	hexRenderer.start();	
 
-	hexPosLbl = new CGUIlabel2(10, 10, 480, 30);
+	hexPosLbl = new CGUIlabel2(10, 10, 510, 30);
 	hexPosLbl->setTextColour(glm::vec4( 1.0f, 1.0f, 1.0f, 1.0f ));
 	mainApp->addGameWindow(hexPosLbl);
+
+
+	shieldPanel->setVisible(false);
+	mainApp->addGameWindow(shieldPanel);
 }
 
 
@@ -103,15 +110,8 @@ void CHexWorld::onMouseWheel(float delta) {
 	if (mainApp->hexKeyNowCallback(GLFW_KEY_LEFT_SHIFT)) {
 		hexRenderer.pitchCamera(delta);
 	}
-	else if (mainApp->hexKeyNowCallback(GLFW_KEY_LEFT_CONTROL))
+	else 
 		hexRenderer.dollyCamera(delta);
-	else {
-		CGameHexObj* entity = map.getEntityAt(hexCursor->hexPosition);
-		if (entity == NULL)
-			changeMode();
-		else
-			entity->onMouseWheel(delta);
-	}
 }
 
 void CHexWorld::onMouseMove(int x, int y, int key) {
@@ -177,6 +177,26 @@ bool CHexWorld::isStrategyMode() {
 	return mode == strategyMode;
 }
 
+bool CHexWorld::isActionPhase() {
+	return turnPhase == actionPhase;
+}
+
+/** User has triggered the set-defence UI event. */
+void CHexWorld::onCtrlLMouse() {
+	//are we over a robot?
+	//tell it to handle it
+	CRobot* robot = (CRobot*)map.getEntityClassAt(tig::CRobot2, hexCursor->hexPosition);
+	if (robot) {
+		robot->onDefenceClick();
+	}
+
+}
+
+/** User has released set-defence key. */
+void CHexWorld::onCtrlRelease() {
+	shieldPanel->onRelease();
+}
+
 
 /////////////public - private devide
 
@@ -233,9 +253,17 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 		delete win;
 	popupWindows.clear();
 
+	//TO DO: this is to close defence panels. Probably temporary/ 
+	for (auto entity : entities)
+		entity->onNewMouseHex(mouseHex);
+
+
 	auto [first, last] = map.getEntitiesAt(mouseHex);
-	for (auto it = first; it != last; it++)
-		it->second->onMouseOver();
+
+	if (mode == normalMode) {
+		for (auto it = first; it != last; it++) 
+			it->second->onMouseOverNorm();
+	}
 	
 	
 
@@ -247,6 +275,8 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	glm::vec3 worldSpace = cubeToWorldSpace(mouseHex);
 	coords << " worldPos " << worldSpace.x << " " << worldSpace.y << " " << worldSpace.z;
 	coords << " " << map.getHexCube(mouseHex).content;
+	//glm::vec2 screenPos = hexRenderer.worldPosToScreen(worldSpace);
+	//coords << " " << screenPos.x << " " << screenPos.y;
 	hexPosLbl->setText(coords.str());
 }
 
@@ -417,20 +447,18 @@ void CHexWorld::tempPopulateMap() {
 
 	blaster = new CHexItem();
 	blaster->setLineModel("test");
-	//blaster->setPosition(-7, -1, 8);
-	//blaster->setMap(&map);
 	map.add(blaster, CHex(-6, -1, 7));
 	blaster->setTigObj(vm->getObject(tig::blaster));
 	entities.push_back(blaster);
 
-	door = new CDoor();
-	door->setLineModel("door");
-	//door->setPosition(0,0,0);
-	//door->setMap(&map);
-	map.add(door, CHex(0, 0, 0));
-	door->setTigObj(vm->getObject(tig::CDoor));
-	door->setZheight(0.01f); //TO DO: sort this!!!!!
-	entities.push_back(door);
+	//door = new CDoor();
+	//door->setLineModel("door");
+	//map.add(door, CHex(0, 0, 0));
+	//door->setTigObj(vm->getObject(tig::CDoor));
+	//door->setZheight(0.01f); //TO DO: sort this!!!!!
+	//entities.push_back(door);
+
+
 }
 
 /** Handle an 'external function call' from Tig. */
@@ -552,10 +580,18 @@ void CHexWorld::changeMode() {
 	if (mode == normalMode) {
 		mode = strategyMode;
 		liveLog << "\nstrategy mode!";
+		for (auto win : popupWindows)
+			win->setVisible(false);
 	}
 	else {
 		mode = normalMode;
 		liveLog << "\nnormal mode!";
+		for (auto win : popupWindows)
+			win->setVisible(true);
+	}
+
+	for (auto entity : entities) {
+		entity->onModeChange(mode == strategyMode);
 	}
 }
 

@@ -6,9 +6,8 @@
 
 #include "tigConst.h"
 
-#include "defencePanels.h"
+#include "shieldPanel.h"
 
-enum TPlayerDefence {defNone,defBlock,defEvade,defAbsorb,defFeint};
 
 
 
@@ -20,11 +19,21 @@ public:
 	void chooseTurnAction();
 	bool update(float dT);
 	void receiveDamage(CGameHexObj& attacker, int damage);
+	void draw();
+	void onDefenceClick();
+	TPlayerDefence getDefence();
+	void cycleDefence();
+	TDefence getDefenceSettings();
+	void setDefenceSettings(TDefence& newSettings);
+
+	static inline IShield* shield;
 
 private:
 	void initialiseCurrentAction();
 	bool onLeftClick();
+	void onMouseOverNorm();
 	void onMouseWheel(float delta);
+	void onNewMouseHex(CHex& mouseHex);
 	bool beginMove();
 	void beginChasePlayer();
 	void meleeAttackPlayer();
@@ -32,11 +41,10 @@ private:
 
 	int tigCall(int memberId);
 
-	void spawnDefencePanel();
+	TPlayerDefence defence;
 
+	TDefence defenceSettings;
 
-	TPlayerDefence playerDefence;
-	CDefencePanel* defencePanel;
 };
 
 

@@ -33,6 +33,7 @@ public:
 	void add(CGameHexObj* entity, CHex& hex);
 	TRange getEntitiesAt(CHex& hex);
 	CGameHexObj* getEntityAt(CHex& hex);
+	CGameHexObj* getEntityClassAt(int classId, CHex& hex);
 	CGameHexObj* getBlockingEntityAt(CHex& hex);
 	CGameHexObj* getEntityNotSelf(CGameHexObj* self);
 	void updateBlocking();

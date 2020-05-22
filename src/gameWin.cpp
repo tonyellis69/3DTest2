@@ -10,3 +10,5 @@ CGameWin::CGameWin() {
 	setBorderOn(true);
 	setBorderColour(style::gameBorderColour);
 }
+
+

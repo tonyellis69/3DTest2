@@ -42,14 +42,17 @@ public:
 	virtual bool onLeftClick() { return false; };
 	virtual void takeItem(CGameHexObj& item) {};
 	virtual void droppedOnBy(CGameHexObj& item) {};
-	virtual void onMouseOver();
+	virtual void onMouseOverNorm();
 	virtual void onMouseWheel(float delta) {};
+	virtual void onNewMouseHex(CHex& mouseHex) {};
 
 	virtual void frameUpdate(float dT) {};
 	virtual unsigned int blocks() ;
 	bool blocks(THexDir direction);
 	int getCurrentAction();
 	int getNextAction();
+
+	virtual void onModeChange(bool isStrategy) {};
 
 	bool isRobot;
 

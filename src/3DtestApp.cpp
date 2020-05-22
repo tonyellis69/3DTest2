@@ -285,11 +285,14 @@ void C3DtestApp::onStart() {
 	popHeadFont.loadFromFile(dataPath + "hotBold20.fnt");
 
 
-	renderer.fontManager.createFromFile("mainHeader", dataPath + "merri16.fnt");
-	renderer.fontManager.createFromFile("main", dataPath + "merri16L.fnt");
+	renderer.fontManager.createFromFile("mainHeaderFnt", dataPath + "merri16.fnt");
+	renderer.fontManager.createFromFile("mainFnt", dataPath + "merri16L.fnt");
 
-	renderer.fontManager.createFromFile("smallHeader", dataPath + "merri14.fnt");
-	renderer.fontManager.createFromFile("small", dataPath + "merri14L.fnt");
+	//renderer.fontManager.createFromFile("smallHeaderFnt", dataPath + "merri14.fnt");
+	renderer.fontManager.createFromFile("smallHeaderFnt", dataPath + "merri12.fnt");
+	//renderer.fontManager.createFromFile("smallFnt", dataPath + "merri14L.fnt");
+
+	renderer.fontManager.createFromFile("smallFnt", dataPath + "merri12L.fnt");
 
 	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
 	//vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
@@ -743,12 +746,22 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 
 
 }
+
+void C3DtestApp::onKeyUp(int key, long mod) {
+	if (key == GLFW_KEY_LEFT_CONTROL)
+		hexWorld.onCtrlRelease();
+}
+
+
 void C3DtestApp::onMouseButton(int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
 		hexWorld.beginRightClickAction();
 	}
 	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-		hexWorld.beginLeftClickAction();
+		if (mods == GLFW_MOD_CONTROL)
+			hexWorld.onCtrlLMouse();
+		else
+			hexWorld.beginLeftClickAction();
 	}
 };
 
@@ -1614,6 +1627,8 @@ void C3DtestApp::initHexWorld() {
 
 	hexWorld.addMesh("door", dataPath + "models\\door.dae");
 
+	hexWorld.addMesh("solidHex", dataPath + "models\\solidHex.dae");
+
 
 	//... more models
 
@@ -1629,16 +1644,21 @@ glm::i32vec2 C3DtestApp::getMousePos() {
 
 
 /** Trap mousewheel events for our own use. */
-void C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
+bool C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	int x, y;
 	win.getMousePos(x, y);
 	int delta = int(yoffset);
 	int keyState = 0; //can get key state if ever needed
 
-	CBaseApp::OnMouseWheelMsg(xoffset, yoffset);
+	bool handled = CBaseApp::OnMouseWheelMsg(xoffset, yoffset);
 
-	if (appMode == hexMode)
-		hexWorld.onMouseWheel(yoffset);
+	if (!handled) {
+		if (appMode == hexMode) {
+			hexWorld.onMouseWheel(yoffset);
+			handled = true; //cheeky
+		}
+	}
+	return handled;
 }
 
 

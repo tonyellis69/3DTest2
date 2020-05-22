@@ -47,7 +47,7 @@ class C3DtestApp : public  CBaseApp , public ITerrainAppCallback,
 	public IMainApp {
 public:
 	C3DtestApp();
-	void OnMouseWheelMsg(float xoffset, float yoffset);
+	bool OnMouseWheelMsg(float xoffset, float yoffset);
 	
 	~C3DtestApp();
 	void onStart();
@@ -55,6 +55,7 @@ public:
 	void keyCheck();
 	void mouseMove(int x, int y, int key);
 	void onKeyDown( int key, long mod);
+	void onKeyUp(int key, long mod);
 	void onMouseButton(int button, int action, int mods);
 	//void onResize(int width, int height);
 	void draw();

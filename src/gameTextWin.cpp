@@ -20,6 +20,14 @@ void CGameTextWin::addText(const std::string& text) {
 	richText->appendMarkedUpText(text);
 }
 
+void CGameTextWin::setStyle(const std::string& styleName) {
+	richText->setTextStyle(styleName);
+}
+
+void CGameTextWin::clearText() {
+	richText->clear();
+}
+
 void CGameTextWin::resizeToFit() {
 	richText->resizeToFit();
 
@@ -47,4 +55,9 @@ void CGameTextWin::positionAtMousePointer() {
 		pos.x -= drawBox.size.x;
 
 	setLocalPos(pos.x, pos.y);
+}
+
+void CGameTextWin::positionOffset() {
+	hFormat = hRight;
+	vFormat = vTop;
 }

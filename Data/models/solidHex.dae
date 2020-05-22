@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <asset>
+    <contributor>
+      <author>Blender User</author>
+      <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
+    </contributor>
+    <created>2020-05-19T15:57:11</created>
+    <modified>2020-05-19T15:57:11</modified>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_images/>
+  <library_geometries>
+    <geometry id="solid-mesh" name="solid">
+      <mesh>
+        <source id="solid-mesh-positions">
+          <float_array id="solid-mesh-positions-array" count="18">0 1 0 -0.8660255 0.5 0 -0.8660254 -0.5000001 0 0 -1 0 0.8660255 -0.4999999 0 0.8660255 0.4999999 0</float_array>
+          <technique_common>
+            <accessor source="#solid-mesh-positions-array" count="6" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="solid-mesh-normals">
+          <float_array id="solid-mesh-normals-array" count="3">0 0 1</float_array>
+          <technique_common>
+            <accessor source="#solid-mesh-normals-array" count="1" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="solid-mesh-vertices">
+          <input semantic="POSITION" source="#solid-mesh-positions"/>
+        </vertices>
+        <triangles count="4">
+          <input semantic="VERTEX" source="#solid-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#solid-mesh-normals" offset="1"/>
+          <p>5 0 0 0 2 0 0 0 1 0 2 0 2 0 3 0 4 0 4 0 5 0 2 0</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_controllers/>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Hex" name="Hex" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#solid-mesh" name="Hex"/>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

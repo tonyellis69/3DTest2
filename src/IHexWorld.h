@@ -25,4 +25,5 @@ public:
 	virtual THexList* getCursorPath() = 0;
 	virtual bool isStrategyMode() = 0;
 	virtual void addWindow(CGameWin* win) = 0;
+	virtual bool isActionPhase() = 0;
 };

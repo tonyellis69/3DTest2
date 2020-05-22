@@ -106,6 +106,9 @@ void CPlayerObject::receiveDamage(CGameHexObj& attacker, int damage) {
 }
 
 void CPlayerObject::draw() {
+
+	
+
 	//draw self
 	CHexObject::draw();
 

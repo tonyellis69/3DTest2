@@ -7,12 +7,11 @@
 #include "gameHexArray.h"
 
 TPlayerDefence& operator++(TPlayerDefence& def, int) {
-	//return def = (def == defFeint) ? defNone : static_cast<TPlayerDefence>(static_cast<int>(def) + 1);
 	return def = (def == defFeint) ? defNone : TPlayerDefence(def + 1);
 }
 
 CRobot::CRobot() {
-	playerDefence = defNone;
+	defence = defNone;
 }
 
 /** Choose an action for the upcoming turn. */
@@ -77,13 +76,46 @@ void CRobot::receiveDamage(CGameHexObj& attacker, int damage) {
 	callTig(tig::onReceiveDamage, attacker, damage);
 }
 
+
+
+void CRobot::draw() {
+	//TO DO: !!!!!!!!!!!!!!!!!!!!!!
+	//temp kludge, final approach should be more elegant
+	/*if (defencePanel) {
+		if (!hexWorld->isActionPhase())
+			hexRendr->highlightHex(hexPosition);
+	}*/
+	CHexObject::draw();
+}
+
+/** Handle user using defence click on this robot. */
+void CRobot::onDefenceClick() {
+	//tell the shield we've been clicked on
+	shield->robotClick(this);
+}
+
+TPlayerDefence CRobot::getDefence() {
+	return defence;
+}
+
+void CRobot::cycleDefence() {
+	defence++;
+}
+
+TDefence CRobot::getDefenceSettings() {
+	return defenceSettings;
+}
+
+void CRobot::setDefenceSettings(TDefence& newSettings) {
+	defenceSettings = newSettings;
+}
+
 void CRobot::initialiseCurrentAction() {
 	switch (currentAction.actionId) {
 		case tig::actChasePlayer : beginChasePlayer(); break;
 		case tig::actAttackPlayer : meleeAttackPlayer(); break;
 		case tig::actShootPlayer : shootPlayer(); break;
 		case tig::actTurnToTarget : beginTurnToTarget(hexWorld->getPlayerPosition()); break;
-		//case tig::actTurnToTargetDest : beginTurnToTarget(hexWorld->getPlayerDestination()); break;
 		case tig::actTurnToTargetDest: beginTurnToTarget(hexWorld->getPlayerPosition()); break;
 	}
 }
@@ -93,12 +125,16 @@ bool CRobot::onLeftClick() {
 	return false;
 }
 
-void CRobot::onMouseWheel(float delta) {
-	if (hexWorld->isStrategyMode()) {
-		playerDefence++;
-		spawnDefencePanel();
+void CRobot::onMouseOverNorm() {
+	CGameHexObj::onMouseOverNorm();
+}
 
-	}
+void CRobot::onMouseWheel(float delta) {
+
+}
+
+void CRobot::onNewMouseHex(CHex& mouseHex) {
+
 }
 
 bool CRobot::beginMove() {
@@ -137,16 +173,6 @@ int CRobot::tigCall(int memberId) {
 
 }
 
-/** Create a panel for the currently selected player defence against this robot.
-	This will delete any current panel. */
-void CRobot::spawnDefencePanel() {
-	defencePanel = new CDefencePanel();
 
-	defencePanel->addText("New defence panel " + std::to_string(defencePanel->uniqueID));
 
-	hexWorld->addWindow(defencePanel);
-
-	defencePanel->resizeToFit();
-	defencePanel->positionAtMousePointer();
-}
 

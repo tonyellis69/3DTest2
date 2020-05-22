@@ -29,6 +29,8 @@
 #include "UI/GUIlabel2.h"
 
 #include "door.h" //hopefully *temporary* 
+
+#include "shieldPanel.h"
   
 enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
 
@@ -56,6 +58,10 @@ public:
 	void setAspectRatio(glm::vec2& ratio);
 	void update(float dt);
 	bool isStrategyMode();
+	bool isActionPhase();
+
+	void onCtrlLMouse();
+	void onCtrlRelease();
 
 private:
 	THexList calcPath(CHex& start, CHex& end);
@@ -123,6 +129,8 @@ private:
 	CHexItem* desk;
 	CDoor* door;
 
+	CGameHexObj* tempSolid;
+
 
 	TEntities entities; ///<Live objects in the hex world.
 	//TEntities playerItems; ///<Items temporarily taken out of hex world by player
@@ -150,6 +158,8 @@ private:
 	THexList cursorPath;
 
 	TScreenMode mode;
+
+	CShieldPanel* shieldPanel;
 };
 
 

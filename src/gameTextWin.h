@@ -10,10 +10,13 @@ class CGameTextWin : public CGameWin {
 public:
 	CGameTextWin();
 	void addText(const std::string& text);
+	void setStyle(const std::string& styleName);
+	void clearText();
 	void resizeToFit();
 	void message(CGUIbase* sender, CMessage& msg);
 
 	void positionAtMousePointer();
+	void positionOffset();
 
 	inline static Ivm* pVM; ///<Virtual machine to send hot text calls to.
 
