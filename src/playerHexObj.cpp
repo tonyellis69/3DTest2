@@ -11,7 +11,16 @@
 #include "IGameHexArray.h"
 
 CPlayerObject::CPlayerObject() {
-	//rotation = 45;
+	fireable = 0;
+
+	tmpShield = new CShield("Shield");
+	tmpWeapon = new CWeapon("Gun");
+	fireables.push_back(tmpShield);
+	fireables.push_back(tmpWeapon);
+
+
+	psu = new CPowerSupply();
+	CFireable::psu = psu;
 }
 
 /** Push the given action onto the player object's stack, with any supporting actions. */
@@ -82,22 +91,18 @@ void CPlayerObject::beginLunge(CGameHexObj& target) {
 void CPlayerObject::hitTarget() {
 	int weaponDamage = callTigInt(tig::getWeaponDamage);
 	attackTarget->receiveDamage(*this, weaponDamage);
+
+	liveLog << "\nLunged " << std::to_string(tmpWeapon->powerId);
 }
 
 
 void CPlayerObject::receiveDamage(CGameHexObj& attacker, int damage) {
 	THexDir attackDir = neighbourDirection(hexPosition, attacker.hexPosition);
 
-	if (tigMemberInt(tig::equippedShield) == 0) {
-		callTig(tig::onReceiveDamage, attacker, damage);
-		return;
-	}
-	int shieldNo = (attackDir - facing) % 6;
-	if (shieldNo < 0)
-		shieldNo += 6;
 
-	if (shields[shieldNo] > 0) {
-		liveLog << "\nYoue shield blocks the blow!";
+
+	if (tmpShield->findDefendee(&attacker)) {
+		liveLog << "\nShield blocks attack.";
 		return;
 	}
 
@@ -169,6 +174,48 @@ void CPlayerObject::fireShot(CHex& target) {
 	CBolt* boltTmp = (CBolt*)hexWorld->createBolt();
 	boltTmp->setPosition(hexPosition);
 	boltTmp->fireAt(endHex);
+
+	liveLog << "\nFired " << std::to_string(tmpWeapon->powerId);
+}
+
+void CPlayerObject::cycleFireable(float delta) {
+	fireable += int(delta);
+	fireable %= fireables.size();
+}
+
+/** Fire current fireable at target. */
+bool CPlayerObject::fireAt(CGameHexObj* target) {
+	return fireables[fireable]->fireAt(target);
+}
+
+void CPlayerObject::onTurnBegin() {
+	liveLog << "\nPlayer turn begin";
+	psu->topUp();
+	if (tmpWeapon->autoPower == autoCurrent && tmpWeapon->powerId == 0) {
+		tmpWeapon->powerId = 0; //was psu->reserveNextPower();
+		//liveLog << "\ngun takes " << std::to_string(psu->getPowerValue(tmpWeapon->powerId));
+	}
+
+	//ditto for shield
+	for (auto& defence : tmpShield->defences) {
+		if (defence.second.autoPower == autoCurrent) {
+			defence.second.powerId = 0; //was psu->reserveNextPower();
+			//defence.second.power = psu->getPowerValue(defence.second.powerId);
+			//liveLog << "\nshield takes " << std::to_string(psu->getPowerValue(defence.second.powerId));
+		}
+
+	}
+
+	psu->updateDisplay();
+}
+
+/**Tidy up player state ready for the next round. */
+void CPlayerObject::onTurnEnd() {
+	tmpWeapon->onTurnEnd();
+	tmpShield->onTurnEnd();
+
+	psu->onTurnEnd();
+	psu->updateDisplay();
 }
 
 void CPlayerObject::initialiseCurrentAction() {

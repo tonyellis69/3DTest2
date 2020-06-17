@@ -61,7 +61,7 @@ void C3DtestApp::onStart() {
 	cube2.setPos(vec3(3, 300, -3));
 	Engine.modelDrawList.push_back(&cube2);
 
-	cylinder.loadMesh(shape::cylinderMesh(1,2,30));
+	cylinder.loadMesh(shape::cylinderMesh(1, 2, 30));
 	cylinder.setPos(vec3(0, 300, -4));
 	Engine.modelDrawList.push_back(&cylinder);
 
@@ -86,8 +86,8 @@ void C3DtestApp::onStart() {
 	mouseLook = false;
 
 	renderer.defaultLightPos = vec3(4000, 4000, 4000);
-	renderer.defaultLightDir = vec3(0,0,-1);
-		
+	renderer.defaultLightDir = vec3(0, 0, -1);
+
 	/*CTerrainPhysObj* terrainPhysObj = new CTerrainPhysObj();
 	terrainPhysObj->attachModel(&terrain);
 	terrainPhysObj->setCollides(false);
@@ -96,23 +96,23 @@ void C3DtestApp::onStart() {
 
 
 
-	
-	
-	
 
-	
-	
+
+
+
+
+
 	createRegion();
 
-	
-	
+
+
 	CBaseBuf* terrainBuf = &terrain.multiBuf; //TO DO: ugh, make a setter
 	//((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
-	
+
 	terrainBuf->setSize(175000000);
-	
+
 	terrainBuf->storeLayout(3, 3, 0, 0);
-	
+
 	tempFeedbackBuf = Engine.createBuffer();
 	tempFeedbackBuf->setSize(1000000);
 
@@ -131,14 +131,14 @@ void C3DtestApp::onStart() {
 	terrain.initChunkShell();
 	terrain.initChunkGrid(cubesPerChunkEdge);
 
-	
+
 
 	terrain.initHeightFinder();
 	//terrain.createTerrain(vec2(0.05, 0.05)); //seem to get striations above 999
 	terrain.createTerrain(playerStartOffset); //seem to get striations above 999
 
 	initHeightmapGUI();
-	
+
 
 	double t = Engine.Time.milliseconds();
 	SCpassed = SCrejected = 0;
@@ -147,7 +147,7 @@ void C3DtestApp::onStart() {
 
 
 	////////////NEW TERRAIN STUFF
-	
+
 	CBaseBuf* terrainBuf2 = &multiBuf; //TO DO: ugh, make a setter
 //((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
 
@@ -181,7 +181,7 @@ void C3DtestApp::onStart() {
 
 
 	t = Engine.Time.milliseconds() - t;
-	
+
 	skyDome = Engine.createSkyDome();
 
 	oldTime = Engine.Time.seconds();
@@ -190,7 +190,7 @@ void C3DtestApp::onStart() {
 	supWire = false;
 
 	//initialise player object
-	playerObj.model.loadMesh(shape::cubeMesh()); 
+	playerObj.model.loadMesh(shape::cubeMesh());
 	//= Engine.createCube(vec3(0), vec3(playerObject.width * 1, playerObject.height, playerObject.width * 1));
 	playerObj.model.scale(vec3(playerObj.width * 1, playerObj.height, playerObj.width * 1));
 	playerObj.setPos(vec3(0, 237, 0));
@@ -203,9 +203,9 @@ void C3DtestApp::onStart() {
 	playerPhys->AABB.setSize(1, 1);
 	playerPhys->asleep = true;
 
-	
-	
-	
+
+
+
 	CFractalTree fractalTree;
 	/*
 	//standard tree:
@@ -252,7 +252,7 @@ void C3DtestApp::onStart() {
 	terrain.initTreeFinding();
 	terrain.initGrassFinding();
 
-	
+
 
 	//GUIroot.borderWidth = 10;
 	//popFont.loadFromFile(dataPath + "Aeileron18.fnt");
@@ -263,7 +263,7 @@ void C3DtestApp::onStart() {
 
 	//mainFont.loadFromFile(dataPath + "hotMed26.fnt");
 	//mainFontBold.loadFromFile(dataPath + "hotMed26bold.fnt");
-	
+
 	//mainFont.loadFromFile(dataPath + "seg22sl.fnt"); ///curreny
 	////////mainFont.loadFromFile(dataPath + "robL24.fnt"); //segl24 uneven, better at 26, segsl24 doesn't have this but is a little heavy
 	//opl a little scratchy until you get to 24
@@ -301,7 +301,7 @@ void C3DtestApp::onStart() {
 
 	worldUI.setGameApp(this);
 	worldUI.setVM(&vm);
-	
+
 	//worldUI.setTextWindow(textWindow);
 	//worldUI.setInventoryWindow(invWindow);
 	//worldUI.setPopupTextWindow(popupPanel);
@@ -323,8 +323,8 @@ void C3DtestApp::onStart() {
 
 	if (appMode == hexMode)
 		initHexWorld();
-	
-	
+
+
 	worldUI.start();
 
 	//texCompositor.init(this);
@@ -366,21 +366,31 @@ void C3DtestApp::onStart() {
 
 	}
 
-	std::vector<glm::vec3> testVec = { glm::vec3(1), glm::vec3(2), glm::vec3(3) };
-	std::vector<unsigned short> testIndex = { 1,2,3,4 };
 
-	CBuf2 buf2;
-	buf2.storeVerts(testVec,testIndex,3,2);
 
-	//CBuf2 newBuf = buf2;
-	buf2.setSize(200);
-	int b = 9;
 
-	
+	//std::vector<glm::vec3> testVec = { glm::vec3(1), glm::vec3(2), glm::vec3(3) };
+	//std::vector<unsigned short> testIndex = { 1,2,3,4 };
+
+	//CBuf2 buf2;
+	//buf2.storeVerts(testVec,testIndex,3,2);
+
+	////CBuf2 newBuf = buf2;
+	//buf2.setSize(200);
+	//int b = 9;
+
+
+
+	terrain2.setMass(-1);
+	physEng.addObj(&terrain2);
+
+
+	messageBus.setHandler<CPopupText>(this, &C3DtestApp::onPopupText); 
+
+
+
 	return;
 }
-
-
 
 
 
@@ -453,14 +463,14 @@ void C3DtestApp::keyCheck() {
 				currentCamera->yaw(float(-yawAng * dT));
 			}
 
-			float rot = dT * 200.0;
+			float rot = float(dT) * 200.0f;
 			if (keyNow('P')) {
 				cube.rotate(rot, glm::vec3(1, 0, 0));
 			}
 			if (keyNow('Y')) {
 				cube.rotate(rot, glm::vec3(0, 1, 0));
 			}
-	
+
 
 
 		}
@@ -530,7 +540,7 @@ void C3DtestApp::keyCheck() {
 
 		if (keyNow('8')) {
 			advance(north);
-	
+
 			//	EatKeys();
 		}
 		if (keyNow('2')) {
@@ -608,14 +618,14 @@ void C3DtestApp::keyCheck() {
 
 
 	}
-	
+
 
 }
 
 
 
 /** Triggered *when* a key is pressed, not while it is held down. This is not 'whileKeyDown'. */
-void C3DtestApp::onKeyDown( int key, long mod) {
+void C3DtestApp::onKeyDown(int key, long mod) {
 	if (appMode == hexMode) {
 
 		if (key == GLFW_KEY_KP_6) {
@@ -637,6 +647,12 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 			hexWorld.setPlayerShield(hexNE);
 		}
 
+		if (key == 'C')
+			hexWorld.onCycleAuto();
+		if (key == 'L')
+			hexWorld.onLoadPower();
+		if (key == 'X')
+			hexWorld.onCancelDefence();
 
 		hexWorld.onKeyDown(key, mod);
 		return;
@@ -667,12 +683,12 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 	}
 
 
-	
+
 
 	if (key == '1') {
 		fpsOn = !fpsOn;
 		if (fpsOn) {
-			
+
 			renderer.setCurrentCamera(&playerObj.povCam);
 			terrain2.setViewpoint(playerObj.getPos());
 			playerPhys->asleep = false;
@@ -724,7 +740,7 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 
 		//EatKeys();
 	}
-	
+
 
 	//if (keyNow('U') )
 	if (key == 'U') {
@@ -741,7 +757,7 @@ void C3DtestApp::onKeyDown( int key, long mod) {
 
 	if (key == 'J' && appMode == textMode) {
 		worldUI.mainTextPanel->richText->lineBuffer2.spriteBuffer.debug();
-	
+
 	}
 
 
@@ -785,8 +801,8 @@ void C3DtestApp::draw() {
 		hexWorld.draw();
 		return;
 	}
-	
-	if (appMode != terrainMode && appMode != physicsMode ) {
+
+	if (appMode != terrainMode && appMode != physicsMode) {
 		Engine.Renderer.setBackColour((rgba&)style::uialmostBlack);
 		Engine.Renderer.setBackColour((rgba&)white);
 		Engine.Renderer.clearFrame();
@@ -813,7 +829,7 @@ void C3DtestApp::draw() {
 	//draw grass
 	//TO DO: temporarily commented out while I remove Soil
 	Engine.Renderer.setShader(terrain.grassShader);
-//	Engine.Renderer.attachTexture(0, *terrain.grassTex);
+	//	Engine.Renderer.attachTexture(0, *terrain.grassTex);
 	terrain.grassShader->setTextureUnit(0, terrain.hGrassTexure);
 	terrain.grassShader->setShaderValue(terrain.hGrassTime, (float)Time);
 	terrain.grassShader->setShaderValue(terrain.hGrassMVP, mvp);
@@ -884,13 +900,14 @@ void C3DtestApp::draw() {
 }
 
 void C3DtestApp::terrain2TestDraw() {
+
 	//return;
 	//draw shell wireframes
 	mat4 chunkM;
 	float boxScale = 0.99f;
 
-	for (int shell = 0; shell <2; shell++) {
-	//int shell = 0;
+	for (int shell = 0; shell < 2; shell++) {
+		//int shell = 0;
 		vec3 shellWorldspacePos = terrain2.shells[shell].worldSpacePos;
 		renderer.setShader(wire2Shader);
 		float shellSize = terrain2.getShellSize(shell);
@@ -909,7 +926,7 @@ void C3DtestApp::terrain2TestDraw() {
 		float chunkSize = terrain2.shells[shell].chunkSize * boxScale;
 		float actualChunkSize = terrain2.shells[shell].chunkSize;
 		glm::mat4 chunkShape = glm::scale(glm::mat4(1), glm::vec3(chunkSize));
-		
+
 		//create world displacement matrix for each SC:
 		//find the centre point of the SC using x,y,z index * SCsize
 		//make it relative to the shell's origin
@@ -931,7 +948,7 @@ void C3DtestApp::terrain2TestDraw() {
 			wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 			wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z)->colour);
 			if (shell == 0 || shell == 1)
-				 renderer.drawBuf(wireCube, drawLinesStrip);
+				renderer.drawBuf(wireCube, drawLinesStrip);
 
 			//draw chunks
 			//if (shell != 3 && shell !=2 )
@@ -951,8 +968,8 @@ void C3DtestApp::terrain2TestDraw() {
 			}
 
 		}
-		
-	
+
+
 
 		/*
 
@@ -1053,7 +1070,7 @@ void C3DtestApp::advance(Tdirection direction) {
 	}
 
 	//Move terrain in given direction
-	vec3 movement = dir *  float(1.0f);  //was 10
+	vec3 movement = dir * float(1.0f);  //was 10
 	//terrain->translate(movement);
 	//vec3 pos = terrain->getPos();
 	//terrain->chunkOrigin[3] += vec4(movement, 0);
@@ -1087,16 +1104,16 @@ void C3DtestApp::advance(Tdirection direction) {
 		terrain.chunkOriginInt += dir;
 
 		terrain.scrollTriggerPoint = pos;
-		vec3 translation =  vec3(terrain.chunkOriginInt *  cubesPerChunkEdge) * cubeSize ;
+		vec3 translation = vec3(terrain.chunkOriginInt * cubesPerChunkEdge) * cubeSize;
 		terrain.chunkOrigin[3] = vec4(translation, 1);
-	
-		terrain.advance(direction); 
+
+		terrain.advance(direction);
 
 		onTerrainAdvance(direction);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
-	vec3 playerMovement = dirToVec(direction) * 1.0f;  
+	vec3 playerMovement = dirToVec(direction) * 1.0f;
 
 	terrain2.onPlayerMove(playerMovement);
 
@@ -1118,17 +1135,17 @@ void C3DtestApp::Update() {
 
 	//terrain.update(); //commented out to speed up tests on terrain2
 
-	terrain2.update(dT);
+	terrain2.update(float(dT));
 
 
 
 	if (appMode == hexMode)
-		hexWorld.update(dT);
+		hexWorld.update(float(dT));
 
 	vec3 pos = Engine.getCurrentCamera()->getPos();
 
 
-	
+
 	if (fpsOn) {
 		//return;
 	//	if (terrain->toSkin.size() != 0)
@@ -1166,7 +1183,7 @@ void C3DtestApp::Update() {
 			posMod.y = fmod(pos.y, chunkDist);  //was pos.y
 			posMod.z = fmod(pos.z, chunkDist);
 			//posMod = extent of player position beyond centrol chunk
-			
+
 			//WAS
 			//fpsCam.setPos(posMod); //secretly reposition viewpoint prior to scrolling terrain
 			//playerObject.setPos(posMod);
@@ -1174,9 +1191,9 @@ void C3DtestApp::Update() {
 			///player now repositioned within central chunk
 			///problem triggered by the above line
 			;
-			
 
-			vec3 translation = vec3(terrain.chunkOriginInt *  cubesPerChunkEdge) * cubeSize;
+
+			vec3 translation = vec3(terrain.chunkOriginInt * cubesPerChunkEdge) * cubeSize;
 			//work out direction to scroll-in new terrain from
 			if (outsideChunkBoundary.x) {
 				if (pos.x > 0)
@@ -1196,8 +1213,8 @@ void C3DtestApp::Update() {
 					direction = down;
 				terrain.chunkOriginInt += dirToVec(flipDir(direction));
 				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt), 1);
-			//	terrain.advance(direction);
-				//return;
+				//	terrain.advance(direction);
+					//return;
 			}
 
 
@@ -1207,8 +1224,8 @@ void C3DtestApp::Update() {
 				else
 					direction = north;
 				terrain.chunkOriginInt += dirToVec(flipDir(direction));
-				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt) , 1);
-			//	terrain.advance(direction);
+				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt), 1);
+				//	terrain.advance(direction);
 			}
 
 			onTerrainAdvance(direction);
@@ -1229,7 +1246,7 @@ void C3DtestApp::GUImsg(int ctrlId, TGUImessage& msg) {
 /** Create a model for drawing superChunk positions in wireframe. */
 void C3DtestApp::initWireSCs() {
 	wireSCs = Engine.createModel();
-	
+
 	wireSCs->drawMode = GL_POINTS;
 	wireSCs->getMaterial()->setShader(terrain.wireBoxShader);
 
@@ -1238,11 +1255,11 @@ void C3DtestApp::initWireSCs() {
 	//create a cube to do the same thing for terrain2
 	std::vector<glm::vec3> verts;
 	shape::cubePoints(&verts, NULL);
-	unsigned int index[] = { 0,1,2,3,0,4,5,6,7,4,7,3,2,6,5,1};
+	unsigned int index[] = { 0,1,2,3,0,4,5,6,7,4,7,3,2,6,5,1 };
 	wireCube.storeVertexes(verts.data(), 12 * verts.size(), verts.size());
 	wireCube.storeIndex(index, 16);
 	wireCube.storeLayout(3, 0, 0, 0);
-	
+
 	wire2Shader = renderer.createShader("wire2");
 	hWireMVP = wire2Shader->getUniformHandle("mvpMatrix");
 	hWireColour = wire2Shader->getUniformHandle("colour");
@@ -1252,8 +1269,8 @@ void C3DtestApp::initWireSCs() {
 /**	Called when terrain advances - ie, moves. */
 void C3DtestApp::onTerrainAdvance(Tdirection direction) {
 	if (physCube) {
-	//	physCube->pModel->translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
-		//physCube->positionHint += -dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize;
+		//	physCube->pModel->translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
+			//physCube->positionHint += -dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize;
 	}
 	//playerObject.translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
 //	building.translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
@@ -1266,7 +1283,7 @@ void C3DtestApp::initHeightmapGUI() {
 	GUIroot.Add(heightmapImage);
 	heightmapTex = Engine.Renderer.textureManager.createEmptyTexture(128, 221);// 500, 500);
 	heightmapImage->setTexture(*heightmapTex);
-	
+
 	//heightmapImage->visible = false;
 	heightmapImage->setVisible(false);
 
@@ -1275,7 +1292,7 @@ void C3DtestApp::initHeightmapGUI() {
 	Engine.Renderer.setShader(terrain2texShader);
 	hTer2TexNwSampleCorner = terrain2texShader->getUniformHandle("nwSampleCorner");
 	hTer2TexPixelScale = terrain2texShader->getUniformHandle("pixelScale");
-	
+
 
 }
 
@@ -1286,7 +1303,7 @@ void C3DtestApp::updateHeightmapImage() {
 	//heightmapImage->setTexture((CBaseTexture&)mainFont.texture);
 	heightmapImage->setTexture((CBaseTexture&)terrain.tmpTerrainMap);
 
-	
+
 
 	return;
 
@@ -1305,7 +1322,7 @@ void C3DtestApp::updateHeightmapImage() {
 
 	Engine.Renderer.renderToTextureQuad(*heightmapTex);
 
-	
+
 }
 
 
@@ -1332,13 +1349,13 @@ void C3DtestApp::vmUpdate() {
 	if (vm.getStatus() == vmExecuting) {
 		vm.execute();
 	}
-	
+
 }
 
 
 
 
-void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
+void C3DtestApp::HandleUImsg(CGUIbase& control, CMessage& Message) {
 
 
 	if (control.parent->getUniqueID() == worldUI.invPanelID && Message.Msg == uiMsgHotTextClick) {
@@ -1350,7 +1367,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 	//popup menu text click
 	if (control.parent->id == popMenuId && Message.Msg == uiMsgHotTextClick) {
 		glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
-		worldUI.menuClick(Message.value, mousePos, (CGUIrichTextPanel *)control.parent);
+		worldUI.menuClick(Message.value, mousePos, (CGUIrichTextPanel*)control.parent);
 		return;
 	}
 
@@ -1365,7 +1382,7 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 		return;
 	}
 
-	
+
 	if (control.parent->id == popMenuId && Message.Msg == uiMouseWheel) {
 		worldUI.mouseWheelHotText(Message.value, Message.value2);
 		return;
@@ -1376,10 +1393,10 @@ void C3DtestApp::HandleUImsg(CGUIbase & control, CMessage & Message) {
 }
 
 /** Returns true if terrain *does not* intersect the given cube - ie, SC is empty. */
-bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & nwSamplePos, float SCsampleStep) {
+bool C3DtestApp::scIntersectionCheckCallback(glm::vec3& nwSamplePos, float SCsampleStep) {
 	Engine.Renderer.setShader(terrain.chunkCheckShader);
 	//find nwcorner in sample space
-	
+
 
 	//float LoDscale = (SC.sampleStep) / (cubesPerChunkEdge);
 	float chunkShellVertCount = (float)terrain2.numChunkCubes;
@@ -1389,7 +1406,7 @@ bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & nwSamplePos, float SCsa
 	//TO DO: create a separate shell for SC checks, to avoid this ambiguity
 
 	terrain.chunkCheckShader->setShaderValue(terrain.hNWsamplePos, nwSamplePos);
-	terrain.chunkCheckShader->setShaderValue(terrain.hLoDscale, SCsampleStep/ chunkShellVertCount);
+	terrain.chunkCheckShader->setShaderValue(terrain.hLoDscale, SCsampleStep / chunkShellVertCount);
 
 	Engine.Renderer.attachTexture(0, terrain.tmpTerrainMap.handle);
 	terrain.chunkCheckShader->setShaderValue(terrain.hTerrainTexture, 0);
@@ -1409,11 +1426,11 @@ bool C3DtestApp::scIntersectionCheckCallback(glm::vec3 & nwSamplePos, float SCsa
 //TO DO: these two methods are identical aside from returning true/false. Consolidate!
 
 /** Returns true if terrain *intersects* the given chunk volume .*/
-bool C3DtestApp::chunkCheckCallback(glm::vec3 & chunkSamplePos, float chunkSampleSize) {
+bool C3DtestApp::chunkCheckCallback(glm::vec3& chunkSamplePos, float chunkSampleSize) {
 	Engine.Renderer.setShader(terrain.chunkCheckShader);
-	
+
 	float chunkShellVertCount = (float)terrain2.numChunkCubes; ///<Gives number of divisions in the shell
-	
+
 	terrain.chunkCheckShader->setShaderValue(terrain.hNWsamplePos, chunkSamplePos);
 	terrain.chunkCheckShader->setShaderValue(terrain.hLoDscale, chunkSampleSize / chunkShellVertCount);
 
@@ -1430,7 +1447,7 @@ bool C3DtestApp::chunkCheckCallback(glm::vec3 & chunkSamplePos, float chunkSampl
 
 	if (primitives == 0 || primitives == shellTotalVerts)
 		return false;
-	
+
 	return true;
 }
 
@@ -1456,7 +1473,7 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 	float samplesPerCube = cubeSize / terrain.worldUnitsPerSampleUnit;
 	terrain.chunkShader->setShaderValue(terrain.hSamplesPerCube, samplesPerCube);
 
-	terrain.chunkShader->setShaderValue(terrain.hChunkTriTable, *terrain.triTableTex); 
+	terrain.chunkShader->setShaderValue(terrain.hChunkTriTable, *terrain.triTableTex);
 	terrain.chunkShader->setShaderValue(terrain.hChunkTerrainPos, chunk.terrainPos);
 
 	Engine.Renderer.attachTexture(0, terrain.tmpTerrainMap.handle);
@@ -1469,7 +1486,7 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 
 	CBaseBuf* terrainBuf = &multiBuf;
 	CBuf* srcBuf = &((CRenderModel*)terrain.shaderChunkGrid)->buf;
-	unsigned int primitives = Engine.Renderer.getGeometryFeedback(*srcBuf, drawLinesAdjacency,tempFeedbackBuf2, drawTris);
+	unsigned int primitives = Engine.Renderer.getGeometryFeedback(*srcBuf, drawLinesAdjacency, tempFeedbackBuf2, drawTris);
 
 
 	if (primitives) {
@@ -1483,7 +1500,7 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 		TDrawDetails* details = &chunk.drawDetails;
 		//terrainBuf->getElementData(chunk.bufId, details->vertStart, details->vertCount, details->childBufNo);
 		//details->colour = chunk.colour;
-		
+
 		//terrain2 stuff
 		details = &chunk.drawDetails2;
 
@@ -1492,10 +1509,10 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 		details->colour = chunk.colour;;
 		details->vertCount = outSize / sizeof(vBuf::T3DnormVert);
 		chunk.bufId = addr;
-	//	if (chunk.LoD == 1) {
-	//		findTreePoints(chunk);
-	//		//	findGrassPoints(chunk);
-	//	}
+		//	if (chunk.LoD == 1) {
+		//		findTreePoints(chunk);
+		//		//	findGrassPoints(chunk);
+		//	}
 	}
 	else
 		chunk.bufId = NULL;
@@ -1511,7 +1528,7 @@ void C3DtestApp::deleteChunkMesh(Chunk2& chunk) {
 
 	//if (chunk.bufId != 0) //TO DO: temp bug tracking! Should never happen!
 		//terrainBuf->deleteBlock(chunk.bufId);
-		terrain2.freeChunkMesh(chunk.bufId);
+	terrain2.freeChunkMesh(chunk.bufId);
 	chunk.bufId = 0;
 }
 
@@ -1531,38 +1548,38 @@ void C3DtestApp::drawVisibleChunks() {
 	Engine.Renderer.phongShader->setShaderValue(Engine.Renderer.hLightAmbient, glm::vec4(0.2f, 0.2f, 0.2f, 1));
 
 	Engine.Renderer.attachTexture(0, Engine.Renderer.texture1x1->handle);
-	
 
 
 
-//	CSuperChunk* sc;
-//	int childBuf = -1;
-//	int scListSize = visibleSClist.size();
-//	for (int scNo = 0; scNo < scListSize; scNo++) {
-	//	sc = visibleSClist[scNo];
-	//	int clSize = sc->chunkList.size();
-	//	for (int chunkNo = 0; chunkNo < clSize; chunkNo++) {
+
+	//	CSuperChunk* sc;
+	//	int childBuf = -1;
+	//	int scListSize = visibleSClist.size();
+	//	for (int scNo = 0; scNo < scListSize; scNo++) {
+		//	sc = visibleSClist[scNo];
+		//	int clSize = sc->chunkList.size();
+		//	for (int chunkNo = 0; chunkNo < clSize; chunkNo++) {
 
 
-	
-		Engine.Renderer.setVAO(terrain2.getChunkMeshVAO());
 
-		for (int chunkNo = 0; chunkNo < terrain2.chunks.size(); chunkNo++) {
-			Chunk2* chunk = &terrain2.chunks[chunkNo];
-			if (chunk->status != chSkinned)
-				continue;
-			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatDiffuse, chunk->drawDetails2.colour);
-			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatAmbient, chunk->drawDetails2.colour);
-			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatSpecular, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-			terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatShininess, 32.0f);
-			//Engine.Renderer.drawMultiBufChildVerts(drawTris, multiBuf, chunk->drawDetails.childBufNo, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
-			Engine.Renderer.drawMultiBufChildVerts(drawTris, multiBuf, chunk->drawDetails.childBufNo, chunk->drawDetails2.vertStart, chunk->drawDetails2.vertCount);
+	Engine.Renderer.setVAO(terrain2.getChunkMeshVAO());
 
-		}
+	for (int chunkNo = 0; chunkNo < terrain2.chunks.size(); chunkNo++) {
+		Chunk2* chunk = &terrain2.chunks[chunkNo];
+		if (chunk->status != chSkinned)
+			continue;
+		terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatDiffuse, chunk->drawDetails2.colour);
+		terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatAmbient, chunk->drawDetails2.colour);
+		terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatSpecular, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+		terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatShininess, 32.0f);
+		//Engine.Renderer.drawMultiBufChildVerts(drawTris, multiBuf, chunk->drawDetails.childBufNo, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
+		Engine.Renderer.drawMultiBufChildVerts(drawTris, multiBuf, chunk->drawDetails.childBufNo, chunk->drawDetails2.vertStart, chunk->drawDetails2.vertCount);
+
+	}
 
 
 	//}
-		glEnable(GL_PRIMITIVE_RESTART);
+	glEnable(GL_PRIMITIVE_RESTART);
 }
 
 /** Create a playable terrain region, with a start point, end point and path. */
@@ -1575,7 +1592,7 @@ void C3DtestApp::createRegion() {
 	vec2 endPoint = static_cast<CTerrainTex*>(testCompositor.currentTexGen)->getEndPoint();
 
 	playerStartOffset *= 0.5;
-	endPoint *= terrain.worldUnitsPerSampleUnit *0.5;
+	endPoint *= terrain.worldUnitsPerSampleUnit * 0.5;
 
 	//create placeholder building
 	ComposeTest buildingTexCompositor;
@@ -1586,7 +1603,7 @@ void C3DtestApp::createRegion() {
 
 
 	building.loadMesh(shape::fustrumMesh(0.5f));
-	building.setPos(vec3(endPoint.x,90, endPoint.y));
+	building.setPos(vec3(endPoint.x, 90, endPoint.y));
 	building.scale(vec3(180));
 	building.setTexture(&tmpBuildingTexture);
 
@@ -1616,7 +1633,7 @@ void C3DtestApp::addGameWindow(CGUIbase* gameWin) {
 void C3DtestApp::initHexWorld() {
 	hexWorld.setMainApp(this);
 	hexWorld.setVM(&vm);
-	
+
 	hexWorld.addMesh("test", dataPath + "models\\test.obj");
 	hexWorld.addMesh("cursor", dataPath + "models\\cursor.obj");
 	hexWorld.addMesh("player", dataPath + "models\\player.obj");
@@ -1661,11 +1678,14 @@ bool C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	return handled;
 }
 
+void C3DtestApp::onPopupText(CPopupText* msg) {
+	liveLog << msg->text;
+}
 
 
 
 C3DtestApp::~C3DtestApp() {
-	
+
 }
 
 

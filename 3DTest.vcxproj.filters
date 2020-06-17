@@ -84,6 +84,12 @@
     <ClCompile Include="src\shieldPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\fireable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\powerSupply.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -159,6 +165,21 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\shieldPanel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fireable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\powerSupply.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\powerUser.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexMsg.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameMsg.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,7 +8,7 @@ CGameTextWin::CGameTextWin() {
 	totalBorderSize = { style::richTextInset.x * 2, style::richTextInset.y * 2 };
 
 	richText = new CGUIrichText(style::richTextInset.x, style::richTextInset.y, 
-		500, 100);
+		500, 200);
 	richText->resizeMax = { 400, 500 };
 	richText->setTextTheme("gameTheme");
 	richText->setHotTextVM(pVM);

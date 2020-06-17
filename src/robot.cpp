@@ -91,7 +91,7 @@ void CRobot::draw() {
 /** Handle user using defence click on this robot. */
 void CRobot::onDefenceClick() {
 	//tell the shield we've been clicked on
-	shield->robotClick(this);
+	//shield->robotClick(this);
 }
 
 TPlayerDefence CRobot::getDefence() {
@@ -171,6 +171,7 @@ int CRobot::tigCall(int memberId) {
 		return isNeighbour(*hexObj);
 	}
 
+	return 0;
 }
 
 

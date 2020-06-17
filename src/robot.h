@@ -26,7 +26,6 @@ public:
 	TDefence getDefenceSettings();
 	void setDefenceSettings(TDefence& newSettings);
 
-	static inline IShield* shield;
 
 private:
 	void initialiseCurrentAction();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gameTextWin.h"
+#include "fireable.h"
 
 enum TPlayerDefence { defNone, defBlock, defEvade, defAbsorb, defFeint };
 
@@ -21,18 +22,20 @@ public:
 
 
 /** Temporary class for prototyping the shield/defence control. */
-class CShieldPanel : public CGameTextWin, public IShield {
+class CFireablePanel : public CGameTextWin, public IShield {
 public:
-	CShieldPanel();
+	CFireablePanel();
 	void robotClick(CRobot* robot);
-	void onRelease();
-	void showCurrentRobotDefence();
-	void cycleCurrentRobotDefence();
+	void setFireable(CFireable* fireable);
 
 	bool MouseWheelMsg(const  int mouseX, const  int mouseY, int wheelDelta, int key);
 
+	void cycleAuto();
+	void updateDisplay();
+	void loadPower();
 
-	CRobot* currentRobot;
-	
+	CFireable* fireable;
+	TAutoPower shieldAuto; ///<Power acquisition setting
+	TAutoPower gunAuto;
 };
 

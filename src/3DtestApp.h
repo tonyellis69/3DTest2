@@ -32,7 +32,7 @@
 
 #include "hexWorld.h" 
 
-
+#include "gameMsg.h"
 
 
 
@@ -48,9 +48,19 @@ class C3DtestApp : public  CBaseApp , public ITerrainAppCallback,
 public:
 	C3DtestApp();
 	bool OnMouseWheelMsg(float xoffset, float yoffset);
+
+	void onPopupText(CPopupText* msg);
 	
 	~C3DtestApp();
 	void onStart();
+
+	void MemberFunction();
+
+	void onPopupMsg(CPopupText* msg);
+	void onMessageN(CPopupText* msg);
+	void onMessage(CMsg* msg);
+
+	void onMessage(CPopupText* msg);
 
 	void keyCheck();
 	void mouseMove(int x, int y, int key);

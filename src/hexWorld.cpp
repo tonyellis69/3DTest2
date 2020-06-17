@@ -7,8 +7,6 @@
 #include "gameTextWin.h"
 
 CHexWorld::CHexWorld() {
-	hexRenderer.setCallbackApp(this);
-	turnPhase = chooseActionPhase;
 	CHexObject::setHexRenderer(&hexRenderer);
 	CGridObj::setHexRenderer(&hexRenderer);
 	CGridObj::setHexWorld(this);
@@ -18,12 +16,13 @@ CHexWorld::CHexWorld() {
 
 	mode = normalMode;
 
-	shieldPanel = new CShieldPanel();
-	CRobot::shield = shieldPanel;
+	fireablePanel = new CFireablePanel();
+
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
 void CHexWorld::setMainApp(IMainApp* pApp) {
+	//TO DO: aim to replace with messaging!!!
 	this->mainApp = pApp;	
 }
 
@@ -39,19 +38,16 @@ void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
 	hexRenderer.loadMesh(name, fileName);
 }
 
+/** Create a map using the data in the given Tig file. */
 void CHexWorld::makeMap(ITigObj* tigMap) {
 	mapMaker.attachMapObject(tigMap);
-
 	map = mapMaker.createMap();
 }
 
 /** Late set-up stuff. */
 void CHexWorld::start() {
-
-
+	turnPhase = chooseActionPhase;
 	temporaryCreateHexObjects();
-
-	
 
 	tempPopulateMap();
 
@@ -66,8 +62,9 @@ void CHexWorld::start() {
 	mainApp->addGameWindow(hexPosLbl);
 
 
-	shieldPanel->setVisible(false);
-	mainApp->addGameWindow(shieldPanel);
+	mainApp->addGameWindow(fireablePanel);
+
+	subscribe(playerObj->tmpShield);
 }
 
 
@@ -110,8 +107,14 @@ void CHexWorld::onMouseWheel(float delta) {
 	if (mainApp->hexKeyNowCallback(GLFW_KEY_LEFT_SHIFT)) {
 		hexRenderer.pitchCamera(delta);
 	}
-	else 
-		hexRenderer.dollyCamera(delta);
+	else {
+		if (mainApp->hexKeyNowCallback(GLFW_KEY_LEFT_CONTROL))
+			hexRenderer.dollyCamera(delta);
+		else {
+			playerObj->cycleFireable(delta);
+			fireablePanel->setFireable(playerObj->getFireable());
+		}
+	}
 }
 
 void CHexWorld::onMouseMove(int x, int y, int key) {
@@ -124,10 +127,13 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 
 
 void CHexWorld::draw() {
-	if (turnPhase == playerChoosePhase)
+	if (turnPhase == playerChoosePhase) {
 		hexRenderer.draw();
+		hexCursor->draw();
+		hexRenderer.drawPath(&cursorPath, glm::vec4{ 0.6, 0.4, 1, 0.1f }, glm::vec4{ 0.6, 0.4, 1, 0.75f });
+	}
 	else
-		hexRenderer.draw2();
+		hexRenderer.draw();
 
 	for (auto entity : entities)
 		entity->draw();
@@ -168,8 +174,11 @@ void CHexWorld::update(float dT) {
 	}
 
 	else if (turnPhase == chooseActionPhase) {
+		playerObj->onTurnBegin();
 		map.updateBlocking();
 		chooseActions();
+
+
 	}
 }
 
@@ -181,20 +190,34 @@ bool CHexWorld::isActionPhase() {
 	return turnPhase == actionPhase;
 }
 
-/** User has triggered the set-defence UI event. */
+/** User has triggered the ctrl left mouse  event. */
 void CHexWorld::onCtrlLMouse() {
-	//are we over a robot?
-	//tell it to handle it
-	CRobot* robot = (CRobot*)map.getEntityClassAt(tig::CRobot2, hexCursor->hexPosition);
-	if (robot) {
-		robot->onDefenceClick();
-	}
+	
 
 }
 
 /** User has released set-defence key. */
 void CHexWorld::onCtrlRelease() {
-	shieldPanel->onRelease();
+	//fireablePanel->onRelease();
+}
+
+/** Cycle the auto setting of the current fireable. */
+void CHexWorld::onCycleAuto() {
+	fireablePanel->cycleAuto();
+}
+
+/** Load the next available power into the gun, reserving it. */
+void CHexWorld::onLoadPower() {
+	fireablePanel->loadPower();
+}
+
+/** User has pressed the cancel-defence key. */
+void CHexWorld::onCancelDefence() {
+	//is mouse on a robot?
+	CRobot* bot = (CRobot *) map.getEntityClassAt(tig::CRobot2, hexCursor->hexPosition);
+	if (bot) {
+		playerObj->tmpShield->cancelDefence(bot);
+	}
 }
 
 
@@ -278,13 +301,16 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	//glm::vec2 screenPos = hexRenderer.worldPosToScreen(worldSpace);
 	//coords << " " << screenPos.x << " " << screenPos.y;
 	hexPosLbl->setText(coords.str());
+
+	CMouseNewHex msg;
+	msg.newHex = mouseHex;
+	notify(&msg);
 }
 
 
 /** Return the player object's current travel path. */
 THexList* CHexWorld::getCursorPath() {
 	return &cursorPath;
-	//return &playerObj->getTravelPath();
 }
 
 CGameHexObj* CHexWorld::getPlayerObj() {
@@ -340,6 +366,16 @@ void CHexWorld::beginLeftClickAction() {
 
 	CGameHexObj* clickedEntity = map.getEntityAt(hexCursor->hexPosition);
 	if (clickedEntity) {
+		bool firedDefence = playerObj->fireAt(clickedEntity);
+		if (firedDefence) {
+			fireablePanel->updateDisplay();
+			return;
+		}
+
+		if (!playerObj->tmpWeapon->fired)
+			return;
+
+
 		if (playerObj->isNeighbour(*clickedEntity))
 			if (clickedEntity->isTigClass(tig::CItem))
 				playerObj->takeItem(*clickedEntity);
@@ -351,7 +387,7 @@ void CHexWorld::beginLeftClickAction() {
 	}
 	else
 		addSerialAction(playerObj, { tig::actPlayerShoot, hexCursor });
-		
+	fireablePanel->updateDisplay();
 		
 	startActionPhase();
 }
@@ -399,6 +435,7 @@ bool CHexWorld::resolvingSimulActions() {
 		return true;
 
 	turnPhase = chooseActionPhase;
+	playerObj->onTurnEnd(); liveLog << "\nturn end!";
 	return false;
 }
 

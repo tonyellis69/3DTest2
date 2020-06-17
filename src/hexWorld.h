@@ -28,9 +28,13 @@
 
 #include "UI/GUIlabel2.h"
 
+#include "messaging/events.h"
+
 #include "door.h" //hopefully *temporary* 
 
 #include "shieldPanel.h"
+
+#include "hexMsg.h"
   
 enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
 
@@ -38,7 +42,7 @@ enum TScreenMode { strategyMode, normalMode };
 
 /** A class encapsulating the hex-based representation of the world. */
 class IMainApp;
-class CHexWorld : public IhexRendererCallback, public IHexWorld,
+class CHexWorld :  public IHexWorld, public CEventSubject,
 	public CTigObjptr {
 public:
 	CHexWorld();
@@ -62,6 +66,10 @@ public:
 
 	void onCtrlLMouse();
 	void onCtrlRelease();
+
+	void onCycleAuto();
+	void onLoadPower();
+	void onCancelDefence();
 
 private:
 	THexList calcPath(CHex& start, CHex& end);
@@ -159,7 +167,7 @@ private:
 
 	TScreenMode mode;
 
-	CShieldPanel* shieldPanel;
+	CFireablePanel* fireablePanel;
 };
 
 
