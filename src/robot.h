@@ -8,7 +8,7 @@
 
 #include "shieldPanel.h"
 
-
+#include "gameMsg.h"
 
 
 /** A class describing basic robot characteristics and
@@ -39,6 +39,8 @@ private:
 	void shootPlayer();
 
 	int tigCall(int memberId);
+
+	void onNotify(COnNewHex& msg);
 
 	TPlayerDefence defence;
 

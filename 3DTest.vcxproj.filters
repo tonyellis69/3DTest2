@@ -90,6 +90,9 @@
     <ClCompile Include="src\powerSupply.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -180,6 +183,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gameMsg.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameEvents.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\actor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

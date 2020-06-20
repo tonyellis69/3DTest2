@@ -21,6 +21,8 @@ CPlayerObject::CPlayerObject() {
 
 	psu = new CPowerSupply();
 	CFireable::psu = psu;
+
+	messageBus.setHandler<CGetPlayerPos>(this, &CPlayerObject::onGetPlayerPos);
 }
 
 /** Push the given action onto the player object's stack, with any supporting actions. */
@@ -216,6 +218,10 @@ void CPlayerObject::onTurnEnd() {
 
 	psu->onTurnEnd();
 	psu->updateDisplay();
+}
+
+void CPlayerObject::onGetPlayerPos(CGetPlayerPos& msg) {
+	msg.position = hexPosition;
 }
 
 void CPlayerObject::initialiseCurrentAction() {

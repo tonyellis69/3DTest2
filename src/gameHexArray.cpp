@@ -2,6 +2,10 @@
 
 //#include "gamehextObj.h"
 
+CGameHexArray::CGameHexArray() {
+	messageBus.setHandler< CGetTravelPath>(this, &CGameHexArray::onGetTravelPath);
+}
+
 void CGameHexArray::setEntityList(TEntities* pEntities) {
 	entities = pEntities;
 }
@@ -171,4 +175,8 @@ void CGameHexArray::smartBlockClear( CHex& pos) {
 			}
 		}
 	}
+}
+
+void CGameHexArray::onGetTravelPath(CGetTravelPath& msg) {
+	msg.travelPath = aStarPath(msg.start, msg.end);
 }

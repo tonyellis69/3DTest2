@@ -117,6 +117,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp" />
+    <ClCompile Include="src\actor.cpp" />
     <ClCompile Include="src\bolt.cpp" />
     <ClCompile Include="src\door.cpp" />
     <ClCompile Include="src\fireable.cpp" />
@@ -145,9 +146,11 @@
   <ItemGroup>
     <ClInclude Include="..\TC\Debug\tigConst.h" />
     <ClInclude Include="src\3DtestApp.h" />
+    <ClInclude Include="src\actor.h" />
     <ClInclude Include="src\bolt.h" />
     <ClInclude Include="src\door.h" />
     <ClInclude Include="src\fireable.h" />
+    <ClInclude Include="src\gameEvents.h" />
     <ClInclude Include="src\gameHexArray.h" />
     <ClInclude Include="src\gamehextObj.h" />
     <ClInclude Include="src\gameMsg.h" />

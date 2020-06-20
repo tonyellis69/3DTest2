@@ -3,6 +3,7 @@
 #include "utils/log.h"
 
 #include "gameMsg.h"
+#include "hexMsg.h"
 
 CFireable::CFireable(const std::string& name) {
 	tmpName = name;
@@ -83,7 +84,7 @@ bool CShield::findDefendee(CGameHexObj* target) {
 }
 
 std::string CShield::getUpdateText() {
-	std::string txt = "Block \n" + settingStr(autoPower);
+	std::string txt = "Block\n" + settingStr(autoPower);
 
 	if (autoPower == autoNone)
 		return txt;
@@ -123,11 +124,23 @@ void CShield::cancelDefence(CGameHexObj* robot) {
 	}
 }
 
-void CShield::onNotify(CMsg* msg) {
-	liveLog << "\nshield notified!";
-	CPopupText popMsg;
-	popMsg.text = "\nShield text received!";
-	send(&popMsg);
+/** Mouse entered new hex. */
+void CShield::onNotify(COnNewHex& msg) {
+	//check if we have a defence on a robot at this hex. 
+	for (auto defence : defences) {
+		if (defence.first->hexPosition == msg.newHex) {
+			std::string popupTxt = "Block defence assigned";
+			popupTxt += "\nPower acquisition: ";
+			popupTxt += settingStr(defence.second.autoPower);
+
+			CPopupText popMsg(defencePopup, popupTxt);
+			send(popMsg);
+			return;
+		}
+	}
+	//no? Ensure it's turned off then
+	//CPopupText popMsg(defencePopup, hidePopup);
+	//send(popMsg);
 }
 
 CWeapon::CWeapon(const std::string& name) : CFireable(name) {

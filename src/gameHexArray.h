@@ -10,6 +10,8 @@
 
 #include "IGameHexArray.h"
 
+#include "messaging/messenger.h"
+
 
 struct hex_hash {
 	size_t operator()(const CHex& hex) const {
@@ -23,8 +25,10 @@ using TRange = std::pair<TMapIt, TMapIt>;
 
 /** Extend the hexArray to check for game entities when
 	pathfinding. */
-class CGameHexArray : public CHexArray, public IGameHexArray {
+class CGameHexArray : public CHexArray, public IGameHexArray, 
+	public CMessenger{
 public:
+	CGameHexArray();
 	void setEntityList(TEntities* pEntities);
 	bool fromToBlocked(CHex& current, CHex& hex);
 	bool isEmpty(glm::i32vec2& hex);
@@ -38,6 +42,8 @@ public:
 	CGameHexObj* getEntityNotSelf(CGameHexObj* self);
 	void updateBlocking();
 	void smartBlockClear( CHex& pos);
+
+	void onGetTravelPath(CGetTravelPath& msg);
 
 	TEntities* entities; ///<To check for collision against.
 

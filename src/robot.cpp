@@ -126,7 +126,7 @@ bool CRobot::onLeftClick() {
 }
 
 void CRobot::onMouseOverNorm() {
-	CGameHexObj::onMouseOverNorm();
+	//CGameHexObj::onMouseOverNorm();
 }
 
 void CRobot::onMouseWheel(float delta) {
@@ -174,6 +174,13 @@ int CRobot::tigCall(int memberId) {
 	return 0;
 }
 
+void CRobot::onNotify(COnNewHex& msg) {
+	if (msg.newHex == hexPosition) {
+		std::string status = callTigStr(tig::getStatus);
+		CPopupText statusPop(statusPopup, status);
+		send(statusPop);
+	}
+}
 
 
 

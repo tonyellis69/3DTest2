@@ -30,6 +30,8 @@ public:
 	void onTurnBegin();
 	void onTurnEnd();
 
+	void onGetPlayerPos(CGetPlayerPos& msg);
+
 
 	CBuf* shieldBuf;
 	CLineModel shieldModel;

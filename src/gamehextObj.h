@@ -10,6 +10,10 @@
 #include "tigConst.h"
 #include "tigExport.h"
 
+#include "gameEvents.h"
+#include "messaging/messenger.h"
+#include "gameMsg.h"
+
 class CGameHexObj;
 class CAction {
 public:
@@ -21,7 +25,9 @@ class IHexWorld;
 
 /** Basic hex object to derive game hex objects from,
 	such as robots. */
-class CGameHexObj : public CHexObject, public CTigObjptr{
+class CGameHexObj : public CHexObject, public CTigObjptr,
+	public CGameEventObserver, public CMessenger
+{
 public:
 	CGameHexObj();
 	void setMap(IGameHexArray* map);

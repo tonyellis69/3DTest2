@@ -5,19 +5,22 @@ CGameTextWin::CGameTextWin() {
 	resize(300, 200);
 	setLocalPos(500, 500);
 
-	totalBorderSize = { style::richTextInset.x * 2, style::richTextInset.y * 2 };
+	totalBorderSize = { style::gameWinCtrBorder.x * 2, style::gameWinCtrBorder.y * 2 };
 
-	richText = new CGUIrichText(style::richTextInset.x, style::richTextInset.y, 
+	richText = new CGUIrichText(style::gameWinCtrBorder.x, style::gameWinCtrBorder.y,
 		500, 200);
 	richText->resizeMax = { 400, 500 };
 	richText->setTextTheme("gameTheme");
 	richText->setHotTextVM(pVM);
 	Add(richText);
-
 }
 
 void CGameTextWin::addText(const std::string& text) {
 	richText->appendMarkedUpText(text);
+}
+
+void CGameTextWin::setTheme(const std::string& themeName) {
+	richText->setTextTheme(themeName);
 }
 
 void CGameTextWin::setStyle(const std::string& styleName) {
@@ -31,6 +34,7 @@ void CGameTextWin::clearText() {
 void CGameTextWin::resizeToFit() {
 	richText->resizeToFit();
 
+
 }
 
 void CGameTextWin::message(CGUIbase* sender, CMessage& msg) {
@@ -39,6 +43,15 @@ void CGameTextWin::message(CGUIbase* sender, CMessage& msg) {
 		resize(newSize.x, newSize.y);
 
 	}
+}
+
+/** Extends normal resize to ensure we resize richText ctrl. */
+void CGameTextWin::resize(int w, int h) {
+	CGameWin::resize(w, h);
+	if (richText == NULL)
+		return;
+	richText->setLocalPos(style::gameWinCtrBorder.x, style::gameWinCtrBorder.y);
+	richText->resize(w - 2 * style::gameWinCtrBorder.x, h - 2 * style::gameWinCtrBorder.y);
 }
 
 /** Position with top left corner at current mouse position,
@@ -60,4 +73,9 @@ void CGameTextWin::positionAtMousePointer() {
 void CGameTextWin::positionOffset() {
 	hFormat = hRight;
 	vFormat = vTop;
+}
+
+void CGameTextWin::onNotify(CMouseExitHex& msg) {
+	setVisible(false);
+
 }

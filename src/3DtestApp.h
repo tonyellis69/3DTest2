@@ -34,6 +34,8 @@
 
 #include "gameMsg.h"
 
+#include "gameTextWin.h"
+
 
 
 extern CSuperChunk* dbgSC;;
@@ -49,7 +51,7 @@ public:
 	C3DtestApp();
 	bool OnMouseWheelMsg(float xoffset, float yoffset);
 
-	void onPopupText(CPopupText* msg);
+	void onPopupText(CPopupText& msg);
 	
 	~C3DtestApp();
 	void onStart();
@@ -234,6 +236,9 @@ public:
 	TAppMode appMode;
 	
 	CPhysModel platform; //temp!!!!!!!!!!!!
+
+	CGameTextWin* defencePopWin = NULL; ///<Handle for popup window showing defence details on mouseover
+	CGameTextWin* statusPopWin = NULL; ///<Handle for popup window showing status details on mouseover
 
 
 };

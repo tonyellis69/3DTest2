@@ -28,7 +28,8 @@
 
 #include "UI/GUIlabel2.h"
 
-#include "messaging/events.h"
+//#include "messaging/events.h"
+#include "gameEvents.h"
 
 #include "door.h" //hopefully *temporary* 
 
@@ -42,7 +43,7 @@ enum TScreenMode { strategyMode, normalMode };
 
 /** A class encapsulating the hex-based representation of the world. */
 class IMainApp;
-class CHexWorld :  public IHexWorld, public CEventSubject,
+class CHexWorld :  public IHexWorld, public CGameEventSubject,
 	public CTigObjptr {
 public:
 	CHexWorld();

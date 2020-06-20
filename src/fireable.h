@@ -5,15 +5,16 @@
 
 #include "gamehextObj.h"
 
-#include "messaging/events.h"
+//#include "messaging/events.h"
 #include "messaging/messenger.h"
+#include "gameEvents.h"
 
 #include "powerUser.h"
 #include "powerSupply.h"
 
 
 /** Basic thing-that-uses-power class. */
-class CFireable : public CPowerUser, public CEventObserver,
+class CFireable : public CPowerUser, public CGameEventObserver,
 	public CMessenger {
 public:
 	//CFireable() { };
@@ -55,7 +56,8 @@ public:
 
 	void cancelDefence(CGameHexObj* robot);
 
-	void onNotify(CMsg* msg);
+
+	void onNotify(COnNewHex& msg);
 
 	std::map<CGameHexObj*, CDefenceRec> defences;
 };

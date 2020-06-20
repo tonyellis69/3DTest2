@@ -36,11 +36,11 @@ C3DtestApp::C3DtestApp() {
 	physCube = NULL;
 	shownChoice = false;
 	oldPos = vec3(0);
-
+	defencePopWin = NULL;
 }
 
 void C3DtestApp::onStart() {
-	appMode = hexMode;// texGenMode;// terrainMode; 
+	appMode = terrainMode;// texGenMode;// terrainMode; 
 					  //textMode; //hexMode; //physicsMode;
 
 	if (appMode == hexMode)
@@ -292,7 +292,7 @@ void C3DtestApp::onStart() {
 	renderer.fontManager.createFromFile("smallHeaderFnt", dataPath + "merri12.fnt");
 	//renderer.fontManager.createFromFile("smallFnt", dataPath + "merri14L.fnt");
 
-	renderer.fontManager.createFromFile("smallFnt", dataPath + "merri12L.fnt");
+	renderer.fontManager.createFromFile("", dataPath + "merri12L.fnt");
 
 	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
 	//vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
@@ -1678,8 +1678,38 @@ bool C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	return handled;
 }
 
-void C3DtestApp::onPopupText(CPopupText* msg) {
-	liveLog << msg->text;
+void C3DtestApp::onPopupText(CPopupText& msg) {
+	if (msg.popupType == defencePopup) {
+		if (defencePopWin == NULL) {
+			defencePopWin = new CGameTextWin();
+			defencePopWin->setLocalPos(100,style::mainWinCtrlBorder);
+			defencePopWin->hFormat = hCentre;
+			defencePopWin->resize(style::defPopupW, style::defPopupH);
+			defencePopWin->setVisible(false);
+			defencePopWin->setTheme("smallNormal");
+			hexWorld.subscribe(defencePopWin);
+			GUIroot.Add(defencePopWin);
+		}
+		defencePopWin->clearText();
+		defencePopWin->addText(msg.text);
+		defencePopWin->setVisible(true);
+	}
+	else if (msg.popupType == statusPopup) {
+		if (statusPopWin == NULL) {
+			statusPopWin = new CGameTextWin();
+			statusPopWin->setLocalPos(100, style::mainWinCtrlBorder);
+			statusPopWin->hFormat = hCentre;
+			statusPopWin->resize(style::defPopupW, style::defPopupH);
+			statusPopWin->anchorBottom = style::mainWinCtrlBorder;
+			statusPopWin->setVisible(false);
+			statusPopWin->setTheme("smallNormal");
+			hexWorld.subscribe(statusPopWin);
+			GUIroot.Add(statusPopWin);
+		}
+		statusPopWin->clearText();
+		statusPopWin->addText(msg.text);
+		statusPopWin->setVisible(true);
+	}
 }
 
 

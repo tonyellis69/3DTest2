@@ -90,7 +90,7 @@ bool CGUIrichTextPanel::setTextStyle(std::string styleName) {
 }
 
 void CGUIrichTextPanel::setDefaultTextStyle(std::string styleName) {
-	richText->setDefaultTextStyle(styleName);
+	//richText->setDefaultTextStyle(styleName);
 }
 
 std::vector<unsigned int> CGUIrichTextPanel::purgeHotText(unsigned int id){

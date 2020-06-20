@@ -3,8 +3,12 @@
 #include "messaging/msg.h" 
 #include "hex/hex.h"
 
-class CMouseNewHex : public CMsg {
+class COnNewHex : public CMsg {
 public:
-
 	CHex newHex;
+};
+
+class CMouseExitHex : public CMsg {
+public:
+	CHex leavingHex;
 };

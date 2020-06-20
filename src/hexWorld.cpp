@@ -51,6 +51,10 @@ void CHexWorld::start() {
 
 	tempPopulateMap();
 
+	//TO DO: another kludge: find a way to subscribe entities on creation
+	for (auto& entity : entities)
+		subscribe(entity);
+
 	hexRenderer.setMap(&map);
 
 	map.setEntityList(&entities);
@@ -120,8 +124,12 @@ void CHexWorld::onMouseWheel(float delta) {
 void CHexWorld::onMouseMove(int x, int y, int key) {
 	mousePos = { x,y };
 	CHex mouseHex = hexRenderer.pickHex(x, y);
-	if (mouseHex != hexCursor->hexPosition)
+	if (mouseHex != hexCursor->hexPosition) {
+		CMouseExitHex msg;
+		msg.leavingHex = hexCursor->hexPosition;
+		notify(msg);
 		onNewMouseHex(mouseHex);
+	}
 }
 
 
@@ -302,9 +310,11 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	//coords << " " << screenPos.x << " " << screenPos.y;
 	hexPosLbl->setText(coords.str());
 
-	CMouseNewHex msg;
+	 
+
+	COnNewHex msg;
 	msg.newHex = mouseHex;
-	notify(&msg);
+	notify(msg);
 }
 
 
