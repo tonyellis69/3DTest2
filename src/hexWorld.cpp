@@ -18,6 +18,7 @@ CHexWorld::CHexWorld() {
 
 	fireablePanel = new CFireablePanel();
 
+	messageBus.setHandler<CAddActor>(this, &CHexWorld::onAddActor);
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
@@ -42,6 +43,8 @@ void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
 void CHexWorld::makeMap(ITigObj* tigMap) {
 	mapMaker.attachMapObject(tigMap);
 	map = mapMaker.createMap();
+
+	map.setMessageHandlers();
 }
 
 /** Late set-up stuff. */
@@ -52,8 +55,9 @@ void CHexWorld::start() {
 	tempPopulateMap();
 
 	//TO DO: another kludge: find a way to subscribe entities on creation
-	for (auto& entity : entities)
+	for (auto& entity : entities) {
 		subscribe(entity);
+	}
 
 	hexRenderer.setMap(&map);
 
@@ -62,6 +66,7 @@ void CHexWorld::start() {
 	hexRenderer.start();	
 
 	hexPosLbl = new CGUIlabel2(10, 10, 510, 30);
+	//hexPosLbl->anchorBottom = 20;
 	hexPosLbl->setTextColour(glm::vec4( 1.0f, 1.0f, 1.0f, 1.0f ));
 	mainApp->addGameWindow(hexPosLbl);
 
@@ -258,7 +263,8 @@ void CHexWorld::temporaryCreateHexObjects() {
 	playerObj->setLineModel("player");
 	//playerObj->setPosition(-1, 2, -1);
 	//playerObj->setMap(&map);
-	map.add(playerObj, CHex(-1, 2 - 1));
+//	map.add(playerObj, CHex(-1, 2 - 1));
+	map.add(playerObj, CHex(-1, 5, -4));
 	playerObj->shieldModel = hexRenderer.getLineModel("shield");
 	playerObj->setTigObj(vm->getObject("player"));
 
@@ -280,9 +286,9 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	cursorPath = calcPath(playerObj->hexPosition, hexCursor->hexPosition);
 
 
-	for (auto win : popupWindows)
-		delete win;
-	popupWindows.clear();
+	//for (auto win : popupWindows)
+	//	delete win;
+	//popupWindows.clear();
 
 	//TO DO: this is to close defence panels. Probably temporary/ 
 	for (auto entity : entities)
@@ -431,20 +437,41 @@ bool CHexWorld::resolvingSerialActions() {
 		}
 		return true;
 	}
+
 	return false;
 }
 
 /** If any entity is performing a simultaneous action, update each one and return true. */
 bool CHexWorld::resolvingSimulActions() {
-	bool resolvingActions = false;
-	for (auto entity : entities) {
-		resolvingActions |= entity->update(dT);
+	bool stillResolving = false;
+	/*for (auto entity : entities) {
+		stillResolving |= entity->update(dT);
+	}*/
+
+	if (initSimulActions) {
+
+		for (auto actor : simulList) {
+			actor->startAction();
+		}
+		initSimulActions = false;
 	}
 
-	if (resolvingActions)
+
+	for (auto actor = simulList.begin(); actor != simulList.end();) {
+		bool resolving = (*actor)->update2(dT);
+		if (resolving)
+			actor++;
+		else
+			actor = simulList.erase(actor);
+		stillResolving |= resolving;
+	}
+
+
+	if (stillResolving)
 		return true;
 
 	turnPhase = chooseActionPhase;
+	initSimulActions = true;
 	playerObj->onTurnEnd(); liveLog << "\nturn end!";
 	return false;
 }
@@ -474,7 +501,7 @@ void CHexWorld::tempPopulateMap() {
 	robot2->setTigObj(pRobot);
 
 	entities.push_back(robot);
-	entities.push_back(robot2);
+	//entities.push_back(robot2);
 
 	wrench = new CHexItem();
 	wrench->setLineModel("test");
@@ -642,7 +669,12 @@ void CHexWorld::changeMode() {
 	}
 }
 
+/** Add this actor to an action list. */
+void CHexWorld::onAddActor(CAddActor& msg) {
+	if (msg.addTo == actionSimul)
+		simulList.push_back(msg.actor);
 
+}
 
 
 

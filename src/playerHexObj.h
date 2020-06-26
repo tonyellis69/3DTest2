@@ -1,13 +1,14 @@
 #pragma once
 
-#include "gamehextObj.h"
+//#include "gamehextObj.h"
+#include "actor.h"
 
 #include "fireable.h"
 #include "powerSupply.h"
 
 /** A class describing characteristics and behaviour unique to
 	the player hex-world object. */
-class CPlayerObject : public CGameHexObj {
+class CPlayerObject : public CHexActor {
 public:
 	CPlayerObject();
 	void stackAction(CAction chosenAction);

@@ -21,10 +21,14 @@ void CRobot::chooseTurnAction() {
 	int chosenAction = getChosenAction();
 
 	switch (chosenAction) {
-	case tig::actChasePlayer:
-		actions.push({ tig::actTurnToTargetDest, NULL });
-		actions.push({ chosenAction,NULL });
+	case tig::actChasePlayer: {
+		/*actions.push({ tig::actTurnToTargetDest, NULL });
+		actions.push({ chosenAction,NULL });*/
+		//startAction(chosenAction);
+		CAddActor msg(this,actionSimul);
+		send(msg);
 		return;
+	}
 	case tig::actAttackPlayer:
 		actions.push({ chosenAction, this });
 		actions.push({ tig::actTurnToTarget, this });
@@ -43,6 +47,9 @@ void CRobot::chooseTurnAction() {
 
 
 bool CRobot::update(float dT) {
+
+	return update2(dT);
+
 	if (currentAction.actionId == tig::actNone) {
 		if (actions.empty())
 			return false; //TO DO: temp, removable if I implement a simulActions list
@@ -53,11 +60,13 @@ bool CRobot::update(float dT) {
 
 	bool resolving = false;
 
-	if (currentAction.actionId == tig::actTurnToTarget || currentAction.actionId == tig::actTurnToTargetDest)
-		resolving = updateRotationOnly(dT);
 
-	if (currentAction.actionId == tig::actChasePlayer )
-		resolving = updateMove(dT);
+
+	//if (currentAction.actionId == tig::actTurnToTarget || currentAction.actionId == tig::actTurnToTargetDest)
+	//	resolving = updateRotationOnly(dT);
+
+	//if (currentAction.actionId == tig::actChasePlayer )
+	//	resolving = updateMove(dT);
 
 	if (currentAction.actionId == tig::actAttackPlayer) {
 		resolving = updateLunge(dT);

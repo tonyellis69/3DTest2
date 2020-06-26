@@ -14,6 +14,9 @@
 #include "messaging/messenger.h"
 #include "gameMsg.h"
 
+const bool resolved = false;
+const bool unresolved = true;
+
 class CGameHexObj;
 class CAction {
 public:
@@ -60,7 +63,9 @@ public:
 
 	virtual void onModeChange(bool isStrategy) {};
 
-	bool isRobot;
+	virtual bool isActor() { return false;  }
+
+	bool isRobot; //SCRAP
 
 	unsigned int mBlocks; ///<If true, blocks travel path
 	bool deleteMe;
@@ -94,4 +99,12 @@ private:
 using TEntities = std::vector<CGameHexObj*>;
 
 class CGroupItem;
+
+class CMoveEntity : public CMsg {
+public:
+	CMoveEntity(CGameHexObj* ent, CHex& hex) : entity(ent), newHex(hex) {}
+
+	CGameHexObj* entity;
+	CHex& newHex;
+};
 

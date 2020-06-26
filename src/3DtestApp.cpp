@@ -40,7 +40,7 @@ C3DtestApp::C3DtestApp() {
 }
 
 void C3DtestApp::onStart() {
-	appMode = terrainMode;// texGenMode;// terrainMode; 
+	appMode = hexMode;// texGenMode;// terrainMode; 
 					  //textMode; //hexMode; //physicsMode;
 
 	if (appMode == hexMode)
@@ -271,6 +271,7 @@ void C3DtestApp::onStart() {
 	//roboto light is pretty good though
 	//mainFont.loadFromFile(dataPath + "rob22d.fnt");
 	mainFont.loadFromFile(dataPath + "merri16L.fnt"); //pretty good light font
+
 	//mainFont.loadFromFile(dataPath + "merri16.fnt"); //regular might be even better
 	///mainFont.loadFromFile(dataPath + "work18.fnt"); //too small at 16
 	//mainFont.loadFromFile(dataPath + "work18L.fnt"); //not quite... helvetica too old fashioned?
@@ -292,7 +293,7 @@ void C3DtestApp::onStart() {
 	renderer.fontManager.createFromFile("smallHeaderFnt", dataPath + "merri12.fnt");
 	//renderer.fontManager.createFromFile("smallFnt", dataPath + "merri14L.fnt");
 
-	renderer.fontManager.createFromFile("", dataPath + "merri12L.fnt");
+	renderer.fontManager.createFromFile("smallFnt", dataPath + "merri12L.fnt");
 
 	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
 	//vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
@@ -415,6 +416,13 @@ void C3DtestApp::keyCheck() {
 		if (mouseButtonNow(GLFW_MOUSE_BUTTON_RIGHT)) {
 			hexWorld.beginRightClickAction();
 		}
+
+	/*	if (keyNow('K')) {
+			int y = defencePopWin->getLocalPos().y;
+			defencePopWin->setPosY(y + 1);
+		}*/
+
+
 	}
 
 
@@ -1683,8 +1691,9 @@ void C3DtestApp::onPopupText(CPopupText& msg) {
 		if (defencePopWin == NULL) {
 			defencePopWin = new CGameTextWin();
 			defencePopWin->setLocalPos(100,style::mainWinCtrlBorder);
-			defencePopWin->hFormat = hCentre;
+		//	defencePopWin->hFormat = hCentre;
 			defencePopWin->resize(style::defPopupW, style::defPopupH);
+			//defencePopWin->anchorBottom = style::mainWinCtrlBorder;
 			defencePopWin->setVisible(false);
 			defencePopWin->setTheme("smallNormal");
 			hexWorld.subscribe(defencePopWin);
@@ -1697,8 +1706,8 @@ void C3DtestApp::onPopupText(CPopupText& msg) {
 	else if (msg.popupType == statusPopup) {
 		if (statusPopWin == NULL) {
 			statusPopWin = new CGameTextWin();
-			statusPopWin->setLocalPos(100, style::mainWinCtrlBorder);
-			statusPopWin->hFormat = hCentre;
+			statusPopWin->setLocalPos(100, style::mainWinCtrlBorder + 20);
+			//statusPopWin->hFormat = hCentre;
 			statusPopWin->resize(style::defPopupW, style::defPopupH);
 			statusPopWin->anchorBottom = style::mainWinCtrlBorder;
 			statusPopWin->setVisible(false);

@@ -19,8 +19,12 @@ public:
 
 	template <typename T>
 	void notify(T& msg) {
-		for (auto observer : gameObservers) {
-			observer->onNotify(msg);
+
+		//for (auto observer : gameObservers) {
+		for (int b = 0; b < gameObservers.size(); b++ ) {
+			//observer->onNotify(msg);
+			gameObservers[b]->onNotify(msg);
+			
 		}
 	}
 

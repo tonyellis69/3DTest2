@@ -30,6 +30,7 @@
 
 //#include "messaging/events.h"
 #include "gameEvents.h"
+#include "messaging/messenger.h"
 
 #include "door.h" //hopefully *temporary* 
 
@@ -39,12 +40,13 @@
   
 enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
 
-enum TScreenMode { strategyMode, normalMode };
+enum TScreenMode { strategyMode, normalMode }; //TO DO scrap!!!
+
 
 /** A class encapsulating the hex-based representation of the world. */
 class IMainApp;
 class CHexWorld :  public IHexWorld, public CGameEventSubject,
-	public CTigObjptr {
+	public CMessenger, public CTigObjptr {
 public:
 	CHexWorld();
 	void setMainApp(IMainApp* pApp);
@@ -121,6 +123,8 @@ private:
 
 	void changeMode();
 
+	void onAddActor(CAddActor& msg);
+
 
 	CGameHexArray map;
 
@@ -169,6 +173,9 @@ private:
 	TScreenMode mode;
 
 	CFireablePanel* fireablePanel;
+
+	std::vector<CHexActor*> simulList; ///< Actors performing simultaneous actions this turn
+	bool initSimulActions = true;
 };
 
 

@@ -10,10 +10,12 @@
 
 #include "gameMsg.h"
 
+#include "actor.h"
+
 
 /** A class describing basic robot characteristics and
 	behaviour. */
-class CRobot : public CGameHexObj {
+class CRobot : /*public CGameHexObj,*/ public CHexActor {
 public:
 	CRobot();
 	void chooseTurnAction();

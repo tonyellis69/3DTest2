@@ -3,7 +3,12 @@
 //#include "gamehextObj.h"
 
 CGameHexArray::CGameHexArray() {
+	}
+
+void CGameHexArray::setMessageHandlers() {
 	messageBus.setHandler< CGetTravelPath>(this, &CGameHexArray::onGetTravelPath);
+	messageBus.setHandler< CMoveEntity>(this, &CGameHexArray::onMoveEntity);
+	messageBus.setHandler< CActorBlock>(this, &CGameHexArray::onActorBlockCheck);
 }
 
 void CGameHexArray::setEntityList(TEntities* pEntities) {
@@ -178,5 +183,25 @@ void CGameHexArray::smartBlockClear( CHex& pos) {
 }
 
 void CGameHexArray::onGetTravelPath(CGetTravelPath& msg) {
+
+	int b = getHexCube(CHex(0, 4, -4)).blocks;
+	//zero here!!!
+
 	msg.travelPath = aStarPath(msg.start, msg.end);
+}
+
+void CGameHexArray::onMoveEntity(CMoveEntity& msg) {
+	moveEntity(msg.entity, msg.newHex);
+
+}
+
+/** If an actor is blocking this hex, return it. */
+void CGameHexArray::onActorBlockCheck(CActorBlock& msg) {
+	auto [first, last] = getEntitiesAt(msg.hex);
+	for (auto it = first; it != last; it++) {
+		if (it->second->isActor()) {
+			msg.blockingActor = (CHexActor*)it->second;
+			return;
+		}
+	}
 }

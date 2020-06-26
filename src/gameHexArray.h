@@ -6,7 +6,8 @@
 
 #include "hex/hexArray.h"
 
-#include "gamehextObj.h"
+//#include "gamehextObj.h"
+#include "actor.h" //replaces the above
 
 #include "IGameHexArray.h"
 
@@ -29,6 +30,7 @@ class CGameHexArray : public CHexArray, public IGameHexArray,
 	public CMessenger{
 public:
 	CGameHexArray();
+	void setMessageHandlers();
 	void setEntityList(TEntities* pEntities);
 	bool fromToBlocked(CHex& current, CHex& hex);
 	bool isEmpty(glm::i32vec2& hex);
@@ -44,6 +46,8 @@ public:
 	void smartBlockClear( CHex& pos);
 
 	void onGetTravelPath(CGetTravelPath& msg);
+	void onMoveEntity(CMoveEntity& msg);
+	void onActorBlockCheck(CActorBlock& msg);
 
 	TEntities* entities; ///<To check for collision against.
 
