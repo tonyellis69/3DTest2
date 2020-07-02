@@ -2,30 +2,63 @@
 
 #include <cmath>
 
-#include "IHexWorld.h" //temp bug chase
+//#include "IHexWorld.h" //temp bug chase
+#include "utils/log.h"
 
 #include "tigConst.h"
 
 const float rad360 = M_PI * 2;
 
-/** Do the necessary one-off prep work for the given action. */
-void CHexActor::startAction() {
-	action = getChosenAction();
+void CHexActor::setAction(int actId, CHex& targetHex) {
+	action = actId;
+	this->targetHex = targetHex;
+	CAddActor msg(this, actionSerial);
+	send(msg);
+}
 
-	if (action == tig::actChasePlayer) {
+/** Do the necessary one-off prep work for the given action. */
+void CHexActor::initAction() {
+	 action = getChosenAction();
+
+	switch (action) {
+	case tig::actChasePlayer: {
 		CGetPlayerPos getPlayerPos;
 		send(getPlayerPos);
-
 		CGetTravelPath pathRequest(hexPosition, getPlayerPos.position);
 		send(pathRequest);
-		travelPath2 = pathRequest.travelPath;
+		travelPath = pathRequest.travelPath;
+		if (travelPath.empty()) {
+			action = tig::actNone;
+			return;
+		}
+		if (travelPath.size() > movePoints2)
+			travelPath.resize(movePoints2);
+		destHexClaimed = false;
+		return;
+	}
+	case tig::actAttackPlayer: {
+		CGetPlayerPos getPlayerPos;
+		send(getPlayerPos);
+		targetHex = getPlayerPos.position;
+		animCycle2 = 0;
+		return;
+	}
+
+	case tig::actShootPlayer: {
+		CGetPlayerPos getPlayerPos;
+		send(getPlayerPos);
+		targetHex = getPlayerPos.position;
+		return;
+	}
+
+
 
 	}
 
 }
 
 /** Update the current action of the actor by the time passed. */
-bool CHexActor::update2(float dT) {
+bool CHexActor::update(float dT) {
 	this->dT = dT;
 	switch (action) {
 	case tig::actChasePlayer:
@@ -35,6 +68,21 @@ bool CHexActor::update2(float dT) {
 		}
 		else return unresolved;
 
+	case tig::actAttackPlayer:
+		if (meleeAttack(dT)) {
+			//hitTarget();
+			action = tig::actNone;
+			return resolved;
+		}
+		else return unresolved;
+
+	case tig::actShootPlayer:
+		if (shootTarget(dT)) {
+			//hitTarget();
+			action = tig::actNone;
+			return resolved;
+		}
+		else return unresolved;
 
 	case tig::actNone: 
 		return resolved;
@@ -48,28 +96,47 @@ bool CHexActor::update2(float dT) {
 
 /** Travel down the current travelPath. */
 bool CHexActor::navigatePath(float dT) {
-	CHex& currentDest = travelPath2[0];
+	CHex destHex = travelPath[0];
+	bool permBlocked = checkForBlock(destHex);
 
-	if (isFacing(currentDest)) {
-		TActorBlock block = isBlocked(currentDest);
-		if (block == currentBlocked)
-			return false;
-		if (block == permBlocked) {
-			travelPath2.clear();
-			return true;
+	if (isFacing(destHex)) {
+		if (destHexClaimed) {
+			if (moveTo(destHex)) {
+				travelPath.erase(travelPath.begin());
+				if (travelPath.empty())
+					return true;
+				destHexClaimed = false; 
+			}
 		}
-
-		bool reachedHex = moveTo(currentDest);
-		if (reachedHex) {
-			updateMapPos(currentDest);
-			travelPath2.erase(travelPath2.begin());
-			if (travelPath2.size() == 0)
-				return true;
-		}
+		else if (permBlocked)
+			return true; //give up
 	}
 
 	return false;
 }
+
+/** Attempt to claim this hex if we haven't already, return true if it 
+	is permanently occupied for this turn. */
+bool CHexActor::checkForBlock(CHex& destHex) {
+	bool permBlocked = false;
+	if (!destHexClaimed) {
+		CActorBlock msg(destHex);
+		send(msg);
+		if (msg.blockingActor == this)
+			int b = 0;
+
+		if (msg.blockingActor == NULL) {
+			claimMapPos(destHex);
+		}
+		else if (msg.blockingActor->action == tig::actNone) {
+			permBlocked = true;
+		}
+	}
+
+	return permBlocked;
+}
+
+
 
 /** Rotate actor towards direction of target hex, returning true if we're facing it.*/
 bool CHexActor::isFacing(CHex& targetHex) {
@@ -110,6 +177,7 @@ bool CHexActor::moveTo(CHex& hex) {
 	glm::vec3 frameTravel = travel * dT * moveSpeed2;
 	if (glm::length(frameTravel) > remainingDist) {
 		worldPos = dest;
+		setPosition(hex);
 		buildWorldMatrix();
 		return true;
 	}
@@ -119,24 +187,53 @@ bool CHexActor::moveTo(CHex& hex) {
 	return false;
 }
 
-void CHexActor::updateMapPos(CHex& newHex) {
-	setPosition(newHex);
+/** Mark this hex as occupied so no one else tries to move into it in real-time.*/
+void CHexActor::claimMapPos(CHex& newHex) {
 	CMoveEntity msg(this, newHex);
 	send(msg);
+	destHexClaimed = true;
 }
 
-/** Returns whether hex is blocked by an actor, and if they've stopped acting. */
-TActorBlock CHexActor::isBlocked(CHex& hex) {
-	CActorBlock msg(hex);
-	send(msg);
-	if (msg.blockingActor == NULL)
-		return notBlocked;
-
-	if (msg.blockingActor->action == tig::actNone)
-		return permBlocked;
-
-	return currentBlocked;
+/** Continue the melee attack action. */
+bool CHexActor::meleeAttack(float dT) {
+	if (isFacing(targetHex)) {
+		return lungeAt(targetHex);
+	}
 }
+
+bool CHexActor::shootTarget(float dT) {
+	if (isFacing(targetHex)) {
+		CShootAt msg(hexPosition, targetHex);
+		send(msg);
+		return true;
+	}
+
+	return false;
+}
+
+/** Continue the lunge animation. */
+bool CHexActor::lungeAt(CHex& hex) {
+	float lungeDistance = animCycle2 * 2.0f - 1.0f;
+	lungeDistance = 1.0f - pow(abs(lungeDistance), 0.6f);
+	lungeDistance *= hexWidth;
+
+	THexDir targetDir = neighbourDirection(hexPosition, hex);
+
+	glm::vec3 lungeVec = directionToVec(targetDir) * lungeDistance;
+
+	worldPos = cubeToWorldSpace(hexPosition) + lungeVec;
+	buildWorldMatrix();
+
+	animCycle2 += dT * lungeSpeed;
+	if (animCycle2 > 1.0f) {
+		setPosition(hexPosition); //ensures we don't drift.
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 
 
 

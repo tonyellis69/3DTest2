@@ -10,8 +10,7 @@ CHexWorld::CHexWorld() {
 	CHexObject::setHexRenderer(&hexRenderer);
 	CGridObj::setHexRenderer(&hexRenderer);
 	CGridObj::setHexWorld(this);
-	CGameHexObj::setHexWorld(this);
-
+	
 	mapMaker.entities = &entities;
 
 	mode = normalMode;
@@ -19,6 +18,11 @@ CHexWorld::CHexWorld() {
 	fireablePanel = new CFireablePanel();
 
 	messageBus.setHandler<CAddActor>(this, &CHexWorld::onAddActor);
+	messageBus.setHandler<CShootAt>(this, &CHexWorld::onShootAt);
+	messageBus.setHandler<CDropItem>(this, &CHexWorld::onDropItem);
+	messageBus.setHandler<CRemoveEntity>(this, &CHexWorld::onRemoveEntity);
+	messageBus.setHandler<CCreateGroupItem>(this, &CHexWorld::onCreateGroupItem);
+
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
@@ -49,7 +53,9 @@ void CHexWorld::makeMap(ITigObj* tigMap) {
 
 /** Late set-up stuff. */
 void CHexWorld::start() {
-	turnPhase = chooseActionPhase;
+	turnPhase = actionPhase;// chooseActionPhase;
+
+
 	temporaryCreateHexObjects();
 
 	tempPopulateMap();
@@ -72,8 +78,6 @@ void CHexWorld::start() {
 
 
 	mainApp->addGameWindow(fireablePanel);
-
-	subscribe(playerObj->tmpShield);
 }
 
 
@@ -108,9 +112,7 @@ void CHexWorld::onKeyDown(int key, long mod) {
 
 }
 
-void CHexWorld::setPlayerShield(THexDir direction) {
-	playerObj->setShield(direction);
-}
+
 
 void CHexWorld::onMouseWheel(float delta) {
 	if (mainApp->hexKeyNowCallback(GLFW_KEY_LEFT_SHIFT)) {
@@ -120,8 +122,7 @@ void CHexWorld::onMouseWheel(float delta) {
 		if (mainApp->hexKeyNowCallback(GLFW_KEY_LEFT_CONTROL))
 			hexRenderer.dollyCamera(delta);
 		else {
-			playerObj->cycleFireable(delta);
-			fireablePanel->setFireable(playerObj->getFireable());
+			;
 		}
 	}
 }
@@ -173,10 +174,12 @@ void CHexWorld::update(float dT) {
 
 	for (auto entity : entities)
 		entity->frameUpdate(dT);
+	
+	resolvingGridObjActions();
 
 	if (turnPhase == actionPhase) { 	
-		if (resolvingGridObjActions())
-			return;
+	/*	if (resolvingGridObjActions())
+			return;*/
 
 		if (resolvingSerialActions())
 			return;
@@ -184,15 +187,19 @@ void CHexWorld::update(float dT) {
 		if (resolvingSimulActions()) {
 			return;
 		}
-	}
 
-	else if (turnPhase == chooseActionPhase) {
+		//end of action phase
 		playerObj->onTurnBegin();
 		map.updateBlocking();
 		chooseActions();
 
-
 	}
+
+	//else if (turnPhase == chooseActionPhase) {
+	//	playerObj->onTurnBegin();
+	//	map.updateBlocking();
+	//	chooseActions();
+	//}
 }
 
 bool CHexWorld::isStrategyMode() {
@@ -224,14 +231,7 @@ void CHexWorld::onLoadPower() {
 	fireablePanel->loadPower();
 }
 
-/** User has pressed the cancel-defence key. */
-void CHexWorld::onCancelDefence() {
-	//is mouse on a robot?
-	CRobot* bot = (CRobot *) map.getEntityClassAt(tig::CRobot2, hexCursor->hexPosition);
-	if (bot) {
-		playerObj->tmpShield->cancelDefence(bot);
-	}
-}
+
 
 
 /////////////public - private devide
@@ -261,11 +261,10 @@ CHex CHexWorld::getPlayerDestination() {
 void CHexWorld::temporaryCreateHexObjects() {
 	playerObj = new CPlayerObject();
 	playerObj->setLineModel("player");
-	//playerObj->setPosition(-1, 2, -1);
-	//playerObj->setMap(&map);
-//	map.add(playerObj, CHex(-1, 2 - 1));
-	map.add(playerObj, CHex(-1, 5, -4));
-	playerObj->shieldModel = hexRenderer.getLineModel("shield");
+
+//	map.add(playerObj, CHex(-5, -1, 6));
+	map.add(playerObj, CHex(-2, 2, 0));
+
 	playerObj->setTigObj(vm->getObject("player"));
 
 
@@ -291,15 +290,15 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	//popupWindows.clear();
 
 	//TO DO: this is to close defence panels. Probably temporary/ 
-	for (auto entity : entities)
-		entity->onNewMouseHex(mouseHex);
+	//for (auto entity : entities)
+	//	entity->onNewMouseHex(mouseHex);
 
 
 	auto [first, last] = map.getEntitiesAt(mouseHex);
 
 	if (mode == normalMode) {
-		for (auto it = first; it != last; it++) 
-			it->second->onMouseOverNorm();
+		for (auto it = first; it != last; it++)
+			;//	it->second->onMouseOverNorm();
 	}
 	
 	
@@ -340,12 +339,12 @@ CHexObject* CHexWorld::getCursorObj() {
 /** All entities choose their action for the coming turn. */
 void CHexWorld::chooseActions() {
 	serialActions.clear();
+	currentSerialActor = NULL;
 	for (auto entity : entities) {
-		entity->chooseTurnAction();
-		if (entity->isResolvingSerialAction())
-			serialActions.push_back(entity);
-		//TO DO: have another list for simultaneous actions
-		//rather than checl all entities
+		if (entity->isActor())
+		static_cast<CHexActor*>(entity)->chooseTurnAction();
+		//TO DO: rather than this mess, have a list of actors
+		//not just entities
 	}
 	turnPhase = playerChoosePhase;
 
@@ -356,63 +355,38 @@ void CHexWorld::chooseActions() {
 /** Ask all entities to initiate their chosen action for this turn. */
 void CHexWorld::startActionPhase() {
 	turnPhase = actionPhase;
-	//for (auto entity : entities) { //TO DO: make this redundant
-	//	entity->beginTurnAction();
-	//}
+
 }
 
 /** Begin a player right-click action. */
-void CHexWorld::beginRightClickAction() {
+void CHexWorld::rightClick() {
 	if (turnPhase != playerChoosePhase )
 		return;
-
-	CGameHexObj* clickedEntity = map.getEntityAt(hexCursor->hexPosition);
-	if (!clickedEntity || !playerObj->isNeighbour(*clickedEntity)
-		|| clickedEntity->blocks() != blocksAll)
-		/*playerObj->stackAction({ tig::actPlayerMove,NULL });*/
-		addSerialAction(playerObj, { tig::actPlayerMove, NULL });
-
+	playerObj->setAction(tig::actPlayerMove, hexCursor->hexPosition);
 	startActionPhase();
 }
 
 /** Begin a player left-click action. */
-void CHexWorld::beginLeftClickAction() {
+void CHexWorld::leftClick() {
 	if (turnPhase != playerChoosePhase)
 		return;
 
-	CGameHexObj* clickedEntity = map.getEntityAt(hexCursor->hexPosition);
-	if (clickedEntity) {
-		bool firedDefence = playerObj->fireAt(clickedEntity);
-		if (firedDefence) {
-			fireablePanel->updateDisplay();
-			return;
-		}
+	CGameHexObj* obj = getPrimaryObjectAt(hexCursor->hexPosition);
 
-		if (!playerObj->tmpWeapon->fired)
-			return;
-
-
-		if (playerObj->isNeighbour(*clickedEntity))
-			if (clickedEntity->isTigClass(tig::CItem))
-				playerObj->takeItem(*clickedEntity);
-			else
-				addSerialAction(playerObj, { tig::actPlayerMeleeAttack, clickedEntity });
-		else {
-			addSerialAction(playerObj, { tig::actPlayerShoot, hexCursor });
-		}
+	if (obj) {
+		obj->leftClick();
+		startActionPhase();
+		return;
 	}
-	else
-		addSerialAction(playerObj, { tig::actPlayerShoot, hexCursor });
-	fireablePanel->updateDisplay();
-		
+
+
+	//empty hex = shoot
+	playerObj->setAction(tig::actPlayerShoot, hexCursor->hexPosition );
 	startActionPhase();
+	return;
 }
 
 
-/** Start the player down its travel path, if any. */
-bool CHexWorld::beginPlayerMove() {
-	 return playerObj->beginMove();
-}
 
 /** If there are any gridObjects, update the lead one and return true. */
 bool CHexWorld::resolvingGridObjActions() {
@@ -427,18 +401,24 @@ bool CHexWorld::resolvingGridObjActions() {
 
 /** If any entity is performing a serial action, update the lead one and return true. */
 bool CHexWorld::resolvingSerialActions() {
-	for (auto entity = serialActions.begin(); entity != serialActions.end(); entity++) {
-		if (*entity == playerObj && playerObj->getNextAction() == tig::actPlayerMove
-			&& serialActions.size() > 1)
-			continue; //player only moves after other serial action (eg, combat)
+	if (serialList.empty())
+		return resolved;
 
-		if (!(*entity)->update(dT)) {
-			serialActions.erase(entity);
-		}
-		return true;
+	if (currentSerialActor != serialList[0]) {
+		currentSerialActor = serialList[0];
+		serialList[0]->initAction();
 	}
 
-	return false;
+	if (serialList[0]->update(dT) == resolved) {
+		serialList.erase(serialList.begin());
+		if (serialList.empty()) {
+			return resolved;
+		}
+	}
+
+
+	return unresolved;
+	
 }
 
 /** If any entity is performing a simultaneous action, update each one and return true. */
@@ -449,16 +429,15 @@ bool CHexWorld::resolvingSimulActions() {
 	}*/
 
 	if (initSimulActions) {
-
 		for (auto actor : simulList) {
-			actor->startAction();
+			actor->initAction();
 		}
 		initSimulActions = false;
 	}
 
 
 	for (auto actor = simulList.begin(); actor != simulList.end();) {
-		bool resolving = (*actor)->update2(dT);
+		bool resolving = (*actor)->update(dT);
 		if (resolving)
 			actor++;
 		else
@@ -486,7 +465,7 @@ void CHexWorld::tempPopulateMap() {
 	//robot->setPosition(2, 0, -2);
 	//robot->setMap(&map);
 	map.add(robot, CHex(2, 0, -2));
-	robot->isRobot = true;
+	//robot->isRobot = true;
 	robot->setTigObj(pRobot);
 	
 
@@ -497,11 +476,11 @@ void CHexWorld::tempPopulateMap() {
 	//robot2->setPosition(4, -1, -3);
 	//robot2->setMap(&map);
 	map.add(robot2, CHex(4, -1, -3));
-	robot2->isRobot = true;
+	//robot2->isRobot = true;
 	robot2->setTigObj(pRobot);
 
 	entities.push_back(robot);
-	//entities.push_back(robot2);
+	entities.push_back(robot2);
 
 	wrench = new CHexItem();
 	wrench->setLineModel("test");
@@ -525,12 +504,12 @@ void CHexWorld::tempPopulateMap() {
 	blaster->setTigObj(vm->getObject(tig::blaster));
 	entities.push_back(blaster);
 
-	//door = new CDoor();
-	//door->setLineModel("door");
-	//map.add(door, CHex(0, 0, 0));
-	//door->setTigObj(vm->getObject(tig::CDoor));
-	//door->setZheight(0.01f); //TO DO: sort this!!!!!
-	//entities.push_back(door);
+	door = new CDoor();
+	door->setLineModel("door");
+	map.add(door, CHex(0, 0, 0));
+	door->setTigObj(vm->getObject(tig::CDoor));
+	door->setZheight(0.01f); //TO DO: sort this!!!!!
+	entities.push_back(door);
 
 
 }
@@ -560,6 +539,7 @@ void CHexWorld::dropItem(CGameHexObj* item, CHex& location) {
 
 	item->setPosition(location);
 	entities.push_back(item);
+	map.add(item, location);
 }
 
 CGroupItem* CHexWorld::createGroupItem() {
@@ -625,14 +605,7 @@ void CHexWorld::addToSerialActions(CGameHexObj* entity) {
 	serialActions.insert(serialActions.begin(), entity);
 }
 
-/** Assign this entity the given action, and add it to
-	the list of entities with a serial action to perform. */
-void CHexWorld::addSerialAction(CGameHexObj* entity, CAction action) {
-	entity->stackAction(action);
-	serialActions.insert(serialActions.begin(), entity);
-	//TO DO: might be useful to ensure entities can only be added
-	//once, maybe use a set.
-}
+
 
 /*** Create a popup window with the given text. */
 void CHexWorld::popupMsg(const std::string& text) {
@@ -649,33 +622,61 @@ void CHexWorld::addWindow(CGameWin* win) {
 	mainApp->addGameWindow(win);
 }
 
-/** Toggle the screen mode, and make any changes necessary. */
-void CHexWorld::changeMode() {
-	if (mode == normalMode) {
-		mode = strategyMode;
-		liveLog << "\nstrategy mode!";
-		for (auto win : popupWindows)
-			win->setVisible(false);
-	}
-	else {
-		mode = normalMode;
-		liveLog << "\nnormal mode!";
-		for (auto win : popupWindows)
-			win->setVisible(true);
-	}
 
-	for (auto entity : entities) {
-		entity->onModeChange(mode == strategyMode);
-	}
-}
 
 /** Add this actor to an action list. */
 void CHexWorld::onAddActor(CAddActor& msg) {
 	if (msg.addTo == actionSimul)
 		simulList.push_back(msg.actor);
-
+	else
+		serialList.push_back(msg.actor);
 }
 
+/** Fire a bolt at the target. */
+void CHexWorld::onShootAt(CShootAt& msg) {
+	CBolt* boltTmp = (CBolt*)createBolt();
+	boltTmp->setPosition(msg.start);
+	boltTmp->fireAt(msg.target);
+}
+
+void CHexWorld::onDropItem(CDropItem& msg) {
+	dropItem(msg.item, msg.location);
+}
+
+void CHexWorld::onRemoveEntity(CRemoveEntity& msg) {
+	removeEntity(*msg.entity);
+}
+
+void CHexWorld::onCreateGroupItem(CCreateGroupItem& msg) {
+	CGroupItem* groupItem = createGroupItem();
+	groupItem->items.push_back(msg.item1);
+	groupItem->items.push_back(msg.item2);
+	removeEntity(*msg.item2);
+	groupItem->setPosition(getPlayerPosition());
+}
+
+/** Return the highest priority object at this hex. ie, the one if 
+	clicked-on we would want to respond. */
+CGameHexObj* CHexWorld::getPrimaryObjectAt(CHex& hex) {
+	TRange entities = map.getEntitiesAt(hex);
+
+	for (auto it = entities.first; it != entities.second; it++) {
+		if (it->second->isTigClass(tig::CRobot2))
+			return it->second;
+	}
+
+	for (auto it = entities.first; it != entities.second; it++) {
+		if (it->second->isTigClass(tig::CItem))
+			return it->second;
+	}
+
+	for (auto it = entities.first; it != entities.second; it++) {
+		if (it->second->isTigClass(tig::CDoor))
+			return it->second;
+	}
+
+	return NULL;
+}
 
 
 

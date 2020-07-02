@@ -2,11 +2,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>	
 
-#include "ihexworld.h"
-
 #include "hex/hex.h"
 
-#include "IGameHexArray.h"
+#include "actor.h"
 
 CDoor::CDoor() {
 	status = doorClosed;
@@ -17,7 +15,6 @@ CDoor::CDoor() {
 
 
 void CDoor::setLineModel(const std::string& name) {
-
 	CHexObject::setLineModel(name);
 	doorNode = lineModel.getNode("Door");
 }
@@ -55,9 +52,17 @@ void CDoor::frameUpdate(float dT) {
 	//check facing and opposite hexes for presence
 	CHex facingHex = getNeighbour(hexPosition, facing);
 	CHex oppositeHex = getNeighbour(hexPosition,opposite(facing));
-	CGameHexObj* blocker = map->getEntityNotSelf(this);
-	if (map->getEntityAt(facingHex) || map->getEntityAt(oppositeHex) || blocker) {
-		
+	
+	CGetActorAt facingMsg(facingHex);
+	send(facingMsg);
+
+	CGetActorAt opMsg(oppositeHex);
+	send(opMsg);
+
+	CGetActorAt blockerMsg(hexPosition,(CHexActor*) this);
+	send(blockerMsg);
+
+	if (facingMsg.actor || opMsg.actor || blockerMsg.actor) {
 		if (status == doorClosed) {
 			mBlocks = blocksAsDoor;
 			anim = 0;

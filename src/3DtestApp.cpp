@@ -204,6 +204,15 @@ void C3DtestApp::onStart() {
 	playerPhys->asleep = true;
 
 
+	//physics2 playerobj!!!!!!
+
+	playerObj2.loadMesh(shape::cubeMesh());
+	playerObj2.scale(vec3{ 40, 40, 40 });
+	playerObj2.setPos(vec3(0, 40, 0));
+	playerObj2.setMass(10);
+	Engine.modelDrawList.push_back(&playerObj2);
+	//physEng.addObj(&playerObj2);
+
 
 
 	CFractalTree fractalTree;
@@ -414,7 +423,7 @@ void C3DtestApp::keyCheck() {
 
 		//triggered if button held down
 		if (mouseButtonNow(GLFW_MOUSE_BUTTON_RIGHT)) {
-			hexWorld.beginRightClickAction();
+			hexWorld.rightClick();
 		}
 
 	/*	if (keyNow('K')) {
@@ -491,10 +500,19 @@ void C3DtestApp::keyCheck() {
 			}
 			else {
 
-
-				vec3 dir = playerObj.povCam.getTargetDir();
+				//old physics terrain1
+			/*	vec3 dir = playerObj.povCam.getTargetDir();
 				vec3 groundNormal = playerPhys->currentContactNormal;
-				vec3 eyeLine = playerObj.povCam.getTargetDir();
+				vec3 eyeLine = playerObj.povCam.getTargetDir();*/
+
+				//physics2 terrain2
+				vec3 dir = playerObj2.povCam.getTargetDir();
+				vec3 groundNormal = glm::vec3(0, 1, 0); // playerPhys->currentContactNormal;
+				vec3 eyeLine = playerObj2.povCam.getTargetDir();
+
+
+
+
 				vec3 flip;
 
 				if (keyNow(' ') && physCube == NULL) {
@@ -514,7 +532,7 @@ void C3DtestApp::keyCheck() {
 					//TO DO: 0.35 causes bounce on steep ascent when looking up. 0.25f does not. 
 					//probably doesn't even need fixing as those aren't realistic conditions
 					//*Setting y=0 fixed it... look into scrapping the whole velocity-parallel-to-the-ground thing
-
+					playerObj2.velocity += moveDir * 0.35f;
 
 
 				}
@@ -525,6 +543,8 @@ void C3DtestApp::keyCheck() {
 					moveDir = cross(flip, groundNormal) / length(groundNormal);
 					moveDir = cross(groundNormal, moveDir) / length(groundNormal);
 					playerPhys->velocity += moveDir * 0.4f;
+					playerObj2.velocity += moveDir * 0.4f;
+					
 				}
 				if (keyNow('A')) {
 					flip.x = eyeLine.z;
@@ -532,6 +552,7 @@ void C3DtestApp::keyCheck() {
 					moveDir = cross(flip, groundNormal) / length(groundNormal);
 					moveDir = cross(groundNormal, moveDir) / length(groundNormal);
 					playerPhys->velocity += moveDir * 0.4f;
+					playerObj2.velocity += moveDir * 0.4f;
 				}
 				if (keyNow('D')) {
 					flip.x = -eyeLine.z;
@@ -539,6 +560,7 @@ void C3DtestApp::keyCheck() {
 					moveDir = cross(flip, groundNormal) / length(groundNormal);
 					moveDir = cross(groundNormal, moveDir) / length(groundNormal);
 					playerPhys->velocity += moveDir * 0.4f;
+					playerObj2.velocity += moveDir * 0.4f;
 				}
 
 			}
@@ -636,38 +658,16 @@ void C3DtestApp::keyCheck() {
 void C3DtestApp::onKeyDown(int key, long mod) {
 	if (appMode == hexMode) {
 
-		if (key == GLFW_KEY_KP_6) {
-			hexWorld.setPlayerShield(hexEast);
-		}
-		else if (key == GLFW_KEY_KP_3) {
-			hexWorld.setPlayerShield(hexSE);
-		}
-		else if (key == GLFW_KEY_KP_1) {
-			hexWorld.setPlayerShield(hexSW);
-		}
-		else if (key == GLFW_KEY_KP_4) {
-			hexWorld.setPlayerShield(hexWest);
-		}
-		else if (key == GLFW_KEY_KP_7) {
-			hexWorld.setPlayerShield(hexNW);
-		}
-		else if (key == GLFW_KEY_KP_9) {
-			hexWorld.setPlayerShield(hexNE);
-		}
-
 		if (key == 'C')
 			hexWorld.onCycleAuto();
 		if (key == 'L')
 			hexWorld.onLoadPower();
 		if (key == 'X')
-			hexWorld.onCancelDefence();
+			;// hexWorld.onCancelDefence();
 
 		hexWorld.onKeyDown(key, mod);
 		return;
 	}
-
-
-
 
 	if (key == 'R' && mod == GLFW_MOD_CONTROL) {
 		if (appMode == textMode) {
@@ -697,12 +697,19 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 		fpsOn = !fpsOn;
 		if (fpsOn) {
 
-			renderer.setCurrentCamera(&playerObj.povCam);
-			terrain2.setViewpoint(playerObj.getPos());
-			playerPhys->asleep = false;
+			//renderer.setCurrentCamera(&playerObj.povCam);
+			//terrain2.setViewpoint(playerObj.getPos());
+			//playerPhys->asleep = false;
+
+			//!!!!!!!!!!!!!!!!!!Look into this:
+			terrain2.setViewpoint(playerObj2.getPos());
+			//renderer.setCurrentCamera(&playerObj2.povCam);
+			physEng.addObj(&playerObj2);
 		}
-		else
+		else {
 			renderer.setCurrentCamera(renderer.defaultCamera);
+			physEng.removeObj(&playerObj2);
+		}
 		//EatKeys();
 
 	}
@@ -779,13 +786,13 @@ void C3DtestApp::onKeyUp(int key, long mod) {
 
 void C3DtestApp::onMouseButton(int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-		hexWorld.beginRightClickAction();
+		hexWorld.rightClick();
 	}
 	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 		if (mods == GLFW_MOD_CONTROL)
 			hexWorld.onCtrlLMouse();
 		else
-			hexWorld.beginLeftClickAction();
+			hexWorld.leftClick();
 	}
 };
 
@@ -1166,6 +1173,7 @@ void C3DtestApp::Update() {
 
 		vec3 pos;
 		pos = playerObj.getPos();
+		pos = playerObj2.getPos();
 
 
 		bvec3 outsideChunkBoundary = glm::greaterThan(glm::abs(pos), vec3(chunkDist));

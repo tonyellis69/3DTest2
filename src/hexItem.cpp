@@ -1,25 +1,26 @@
 #include "hexItem.h"
-#include "groupItem.h"
 
-#include "IHexWorld.h"
 
 CHexItem::CHexItem() {
 	mBlocks = blocksNone;
 }
 
-bool CHexItem::onLeftClick() {
-	//if (isNeighbour(*hexWorld->getPlayerObj())) {
-	//	hexWorld->getPlayerObj()->takeItem(*this);
-	//	return true;
-	//}
-	return false;
+void CHexItem::leftClick() {
+	CGetPlayerPos msg;
+	send(msg);
+
+	if (isNeighbour(msg.position)) {
+		CTakeItem takeMsg(this);
+		send(takeMsg);
+	}
+
 }
 
 /** Respond to another item being dropped on us. */
 void CHexItem::droppedOnBy(CGameHexObj& item) {
-	CGroupItem* groupItem = hexWorld->createGroupItem();
-	groupItem->items.push_back(&item);
-	groupItem->items.push_back(this);
-	hexWorld->removeEntity(*this);
-	groupItem->setPosition(hexWorld->getPlayerPosition());
+	CGetPlayerPos posMsg;
+	send(posMsg);
+
+	CCreateGroupItem msg((CHexItem*)&item, this, posMsg.position);
+	send(msg);
 }

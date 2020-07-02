@@ -6,31 +6,47 @@
 
 #include "gamehextObj.h"
 
-enum TActorBlock {notBlocked, currentBlocked, permBlocked};
+enum TActorBlock {notBlocked, currentBlocked, permBlocked, unknownBlocked};
 
 /** A class encapuslating the movement code for game entities. */
 class CHexActor : public CGameHexObj {
 public:
-	void startAction();
-	bool update2(float dT);
+	virtual void chooseTurnAction() {}
+	void setAction(int actId, CHex& targetHex = CHex(-1,-1,-1));
+	virtual void initAction();
+	virtual bool update(float dT);
 	bool isActor() { return true; }
 
 protected:
 	bool navigatePath(float dT);
+	bool meleeAttack(float dT);
+	bool shootTarget(float dT);
+
+	bool checkForBlock(CHex& destHex);
 
 
 //low level funcs
+
 	bool isFacing(CHex& hex);
 	bool moveTo(CHex& hex);
-	void updateMapPos(CHex& newHex);
-	TActorBlock isBlocked(CHex& hex);
+	void claimMapPos(CHex& newHex);
+
+
+
+	bool lungeAt(CHex& hex);
+
 
 
 	float dT;
 	int action = tig::actNone;
-	THexList travelPath2; ///<A sequence of hexes to travel down.
+	//THexList travelPath; ///<A sequence of hexes to travel down.
 	float moveSpeed2 = 7.0f;
 	float turnSpeed = 10;
+	int movePoints2; ///<Number of hexes we can travel in one move.
+	bool destHexClaimed = false;
+
+	float animCycle2;
+	CHex targetHex; ///<Target hex, if any, for the current action.
 };
 
 enum TAction {actionSerial, actionSimul};
@@ -38,6 +54,7 @@ class CAddActor : public CMsg {
 public:
 	CAddActor(CHexActor* add, TAction listType) : actor(add),
 	 addTo(listType) {};
+
 	CHexActor* actor;
 	TAction addTo;
 };
@@ -47,5 +64,15 @@ public:
 	CActorBlock(CHex& h) : hex(h) {}
 	CHex hex;
 	CHexActor* blockingActor = NULL;
+};
+
+class CGetActorAt : public CMsg {
+public:
+	CGetActorAt(CHex& h, CHexActor* n = NULL)
+		: hex(h), notActor(n) {}
+
+	CHex hex;
+	CHexActor* actor = NULL;
+	CHexActor* notActor;
 };
 

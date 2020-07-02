@@ -240,7 +240,7 @@ public:
 	CGameTextWin* defencePopWin = NULL; ///<Handle for popup window showing defence details on mouseover
 	CGameTextWin* statusPopWin = NULL; ///<Handle for popup window showing status details on mouseover
 
-
+	CPlayerObj2 playerObj2;
 };
 
 const float yawAng = 0.22f;

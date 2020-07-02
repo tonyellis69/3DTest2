@@ -4,6 +4,7 @@
 
 #include "messaging/msg.h"
 
+
 #include "hex/hex.h"
 
 enum TPopup { defencePopup, statusPopup };
@@ -29,5 +30,27 @@ public:
 	CHex start;
 	CHex end;
 	THexList travelPath;
+};
+
+class CGetLineEnd : public CMsg {
+public:
+	CGetLineEnd(CHex& A, CHex& B) : start(A), end(B) {}
+	CHex start;
+	CHex end;
+};
+
+class CShootAt : public CMsg {
+public:
+	CShootAt(CHex& s, CHex& t) : start(s), target(t) {}
+	CHex start;
+	CHex target;
+};
+
+class CSetPlayerAction : public CMsg {
+public:
+	CSetPlayerAction(int actId, CHex t = CHex(-1, -1, -1))
+		: action(actId), target(t) {}
+	int action;
+	CHex target;
 };
 

@@ -42,12 +42,18 @@ public:
 	CGameHexObj* getEntityClassAt(int classId, CHex& hex);
 	CGameHexObj* getBlockingEntityAt(CHex& hex);
 	CGameHexObj* getEntityNotSelf(CGameHexObj* self);
+
+	CHexActor* getRobotAt(CHex& hex);
+
+
 	void updateBlocking();
 	void smartBlockClear( CHex& pos);
 
 	void onGetTravelPath(CGetTravelPath& msg);
 	void onMoveEntity(CMoveEntity& msg);
 	void onActorBlockCheck(CActorBlock& msg);
+	void onGetLineEnd(CGetLineEnd& msg);
+	void onGetActorAt(CGetActorAt& msg);
 
 	TEntities* entities; ///<To check for collision against.
 

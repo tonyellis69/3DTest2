@@ -1,6 +1,5 @@
 #include "gameHexArray.h"
 
-//#include "gamehextObj.h"
 
 CGameHexArray::CGameHexArray() {
 	}
@@ -9,6 +8,8 @@ void CGameHexArray::setMessageHandlers() {
 	messageBus.setHandler< CGetTravelPath>(this, &CGameHexArray::onGetTravelPath);
 	messageBus.setHandler< CMoveEntity>(this, &CGameHexArray::onMoveEntity);
 	messageBus.setHandler< CActorBlock>(this, &CGameHexArray::onActorBlockCheck);
+	messageBus.setHandler< CGetLineEnd>(this, &CGameHexArray::onGetLineEnd);
+	messageBus.setHandler< CGetActorAt>(this, &CGameHexArray::onGetActorAt);
 }
 
 void CGameHexArray::setEntityList(TEntities* pEntities) {
@@ -78,7 +79,6 @@ void CGameHexArray::moveEntity(CGameHexObj* entity, CHex& newHex) {
 /** Add this entity to the map at the given position. */
 void CGameHexArray::add(CGameHexObj* entity, CHex& hexPos) {
 	entityMap.insert({ hexPos, entity });
-	entity->setMap(this);
 	entity->setPosition(hexPos);
 }
 
@@ -126,6 +126,10 @@ CGameHexObj* CGameHexArray::getEntityNotSelf(CGameHexObj* self) {
 	}
 
 	return NULL;
+}
+
+CHexActor* CGameHexArray::getRobotAt(CHex& hex) {
+	return (CHexActor*)getEntityClassAt(tig::CRobot2, hex);
 }
 
 /** Refresh the map's blocking information. */
@@ -201,6 +205,20 @@ void CGameHexArray::onActorBlockCheck(CActorBlock& msg) {
 	for (auto it = first; it != last; it++) {
 		if (it->second->isActor()) {
 			msg.blockingActor = (CHexActor*)it->second;
+			return;
+		}
+	}
+}
+
+void CGameHexArray::onGetLineEnd(CGetLineEnd& msg) {
+	msg.end = findLineEnd(msg.start, msg.end);
+}
+
+void CGameHexArray::onGetActorAt(CGetActorAt& msg) {
+	auto [first, last] = getEntitiesAt(msg.hex);
+	for (auto it = first; it != last; it++) {
+		if (it->second->isActor() &&  it->second != msg.notActor) {
+			msg.actor = (CHexActor*)it->second;
 			return;
 		}
 	}

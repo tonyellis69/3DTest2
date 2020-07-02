@@ -55,10 +55,9 @@ public:
 	void makeMap(ITigObj* tigMap);
 	void start();
 	void moveCamera(glm::vec3& direction);
-	void beginRightClickAction();
-	void beginLeftClickAction();
+	void rightClick();
+	void leftClick();
 	void onKeyDown(int key, long mod);
-	void setPlayerShield(THexDir direction);
 	void onMouseWheel(float delta);
 	void onMouseMove(int x, int y, int key);
 	void draw();
@@ -72,7 +71,6 @@ public:
 
 	void onCycleAuto();
 	void onLoadPower();
-	void onCancelDefence();
 
 private:
 	THexList calcPath(CHex& start, CHex& end);
@@ -90,7 +88,6 @@ private:
 	void chooseActions();
 	void startActionPhase();
 
-	bool beginPlayerMove();
 
 	bool resolvingGridObjActions();
 	bool resolvingSerialActions();
@@ -116,14 +113,18 @@ private:
 	CGridObj* createBolt();
 
 	void addToSerialActions(CGameHexObj* entity);
-	void addSerialAction(CGameHexObj* entity, CAction action);
 
 	void popupMsg(const std::string& text);
 	void addWindow(CGameWin* win);
 
-	void changeMode();
 
 	void onAddActor(CAddActor& msg);
+	void onShootAt(CShootAt& msg);
+	void onDropItem(CDropItem& msg);
+	void onRemoveEntity(CRemoveEntity& msg);
+	void onCreateGroupItem(CCreateGroupItem& msg);
+
+	CGameHexObj* getPrimaryObjectAt(CHex& hex);
 
 
 	CGameHexArray map;
@@ -176,6 +177,8 @@ private:
 
 	std::vector<CHexActor*> simulList; ///< Actors performing simultaneous actions this turn
 	bool initSimulActions = true;
+	std::vector<CHexActor*> serialList;
+	CHexActor* currentSerialActor = NULL;
 };
 
 

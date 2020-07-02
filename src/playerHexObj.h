@@ -1,9 +1,8 @@
 #pragma once
 
-//#include "gamehextObj.h"
+#include "hexItem.h"
 #include "actor.h"
 
-#include "fireable.h"
 #include "powerSupply.h"
 
 /** A class describing characteristics and behaviour unique to
@@ -11,41 +10,26 @@
 class CPlayerObject : public CHexActor {
 public:
 	CPlayerObject();
-	void stackAction(CAction chosenAction);
+	void initAction();
 	bool update(float dT);
-	void beginLunge(CGameHexObj& target);
 	void hitTarget();
 	void receiveDamage(CGameHexObj& attacker, int damage);
 	void draw();
-	void setShield(THexDir shieldDir);
 	void takeItem(CGameHexObj& item);
 	void showInventory();
 	void dropItem(int itemNo);
 	void equipItem(int itemNo);
-	void fireShot(CHex& target);
-	void cycleFireable(float delta);
-	bool fireAt(CGameHexObj* target);
-	CFireable* getFireable() {
-		return fireables[fireable];
-	}
 	void onTurnBegin();
 	void onTurnEnd();
-
 	void onGetPlayerPos(CGetPlayerPos& msg);
+	void onSetPlayerAction(CSetPlayerAction& msg);
+	void onTakeItem(CTakeItem& msg);
 
 
-	CBuf* shieldBuf;
-	CLineModel shieldModel;
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
-
-	int fireable; ///<What the player is currently wielding.
-
-	std::vector<CFireable*> fireables; ///<Currently in inventory.
-	CShield* tmpShield;
-	CWeapon* tmpWeapon;
 	
 	CPowerSupply* psu;
 
 private:
-	void initialiseCurrentAction();
+
 };
