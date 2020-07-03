@@ -333,7 +333,7 @@ void C3DtestApp::onStart() {
 
 	if (appMode == hexMode)
 		initHexWorld();
-
+	makePowerQueueWin();
 
 	worldUI.start();
 
@@ -396,6 +396,7 @@ void C3DtestApp::onStart() {
 
 
 	messageBus.setHandler<CPopupText>(this, &C3DtestApp::onPopupText); 
+	messageBus.setHandler<CSysMsg>(this, &C3DtestApp::onSysMessage);
 
 
 
@@ -659,11 +660,14 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 	if (appMode == hexMode) {
 
 		if (key == 'C')
-			hexWorld.onCycleAuto();
+			;// hexWorld.onCycleAuto();
 		if (key == 'L')
-			hexWorld.onLoadPower();
+			;// hexWorld.onLoadPower();
 		if (key == 'X')
 			;// hexWorld.onCancelDefence();
+
+		if (key == GLFW_KEY_LEFT_CONTROL)
+			hexWorld.powerModeToggle();
 
 		hexWorld.onKeyDown(key, mod);
 		return;
@@ -1674,6 +1678,18 @@ glm::i32vec2 C3DtestApp::getMousePos() {
 	return CBaseApp::getMousePos();
 }
 
+void C3DtestApp::makePowerQueueWin() {
+	powerQueueWin = new CGameTextWin();
+	powerQueueWin->setLocalPos(100, style::mainWinCtrlBorder + 10);
+
+	powerQueueWin->setSize(style::powerQueueWinSize);
+	powerQueueWin->anchorRight = style::mainWinCtrlBorder;
+	powerQueueWin->setTheme("smallNormal");
+	GUIroot.Add(powerQueueWin);
+
+	powerQueueWin->addText("\n\n3\n\n\n7\n\n\n3\n\n\n5\n\n\n7\n\nRobot A\n4\n\nPlayer\n6\n\nRobot B\n7");
+}
+
 
 
 /** Trap mousewheel events for our own use. */
@@ -1727,6 +1743,11 @@ void C3DtestApp::onPopupText(CPopupText& msg) {
 		statusPopWin->addText(msg.text);
 		statusPopWin->setVisible(true);
 	}
+}
+
+/** Handle generic system messages .*/
+void C3DtestApp::onSysMessage(CSysMsg& msg) {
+	powerQueueWin->setVisible(msg.isOn);
 }
 
 

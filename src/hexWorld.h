@@ -12,9 +12,6 @@
 
 #include "hex/hexRenderer.h"
 
-#include "IHexWorld.h"
-
-#include "gamehextObj.h"
 #include "robot.h"
 #include "playerHexObj.h"
 #include "hexItem.h"
@@ -24,8 +21,6 @@
 
 #include "tigConst.h"
 
-#include "gameTextWin.h"
-
 #include "UI/GUIlabel2.h"
 
 //#include "messaging/events.h"
@@ -34,18 +29,17 @@
 
 #include "door.h" //hopefully *temporary* 
 
-#include "shieldPanel.h"
+#include "gameTextWin.h"
 
 #include "hexMsg.h"
   
 enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
 
-enum TScreenMode { strategyMode, normalMode }; //TO DO scrap!!!
 
 
 /** A class encapsulating the hex-based representation of the world. */
 class IMainApp;
-class CHexWorld :  public IHexWorld, public CGameEventSubject,
+class CHexWorld :  public CGameEventSubject,
 	public CMessenger, public CTigObjptr {
 public:
 	CHexWorld();
@@ -63,19 +57,15 @@ public:
 	void draw();
 	void setAspectRatio(glm::vec2& ratio);
 	void update(float dt);
-	bool isStrategyMode();
-	bool isActionPhase();
 
 	void onCtrlLMouse();
 	void onCtrlRelease();
 
-	void onCycleAuto();
-	void onLoadPower();
+	void powerModeToggle();
 
 private:
 	THexList calcPath(CHex& start, CHex& end);
-	CHex getPlayerPosition();
-	CHex getPlayerDestination();
+
 	void temporaryCreateHexObjects();
 	void onNewMouseHex(CHex& mouseHex);
 	THexList* getCursorPath();
@@ -112,10 +102,9 @@ private:
 
 	CGridObj* createBolt();
 
-	void addToSerialActions(CGameHexObj* entity);
 
 	void popupMsg(const std::string& text);
-	void addWindow(CGameWin* win);
+;
 
 
 	void onAddActor(CAddActor& msg);
@@ -147,10 +136,7 @@ private:
 
 
 	TEntities entities; ///<Live objects in the hex world.
-	//TEntities playerItems; ///<Items temporarily taken out of hex world by player
-	TEntities serialActions; ///<Entities performing serial actions this round.
-	TEntities simulActions; ///<Entities performing simultaneous actions this round.
-	
+		
 	std::vector<CGridObj*> gridObjects;
 
 	TTurnPhase turnPhase;
@@ -171,14 +157,13 @@ private:
 
 	THexList cursorPath;
 
-	TScreenMode mode;
-
-	CFireablePanel* fireablePanel;
 
 	std::vector<CHexActor*> simulList; ///< Actors performing simultaneous actions this turn
 	bool initSimulActions = true;
 	std::vector<CHexActor*> serialList;
 	CHexActor* currentSerialActor = NULL;
+
+	bool powerMode = true;
 };
 
 

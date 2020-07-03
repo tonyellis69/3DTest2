@@ -9,13 +9,8 @@
 CHexWorld::CHexWorld() {
 	CHexObject::setHexRenderer(&hexRenderer);
 	CGridObj::setHexRenderer(&hexRenderer);
-	CGridObj::setHexWorld(this);
 	
 	mapMaker.entities = &entities;
-
-	mode = normalMode;
-
-	fireablePanel = new CFireablePanel();
 
 	messageBus.setHandler<CAddActor>(this, &CHexWorld::onAddActor);
 	messageBus.setHandler<CShootAt>(this, &CHexWorld::onShootAt);
@@ -55,7 +50,6 @@ void CHexWorld::makeMap(ITigObj* tigMap) {
 void CHexWorld::start() {
 	turnPhase = actionPhase;// chooseActionPhase;
 
-
 	temporaryCreateHexObjects();
 
 	tempPopulateMap();
@@ -75,9 +69,6 @@ void CHexWorld::start() {
 	//hexPosLbl->anchorBottom = 20;
 	hexPosLbl->setTextColour(glm::vec4( 1.0f, 1.0f, 1.0f, 1.0f ));
 	mainApp->addGameWindow(hexPosLbl);
-
-
-	mainApp->addGameWindow(fireablePanel);
 }
 
 
@@ -141,7 +132,7 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 
 
 void CHexWorld::draw() {
-	if (turnPhase == playerChoosePhase) {
+	if (turnPhase == playerChoosePhase && !powerMode) {
 		hexRenderer.draw();
 		hexCursor->draw();
 		hexRenderer.drawPath(&cursorPath, glm::vec4{ 0.6, 0.4, 1, 0.1f }, glm::vec4{ 0.6, 0.4, 1, 0.75f });
@@ -178,8 +169,6 @@ void CHexWorld::update(float dT) {
 	resolvingGridObjActions();
 
 	if (turnPhase == actionPhase) { 	
-	/*	if (resolvingGridObjActions())
-			return;*/
 
 		if (resolvingSerialActions())
 			return;
@@ -195,25 +184,12 @@ void CHexWorld::update(float dT) {
 
 	}
 
-	//else if (turnPhase == chooseActionPhase) {
-	//	playerObj->onTurnBegin();
-	//	map.updateBlocking();
-	//	chooseActions();
-	//}
 }
 
-bool CHexWorld::isStrategyMode() {
-	return mode == strategyMode;
-}
-
-bool CHexWorld::isActionPhase() {
-	return turnPhase == actionPhase;
-}
 
 /** User has triggered the ctrl left mouse  event. */
 void CHexWorld::onCtrlLMouse() {
 	
-
 }
 
 /** User has released set-defence key. */
@@ -221,16 +197,14 @@ void CHexWorld::onCtrlRelease() {
 	//fireablePanel->onRelease();
 }
 
-/** Cycle the auto setting of the current fireable. */
-void CHexWorld::onCycleAuto() {
-	fireablePanel->cycleAuto();
+/** Player has pressed the power mode on/off key. */
+void CHexWorld::powerModeToggle() {
+	//TO DO: call func on QPS
+	//for now, just do this
+	powerMode = !powerMode;
+	CSysMsg msg(powerMode);
+	send(msg);
 }
-
-/** Load the next available power into the gun, reserving it. */
-void CHexWorld::onLoadPower() {
-	fireablePanel->loadPower();
-}
-
 
 
 
@@ -241,20 +215,6 @@ THexList CHexWorld::calcPath(CHex& start, CHex& end) {
 	return map.aStarPath(start,end);
 }
 
-
-
-
-
-
-/** Because lots of code want to know. */
-CHex CHexWorld::getPlayerPosition() {
-	return playerObj->hexPosition;
-}
-
-
-CHex CHexWorld::getPlayerDestination() {
-	return playerObj->destination;
-}
 
 
 /** TO DO: temporary.This should not be hard-coded, but spun from a level-maker. */
@@ -284,24 +244,6 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 
 	cursorPath = calcPath(playerObj->hexPosition, hexCursor->hexPosition);
 
-
-	//for (auto win : popupWindows)
-	//	delete win;
-	//popupWindows.clear();
-
-	//TO DO: this is to close defence panels. Probably temporary/ 
-	//for (auto entity : entities)
-	//	entity->onNewMouseHex(mouseHex);
-
-
-	auto [first, last] = map.getEntitiesAt(mouseHex);
-
-	if (mode == normalMode) {
-		for (auto it = first; it != last; it++)
-			;//	it->second->onMouseOverNorm();
-	}
-	
-	
 
 	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
 	glm::i32vec2 offset = cubeToOffset(mouseHex);
@@ -338,11 +280,10 @@ CHexObject* CHexWorld::getCursorObj() {
 
 /** All entities choose their action for the coming turn. */
 void CHexWorld::chooseActions() {
-	serialActions.clear();
 	currentSerialActor = NULL;
 	for (auto entity : entities) {
 		if (entity->isActor())
-		static_cast<CHexActor*>(entity)->chooseTurnAction();
+			static_cast<CHexActor*>(entity)->chooseTurnAction();
 		//TO DO: rather than this mess, have a list of actors
 		//not just entities
 	}
@@ -355,13 +296,16 @@ void CHexWorld::chooseActions() {
 /** Ask all entities to initiate their chosen action for this turn. */
 void CHexWorld::startActionPhase() {
 	turnPhase = actionPhase;
-
 }
 
 /** Begin a player right-click action. */
 void CHexWorld::rightClick() {
 	if (turnPhase != playerChoosePhase )
 		return;
+
+	if (powerMode)
+		return;
+
 	playerObj->setAction(tig::actPlayerMove, hexCursor->hexPosition);
 	startActionPhase();
 }
@@ -372,6 +316,11 @@ void CHexWorld::leftClick() {
 		return;
 
 	CGameHexObj* obj = getPrimaryObjectAt(hexCursor->hexPosition);
+
+	if (powerMode)
+		return;
+	//TO DO: Instead, we'll have a special powerMode leftClick func to call
+	//during powermode, which only robots and player need implememnt
 
 	if (obj) {
 		obj->leftClick();
@@ -416,17 +365,12 @@ bool CHexWorld::resolvingSerialActions() {
 		}
 	}
 
-
 	return unresolved;
-	
 }
 
 /** If any entity is performing a simultaneous action, update each one and return true. */
 bool CHexWorld::resolvingSimulActions() {
 	bool stillResolving = false;
-	/*for (auto entity : entities) {
-		stillResolving |= entity->update(dT);
-	}*/
 
 	if (initSimulActions) {
 		for (auto actor : simulList) {
@@ -544,7 +488,6 @@ void CHexWorld::dropItem(CGameHexObj* item, CHex& location) {
 
 CGroupItem* CHexWorld::createGroupItem() {
 	CGroupItem* groupItem = new CGroupItem();
-	//groupItem->setBuffer(hexRenderer.getBuffer("test"));
 	groupItem->setLineModel("test");
 	groupItem->setTigObj(vm->getObject(tig::CGroupItem));
 	entities.push_back(groupItem);
@@ -594,15 +537,9 @@ void CHexWorld::removeDeletedEntities() {
 
 CGridObj* CHexWorld::createBolt() {
 	CBolt* bolt = new CBolt();
-	bolt->map = &map;
-	//bolt->setBuffer(hexRenderer.getBuffer("bolt"));
 	bolt->setLineModel(hexRenderer.getLineModel("bolt"));
 	gridObjects.push_back(bolt);
 	return bolt;
-}
-
-void CHexWorld::addToSerialActions(CGameHexObj* entity) {
-	serialActions.insert(serialActions.begin(), entity);
 }
 
 
@@ -616,12 +553,6 @@ void CHexWorld::popupMsg(const std::string& text) {
 	textWin->positionAtMousePointer();
 	popupWindows.push_back(textWin);
 }
-
-/** Add this window to the main GUI. */
-void CHexWorld::addWindow(CGameWin* win) {
-	mainApp->addGameWindow(win);
-}
-
 
 
 /** Add this actor to an action list. */
@@ -652,7 +583,7 @@ void CHexWorld::onCreateGroupItem(CCreateGroupItem& msg) {
 	groupItem->items.push_back(msg.item1);
 	groupItem->items.push_back(msg.item2);
 	removeEntity(*msg.item2);
-	groupItem->setPosition(getPlayerPosition());
+	groupItem->setPosition(playerObj->hexPosition);
 }
 
 /** Return the highest priority object at this hex. ie, the one if 

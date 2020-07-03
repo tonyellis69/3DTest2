@@ -149,9 +149,6 @@
     <ClInclude Include="src\bolt.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\IHexWorld.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\gameWin.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -159,9 +156,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ImainApp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\IGameHexArray.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\door.h">

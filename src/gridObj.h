@@ -5,19 +5,17 @@
 
 #include "renderer/buf.h"
 #include "hex/IHexRenderer.h"
-#include "IGameHexArray.h"
+
 #include "hex/hex.h"
 
 #include "hex/lineModel.h"
 
 
 /** A base class for 3D grid objects. */
-class IHexWorld;
 class CGridObj {
 public:
 	CGridObj();
 	static void setHexRenderer(IHexRenderer* rendrObj);
-	static void setHexWorld(IHexWorld* obj);
 	void setZheight(float height);
 	void setLineModel(CLineModel& lineModel);
 	void setPosition(int x, int y);
@@ -32,7 +30,6 @@ public:
 	glm::vec3 worldPos; ///<Position in world space.
 	CLineModel lineModel;
 
-	IGameHexArray* map; ///<The map this object exists in.
 
 protected:
 	void buildWorldMatrix();
@@ -47,12 +44,9 @@ protected:
 	float zHeight; ///<Height above XY plane where drawn.
 
 
-	inline static IHexWorld* hexWorld;
-
 private:
 	inline static IHexRenderer* hexRendr;
 
 	float proximityCutoff;
 
-	glm::vec4 colour;
 };

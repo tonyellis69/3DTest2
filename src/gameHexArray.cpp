@@ -223,3 +223,7 @@ void CGameHexArray::onGetActorAt(CGetActorAt& msg) {
 		}
 	}
 }
+
+void CGameHexArray::onGetObjectAt(CGetObjectAt& msg) {
+	msg.obj = getEntityAt(msg.hex);
+}

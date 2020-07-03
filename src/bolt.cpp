@@ -1,7 +1,7 @@
 #include "bolt.h"
 
 #include "gamehextObj.h"
-#include "IHexWorld.h"
+//#include "IHexWorld.h"
 CBolt::CBolt() {
 	moveSpeed = 30.0f;
 	
@@ -25,16 +25,15 @@ bool CBolt::update(float dT) {
 	bool resolving = updateMove(dT);
 
 	if (!resolving) {
-		CGameHexObj* targetObj = map->getEntityAt(worldSpaceToHex(worldPos));
+		CGetObjectAt targetMsg(worldSpaceToHex(worldPos));
+		send(targetMsg);
+		CGameHexObj* targetObj = targetMsg.obj;
 		if (targetObj) {
-			targetObj->receiveDamage(*hexWorld->getPlayerObj(), 1);
+			CGetPlayerObj msg;
+			send(msg);
+			targetObj->receiveDamage(*msg.playerObj, 1);
 		}
-
-		//hexWorld->removeGridObj(*this);
-
 	}
-
-
 	return resolving;
 }
 

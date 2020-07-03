@@ -7,6 +7,14 @@
 
 #include "hex/hex.h"
 
+
+class CSysMsg : public CMsg {
+public:
+	CSysMsg(bool b) : isOn(b) {}
+	bool isOn;
+};
+
+
 enum TPopup { defencePopup, statusPopup };
 
 class CPopupText : public CMsg {

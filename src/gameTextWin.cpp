@@ -54,6 +54,8 @@ void CGameTextWin::resize(int w, int h) {
 	richText->resize(w - 2 * style::gameWinCtrBorder.x, h - 2 * style::gameWinCtrBorder.y);
 }
 
+
+
 /** Position with top left corner at current mouse position,
 adjusting if this places the window outside the screen boundary. */
 void CGameTextWin::positionAtMousePointer() {

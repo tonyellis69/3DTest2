@@ -20,9 +20,7 @@ void CGridObj::setHexRenderer(IHexRenderer* rendrObj) {
 	hexRendr = rendrObj;
 }
 
-void CGridObj::setHexWorld(IHexWorld* obj) {
-	hexWorld = obj;
-}
+
 
 /** Set the height at which this object is drawn. */
 void CGridObj::setZheight(float height) {

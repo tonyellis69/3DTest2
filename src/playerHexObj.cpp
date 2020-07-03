@@ -4,8 +4,6 @@
 
 #include "hexItem.h"
 
-#include "IHexWorld.h" //NB can scrap once item handling tidied to use messages
-
 
 
 CPlayerObject::CPlayerObject() {
@@ -14,6 +12,7 @@ CPlayerObject::CPlayerObject() {
 	messageBus.setHandler<CGetPlayerPos>(this, &CPlayerObject::onGetPlayerPos);
 	messageBus.setHandler<CSetPlayerAction>(this, &CPlayerObject::onSetPlayerAction);
 	messageBus.setHandler<CTakeItem>(this, &CPlayerObject::onTakeItem);
+	messageBus.setHandler<CGetPlayerObj>(this, &CPlayerObject::onGetPlayerObj);
 }
 
 /** Do the necessary one-off prep work for the given action. */
@@ -161,6 +160,10 @@ void CPlayerObject::onSetPlayerAction(CSetPlayerAction& msg) {
 
 void CPlayerObject::onTakeItem(CTakeItem& msg) {
 	takeItem(*msg.item);
+}
+
+void CPlayerObject::onGetPlayerObj(CGetPlayerObj& msg) {
+	msg.playerObj = this;
 }
 
 

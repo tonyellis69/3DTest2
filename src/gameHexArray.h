@@ -9,7 +9,6 @@
 //#include "gamehextObj.h"
 #include "actor.h" //replaces the above
 
-#include "IGameHexArray.h"
 
 #include "messaging/messenger.h"
 
@@ -26,7 +25,7 @@ using TRange = std::pair<TMapIt, TMapIt>;
 
 /** Extend the hexArray to check for game entities when
 	pathfinding. */
-class CGameHexArray : public CHexArray, public IGameHexArray, 
+class CGameHexArray : public CHexArray, 
 	public CMessenger{
 public:
 	CGameHexArray();
@@ -54,6 +53,7 @@ public:
 	void onActorBlockCheck(CActorBlock& msg);
 	void onGetLineEnd(CGetLineEnd& msg);
 	void onGetActorAt(CGetActorAt& msg);
+	void onGetObjectAt(CGetObjectAt& msg);
 
 	TEntities* entities; ///<To check for collision against.
 

@@ -52,17 +52,12 @@ public:
 	bool OnMouseWheelMsg(float xoffset, float yoffset);
 
 	void onPopupText(CPopupText& msg);
-	
+	void onSysMessage(CSysMsg& msg);
+
 	~C3DtestApp();
 	void onStart();
 
-	void MemberFunction();
 
-	void onPopupMsg(CPopupText* msg);
-	void onMessageN(CPopupText* msg);
-	void onMessage(CMsg* msg);
-
-	void onMessage(CPopupText* msg);
 
 	void keyCheck();
 	void mouseMove(int x, int y, int key);
@@ -110,6 +105,8 @@ public:
 	void initHexWorld();
 
 	glm::i32vec2 getMousePos();
+
+	void makePowerQueueWin();
 
 
 	string dataPath; ///<Filepath to the Data folder
@@ -241,6 +238,8 @@ public:
 	CGameTextWin* statusPopWin = NULL; ///<Handle for popup window showing status details on mouseover
 
 	CPlayerObj2 playerObj2;
+
+	CGameTextWin* powerQueueWin; ///<Handle for power queue window.
 };
 
 const float yawAng = 0.22f;

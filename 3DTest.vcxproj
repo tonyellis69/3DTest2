@@ -165,8 +165,6 @@
     <ClInclude Include="src\hexItem.h" />
     <ClInclude Include="src\hexMsg.h" />
     <ClInclude Include="src\hexWorld.h" />
-    <ClInclude Include="src\IGameHexArray.h" />
-    <ClInclude Include="src\IHexWorld.h" />
     <ClInclude Include="src\ImainApp.h" />
     <ClInclude Include="src\localHotList.h" />
     <ClInclude Include="src\mapMaker.h" />

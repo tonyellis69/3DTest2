@@ -24,6 +24,7 @@ public:
 	void onGetPlayerPos(CGetPlayerPos& msg);
 	void onSetPlayerAction(CSetPlayerAction& msg);
 	void onTakeItem(CTakeItem& msg);
+	void onGetPlayerObj(CGetPlayerObj& msg);
 
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player

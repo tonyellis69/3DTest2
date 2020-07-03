@@ -82,4 +82,19 @@ public:
 	CGameHexObj* entity;
 };
 
+class CGetPlayerObj : public CMsg {
+public:
+	CGetPlayerObj() {}
 
+	CGameHexObj* playerObj;
+};
+
+class CGetObjectAt : public CMsg {
+public:
+	CGetObjectAt(CHex& h, CGameHexObj* n = NULL)
+		: hex(h), notObj(n) {}
+
+	CHex hex;
+	CGameHexObj* obj = NULL;
+	CGameHexObj* notObj;
+};
