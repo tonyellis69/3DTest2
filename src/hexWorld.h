@@ -32,8 +32,10 @@
 #include "gameTextWin.h"
 
 #include "hexMsg.h"
+
+#include "qps.h"
   
-enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase};
+enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase, playerDeadPhase};
 
 
 
@@ -48,6 +50,7 @@ public:
 	void addMesh(const std::string& name, const std::string& fileName);
 	void makeMap(ITigObj* tigMap);
 	void start();
+	void startGame();
 	void moveCamera(glm::vec3& direction);
 	void rightClick();
 	void leftClick();
@@ -59,14 +62,16 @@ public:
 	void update(float dt);
 
 	void onCtrlLMouse();
-	void onCtrlRelease();
+	void powerKeyRelease();
 
-	void powerModeToggle();
+	void powerKeyDown();
+
+	void enterKeyDown();
 
 private:
 	THexList calcPath(CHex& start, CHex& end);
 
-	void temporaryCreateHexObjects();
+	void createCursorObject();
 	void onNewMouseHex(CHex& mouseHex);
 	THexList* getCursorPath();
 	CGameHexObj* getPlayerObj();
@@ -91,7 +96,7 @@ private:
 
 	CGroupItem* createGroupItem();
 
-	void removeEntity(CGameHexObj& entity);
+	void removeFromEntityList(CGameHexObj& entity);
 	void removeGridObj(CGridObj& gridObj);
 
 	CGameHexObj* getItemAt(CHex& position);
@@ -113,7 +118,20 @@ private:
 	void onRemoveEntity(CRemoveEntity& msg);
 	void onCreateGroupItem(CCreateGroupItem& msg);
 
+	void onMissileHit(CMissileHit& msg);
+
+	void onKill(CKill& msg);
+
+	void onDiceRoll(CDiceRoll& msg);
+
 	CGameHexObj* getPrimaryObjectAt(CHex& hex);
+
+	void updateCameraPosition();
+
+	void beginNewTurn();
+	void endTurn();
+
+	void killEntity(CGameHexObj* entity);
 
 
 	CGameHexArray map;
@@ -163,7 +181,9 @@ private:
 	std::vector<CHexActor*> serialList;
 	CHexActor* currentSerialActor = NULL;
 
-	bool powerMode = true;
+	bool powerMode = false;
+
+	CQPS qps; ///<Quantum power system.
 };
 
 

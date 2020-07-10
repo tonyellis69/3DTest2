@@ -15,11 +15,11 @@ public:
 };
 
 
-enum TPopup { defencePopup, statusPopup };
+enum TPopup { defencePopup, statusPopup, powerQ, combatLog };
 
-class CPopupText : public CMsg {
+class CSendText : public CMsg {
 public:
-	CPopupText(TPopup popType, const std::string& txt) : popupType(popType),
+	CSendText(TPopup popType, const std::string& txt) : popupType(popType),
 	text(txt) {}
 
 	std::string text;
@@ -47,18 +47,17 @@ public:
 	CHex end;
 };
 
-class CShootAt : public CMsg {
+class CTurnBegin : public CMsg {
 public:
-	CShootAt(CHex& s, CHex& t) : start(s), target(t) {}
-	CHex start;
-	CHex target;
+	CTurnBegin() {}
 };
 
-class CSetPlayerAction : public CMsg {
+class CDiceRoll : public CMsg {
 public:
-	CSetPlayerAction(int actId, CHex t = CHex(-1, -1, -1))
-		: action(actId), target(t) {}
-	int action;
-	CHex target;
+	CDiceRoll(int d) : die(d) {}
+
+	int die;
+	int result;
 };
+
 

@@ -133,7 +133,7 @@ void CShield::onNotify(COnNewHex& msg) {
 			popupTxt += "\nPower acquisition: ";
 			popupTxt += settingStr(defence.second.autoPower);
 
-			CPopupText popMsg(defencePopup, popupTxt);
+			CSendText popMsg(defencePopup, popupTxt);
 			send(popMsg);
 			return;
 		}

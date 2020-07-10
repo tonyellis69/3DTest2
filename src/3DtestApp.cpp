@@ -208,7 +208,7 @@ void C3DtestApp::onStart() {
 
 	playerObj2.loadMesh(shape::cubeMesh());
 	playerObj2.scale(vec3{ 40, 40, 40 });
-	playerObj2.setPos(vec3(0, 40, 0));
+	playerObj2.setPos(vec3(0, 30, 0));
 	playerObj2.setMass(10);
 	Engine.modelDrawList.push_back(&playerObj2);
 	//physEng.addObj(&playerObj2);
@@ -216,29 +216,7 @@ void C3DtestApp::onStart() {
 
 
 	CFractalTree fractalTree;
-	/*
-	//standard tree:
-	fractalTree.setStemLength(7.0f, 0.2f);
-	fractalTree.setNumBranches(6,3);
-	fractalTree.setBranchAngle(30, 0.2f);
-	fractalTree.setStemRadius(0.6f);
-	fractalTree.setMaxStages(4);
-	fractalTree.setStemFaces(5);
-	fractalTree.setStageScale(0.6f);
-	fractalTree.setBranchType(split);
-	*/
 
-	/*
-	//work in progress lateral branching tree
-	fractalTree.setStemLength(7.0f, 0.2f);
-	fractalTree.setNumBranches(42, 3);
-	fractalTree.setBranchAngle(80, 0.1f);
-	fractalTree.setStemRadius(0.3f);
-	fractalTree.setMaxStages(2);
-	fractalTree.setStageScale(0.5f);
-	fractalTree.setStemFaces(5);
-	fractalTree.setBranchType(lateral);
-	*/
 
 
 	fractalTree.setLength(10.0f, 0.2f);
@@ -305,51 +283,27 @@ void C3DtestApp::onStart() {
 	renderer.fontManager.createFromFile("smallFnt", dataPath + "merri12L.fnt");
 
 	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
-	//vm.loadProgFile(dataPath + "..\\..\\TC\\output.tig");
 
-	//got here
 
 	worldUI.setGameApp(this);
 	worldUI.setVM(&vm);
 
-	//worldUI.setTextWindow(textWindow);
-	//worldUI.setInventoryWindow(invWindow);
-	//worldUI.setPopupTextWindow(popupPanel);
 	worldUI.init();
-	//didn't get here
-	//worldUI.setMainBodyStyle(mainFont, style::uiDarkGrey);
-	//worldUI.setMainHeaderStyle(mainFontBold, style::uiDarkGrey);
-
-//	worldUI.setMainBodyStyle(renderer.fontManager.getFont("work16L"), style::uiDarkGrey);
-//	worldUI.setMainHeaderStyle(renderer.fontManager.getFont("work16"), style::uiDarkGrey);
 
 
-
-//	worldUI.setInvBodyStyle(popFont, white);
-//	worldUI.setPopBodyStyle(popFont, white);
-//	worldUI.setPopHeaderStyle(popHeadFont, white);
-	//worldUI.setHottextColour(hot);
-	//worldUI.setHottextSelectColour(hotSelect);
-
-	if (appMode == hexMode)
+	if (appMode == hexMode) {
 		initHexWorld();
-	makePowerQueueWin();
+		makePowerQueueWin();
+		makeCombatLogWin();
+	}
 
 	worldUI.start();
 
-	//texCompositor.init(this);
-	//texCompositor.initTex();
-	//texCompositor.compose();
-	//texCompositor.colourise();
-
-	//got here 2
 
 	texGenUI.init(this);
 
 
 	texGenUI.compose();
-	//still did not get here
-
 
 
 	if (appMode != texGenMode)
@@ -395,7 +349,7 @@ void C3DtestApp::onStart() {
 	physEng.addObj(&terrain2);
 
 
-	messageBus.setHandler<CPopupText>(this, &C3DtestApp::onPopupText); 
+	messageBus.setHandler<CSendText>(this, &C3DtestApp::onPopupText); 
 	messageBus.setHandler<CSysMsg>(this, &C3DtestApp::onSysMessage);
 
 
@@ -659,15 +613,11 @@ void C3DtestApp::keyCheck() {
 void C3DtestApp::onKeyDown(int key, long mod) {
 	if (appMode == hexMode) {
 
-		if (key == 'C')
-			;// hexWorld.onCycleAuto();
-		if (key == 'L')
-			;// hexWorld.onLoadPower();
-		if (key == 'X')
-			;// hexWorld.onCancelDefence();
-
 		if (key == GLFW_KEY_LEFT_CONTROL)
-			hexWorld.powerModeToggle();
+			hexWorld.powerKeyDown();
+
+		if (key == GLFW_KEY_ENTER)
+			hexWorld.enterKeyDown();
 
 		hexWorld.onKeyDown(key, mod);
 		return;
@@ -784,7 +734,7 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 
 void C3DtestApp::onKeyUp(int key, long mod) {
 	if (key == GLFW_KEY_LEFT_CONTROL)
-		hexWorld.onCtrlRelease();
+		hexWorld.powerKeyRelease();
 }
 
 
@@ -793,10 +743,7 @@ void C3DtestApp::onMouseButton(int button, int action, int mods) {
 		hexWorld.rightClick();
 	}
 	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-		if (mods == GLFW_MOD_CONTROL)
-			hexWorld.onCtrlLMouse();
-		else
-			hexWorld.leftClick();
+		hexWorld.leftClick();
 	}
 };
 
@@ -1161,6 +1108,10 @@ void C3DtestApp::Update() {
 	if (appMode == hexMode)
 		hexWorld.update(float(dT));
 
+	/*if (combatLogWin)
+		combatLogWin->update(dT);
+	*///TO DO: set up an automatic way to do this. GUI should just call it.
+
 	vec3 pos = Engine.getCurrentCamera()->getPos();
 
 
@@ -1185,72 +1136,20 @@ void C3DtestApp::Update() {
 
 		/////////////////////////////////////////////////////////////
 		vec3 dPos = pos - oldPos;
+		if (terrain2.chunkOrigin[3].z > 950 && dPos.y <= -0.1f) {
+			liveLog << "\nAh ha!!!!" << dPos.y << " actual y: " << pos.y;
+			sysLog << "\nFalling!";
+		//	physEng.removeObj(&playerObj2);
+		}
 		oldPos = pos;
 		terrain2.onPlayerMove(dPos);
 		///tell the terrain about the move so that it can scroll etc
+		//if (terrain2.chunkOrigin[3].z > 960)
+		//	 physEng.removeObj(&playerObj2);
 		//return;
 
-		//TERRAIN2
-		//jumping back problem happens somewhere below, but without it player object just gets further 
-		//and further from origin. Obviously this needs to be fixed.
-		//player object should move when terrain moves, and by same amount
-		//use terrain 2 to tell us when it has moved, then move player accordingly, that's simplest
-
-		//has viewpoint moved beyond the length of one chunk?
-		if (outsideChunkBoundary.x || outsideChunkBoundary.y || outsideChunkBoundary.z) {
-			vec3 posMod;
-			posMod.x = fmod(pos.x, chunkDist);
-			posMod.y = fmod(pos.y, chunkDist);  //was pos.y
-			posMod.z = fmod(pos.z, chunkDist);
-			//posMod = extent of player position beyond centrol chunk
-
-			//WAS
-			//fpsCam.setPos(posMod); //secretly reposition viewpoint prior to scrolling terrain
-			//playerObject.setPos(posMod);
-			//playerPhys->position = posMod;
-			///player now repositioned within central chunk
-			///problem triggered by the above line
-			;
-
-
-			vec3 translation = vec3(terrain.chunkOriginInt * cubesPerChunkEdge) * cubeSize;
-			//work out direction to scroll-in new terrain from
-			if (outsideChunkBoundary.x) {
-				if (pos.x > 0)
-					direction = east;
-				else
-					direction = west;
-				terrain.chunkOriginInt += dirToVec(flipDir(direction));
-				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt), 1);
-				//terrain.advance(direction);
-				//return;
-			}
-
-			if (outsideChunkBoundary.y) {
-				if (pos.y > 0)
-					direction = up;
-				else
-					direction = down;
-				terrain.chunkOriginInt += dirToVec(flipDir(direction));
-				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt), 1);
-				//	terrain.advance(direction);
-					//return;
-			}
-
-
-			if (outsideChunkBoundary.z) {
-				if (pos.z > 0)
-					direction = south;
-				else
-					direction = north;
-				terrain.chunkOriginInt += dirToVec(flipDir(direction));
-				terrain.chunkOrigin[3] = vec4(chunkDist * vec3(terrain.chunkOriginInt), 1);
-				//	terrain.advance(direction);
-			}
-
-			onTerrainAdvance(direction);
-
-		}
+		
+		
 	}
 
 }
@@ -1639,6 +1538,7 @@ void C3DtestApp::onTerrainScroll(glm::vec3& movement) {
 	playerObj.translate(movement);
 	oldPos += movement;
 	playerPhys->position += movement;
+	playerObj2.translate(movement);
 }
 
 void C3DtestApp::onResize(int width, int height) {
@@ -1681,15 +1581,19 @@ glm::i32vec2 C3DtestApp::getMousePos() {
 void C3DtestApp::makePowerQueueWin() {
 	powerQueueWin = new CGameTextWin();
 	powerQueueWin->setLocalPos(100, style::mainWinCtrlBorder + 10);
-
 	powerQueueWin->setSize(style::powerQueueWinSize);
 	powerQueueWin->anchorRight = style::mainWinCtrlBorder;
 	powerQueueWin->setTheme("smallNormal");
 	GUIroot.Add(powerQueueWin);
-
-	powerQueueWin->addText("\n\n3\n\n\n7\n\n\n3\n\n\n5\n\n\n7\n\nRobot A\n4\n\nPlayer\n6\n\nRobot B\n7");
 }
 
+void C3DtestApp::makeCombatLogWin() {
+	combatLogWin = new CGameTextWin();
+	combatLogWin->setLocalPos(style::mainWinCtrlBorder, style::mainWinCtrlBorder + 20);
+	combatLogWin->setSize(style::combatLogWinSize);
+	combatLogWin->setTheme("smallNormal");
+	GUIroot.Add(combatLogWin);
+}
 
 
 /** Trap mousewheel events for our own use. */
@@ -1710,7 +1614,7 @@ bool C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	return handled;
 }
 
-void C3DtestApp::onPopupText(CPopupText& msg) {
+void C3DtestApp::onPopupText(CSendText& msg) {
 	if (msg.popupType == defencePopup) {
 		if (defencePopWin == NULL) {
 			defencePopWin = new CGameTextWin();
@@ -1743,11 +1647,18 @@ void C3DtestApp::onPopupText(CPopupText& msg) {
 		statusPopWin->addText(msg.text);
 		statusPopWin->setVisible(true);
 	}
+	else if (msg.popupType == powerQ) {
+		powerQueueWin->clearText();
+		powerQueueWin->addText(msg.text);
+	}
+	else if (msg.popupType == combatLog) {
+		combatLogWin->addText(msg.text);
+	}
 }
 
 /** Handle generic system messages .*/
 void C3DtestApp::onSysMessage(CSysMsg& msg) {
-	powerQueueWin->setVisible(msg.isOn);
+	;// powerQueueWin->setVisible(msg.isOn);
 }
 
 

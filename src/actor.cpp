@@ -9,8 +9,21 @@
 
 const float rad360 = M_PI * 2;
 
+void CHexActor::setAction(int actId, CGameHexObj* target) {
+	action = actId;
+	actionTarget = NULL; 
+	//TO DO: initialise all this in an onNewTurn event 
+	if (target) {
+		this->targetHex = target->hexPosition;
+		actionTarget = target;
+	}
+	CAddActor msg(this, actionSerial);
+	send(msg);
+}
+
 void CHexActor::setAction(int actId, CHex& targetHex) {
 	action = actId;
+	actionTarget = NULL;
 	this->targetHex = targetHex;
 	CAddActor msg(this, actionSerial);
 	send(msg);
@@ -40,7 +53,7 @@ void CHexActor::initAction() {
 		CGetPlayerPos getPlayerPos;
 		send(getPlayerPos);
 		targetHex = getPlayerPos.position;
-		animCycle2 = 0;
+		animCycle = 0;
 		return;
 	}
 
@@ -64,34 +77,31 @@ bool CHexActor::update(float dT) {
 	case tig::actChasePlayer:
 		if (navigatePath(dT)) {
 			action = tig::actNone;
-			return resolved;
 		}
-		else return unresolved;
+		break;
 
 	case tig::actAttackPlayer:
 		if (meleeAttack(dT)) {
-			//hitTarget();
+			hitTarget();
 			action = tig::actNone;
-			return resolved;
 		}
-		else return unresolved;
+		break;
 
 	case tig::actShootPlayer:
 		if (shootTarget(dT)) {
-			//hitTarget();
 			action = tig::actNone;
-			return resolved;
 		}
-		else return unresolved;
+		break;
 
 	case tig::actNone: 
+	case tig::actDither:
 		return resolved;
 
 
 
 	}
 
-	return resolved;
+	return unresolved;
 }
 
 /** Travel down the current travelPath. */
@@ -203,7 +213,7 @@ bool CHexActor::meleeAttack(float dT) {
 
 bool CHexActor::shootTarget(float dT) {
 	if (isFacing(targetHex)) {
-		CShootAt msg(hexPosition, targetHex);
+		CShootAt msg(hexPosition, targetHex, this);
 		send(msg);
 		return true;
 	}
@@ -213,7 +223,7 @@ bool CHexActor::shootTarget(float dT) {
 
 /** Continue the lunge animation. */
 bool CHexActor::lungeAt(CHex& hex) {
-	float lungeDistance = animCycle2 * 2.0f - 1.0f;
+	float lungeDistance = animCycle * 2.0f - 1.0f;
 	lungeDistance = 1.0f - pow(abs(lungeDistance), 0.6f);
 	lungeDistance *= hexWidth;
 
@@ -224,8 +234,8 @@ bool CHexActor::lungeAt(CHex& hex) {
 	worldPos = cubeToWorldSpace(hexPosition) + lungeVec;
 	buildWorldMatrix();
 
-	animCycle2 += dT * lungeSpeed;
-	if (animCycle2 > 1.0f) {
+	animCycle += dT * lungeSpeed;
+	if (animCycle > 1.0f) {
 		setPosition(hexPosition); //ensures we don't drift.
 		return true;
 	}

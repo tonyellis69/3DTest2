@@ -51,7 +51,7 @@ public:
 	C3DtestApp();
 	bool OnMouseWheelMsg(float xoffset, float yoffset);
 
-	void onPopupText(CPopupText& msg);
+	void onPopupText(CSendText& msg);
 	void onSysMessage(CSysMsg& msg);
 
 	~C3DtestApp();
@@ -107,6 +107,8 @@ public:
 	glm::i32vec2 getMousePos();
 
 	void makePowerQueueWin();
+
+	void makeCombatLogWin();
 
 
 	string dataPath; ///<Filepath to the Data folder
@@ -240,6 +242,7 @@ public:
 	CPlayerObj2 playerObj2;
 
 	CGameTextWin* powerQueueWin; ///<Handle for power queue window.
+	CGameTextWin* combatLogWin; ///<Handle for combat log window.
 };
 
 const float yawAng = 0.22f;

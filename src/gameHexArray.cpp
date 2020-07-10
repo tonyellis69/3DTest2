@@ -82,6 +82,16 @@ void CGameHexArray::add(CGameHexObj* entity, CHex& hexPos) {
 	entity->setPosition(hexPos);
 }
 
+/** Remove this entity from the map. */
+void CGameHexArray::removeFromEntityList(CGameHexObj* entity) {
+	for (auto entry : entityMap) {
+		if (entry.second == entity) {
+			entityMap.erase(entry.first);
+			return;
+		}
+	}
+}
+
 /** Return all entities at this hex position. */
 TRange CGameHexArray::getEntitiesAt(CHex& hex) {
 	return entityMap.equal_range(hex);

@@ -81,9 +81,6 @@
     <ClCompile Include="src\door.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\shieldPanel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\fireable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,6 +88,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -161,9 +161,6 @@
     <ClInclude Include="src\door.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\shieldPanel.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\fireable.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -183,6 +180,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\actor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\qps.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

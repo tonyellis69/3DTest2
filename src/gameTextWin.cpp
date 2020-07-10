@@ -81,3 +81,5 @@ void CGameTextWin::onNotify(CMouseExitHex& msg) {
 	setVisible(false);
 
 }
+
+

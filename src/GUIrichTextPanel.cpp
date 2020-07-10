@@ -104,7 +104,7 @@ void CGUIrichTextPanel::update(float dT) {
 		case byCharacter: deliverByCharacter(dT); break;
 		}
 	}*/
-	richText->update(dT);
+//richText->update(dT);
 }
 
 void CGUIrichTextPanel::appendMarkedUpText(std::string text) {

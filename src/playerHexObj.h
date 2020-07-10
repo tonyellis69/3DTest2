@@ -13,18 +13,22 @@ public:
 	void initAction();
 	bool update(float dT);
 	void hitTarget();
-	void receiveDamage(CGameHexObj& attacker, int damage);
 	void draw();
 	void takeItem(CGameHexObj& item);
 	void showInventory();
 	void dropItem(int itemNo);
 	void equipItem(int itemNo);
+	void leftClickPowerMode();
 	void onTurnBegin();
 	void onTurnEnd();
 	void onGetPlayerPos(CGetPlayerPos& msg);
 	void onSetPlayerAction(CSetPlayerAction& msg);
 	void onTakeItem(CTakeItem& msg);
 	void onGetPlayerObj(CGetPlayerObj& msg);
+
+	void deathRoutine();
+
+	void receiveDamage(CGameHexObj& attacker, int damage);
 
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player

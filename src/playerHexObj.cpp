@@ -13,6 +13,8 @@ CPlayerObject::CPlayerObject() {
 	messageBus.setHandler<CSetPlayerAction>(this, &CPlayerObject::onSetPlayerAction);
 	messageBus.setHandler<CTakeItem>(this, &CPlayerObject::onTakeItem);
 	messageBus.setHandler<CGetPlayerObj>(this, &CPlayerObject::onGetPlayerObj);
+
+	tmpHP = 3;
 }
 
 /** Do the necessary one-off prep work for the given action. */
@@ -29,7 +31,7 @@ void CPlayerObject::initAction() {
 	}
 
 	case tig::actPlayerMeleeAttack: {
-		animCycle2 = 0;
+		animCycle = 0;
 		return;
 	}
 	
@@ -52,25 +54,21 @@ bool CPlayerObject::update(float dT) {
 	case tig::actPlayerMove:
 		if (navigatePath(dT)) {
 			action = tig::actNone;
-			return resolved;
 		}
-		else return unresolved;
+		break;
 
 	case tig::actPlayerMeleeAttack:
 		if (meleeAttack(dT)) {
 			hitTarget();
 			action = tig::actNone;
-			return resolved;
 		}
-		else return unresolved;
+		break;
 
 	case tig::actPlayerShoot:
 		if (shootTarget(dT)) {
-			hitTarget();
 			action = tig::actNone;
-			return resolved;
 		}
-		else return unresolved;
+		break;
 
 	case tig::actNone:
 		return resolved;
@@ -79,7 +77,7 @@ bool CPlayerObject::update(float dT) {
 
 	}
 
-	return resolved;
+	return unresolved;
 }
 
 
@@ -88,18 +86,19 @@ bool CPlayerObject::update(float dT) {
 
 /** Deliver melee damage to our current target. */
 void CPlayerObject::hitTarget() {
-	/*int weaponDamage = callTigInt(tig::getWeaponDamage);
-	attackTarget->receiveDamage(*this, weaponDamage);*/
+	if (actionTarget == NULL)
+		return;
 
-	liveLog << "\nPlayer lunged ";
+	//TO DO: determine weapon by what is actually equipped, not action
+	if (action == tig::actPlayerMeleeAttack) {
+		actionTarget->receiveDamage(*this, 1);
+	}
+	else if (action == tig::actPlayerShoot) {
+		actionTarget->receiveDamage(*this, 2);
+	}
 }
 
 
-void CPlayerObject::receiveDamage(CGameHexObj& attacker, int damage) {
-	THexDir attackDir = neighbourDirection(hexPosition, attacker.hexPosition);
-
-	callTig(tig::onReceiveDamage, attacker, damage);
-}
 
 void CPlayerObject::draw() {
 	//draw self
@@ -135,6 +134,12 @@ void CPlayerObject::equipItem(int itemNo) {
 	callTigObj(tig::onEquip, itemNo);
 }
 
+/** Respond to left-click/primary action in power mode. */
+void CPlayerObject::leftClickPowerMode() {
+	CReserveNextPower msg(this);
+	send(msg);
+}
+
 
 void CPlayerObject::onTurnBegin() {
 	liveLog << "\nPlayer turn begin";
@@ -155,7 +160,10 @@ void CPlayerObject::onGetPlayerPos(CGetPlayerPos& msg) {
 }
 
 void CPlayerObject::onSetPlayerAction(CSetPlayerAction& msg) {
-	setAction(msg.action, msg.target);
+	if (msg.targetObj)
+		setAction(msg.action, msg.targetObj);
+	else
+		setAction(msg.action, msg.targetHex);
 }
 
 void CPlayerObject::onTakeItem(CTakeItem& msg) {
@@ -166,6 +174,33 @@ void CPlayerObject::onGetPlayerObj(CGetPlayerObj& msg) {
 	msg.playerObj = this;
 }
 
+void CPlayerObject::deathRoutine() {
+	std::string deathLog = "\nYou were killed!";
 
+	CSendText msg(combatLog, deathLog);
+	send(msg);
+
+	CKill killMsg(this);
+	send(killMsg);
+}
+
+void CPlayerObject::receiveDamage(CGameHexObj& attacker, int damage) {
+	CFindPowerUser msg(&attacker);
+	send(msg);
+
+	if (msg.power) {
+		CDiceRoll die(10);
+		send(die);
+
+		if (die.result <= msg.power) {
+			CSendText block(combatLog, "\nAttack from " + attacker.getName()
+				+ " blocked!");
+			send(block);
+			return;
+		}
+	}
+
+	CGameHexObj::receiveDamage(attacker, damage);
+}
 
 

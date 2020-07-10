@@ -13,13 +13,17 @@ class CRobot : public CHexActor {
 public:
 	CRobot();
 	void chooseTurnAction();
-	void receiveDamage(CGameHexObj& attacker, int damage);
 	void draw();
 	void leftClick();
+	void leftClickPowerMode();
+
+	void hitTarget();
 
 private:
 	int tigCall(int memberId);
 	void onNotify(COnNewHex& msg);
+
+	void deathRoutine();
 
 
 

@@ -12,7 +12,8 @@ enum TActorBlock {notBlocked, currentBlocked, permBlocked, unknownBlocked};
 class CHexActor : public CGameHexObj {
 public:
 	virtual void chooseTurnAction() {}
-	void setAction(int actId, CHex& targetHex = CHex(-1,-1,-1));
+	void setAction(int actId, CGameHexObj* target = NULL);
+	void setAction(int actId, CHex& targetHex);
 	virtual void initAction();
 	virtual bool update(float dT);
 	bool isActor() { return true; }
@@ -24,6 +25,7 @@ protected:
 
 	bool checkForBlock(CHex& destHex);
 
+	virtual void hitTarget() {};
 
 //low level funcs
 
@@ -31,22 +33,23 @@ protected:
 	bool moveTo(CHex& hex);
 	void claimMapPos(CHex& newHex);
 
-
-
 	bool lungeAt(CHex& hex);
 
 
 
 	float dT;
 	int action = tig::actNone;
-	//THexList travelPath; ///<A sequence of hexes to travel down.
+
 	float moveSpeed2 = 7.0f;
 	float turnSpeed = 10;
 	int movePoints2; ///<Number of hexes we can travel in one move.
 	bool destHexClaimed = false;
 
-	float animCycle2;
+	float animCycle;
 	CHex targetHex; ///<Target hex, if any, for the current action.
+	CGameHexObj* actionTarget; ///<Subject, if any, for the current action
+
+
 };
 
 enum TAction {actionSerial, actionSimul};
@@ -76,3 +79,12 @@ public:
 	CHexActor* notActor;
 };
 
+//enum TAttack {attackMelee, attackBolt};
+//class CReceiveDamage : public CMsg {
+//public:
+//	CReceiveDamage(CHexActor* actor) : attacker(actor) {}
+//
+//	CHexActor* attacker;
+//	int damage;
+//	TAttack attack;
+//};

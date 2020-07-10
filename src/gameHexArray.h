@@ -36,6 +36,7 @@ public:
 	CHex findLineEnd(CHex& start, CHex& target);
 	void moveEntity(CGameHexObj* entity, CHex& hex);
 	void add(CGameHexObj* entity, CHex& hex);
+	void removeFromEntityList(CGameHexObj* entity);
 	TRange getEntitiesAt(CHex& hex);
 	CGameHexObj* getEntityAt(CHex& hex);
 	CGameHexObj* getEntityClassAt(int classId, CHex& hex);

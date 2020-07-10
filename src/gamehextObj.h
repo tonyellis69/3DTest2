@@ -28,6 +28,8 @@ public:
 
 	virtual void receiveDamage(CGameHexObj& attacker, int damage);
 
+	bool reduceHitPoints(int damage);
+
 	virtual void beginTurnAction() {};
 	virtual void beginLunge(CGameHexObj& target) {};
 
@@ -46,6 +48,7 @@ public:
 	virtual bool isActor() { return false;  }
 
 	virtual void leftClick() {}
+	virtual void leftClickPowerMode() {}
 
 	unsigned int mBlocks; ///<If true, blocks travel path
 	bool deleteMe;
@@ -58,9 +61,10 @@ protected:
 	float lungeSpeed;
 	int meleeDamage;
 
+	int tmpHP; //temp hitpoints
 
 private:
-	
+	virtual void deathRoutine() {}
 };
 
 using TEntities = std::vector<CGameHexObj*>;
@@ -89,6 +93,25 @@ public:
 	CGameHexObj* playerObj;
 };
 
+class CSetPlayerAction : public CMsg {
+public:
+	CSetPlayerAction(int actId, CGameHexObj* obj = NULL, CHex t = CHex(-1, -1, -1))
+		: action(actId), targetObj(obj), targetHex(t) {}
+	int action;
+	CHex targetHex;
+	CGameHexObj* targetObj;
+};
+
+class CShootAt : public CMsg {
+public:
+	CShootAt(CHex& s, CHex& t, CGameHexObj* a) : start(s), target(t),
+		attacker(a) {}
+	CHex start;
+	CHex target;
+	CGameHexObj* attacker;
+};
+
+
 class CGetObjectAt : public CMsg {
 public:
 	CGetObjectAt(CHex& h, CGameHexObj* n = NULL)
@@ -98,3 +121,26 @@ public:
 	CGameHexObj* obj = NULL;
 	CGameHexObj* notObj;
 };
+
+class CReserveNextPower : public CMsg {
+public:
+	CReserveNextPower(CGameHexObj* e) : reserver(e) {}
+
+	CGameHexObj* reserver;
+};
+
+class CKill : public CMsg {
+public:
+	CKill(CGameHexObj* e) : entity(e) {}
+
+	CGameHexObj* entity;
+};
+
+class CFindPowerUser : public CMsg {
+public:
+	CFindPowerUser(CGameHexObj* e) : user(e) {}
+
+	CGameHexObj* user;
+	int power = 0;
+};
+

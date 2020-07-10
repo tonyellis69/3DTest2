@@ -138,9 +138,9 @@
     <ClCompile Include="src\mapMaker.cpp" />
     <ClCompile Include="src\playerHexObj.cpp" />
     <ClCompile Include="src\powerSupply.cpp" />
+    <ClCompile Include="src\qps.cpp" />
     <ClCompile Include="src\robot.cpp" />
     <ClCompile Include="src\gridObj.cpp" />
-    <ClCompile Include="src\shieldPanel.cpp" />
     <ClCompile Include="src\worldUI.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,9 +171,9 @@
     <ClInclude Include="src\playerHexObj.h" />
     <ClInclude Include="src\powerSupply.h" />
     <ClInclude Include="src\powerUser.h" />
+    <ClInclude Include="src\qps.h" />
     <ClInclude Include="src\robot.h" />
     <ClInclude Include="src\gridObj.h" />
-    <ClInclude Include="src\shieldPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3DEngine\3DEngine\3DEngine.vcxproj">

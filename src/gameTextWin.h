@@ -22,6 +22,7 @@ public:
 
 	void onNotify(CMouseExitHex& msg);
 
+
 	inline static Ivm* pVM; ///<Virtual machine to send hot text calls to.
 
 private:

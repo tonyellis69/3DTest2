@@ -8,7 +8,9 @@ CBolt::CBolt() {
 }
 
 /** Initialise travel to the destination hex. */
-void CBolt::fireAt(CHex& target) {
+void CBolt::fireAt(CGameHexObj* attacker , CHex& target) {
+	this->attacker = attacker;
+	targetHex = target;
 	worldSpaceDestination = cubeToWorldSpace(target);
 
 	moveVector = worldSpaceDestination - worldPos;
@@ -25,14 +27,17 @@ bool CBolt::update(float dT) {
 	bool resolving = updateMove(dT);
 
 	if (!resolving) {
-		CGetObjectAt targetMsg(worldSpaceToHex(worldPos));
+		CMissileHit msg(targetHex, attacker);
+		send(msg);
+
+		/*CGetObjectAt targetMsg(worldSpaceToHex(worldPos));
 		send(targetMsg);
 		CGameHexObj* targetObj = targetMsg.obj;
 		if (targetObj) {
 			CGetPlayerObj msg;
 			send(msg);
 			targetObj->receiveDamage(*msg.playerObj, 1);
-		}
+		}*/
 	}
 	return resolving;
 }

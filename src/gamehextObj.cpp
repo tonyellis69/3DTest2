@@ -40,6 +40,22 @@ bool CGameHexObj::blocks(THexDir direction) {
 }
 
 void CGameHexObj::receiveDamage(CGameHexObj& attacker, int damage) {
-	;// callTig("onReceiveDamage", attacker, damage);
+	if (reduceHitPoints(damage)) {
+		std::string damageLog = "\n" + getName();
+		damageLog += " hit by " + attacker.getName();
+		damageLog += " for " + std::to_string(damage) + " damage.\n";
+
+		CSendText msg(combatLog, damageLog);
+		send(msg);
+	}
 }
 
+/** Returns false if this was fatal. */
+bool CGameHexObj::reduceHitPoints(int damage) {
+	tmpHP -= damage;
+	if (tmpHP <= 0) {
+		deathRoutine();
+		return false;
+	}
+	return true;
+}

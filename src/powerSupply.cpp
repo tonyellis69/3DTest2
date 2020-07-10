@@ -10,6 +10,7 @@ CPowerSupply::CPowerSupply() {
 }
 
 void CPowerSupply::topUp() {
+
 	std::uniform_int_distribution<int> d{ 1,maxPower };
 	for (int x = powerSlots.size(); x < numSlots; x++) {
 		TPowerBlob blob = { d(randEngine) };
