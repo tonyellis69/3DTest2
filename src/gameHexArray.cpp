@@ -7,9 +7,11 @@ CGameHexArray::CGameHexArray() {
 void CGameHexArray::setMessageHandlers() {
 	messageBus.setHandler< CGetTravelPath>(this, &CGameHexArray::onGetTravelPath);
 	messageBus.setHandler< CMoveEntity>(this, &CGameHexArray::onMoveEntity);
-	messageBus.setHandler< CActorBlock>(this, &CGameHexArray::onActorBlockCheck);
+	messageBus.setHandler< CFindActorBlock>(this, &CGameHexArray::onActorBlockCheck);
 	messageBus.setHandler< CGetLineEnd>(this, &CGameHexArray::onGetLineEnd);
 	messageBus.setHandler< CGetActorAt>(this, &CGameHexArray::onGetActorAt);
+	messageBus.setHandler< CLineOfSight>(this, &CGameHexArray::onLineOfSight);
+	messageBus.setHandler< CRandomHex>(this, &CGameHexArray::onRandomHex);
 }
 
 void CGameHexArray::setEntityList(TEntities* pEntities) {
@@ -196,6 +198,23 @@ void CGameHexArray::smartBlockClear( CHex& pos) {
 	}
 }
 
+/** Returns true if there is an unblocked straight line of hexes
+	between these points. */
+bool CGameHexArray::lineOfSight(CHex& start, CHex& end) {
+	CHex stopHex = findLineEnd(start, end);
+	if (stopHex == end)
+		return true;
+	return false;
+}
+
+/** Return a random hex somewhere on the map. */
+CHex CGameHexArray::findRandomHex() {
+	CDiceRoll msg(width,height);
+	send(msg);
+
+	return indexToCube(msg.result,msg.result2);
+}
+
 void CGameHexArray::onGetTravelPath(CGetTravelPath& msg) {
 
 	int b = getHexCube(CHex(0, 4, -4)).blocks;
@@ -210,7 +229,7 @@ void CGameHexArray::onMoveEntity(CMoveEntity& msg) {
 }
 
 /** If an actor is blocking this hex, return it. */
-void CGameHexArray::onActorBlockCheck(CActorBlock& msg) {
+void CGameHexArray::onActorBlockCheck(CFindActorBlock& msg) {
 	auto [first, last] = getEntitiesAt(msg.hex);
 	for (auto it = first; it != last; it++) {
 		if (it->second->isActor()) {
@@ -236,4 +255,12 @@ void CGameHexArray::onGetActorAt(CGetActorAt& msg) {
 
 void CGameHexArray::onGetObjectAt(CGetObjectAt& msg) {
 	msg.obj = getEntityAt(msg.hex);
+}
+
+void CGameHexArray::onLineOfSight(CLineOfSight& msg) {
+	msg.result = lineOfSight(msg.start, msg.end);
+}
+
+void CGameHexArray::onRandomHex(CRandomHex& msg) {
+	msg.hex = findRandomHex();
 }

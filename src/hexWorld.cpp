@@ -78,7 +78,7 @@ void CHexWorld::startGame() {
 	//create new player object
 	playerObj = new CPlayerObject();
 	playerObj->setLineModel("player");
-	map.add(playerObj, CHex(-2, 2, 0));
+	map.add(playerObj, CHex(-13, 5, 8));
 	playerObj->setTigObj(vm->getObject("player"));
 	entities.push_back(playerObj);
 	subscribe(playerObj);
@@ -94,16 +94,16 @@ void CHexWorld::startGame() {
 
 	pRobot = vm->getObject(tig::botB);
 
-	robot2 = new CRobot();
+	/*robot2 = new CRobot();
 	robot2->setLineModel("robot");
 	map.add(robot2, CHex(4, -1, -3));
-	robot2->setTigObj(pRobot);
+	robot2->setTigObj(pRobot);*/
 
 	entities.push_back(robot);
-	entities.push_back(robot2);
+	//entities.push_back(robot2);
 
 	subscribe(robot);
-	subscribe(robot2);
+	//subscribe(robot2);
 
 	turnPhase = actionPhase;
 }
@@ -271,7 +271,7 @@ void CHexWorld::createCursorObject() {
 }
 
 
-/** Respend to mouse cursor moving to a new hex. */
+/** Respond to mouse cursor moving to a new hex. */
 void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	hexCursor->setPosition(mouseHex);
 
@@ -339,6 +339,9 @@ void CHexWorld::rightClick() {
 	if (powerMode)
 		return;
 
+	if (hexCursor->hexPosition == playerObj->hexPosition ||
+		map.fromToBlocked(playerObj->hexPosition, hexCursor->hexPosition) )
+		return;
 	playerObj->setAction(tig::actPlayerMove, hexCursor->hexPosition);
 	startActionPhase();
 }
@@ -454,7 +457,7 @@ void CHexWorld::tempPopulateMap() {
 
 	door = new CDoor();
 	door->setLineModel("door");
-	map.add(door, CHex(0, 0, 0));
+	map.add(door, CHex(13, -4, -9));
 	door->setTigObj(vm->getObject(tig::CDoor));
 	door->setZheight(0.01f); //TO DO: sort this!!!!!
 	entities.push_back(door);
@@ -569,6 +572,7 @@ void CHexWorld::onAddActor(CAddActor& msg) {
 void CHexWorld::onShootAt(CShootAt& msg) {
 	CBolt* boltTmp = (CBolt*)createBolt();
 	boltTmp->setPosition(msg.start);
+	boltTmp->damage = msg.damage;
 	boltTmp->fireAt(msg.attacker, msg.target);
 }
 
@@ -594,7 +598,7 @@ void CHexWorld::onMissileHit(CMissileHit& msg) {
 	//if so, damage it
 	CGameHexObj* obj = getPrimaryObjectAt(msg.hex);
 	if (obj != &nullGameHexObj)
-		obj->receiveDamage(*msg.attacker, 1);
+		obj->receiveDamage(*msg.attacker, msg.damage);
 }
 
 /** Handle an entity's request to be killed off. */
@@ -606,6 +610,8 @@ void CHexWorld::onKill(CKill& msg) {
 void CHexWorld::onDiceRoll(CDiceRoll& msg) {
 	std::uniform_int_distribution<int> d{ 1,msg.die };
 	msg.result =  d(randEngine);
+	if (msg.die2 != 0)
+		msg.result2 = d(randEngine);
 }
 
 /** Return the highest priority object at this hex. ie, the one if 
@@ -643,6 +649,16 @@ void CHexWorld::beginNewTurn() {
 	playerObj->onTurnBegin();
 	map.updateBlocking();
 	chooseActions();
+
+	///////////////////////////temp end stuff
+	if (playerObj->hexPosition == door->hexPosition) {
+		CSendText msg(combatLog, "\n\nYOU HAVE WON");
+		send(msg);
+
+		killEntity(robot);
+		killEntity(robot2);
+		turnPhase = playerDeadPhase;
+	}
 }
 
 void CHexWorld::endTurn() {

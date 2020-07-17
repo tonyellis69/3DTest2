@@ -30,6 +30,8 @@ public:
 
 	void receiveDamage(CGameHexObj& attacker, int damage);
 
+	int getMissileDamage();
+
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
 	

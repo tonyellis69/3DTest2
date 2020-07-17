@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
 
 #include "hex/hexArray.h"
@@ -49,12 +50,18 @@ public:
 	void updateBlocking();
 	void smartBlockClear( CHex& pos);
 
+	bool lineOfSight(CHex& start, CHex& end);
+
+	CHex findRandomHex();
+
 	void onGetTravelPath(CGetTravelPath& msg);
 	void onMoveEntity(CMoveEntity& msg);
-	void onActorBlockCheck(CActorBlock& msg);
+	void onActorBlockCheck(CFindActorBlock& msg);
 	void onGetLineEnd(CGetLineEnd& msg);
 	void onGetActorAt(CGetActorAt& msg);
 	void onGetObjectAt(CGetObjectAt& msg);
+	void onLineOfSight(CLineOfSight& msg);
+	void onRandomHex(CRandomHex& msg);
 
 	TEntities* entities; ///<To check for collision against.
 

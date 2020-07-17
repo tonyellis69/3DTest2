@@ -14,7 +14,7 @@ CPlayerObject::CPlayerObject() {
 	messageBus.setHandler<CTakeItem>(this, &CPlayerObject::onTakeItem);
 	messageBus.setHandler<CGetPlayerObj>(this, &CPlayerObject::onGetPlayerObj);
 
-	tmpHP = 3;
+	tmpHP = 12;
 }
 
 /** Do the necessary one-off prep work for the given action. */
@@ -38,7 +38,7 @@ void CPlayerObject::initAction() {
 	case tig::actPlayerShoot: {
 		CGetLineEnd msg(hexPosition,targetHex);
 		send(msg);
-		targetHex = msg.end;// map->findLineEnd(hexPosition, targetHex);
+		targetHex = msg.end;
 		return;
 	}
 
@@ -89,13 +89,11 @@ void CPlayerObject::hitTarget() {
 	if (actionTarget == NULL)
 		return;
 
-	//TO DO: determine weapon by what is actually equipped, not action
-	if (action == tig::actPlayerMeleeAttack) {
-		actionTarget->receiveDamage(*this, 1);
-	}
-	else if (action == tig::actPlayerShoot) {
-		actionTarget->receiveDamage(*this, 2);
-	}
+	CFindPowerUser msg(this);
+	send(msg);
+	int damage = msg.power;
+
+	actionTarget->receiveDamage(*this, damage);
 }
 
 
@@ -188,19 +186,24 @@ void CPlayerObject::receiveDamage(CGameHexObj& attacker, int damage) {
 	CFindPowerUser msg(&attacker);
 	send(msg);
 
-	if (msg.power) {
-		CDiceRoll die(10);
-		send(die);
+	damage -= msg.power;
 
-		if (die.result <= msg.power) {
-			CSendText block(combatLog, "\nAttack from " + attacker.getName()
-				+ " blocked!");
-			send(block);
-			return;
-		}
+	if (damage <= 0) {
+		CSendText block(combatLog, "\nAttack from " + attacker.getName()
+			+ " blocked!");
+		send(block);
+		return;
 	}
 
 	CGameHexObj::receiveDamage(attacker, damage);
+}
+
+int CPlayerObject::getMissileDamage() {
+	//get assigned power from QPS
+	CFindPowerUser msg(this);
+	send(msg);
+
+	return msg.power;
 }
 
 

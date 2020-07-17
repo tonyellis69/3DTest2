@@ -869,7 +869,7 @@ void C3DtestApp::terrain2TestDraw() {
 
 	//return;
 	//draw shell wireframes
-	mat4 chunkM;
+	mat4 chunkM(1);
 	float boxScale = 0.99f;
 
 	for (int shell = 0; shell < 2; shell++) {
@@ -1447,6 +1447,9 @@ void C3DtestApp::deleteChunkMesh(Chunk2& chunk) {
 
 	//if (chunk.bufId != 0) //TO DO: temp bug tracking! Should never happen!
 		//terrainBuf->deleteBlock(chunk.bufId);
+
+
+
 	terrain2.freeChunkMesh(chunk.bufId);
 	chunk.bufId = 0;
 }

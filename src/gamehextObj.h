@@ -18,6 +18,7 @@ const bool resolved = false;
 const bool unresolved = true;
 
 
+
 /** Basic hex object to derive game hex objects from,
 	such as robots. */
 class CGameHexObj : public CHexObject, public CTigObjptr,
@@ -62,6 +63,7 @@ protected:
 	int meleeDamage;
 
 	int tmpHP; //temp hitpoints
+	int tmpOrigHP; //temp starting hitpoints, for reference
 
 private:
 	virtual void deathRoutine() {}
@@ -104,11 +106,12 @@ public:
 
 class CShootAt : public CMsg {
 public:
-	CShootAt(CHex& s, CHex& t, CGameHexObj* a) : start(s), target(t),
-		attacker(a) {}
+	CShootAt(CHex& s, CHex& t, CGameHexObj* a, int d) : start(s), target(t),
+		attacker(a), damage(d) {}
 	CHex start;
 	CHex target;
 	CGameHexObj* attacker;
+	int damage;
 };
 
 
@@ -138,9 +141,11 @@ public:
 
 class CFindPowerUser : public CMsg {
 public:
-	CFindPowerUser(CGameHexObj* e) : user(e) {}
+	CFindPowerUser(CGameHexObj* e, bool forceAssign = false) : user(e),
+		forced(forceAssign) {}
 
 	CGameHexObj* user;
 	int power = 0;
+	bool forced;
 };
 

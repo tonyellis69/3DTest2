@@ -6,6 +6,8 @@
 
 #include "gamehextObj.h"
 
+
+
 enum TActorBlock {notBlocked, currentBlocked, permBlocked, unknownBlocked};
 
 /** A class encapuslating the movement code for game entities. */
@@ -17,6 +19,7 @@ public:
 	virtual void initAction();
 	virtual bool update(float dT);
 	bool isActor() { return true; }
+	virtual int getMissileDamage() { return 0; }
 
 protected:
 	bool navigatePath(float dT);
@@ -44,6 +47,7 @@ protected:
 	float turnSpeed = 10;
 	int movePoints2; ///<Number of hexes we can travel in one move.
 	bool destHexClaimed = false;
+	float blockedFor;
 
 	float animCycle;
 	CHex targetHex; ///<Target hex, if any, for the current action.
@@ -62,9 +66,9 @@ public:
 	TAction addTo;
 };
 
-class CActorBlock : public CMsg {
+class CFindActorBlock : public CMsg {
 public:
-	CActorBlock(CHex& h) : hex(h) {}
+	CFindActorBlock(CHex& h) : hex(h) {}
 	CHex hex;
 	CHexActor* blockingActor = NULL;
 };

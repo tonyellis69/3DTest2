@@ -35,13 +35,25 @@ void CQPS::onReserveNextPower(CReserveNextPower& msg) {
 	refreshGUI();
 }
 
-/** Return the power assigned to this user, if found. */
+/** Return the power assigned to this user, if found. If not found
+	and the forced flag set, assign the next available power.*/
 void CQPS::onFindPowerUser(CFindPowerUser& msg) {
 	for (auto slot : powerQueue) {
 		if (slot.reserver == msg.user) {
 			msg.power = slot.power;
 			return;
 		}
+	}
+
+	if (msg.forced) {
+		for (auto& slot : powerQueue) {
+			if (slot.reserver == NULL) {
+				slot.reserver = msg.user;
+				msg.power = slot.power;
+				break;
+			}
+		}
+		refreshGUI();
 	}
 }
 

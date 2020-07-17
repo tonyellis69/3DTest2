@@ -16,15 +16,16 @@ public:
 	glm::vec3 targetPos;
 	CHex targetHex;
 	CGameHexObj* attacker;
+	int damage = 0;
 };
 
 
 class CMissileHit : public CMsg {
 public:
-	CMissileHit(CHex& h, CGameHexObj* a) :
-		hex(h), attacker(a) {}
+	CMissileHit(CHex& h, CGameHexObj* a, int d) :
+		hex(h), attacker(a), damage(d) {}
 
 	CHex hex;
 	CGameHexObj* attacker;
-
+	int damage;
 };

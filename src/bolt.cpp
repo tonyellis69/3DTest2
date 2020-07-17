@@ -27,17 +27,8 @@ bool CBolt::update(float dT) {
 	bool resolving = updateMove(dT);
 
 	if (!resolving) {
-		CMissileHit msg(targetHex, attacker);
+		CMissileHit msg(targetHex, attacker, damage);
 		send(msg);
-
-		/*CGetObjectAt targetMsg(worldSpaceToHex(worldPos));
-		send(targetMsg);
-		CGameHexObj* targetObj = targetMsg.obj;
-		if (targetObj) {
-			CGetPlayerObj msg;
-			send(msg);
-			targetObj->receiveDamage(*msg.playerObj, 1);
-		}*/
 	}
 	return resolving;
 }

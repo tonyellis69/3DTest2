@@ -2,12 +2,15 @@
 
 #include <cmath>
 
+#include <glm/gtx/rotate_vector.hpp>
+
 //#include "IHexWorld.h" //temp bug chase
 #include "utils/log.h"
 
 #include "tigConst.h"
 
 const float rad360 = M_PI * 2;
+
 
 void CHexActor::setAction(int actId, CGameHexObj* target) {
 	action = actId;
@@ -47,6 +50,7 @@ void CHexActor::initAction() {
 		if (travelPath.size() > movePoints2)
 			travelPath.resize(movePoints2);
 		destHexClaimed = false;
+		blockedFor = 0;
 		return;
 	}
 	case tig::actAttackPlayer: {
@@ -64,7 +68,23 @@ void CHexActor::initAction() {
 		return;
 	}
 
+	case tig::actWander: {
+		//find a random nearby location from our current location
+		do {
+			CRandomHex msg;
+			send(msg);
 
+			CGetTravelPath pathRequest(hexPosition, msg.hex);
+			send(pathRequest);
+			travelPath = pathRequest.travelPath;
+		} while (travelPath.empty());
+
+		if (travelPath.size() > movePoints2)
+			travelPath.resize(movePoints2);
+		destHexClaimed = false;
+		blockedFor = 0;
+		return;
+	}
 
 	}
 
@@ -75,6 +95,7 @@ bool CHexActor::update(float dT) {
 	this->dT = dT;
 	switch (action) {
 	case tig::actChasePlayer:
+	case tig::actWander:
 		if (navigatePath(dT)) {
 			action = tig::actNone;
 		}
@@ -128,22 +149,28 @@ bool CHexActor::navigatePath(float dT) {
 /** Attempt to claim this hex if we haven't already, return true if it 
 	is permanently occupied for this turn. */
 bool CHexActor::checkForBlock(CHex& destHex) {
-	bool permBlocked = false;
-	if (!destHexClaimed) {
-		CActorBlock msg(destHex);
-		send(msg);
-		if (msg.blockingActor == this)
-			int b = 0;
+	if (destHexClaimed)
+		return false;
+	
+	CFindActorBlock msg(destHex);
+	send(msg);
+	if (msg.blockingActor == this)
+		int b = 0;
 
-		if (msg.blockingActor == NULL) {
-			claimMapPos(destHex);
-		}
-		else if (msg.blockingActor->action == tig::actNone) {
-			permBlocked = true;
-		}
+	if (msg.blockingActor == NULL) {
+		claimMapPos(destHex);
+		return false;
 	}
 
-	return permBlocked;
+	if (msg.blockingActor->action == tig::actNone) {
+		return true;
+	}
+
+	blockedFor += dT;
+	if (blockedFor > 1.0f)
+		return true;
+
+	return false;;
 }
 
 
@@ -213,7 +240,7 @@ bool CHexActor::meleeAttack(float dT) {
 
 bool CHexActor::shootTarget(float dT) {
 	if (isFacing(targetHex)) {
-		CShootAt msg(hexPosition, targetHex, this);
+		CShootAt msg(hexPosition, targetHex, this, getMissileDamage());
 		send(msg);
 		return true;
 	}
