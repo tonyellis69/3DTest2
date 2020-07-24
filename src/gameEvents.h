@@ -7,6 +7,7 @@ public:
 
 	virtual void onNotify(COnNewHex& msg) {};
 	virtual void onNotify(CMouseExitHex& msg) {};
+	virtual void onNotify(CPlayerNewHex& msg) {};
 };
 
 

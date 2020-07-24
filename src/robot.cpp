@@ -16,13 +16,18 @@ CRobot::CRobot() {
 	tmpHP = 6 + msg.result - 2;
 	tmpOrigHP = tmpHP;
 
-	fov.arc = *findRing(5);
+	viewField.setField(5, 60);
 }
 
 /** Choose an action for the upcoming turn.  */
 void CRobot::chooseTurnAction() {
 	callTig(tig::onChooseTurnAction); //get Tig action
 	action = getChosenAction();
+
+
+	chooseTurnAction2();
+
+	return;
 
 	CGetPlayerObj getPlayer;
 	send(getPlayer);
@@ -59,8 +64,18 @@ void CRobot::chooseTurnAction() {
 	}
 }
 
-bool CRobot::update(float dT) {
-	
+void CRobot::frameUpdate(float dT) {
+	if (viewField.update(hexPosition, rotation)) {
+		CFindVisionField msg(hexPosition, viewField.arcHexes);
+		send(msg);
+		viewField.visibleHexes = msg.visibleHexes;
+		CGetPlayerPos playerPos;
+		send(playerPos);
+		checkView(playerPos.position);
+	}
+}
+
+bool CRobot::update(float dT) {	
 	bool result = CHexActor::update(dT);
 
 	return result;
@@ -69,21 +84,8 @@ bool CRobot::update(float dT) {
 void CRobot::draw() {
 	CHexObject::draw();
 
-	//!!!!!!!! temp stuff to update fov
-	int range = 5;
-	float ratio = rad360 / (6 * range);
-	int rotationInHexes = glm::round(rotation / ratio);
-	int halfFov = 2; int fovLength = 5;
-	int hexA = rotationInHexes - halfFov;
-	for (int arcHex = 0; arcHex < fovLength; arcHex++) {
-		int hexNo = hexA + arcHex;
-		int m = (6 * range );
-		hexNo = (hexNo % m + m) % m;
-		hexRendr->highlightHex(hexPosition + fov.arc[hexNo]);
-	}
-
-
-	//hexRendr->drawFov(fov, hexPosition);
+	for (auto hex : viewField.visibleHexes)
+		hexRendr->highlightHex(hex);
 }
 
 /** Respond to the player's left-click/primary action on this robot. */
@@ -137,6 +139,14 @@ int CRobot::getMissileDamage() {
 	return 6 + msg.result - 2;
 }
 
+/** Check if the given hex lies in this robot's view field. */
+void CRobot::checkView(CHex& hex) {
+	if (viewField.searchView(hex)) {
+		CSendText msg(combatLog, "\n\nPlayer spotted!");
+		send(msg);
+	}
+}
+
 
 int CRobot::tigCall(int memberId) {
 	if (memberId == tig::isNeighbour) {
@@ -163,6 +173,10 @@ void CRobot::onNotify(COnNewHex& msg) {
 		CSendText statusPop(statusPopup, status);
 		send(statusPop);
 	}
+}
+
+void CRobot::onNotify(CPlayerNewHex& msg) {
+	checkView(msg.newHex);
 }
 
 /** What to do when someone dies. */ 

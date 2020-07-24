@@ -22,6 +22,8 @@ public:
 	virtual int getMissileDamage() { return 0; }
 
 protected:
+	void setSimulAction(int actionId);
+	void setSerialAction(int actionId);
 	bool navigatePath(float dT);
 	bool meleeAttack(float dT);
 	bool shootTarget(float dT);

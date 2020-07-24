@@ -126,6 +126,7 @@
     <ClCompile Include="src\gameTerrain.cpp" />
     <ClCompile Include="src\gameTextWin.cpp" />
     <ClCompile Include="src\gameWin.cpp" />
+    <ClCompile Include="src\goalActor.cpp" />
     <ClCompile Include="src\groupItem.cpp" />
     <ClCompile Include="src\GUIdistributor.cpp" />
     <ClCompile Include="src\GUIgamePanel.cpp" />
@@ -141,6 +142,7 @@
     <ClCompile Include="src\qps.cpp" />
     <ClCompile Include="src\robot.cpp" />
     <ClCompile Include="src\gridObj.cpp" />
+    <ClCompile Include="src\viewField.cpp" />
     <ClCompile Include="src\worldUI.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +159,7 @@
     <ClInclude Include="src\gameTerrain.h" />
     <ClInclude Include="src\gameTextWin.h" />
     <ClInclude Include="src\gameWin.h" />
+    <ClInclude Include="src\goalActor.h" />
     <ClInclude Include="src\groupItem.h" />
     <ClInclude Include="src\GUIdistributor.h" />
     <ClInclude Include="src\GUIgamePanel.h" />
@@ -174,6 +177,7 @@
     <ClInclude Include="src\qps.h" />
     <ClInclude Include="src\robot.h" />
     <ClInclude Include="src\gridObj.h" />
+    <ClInclude Include="src\viewField.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3DEngine\3DEngine\3DEngine.vcxproj">

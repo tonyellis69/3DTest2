@@ -5,9 +5,12 @@
 
 #include "powerSupply.h"
 
+#include "gameEvents.h"
+#include "hexMsg.h"
+
 /** A class describing characteristics and behaviour unique to
 	the player hex-world object. */
-class CPlayerObject : public CHexActor {
+class CPlayerObject : public CHexActor , public CGameEventSubject {
 public:
 	CPlayerObject();
 	void initAction();

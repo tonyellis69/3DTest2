@@ -71,11 +71,22 @@ public:
 	bool result = false;
 };
 
+class CFindVisionField : public CMsg {
+public:
+	CFindVisionField(CHex& a, THexList& r) :
+		apex(a), arc(&r) {}
+
+	CHex apex;
+	THexList* arc;
+	THexList visibleHexes;
+};
+
 class CRandomHex : public CMsg {
 public:
-	CRandomHex() {}
+	CRandomHex(bool u = false) : unblocked(u) {}
 
 	CHex hex;
+	bool unblocked;
 };
 
 

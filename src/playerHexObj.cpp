@@ -50,6 +50,8 @@ void CPlayerObject::initAction() {
 
 bool CPlayerObject::update(float dT) {
 	this->dT = dT;
+	CHex oldPosition = hexPosition;
+
 	switch (action) {
 	case tig::actPlayerMove:
 		if (navigatePath(dT)) {
@@ -72,9 +74,12 @@ bool CPlayerObject::update(float dT) {
 
 	case tig::actNone:
 		return resolved;
+	}
 
 
-
+	if (hexPosition != oldPosition) {
+		CPlayerNewHex msg(hexPosition);
+		send(msg);
 	}
 
 	return unresolved;

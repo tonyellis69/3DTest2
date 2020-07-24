@@ -87,7 +87,6 @@ public:
 	void HandleUImsg(CGUIbase& Control, CMessage& Message);
 	bool scIntersectionCheckCallback(glm::vec3& pos, float scSize);
 	bool chunkCheckCallback(glm::vec3& pos, float scSize);
-	unsigned int getChunkTrisCallback(int chunkId, TChunkVert* buf);
 
 	void createChunkMesh(Chunk2& chunk);
 

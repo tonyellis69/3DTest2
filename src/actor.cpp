@@ -69,6 +69,8 @@ void CHexActor::initAction() {
 	}
 
 	case tig::actWander: {
+		return;
+
 		//find a random nearby location from our current location
 		do {
 			CRandomHex msg;
@@ -94,6 +96,7 @@ void CHexActor::initAction() {
 bool CHexActor::update(float dT) {
 	this->dT = dT;
 	switch (action) {
+	case tig::actMoveTo:
 	case tig::actChasePlayer:
 	case tig::actWander:
 		if (navigatePath(dT)) {
@@ -123,6 +126,18 @@ bool CHexActor::update(float dT) {
 	}
 
 	return unresolved;
+}
+
+void CHexActor::setSimulAction(int actionId) {
+	action = actionId;
+	CAddActor msg(this, actionSimul);
+	send(msg);
+}
+
+void CHexActor::setSerialAction(int actionId) {
+	action = actionId;
+	CAddActor msg(this, actionSerial);
+	send(msg);
 }
 
 /** Travel down the current travelPath. */

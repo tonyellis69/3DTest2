@@ -22,6 +22,7 @@ CHexWorld::CHexWorld() {
 	messageBus.setHandler<CMissileHit>(this, &CHexWorld::onMissileHit);
 	messageBus.setHandler<CKill>(this, &CHexWorld::onKill);
 	messageBus.setHandler<CDiceRoll>(this, &CHexWorld::onDiceRoll);
+	messageBus.setHandler<CPlayerNewHex>(this, &CHexWorld::onPlayerNewHex);
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
@@ -104,6 +105,7 @@ void CHexWorld::startGame() {
 
 	subscribe(robot);
 	//subscribe(robot2);
+	robot->setGoalWander();
 
 	turnPhase = actionPhase;
 }
@@ -612,6 +614,10 @@ void CHexWorld::onDiceRoll(CDiceRoll& msg) {
 	msg.result =  d(randEngine);
 	if (msg.die2 != 0)
 		msg.result2 = d(randEngine);
+}
+
+void CHexWorld::onPlayerNewHex(CPlayerNewHex& msg) {
+	notify(msg);
 }
 
 /** Return the highest priority object at this hex. ie, the one if 

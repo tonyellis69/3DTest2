@@ -124,6 +124,8 @@ private:
 
 	void onDiceRoll(CDiceRoll& msg);
 
+	void onPlayerNewHex(CPlayerNewHex& msg);
+
 	CGameHexObj* getPrimaryObjectAt(CHex& hex);
 
 	void updateCameraPosition();

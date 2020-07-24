@@ -93,6 +93,12 @@
     <ClCompile Include="src\qps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\viewField.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\goalActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -183,6 +189,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\qps.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\viewField.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\goalActor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

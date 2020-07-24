@@ -208,7 +208,7 @@ void C3DtestApp::onStart() {
 
 	playerObj2.loadMesh(shape::cubeMesh());
 	playerObj2.scale(vec3{ 40, 40, 40 });
-	playerObj2.setPos(vec3(0, 30, 0));
+	playerObj2.setPos(vec3(0, 20, 0));
 	playerObj2.setMass(10);
 	Engine.modelDrawList.push_back(&playerObj2);
 	//physEng.addObj(&playerObj2);
@@ -480,6 +480,7 @@ void C3DtestApp::keyCheck() {
 				if (keyNow('W')) {
 					groundNormal = vec3(0, 1, 0);
 					//TERRAIN2 would normally be set by physics/collision
+					//eyeLine = { 0.719004,-0.055398,-0.692795 }; //temp bug chase!!!!!!!!!!!!!!!!
 					moveDir = cross(eyeLine, groundNormal) / length(groundNormal);
 					moveDir = cross(groundNormal, moveDir) / length(groundNormal);
 					moveDir.y = 0; //*
@@ -657,7 +658,7 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 
 			//!!!!!!!!!!!!!!!!!!Look into this:
 			terrain2.setViewpoint(playerObj2.getPos());
-			//renderer.setCurrentCamera(&playerObj2.povCam);
+			renderer.setCurrentCamera(&playerObj2.povCam);
 			physEng.addObj(&playerObj2);
 		}
 		else {
@@ -1136,11 +1137,7 @@ void C3DtestApp::Update() {
 
 		/////////////////////////////////////////////////////////////
 		vec3 dPos = pos - oldPos;
-		if (terrain2.chunkOrigin[3].z > 950 && dPos.y <= -0.1f) {
-			liveLog << "\nAh ha!!!!" << dPos.y << " actual y: " << pos.y;
-			sysLog << "\nFalling!";
-		//	physEng.removeObj(&playerObj2);
-		}
+
 		oldPos = pos;
 		terrain2.onPlayerMove(dPos);
 		///tell the terrain about the move so that it can scroll etc
@@ -1370,11 +1367,6 @@ bool C3DtestApp::chunkCheckCallback(glm::vec3& chunkSamplePos, float chunkSample
 	return true;
 }
 
-/** copy the data from the multibuf to system memory */
-unsigned int C3DtestApp::getChunkTrisCallback(int chunkId, TChunkVert* buf) {
-	//multiBuf.copyBlock(chunkId, (char*)buf);
-	return 0;// multiBuf.getBlockSize(chunkId);
-}
 
 
 /*  Create a mesh for this chunk, and register it with the renderer.  */
@@ -1386,8 +1378,6 @@ void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 	float LoDscale = chunk.LoD;
 	terrain.chunkShader->setShaderValue(terrain.hChunkLoDscale, LoDscale);
 	terrain.chunkShader->setShaderValue(terrain.hChunkSamplePos, chunk.sampleCorner);
-
-	//sysLog << "\nLod " << chunk.LoD << " cubesize " << chunk.cubeSize;
 
 	float samplesPerCube = cubeSize / terrain.worldUnitsPerSampleUnit;
 	terrain.chunkShader->setShaderValue(terrain.hSamplesPerCube, samplesPerCube);

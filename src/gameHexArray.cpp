@@ -1,5 +1,6 @@
 #include "gameHexArray.h"
 
+#include <unordered_set>
 
 CGameHexArray::CGameHexArray() {
 	}
@@ -12,6 +13,7 @@ void CGameHexArray::setMessageHandlers() {
 	messageBus.setHandler< CGetActorAt>(this, &CGameHexArray::onGetActorAt);
 	messageBus.setHandler< CLineOfSight>(this, &CGameHexArray::onLineOfSight);
 	messageBus.setHandler< CRandomHex>(this, &CGameHexArray::onRandomHex);
+	messageBus.setHandler< CFindVisionField>(this, &CGameHexArray::onFindViewField);
 }
 
 void CGameHexArray::setEntityList(TEntities* pEntities) {
@@ -208,11 +210,15 @@ bool CGameHexArray::lineOfSight(CHex& start, CHex& end) {
 }
 
 /** Return a random hex somewhere on the map. */
-CHex CGameHexArray::findRandomHex() {
-	CDiceRoll msg(width,height);
-	send(msg);
+CHex CGameHexArray::findRandomHex(bool unblocked) {
+	CHex hex;
+	do {
+		CDiceRoll msg(width, height);
+		send(msg);
+		hex = indexToCube(msg.result, msg.result2);
+	} while (unblocked && !getHexCube(hex).blocks == blocksNone);
 
-	return indexToCube(msg.result,msg.result2);
+	return hex;
 }
 
 void CGameHexArray::onGetTravelPath(CGetTravelPath& msg) {
@@ -262,5 +268,28 @@ void CGameHexArray::onLineOfSight(CLineOfSight& msg) {
 }
 
 void CGameHexArray::onRandomHex(CRandomHex& msg) {
-	msg.hex = findRandomHex();
+	msg.hex = findRandomHex(msg.unblocked);
+}
+
+/** Return all the hexes in this view field that are visible
+	from the apex.*/
+void CGameHexArray::onFindViewField(CFindVisionField& msg) {
+	std::unordered_set<CHex, hex_hash> uniqueHexes;
+
+	for (auto arcHex : *msg.arc) {
+		THexList line = /*findLineHexes*/*hexLine(msg.apex, arcHex);
+		uniqueHexes.insert(line.begin() + 1, line.end());
+	}
+
+	for (auto hex = uniqueHexes.begin(); hex != uniqueHexes.end();) {
+		if (lineOfSight2(msg.apex,(CHex&)*hex) == false)
+			 hex = uniqueHexes.erase(hex);
+		else
+			hex++;
+	}
+
+
+
+	msg.visibleHexes.assign(uniqueHexes.begin(), uniqueHexes.end());
+
 }

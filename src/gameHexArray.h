@@ -14,11 +14,7 @@
 #include "messaging/messenger.h"
 
 
-struct hex_hash {
-	size_t operator()(const CHex& hex) const {
-		return std::hash<glm::i32vec3>()(glm::i32vec3(hex.x, hex.y, hex.z));
-	}
-};
+
 	
 
 using TMapIt = std::unordered_multimap<CHex, CGameHexObj*>::iterator;
@@ -52,7 +48,7 @@ public:
 
 	bool lineOfSight(CHex& start, CHex& end);
 
-	CHex findRandomHex();
+	CHex findRandomHex(bool unblocked);
 
 	void onGetTravelPath(CGetTravelPath& msg);
 	void onMoveEntity(CMoveEntity& msg);
@@ -62,6 +58,7 @@ public:
 	void onGetObjectAt(CGetObjectAt& msg);
 	void onLineOfSight(CLineOfSight& msg);
 	void onRandomHex(CRandomHex& msg);
+	void onFindViewField(CFindVisionField& msg);
 
 	TEntities* entities; ///<To check for collision against.
 

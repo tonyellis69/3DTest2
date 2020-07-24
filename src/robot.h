@@ -5,16 +5,17 @@
 
 #include "gameMsg.h"
 
-#include "actor.h"
+#include "goalActor.h"
 
-
+#include "viewField.h"
 
 /** A class describing basic robot characteristics and
 	behaviour. */
-class CRobot : public CHexActor {
+class CRobot : public CGoalActor {
 public:
 	CRobot();
 	void chooseTurnAction();
+	void frameUpdate(float dT);
 	bool update(float dT);
 	void draw();
 	void leftClick();
@@ -23,11 +24,15 @@ public:
 	void hitTarget();
 	int getMissileDamage();
 
-	TFov fov;
+	void checkView(CHex& hex);
+
+	CViewField viewField;
 
 private:
 	int tigCall(int memberId);
 	void onNotify(COnNewHex& msg);
+
+	void onNotify(CPlayerNewHex& msg);
 
 	void deathRoutine();
 
