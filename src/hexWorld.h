@@ -126,6 +126,8 @@ private:
 
 	void onPlayerNewHex(CPlayerNewHex& msg);
 
+	void onActorMovedHex(CActorMovedHex& msg);
+
 	CGameHexObj* getPrimaryObjectAt(CHex& hex);
 
 	void updateCameraPosition();
@@ -156,7 +158,9 @@ private:
 
 
 	TEntities entities; ///<Live objects in the hex world.
-		
+	TEntities entitiesToDraw; ///<Quick bodge: same entities, diff order
+
+
 	std::vector<CGridObj*> gridObjects;
 
 	TTurnPhase turnPhase;
@@ -179,7 +183,6 @@ private:
 
 
 	std::vector<CHexActor*> simulList; ///< Actors performing simultaneous actions this turn
-	bool initSimulActions = true;
 	std::vector<CHexActor*> serialList;
 	CHexActor* currentSerialActor = NULL;
 

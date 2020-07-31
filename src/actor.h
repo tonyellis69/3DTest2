@@ -14,19 +14,20 @@ enum TActorBlock {notBlocked, currentBlocked, permBlocked, unknownBlocked};
 class CHexActor : public CGameHexObj {
 public:
 	virtual void chooseTurnAction() {}
-	void setAction(int actId, CGameHexObj* target = NULL);
-	void setAction(int actId, CHex& targetHex);
-	virtual void initAction();
+	virtual void initAction() {};
 	virtual bool update(float dT);
 	bool isActor() { return true; }
 	virtual int getMissileDamage() { return 0; }
+	virtual void setActionMoveTo(CHex& hex);
+	virtual void setActionShoot(CHex& hex);
+	virtual void setActionMelee(CGameHexObj* target);
+	virtual void setActionTurnTo(CHex& hex);
 
 protected:
-	void setSimulAction(int actionId);
-	void setSerialAction(int actionId);
 	bool navigatePath(float dT);
 	bool meleeAttack(float dT);
 	bool shootTarget(float dT);
+	bool turnTo(float dT);
 
 	bool checkForBlock(CHex& destHex);
 
@@ -85,12 +86,10 @@ public:
 	CHexActor* notActor;
 };
 
-//enum TAttack {attackMelee, attackBolt};
-//class CReceiveDamage : public CMsg {
-//public:
-//	CReceiveDamage(CHexActor* actor) : attacker(actor) {}
-//
-//	CHexActor* attacker;
-//	int damage;
-//	TAttack attack;
-//};
+class CGetPlayerObj : public CMsg {
+public:
+	CGetPlayerObj() {}
+
+	CHexActor* playerObj;
+};
+

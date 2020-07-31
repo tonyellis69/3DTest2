@@ -14,7 +14,6 @@
 class CRobot : public CGoalActor {
 public:
 	CRobot();
-	void chooseTurnAction();
 	void frameUpdate(float dT);
 	bool update(float dT);
 	void draw();
@@ -25,6 +24,8 @@ public:
 	int getMissileDamage();
 
 	void checkView(CHex& hex);
+	CHex lookFor(CGameHexObj* target);
+	bool canSee(CGameHexObj* target);
 
 	CViewField viewField;
 
@@ -34,10 +35,17 @@ private:
 
 	void onNotify(CPlayerNewHex& msg);
 
+	void onNotify(CActorMovedHex& msg);
+
 	void deathRoutine();
 
+	CHex getLastSeen();
 
 
+//tracking stuff
+	CHexActor* trackingTarget = NULL;
+	CHex lastSeen;
+	bool lostTrackee = false;
 
 
 };

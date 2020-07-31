@@ -21,24 +21,24 @@ CPlayerObject::CPlayerObject() {
 void CPlayerObject::initAction() {
 	switch (action) {
 	case tig::actPlayerMove: {
-		CGetTravelPath pathRequest(hexPosition, targetHex);
+		/*CGetTravelPath pathRequest(hexPosition, targetHex);
 		send(pathRequest);
 		travelPath = pathRequest.travelPath;
 		if (travelPath.size() > movePoints2)
 			travelPath.resize(movePoints2);
-		destHexClaimed = false;
+		destHexClaimed = false;*/
 		return;
 	}
 
-	case tig::actPlayerMeleeAttack: {
-		animCycle = 0;
+	case tig::actMelee: {
+		;// animCycle = 0;
 		return;
 	}
 	
-	case tig::actPlayerShoot: {
-		CGetLineEnd msg(hexPosition,targetHex);
-		send(msg);
-		targetHex = msg.end;
+	case tig::actShoot: {
+		//CGetLineEnd msg(hexPosition,targetHex);
+		//send(msg);
+		//targetHex = msg.end;
 		return;
 	}
 
@@ -48,25 +48,41 @@ void CPlayerObject::initAction() {
 
 }
 
+
+void CPlayerObject::setActionMoveTo(CHex& hex) {
+	action = tig::actMoveTo;
+	targetHex = hex;
+	CGetTravelPath pathRequest(hexPosition, targetHex);
+	send(pathRequest);
+	travelPath = pathRequest.travelPath;
+	if (travelPath.size() > movePoints2)
+		travelPath.resize(movePoints2);
+	destHexClaimed = false;
+	blockedFor = 0;
+	CAddActor msg(this, actionSerial);
+	send(msg);
+}
+
 bool CPlayerObject::update(float dT) {
 	this->dT = dT;
 	CHex oldPosition = hexPosition;
 
 	switch (action) {
+	case tig::actMoveTo:
 	case tig::actPlayerMove:
 		if (navigatePath(dT)) {
 			action = tig::actNone;
 		}
 		break;
 
-	case tig::actPlayerMeleeAttack:
+	case tig::actMelee:
 		if (meleeAttack(dT)) {
 			hitTarget();
 			action = tig::actNone;
 		}
 		break;
 
-	case tig::actPlayerShoot:
+	case tig::actShoot:
 		if (shootTarget(dT)) {
 			action = tig::actNone;
 		}
@@ -76,7 +92,7 @@ bool CPlayerObject::update(float dT) {
 		return resolved;
 	}
 
-
+	//TO DO: may not need as well as CActorMovedHex
 	if (hexPosition != oldPosition) {
 		CPlayerNewHex msg(hexPosition);
 		send(msg);
@@ -163,10 +179,7 @@ void CPlayerObject::onGetPlayerPos(CGetPlayerPos& msg) {
 }
 
 void CPlayerObject::onSetPlayerAction(CSetPlayerAction& msg) {
-	if (msg.targetObj)
-		setAction(msg.action, msg.targetObj);
-	else
-		setAction(msg.action, msg.targetHex);
+	//TO DO: redundant, scrap
 }
 
 void CPlayerObject::onTakeItem(CTakeItem& msg) {
@@ -174,7 +187,7 @@ void CPlayerObject::onTakeItem(CTakeItem& msg) {
 }
 
 void CPlayerObject::onGetPlayerObj(CGetPlayerObj& msg) {
-	msg.playerObj = this;
+	msg.playerObj =  this;
 }
 
 void CPlayerObject::deathRoutine() {

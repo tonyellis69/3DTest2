@@ -14,6 +14,7 @@ class CPlayerObject : public CHexActor , public CGameEventSubject {
 public:
 	CPlayerObject();
 	void initAction();
+	void setActionMoveTo(CHex& hex);
 	bool update(float dT);
 	void hitTarget();
 	void draw();

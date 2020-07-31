@@ -8,6 +8,7 @@
 #include "hex/hex.h"
 
 
+
 class CSysMsg : public CMsg {
 public:
 	CSysMsg(bool b) : isOn(b) {}
@@ -71,9 +72,9 @@ public:
 	bool result = false;
 };
 
-class CFindVisionField : public CMsg {
+class CCalcVisionField : public CMsg {
 public:
-	CFindVisionField(CHex& a, THexList& r) :
+	CCalcVisionField(CHex& a, THexList& r) :
 		apex(a), arc(&r) {}
 
 	CHex apex;
@@ -87,6 +88,16 @@ public:
 
 	CHex hex;
 	bool unblocked;
+};
+
+class CGameHexObj;
+class CActorMovedHex : public CMsg {
+public:
+	CActorMovedHex(CHex& h, CGameHexObj* a) :
+		newHex(h), actor(a) {}
+
+	CHex newHex;
+	CGameHexObj* actor;
 };
 
 

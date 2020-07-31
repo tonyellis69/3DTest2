@@ -88,12 +88,7 @@ public:
 	CGameHexObj* entity;
 };
 
-class CGetPlayerObj : public CMsg {
-public:
-	CGetPlayerObj() {}
 
-	CGameHexObj* playerObj;
-};
 
 class CSetPlayerAction : public CMsg {
 public:

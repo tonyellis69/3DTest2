@@ -58,7 +58,7 @@ public:
 	void onGetObjectAt(CGetObjectAt& msg);
 	void onLineOfSight(CLineOfSight& msg);
 	void onRandomHex(CRandomHex& msg);
-	void onFindViewField(CFindVisionField& msg);
+	void onFindViewField(CCalcVisionField& msg);
 
 	TEntities* entities; ///<To check for collision against.
 

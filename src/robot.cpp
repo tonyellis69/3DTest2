@@ -19,56 +19,12 @@ CRobot::CRobot() {
 	viewField.setField(5, 60);
 }
 
-/** Choose an action for the upcoming turn.  */
-void CRobot::chooseTurnAction() {
-	callTig(tig::onChooseTurnAction); //get Tig action
-	action = getChosenAction();
-
-
-	chooseTurnAction2();
-
-	return;
-
-	CGetPlayerObj getPlayer;
-	send(getPlayer);
-	
-	//queue up the action
-	//TO DO: repetitive. Also, can this process be merged with/replace initAction?
-	//feels like we're initialising twice
-	switch (action) {
-	case tig::actChasePlayer: {
-		CAddActor msg(this, actionSimul);
-		send(msg);
-		return;
-	}
-	case tig::actAttackPlayer: {
-		actionTarget = getPlayer.playerObj;
-		CAddActor msg(this, actionSerial);
-		send(msg);
-		return;
-	}
-	case tig::actDither:
-		setAction(tig::actNone);
-		return;
-	case tig::actShootPlayer: {
-		actionTarget = getPlayer.playerObj;
-		CAddActor msg(this, actionSerial);
-		send(msg);
-		return;
-	}
-	case tig::actWander: {
-		CAddActor msg(this, actionSimul);
-		send(msg);
-		return;
-	}
-	}
-}
-
 void CRobot::frameUpdate(float dT) {
 	if (viewField.update(hexPosition, rotation)) {
-		CFindVisionField msg(hexPosition, viewField.arcHexes);
+		CCalcVisionField msg(hexPosition, viewField.arcHexes);
 		send(msg);
 		viewField.visibleHexes = msg.visibleHexes;
+
 		CGetPlayerPos playerPos;
 		send(playerPos);
 		checkView(playerPos.position);
@@ -82,10 +38,10 @@ bool CRobot::update(float dT) {
 }
 
 void CRobot::draw() {
-	CHexObject::draw();
-
 	for (auto hex : viewField.visibleHexes)
 		hexRendr->highlightHex(hex);
+
+	CHexObject::draw();
 }
 
 /** Respond to the player's left-click/primary action on this robot. */
@@ -104,14 +60,13 @@ void CRobot::leftClick() {
 
 
 	if (isNeighbour(msg.position)) {
-		CSetPlayerAction actMsg(tig::actPlayerMeleeAttack, this);
-		send(actMsg);
+		getPlayer.playerObj->setActionMelee(this);
+
 		return;
 	}
 
-	//assume shooting for now
-	CSetPlayerAction actMsg(tig::actPlayerShoot, this);
-	send(actMsg);
+	getPlayer.playerObj->setActionShoot(this->hexPosition);
+
 }
 
 /** Respond to left-click/primary action in power mode. */
@@ -141,10 +96,32 @@ int CRobot::getMissileDamage() {
 
 /** Check if the given hex lies in this robot's view field. */
 void CRobot::checkView(CHex& hex) {
-	if (viewField.searchView(hex)) {
+	if (viewField.searchView(hex) && trackingTarget == NULL) {
 		CSendText msg(combatLog, "\n\nPlayer spotted!");
 		send(msg);
+
+		setActionTurnTo(hex);
+
+		CGetPlayerObj getPlayer;
+		send(getPlayer);
+		setGoalAttack(getPlayer.playerObj);
+
+		trackingTarget = getPlayer.playerObj;
+		lastSeen = hex;
+		lostTrackee = false;
 	}
+
+}
+
+/** If we can see this object in our viewfield, say where. */
+CHex CRobot::lookFor(CGameHexObj* target) {
+	//TO DO: may not need this
+	return CHex();
+}
+
+/** If we can see the hex this object is in, return true. */
+bool CRobot::canSee(CGameHexObj* target) {
+	return viewField.searchView(target->hexPosition);
 }
 
 
@@ -179,6 +156,18 @@ void CRobot::onNotify(CPlayerNewHex& msg) {
 	checkView(msg.newHex);
 }
 
+void CRobot::onNotify(CActorMovedHex& msg) {
+	if (trackingTarget == msg.actor) {
+		if (canSee(msg.actor)) {
+			lastSeen = msg.newHex;
+		}
+		else {
+			lostTrackee = true;
+		}
+
+	}
+}
+
 /** What to do when someone dies. */ 
 void CRobot::deathRoutine() {
 	std::string deathLog = "\n" + getName() + " destroyed!";
@@ -188,6 +177,10 @@ void CRobot::deathRoutine() {
 
 	CKill killMsg(this);
 	send(killMsg);
+}
+
+CHex CRobot::getLastSeen() {
+	return lastSeen;
 }
 
 

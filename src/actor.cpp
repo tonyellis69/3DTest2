@@ -11,134 +11,77 @@
 
 const float rad360 = M_PI * 2;
 
-
-void CHexActor::setAction(int actId, CGameHexObj* target) {
-	action = actId;
-	actionTarget = NULL; 
-	//TO DO: initialise all this in an onNewTurn event 
-	if (target) {
-		this->targetHex = target->hexPosition;
-		actionTarget = target;
-	}
-	CAddActor msg(this, actionSerial);
-	send(msg);
-}
-
-void CHexActor::setAction(int actId, CHex& targetHex) {
-	action = actId;
-	actionTarget = NULL;
-	this->targetHex = targetHex;
-	CAddActor msg(this, actionSerial);
-	send(msg);
-}
-
-/** Do the necessary one-off prep work for the given action. */
-void CHexActor::initAction() {
-	 action = getChosenAction();
-
-	switch (action) {
-	case tig::actChasePlayer: {
-		CGetPlayerPos getPlayerPos;
-		send(getPlayerPos);
-		CGetTravelPath pathRequest(hexPosition, getPlayerPos.position);
-		send(pathRequest);
-		travelPath = pathRequest.travelPath;
-		if (travelPath.empty()) {
-			action = tig::actNone;
-			return;
-		}
-		if (travelPath.size() > movePoints2)
-			travelPath.resize(movePoints2);
-		destHexClaimed = false;
-		blockedFor = 0;
-		return;
-	}
-	case tig::actAttackPlayer: {
-		CGetPlayerPos getPlayerPos;
-		send(getPlayerPos);
-		targetHex = getPlayerPos.position;
-		animCycle = 0;
-		return;
-	}
-
-	case tig::actShootPlayer: {
-		CGetPlayerPos getPlayerPos;
-		send(getPlayerPos);
-		targetHex = getPlayerPos.position;
-		return;
-	}
-
-	case tig::actWander: {
-		return;
-
-		//find a random nearby location from our current location
-		do {
-			CRandomHex msg;
-			send(msg);
-
-			CGetTravelPath pathRequest(hexPosition, msg.hex);
-			send(pathRequest);
-			travelPath = pathRequest.travelPath;
-		} while (travelPath.empty());
-
-		if (travelPath.size() > movePoints2)
-			travelPath.resize(movePoints2);
-		destHexClaimed = false;
-		blockedFor = 0;
-		return;
-	}
-
-	}
-
-}
-
 /** Update the current action of the actor by the time passed. */
 bool CHexActor::update(float dT) {
 	this->dT = dT;
 	switch (action) {
 	case tig::actMoveTo:
-	case tig::actChasePlayer:
-	case tig::actWander:
 		if (navigatePath(dT)) {
 			action = tig::actNone;
 		}
 		break;
 
-	case tig::actAttackPlayer:
+	case tig::actMelee:
 		if (meleeAttack(dT)) {
 			hitTarget();
 			action = tig::actNone;
 		}
 		break;
 
-	case tig::actShootPlayer:
+	case tig::actShoot:
 		if (shootTarget(dT)) {
+			action = tig::actNone;
+		}
+		break;
+	case tig::actTurnToTarget:
+		if (turnTo(dT)) {
 			action = tig::actNone;
 		}
 		break;
 
 	case tig::actNone: 
-	case tig::actDither:
 		return resolved;
-
-
 
 	}
 
 	return unresolved;
 }
 
-void CHexActor::setSimulAction(int actionId) {
-	action = actionId;
+void CHexActor::setActionMoveTo(CHex& hex) {
+	action = tig::actMoveTo;
+	targetHex = hex;
+	CGetTravelPath pathRequest(hexPosition, targetHex);
+	send(pathRequest);
+	travelPath = pathRequest.travelPath;
+	if (travelPath.size() > movePoints2)
+		travelPath.resize(movePoints2);
+	destHexClaimed = false;
+	blockedFor = 0;
 	CAddActor msg(this, actionSimul);
 	send(msg);
 }
 
-void CHexActor::setSerialAction(int actionId) {
-	action = actionId;
+void CHexActor::setActionShoot(CHex& hex) {
+	action = tig::actShoot;
+	this->targetHex = hex;
 	CAddActor msg(this, actionSerial);
 	send(msg);
 }
+
+void CHexActor::setActionMelee(CGameHexObj* target) {
+	action = tig::actMelee;
+	actionTarget = target;
+	CAddActor msg(this, actionSerial);
+	send(msg);
+}
+
+void CHexActor::setActionTurnTo(CHex& hex) {
+	action = tig::actTurnToTarget;
+	this->targetHex = hex;
+	CAddActor msg(this, actionSimul);
+	send(msg);
+}
+
 
 /** Travel down the current travelPath. */
 bool CHexActor::navigatePath(float dT) {
@@ -231,6 +174,10 @@ bool CHexActor::moveTo(CHex& hex) {
 		worldPos = dest;
 		setPosition(hex);
 		buildWorldMatrix();
+
+		CActorMovedHex msg(hex, this);
+		send(msg);
+
 		return true;
 	}
 
@@ -260,6 +207,13 @@ bool CHexActor::shootTarget(float dT) {
 		return true;
 	}
 
+	return false;
+}
+
+bool CHexActor::turnTo(float dT) {
+	if (isFacing(targetHex)) {
+		return true;
+	}
 	return false;
 }
 

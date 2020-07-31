@@ -13,7 +13,7 @@ void CGameHexArray::setMessageHandlers() {
 	messageBus.setHandler< CGetActorAt>(this, &CGameHexArray::onGetActorAt);
 	messageBus.setHandler< CLineOfSight>(this, &CGameHexArray::onLineOfSight);
 	messageBus.setHandler< CRandomHex>(this, &CGameHexArray::onRandomHex);
-	messageBus.setHandler< CFindVisionField>(this, &CGameHexArray::onFindViewField);
+	messageBus.setHandler< CCalcVisionField>(this, &CGameHexArray::onFindViewField);
 }
 
 void CGameHexArray::setEntityList(TEntities* pEntities) {
@@ -273,22 +273,21 @@ void CGameHexArray::onRandomHex(CRandomHex& msg) {
 
 /** Return all the hexes in this view field that are visible
 	from the apex.*/
-void CGameHexArray::onFindViewField(CFindVisionField& msg) {
+void CGameHexArray::onFindViewField(CCalcVisionField& msg) {
 	std::unordered_set<CHex, hex_hash> uniqueHexes;
+
 
 	for (auto arcHex : *msg.arc) {
 		THexList line = /*findLineHexes*/*hexLine(msg.apex, arcHex);
-		uniqueHexes.insert(line.begin() + 1, line.end());
-	}
 
-	for (auto hex = uniqueHexes.begin(); hex != uniqueHexes.end();) {
-		if (lineOfSight2(msg.apex,(CHex&)*hex) == false)
-			 hex = uniqueHexes.erase(hex);
-		else
+		for (auto hex = line.begin()+1; hex != line.end();) {
+			if (lineOfSight2(msg.apex, (CHex&)*hex))
+				uniqueHexes.insert(*hex);
+			else
+				break;
 			hex++;
+		}
 	}
-
-
 
 	msg.visibleHexes.assign(uniqueHexes.begin(), uniqueHexes.end());
 

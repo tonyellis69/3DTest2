@@ -23,6 +23,7 @@ CHexWorld::CHexWorld() {
 	messageBus.setHandler<CKill>(this, &CHexWorld::onKill);
 	messageBus.setHandler<CDiceRoll>(this, &CHexWorld::onDiceRoll);
 	messageBus.setHandler<CPlayerNewHex>(this, &CHexWorld::onPlayerNewHex);
+	messageBus.setHandler<CActorMovedHex>(this, &CHexWorld::onActorMovedHex);
 }
 
 /** Provide a pointer to the game app to check for mouse input, etc. */
@@ -80,6 +81,7 @@ void CHexWorld::startGame() {
 	playerObj = new CPlayerObject();
 	playerObj->setLineModel("player");
 	map.add(playerObj, CHex(-13, 5, 8));
+	//map.add(playerObj, CHex(-6, 5, 1));
 	playerObj->setTigObj(vm->getObject("player"));
 	entities.push_back(playerObj);
 	subscribe(playerObj);
@@ -89,7 +91,8 @@ void CHexWorld::startGame() {
 
 	robot = new CRobot();
 	robot->setLineModel("robot");
-	map.add(robot, CHex(2, 0, -2));
+	//map.add(robot, CHex(2, 0, -2));
+	map.add(robot, CHex(-1, 1, 0));
 	robot->setTigObj(pRobot);
 
 
@@ -106,6 +109,9 @@ void CHexWorld::startGame() {
 	subscribe(robot);
 	//subscribe(robot2);
 	robot->setGoalWander();
+//	robot->setDirection(hexWest);
+	
+	entitiesToDraw.assign(entities.rbegin(),entities.rend());
 
 	turnPhase = actionPhase;
 }
@@ -177,18 +183,25 @@ void CHexWorld::draw() {
 	if (turnPhase == playerChoosePhase) {
 		hexRenderer.draw();
 		hexCursor->draw();
+
+		for (auto entity : entitiesToDraw)
+			entity->draw();
+		for (auto gridObj : gridObjects)
+			gridObj->draw();
+
 		if (!powerMode)
 			hexRenderer.drawPath(&cursorPath, glm::vec4{ 0.6, 0.4, 1, 0.1f }, glm::vec4{ 0.6, 0.4, 1, 0.75f });
 	}
 	else {
 		hexRenderer.draw();
-		//hexCursor->draw();
+
+		for (auto entity : entitiesToDraw)
+			entity->draw();
+		for (auto gridObj : gridObjects)
+			gridObj->draw();
 	}
 
-	for (auto entity : entities)
-		entity->draw();
-	for (auto gridObj : gridObjects)
-		gridObj->draw();
+	
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
@@ -344,7 +357,7 @@ void CHexWorld::rightClick() {
 	if (hexCursor->hexPosition == playerObj->hexPosition ||
 		map.fromToBlocked(playerObj->hexPosition, hexCursor->hexPosition) )
 		return;
-	playerObj->setAction(tig::actPlayerMove, hexCursor->hexPosition);
+	playerObj->setActionMoveTo(hexCursor->hexPosition);
 	startActionPhase();
 }
 
@@ -368,7 +381,7 @@ void CHexWorld::leftClick() {
 
 
 	//empty hex = shoot
-	playerObj->setAction(tig::actPlayerShoot, hexCursor->hexPosition );
+	playerObj->setActionShoot(hexCursor->hexPosition);
 	startActionPhase();
 	return;
 }
@@ -393,7 +406,7 @@ bool CHexWorld::resolvingSerialActions() {
 
 	if (currentSerialActor != serialList[0]) {
 		currentSerialActor = serialList[0];
-		serialList[0]->initAction();
+		 serialList[0]->initAction();
 	}
 
 	if (serialList[0]->update(dT) == resolved) {
@@ -410,14 +423,6 @@ bool CHexWorld::resolvingSerialActions() {
 bool CHexWorld::resolvingSimulActions() {
 	bool stillResolving = false;
 
-	if (initSimulActions) {
-		for (auto actor : simulList) {
-			actor->initAction();
-		}
-		initSimulActions = false;
-	}
-
-
 	for (auto actor = simulList.begin(); actor != simulList.end();) {
 		bool resolving = (*actor)->update(dT);
 		if (resolving)
@@ -432,7 +437,6 @@ bool CHexWorld::resolvingSimulActions() {
 		return true;
 
 	turnPhase = chooseActionPhase;
-	initSimulActions = true;
 	playerObj->onTurnEnd(); liveLog << "\nturn end!";
 	return false;
 }
@@ -617,6 +621,10 @@ void CHexWorld::onDiceRoll(CDiceRoll& msg) {
 }
 
 void CHexWorld::onPlayerNewHex(CPlayerNewHex& msg) {
+	notify(msg);
+}
+
+void CHexWorld::onActorMovedHex(CActorMovedHex& msg) {
 	notify(msg);
 }
 

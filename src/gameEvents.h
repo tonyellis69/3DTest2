@@ -1,6 +1,7 @@
 #pragma once
 
 #include "messaging/events.h"
+#include "gameMsg.h"
 
 class CGameEventObserver : public CEventObserver {
 public:
@@ -8,6 +9,7 @@ public:
 	virtual void onNotify(COnNewHex& msg) {};
 	virtual void onNotify(CMouseExitHex& msg) {};
 	virtual void onNotify(CPlayerNewHex& msg) {};
+	virtual void onNotify(CActorMovedHex& msg) {};
 };
 
 

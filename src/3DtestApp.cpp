@@ -1341,8 +1341,13 @@ bool C3DtestApp::scIntersectionCheckCallback(glm::vec3& nwSamplePos, float SCsam
 
 //TO DO: these two methods are identical aside from returning true/false. Consolidate!
 
+
+
 /** Returns true if terrain *intersects* the given chunk volume .*/
 bool C3DtestApp::chunkCheckCallback(glm::vec3& chunkSamplePos, float chunkSampleSize) {
+	tmpHitCount++;
+	tmpCount2++;
+
 	Engine.Renderer.setShader(terrain.chunkCheckShader);
 
 	float chunkShellVertCount = (float)terrain2.numChunkCubes; ///<Gives number of divisions in the shell
@@ -1358,7 +1363,7 @@ bool C3DtestApp::chunkCheckCallback(glm::vec3& chunkSamplePos, float chunkSample
 
 	Engine.Renderer.initQuery();
 	terrain.chunkShell->drawNew();
-	unsigned int primitives = Engine.Renderer.query();
+	unsigned int primitives = Engine.Renderer.query(); //////////////!!!!!!
 
 
 	if (primitives == 0 || primitives == shellTotalVerts)

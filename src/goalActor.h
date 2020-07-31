@@ -8,10 +8,20 @@ class CGoalActor : public CHexActor {
 public:
 	CGoalActor() {}
 	void setGoalWander();
+	void setGoalAttack(CGameHexObj* target);
+	void setGoalGotoLastSeen(CHex& dest, CGameHexObj* target);
 
-	void chooseTurnAction2();
+	void chooseTurnAction();
+	void chooseWanderAction();
+	void chooseAttackAction();
+	void chooseGotoLastSeenAction();
 
+
+	virtual CHex lookFor(CGameHexObj* target) = 0;
+	virtual bool canSee(CGameHexObj* target) = 0;
+	virtual CHex getLastSeen() = 0;
 
 	int goal;
 	CHex goalDestinationHex;
+	CGameHexObj* goalTarget;
 };

@@ -1,8 +1,8 @@
-*** Friday July 24, 2020  time: 16:02:58 ***
+*** Thursday July 30, 2020  time: 19:00:50 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
-OpenGL version: 4.6.0 NVIDIA 451.67
+OpenGL version: 4.6.0 NVIDIA 432.00
 Has NPOT
 glsl version: 4.60 NVIDIA
 BaseApp constructor finished. Yay!
