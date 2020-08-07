@@ -161,9 +161,6 @@
     <ClInclude Include="src\gameTextWin.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ImainApp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\door.h">
       <Filter>Source Files</Filter>
     </ClInclude>

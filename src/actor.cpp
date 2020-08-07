@@ -53,6 +53,12 @@ void CHexActor::setActionMoveTo(CHex& hex) {
 	CGetTravelPath pathRequest(hexPosition, targetHex);
 	send(pathRequest);
 	travelPath = pathRequest.travelPath;
+
+	if (travelPath.empty()) {
+		action = tig::actNone;
+		return;
+	}
+
 	if (travelPath.size() > movePoints2)
 		travelPath.resize(movePoints2);
 	destHexClaimed = false;

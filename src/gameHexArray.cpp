@@ -5,6 +5,11 @@
 CGameHexArray::CGameHexArray() {
 	}
 
+CGameHexArray::~CGameHexArray() {
+	for (auto& entity : entities)
+		delete entity;
+}
+
 void CGameHexArray::setMessageHandlers() {
 	messageBus.setHandler< CGetTravelPath>(this, &CGameHexArray::onGetTravelPath);
 	messageBus.setHandler< CMoveEntity>(this, &CGameHexArray::onMoveEntity);
@@ -17,7 +22,7 @@ void CGameHexArray::setMessageHandlers() {
 }
 
 void CGameHexArray::setEntityList(TEntities* pEntities) {
-	entities = pEntities;
+	pEntities = pEntities;
 }
 
 /** Returns true if the transition from this hex to the next is blocked. */
@@ -53,7 +58,7 @@ bool CGameHexArray::isEmpty(glm::i32vec2& hex) {
 		return false;
 
 	CHex cubePos = indexToCube(hex);
-	for (auto entity : *entities) {
+	for (auto entity : entities) {
 		if (entity->hexPosition == cubePos)
 			return false;
 	}
@@ -87,13 +92,22 @@ void CGameHexArray::add(CGameHexObj* entity, CHex& hexPos) {
 }
 
 /** Remove this entity from the map. */
-void CGameHexArray::removeFromEntityList(CGameHexObj* entity) {
+void CGameHexArray::removeFromMap(CGameHexObj* entity) {
 	for (auto entry : entityMap) {
 		if (entry.second == entity) {
 			entityMap.erase(entry.first);
-			return;
+			break;
 		}
 	}
+
+	auto removee = std::find(entities.begin(), entities.end(), entity);
+	if (removee != entities.end())
+		entities.erase(removee);
+
+	auto removee2 = std::find(actors.begin(), actors.end(), entity);
+	if (removee2 != actors.end())
+		actors.erase(removee2);
+
 }
 
 /** Return all entities at this hex position. */
@@ -216,9 +230,17 @@ CHex CGameHexArray::findRandomHex(bool unblocked) {
 		CDiceRoll msg(width, height);
 		send(msg);
 		hex = indexToCube(msg.result, msg.result2);
-	} while (unblocked && !getHexCube(hex).blocks == blocksNone);
+		if (hex == CHex(0, -3, 3))
+			int b = 9;
+	} while (unblocked && getHexCube(hex).blocks != blocksNone);
 
 	return hex;
+}
+
+void CGameHexArray::addActor(CHexActor* actor, CHex& hex) {
+	add(actor, hex);
+	entities.push_back(actor);
+	actors.push_back(actor);
 }
 
 void CGameHexArray::onGetTravelPath(CGetTravelPath& msg) {

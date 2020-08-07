@@ -48,8 +48,7 @@ enum TAppMode { terrainMode, textMode, texGenMode, hexMode,
 
 
 
-class C3DtestApp : public  CBaseApp , public ITerrainAppCallback,
-	public IMainApp {
+class C3DtestApp : public  CBaseApp , public ITerrainAppCallback {
 public:
 	C3DtestApp();
 	bool OnMouseWheelMsg(float xoffset, float yoffset);

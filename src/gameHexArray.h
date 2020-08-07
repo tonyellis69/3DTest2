@@ -26,6 +26,7 @@ class CGameHexArray : public CHexArray,
 	public CMessenger{
 public:
 	CGameHexArray();
+	~CGameHexArray();
 	void setMessageHandlers();
 	void setEntityList(TEntities* pEntities);
 	bool fromToBlocked(CHex& current, CHex& hex);
@@ -33,7 +34,7 @@ public:
 	CHex findLineEnd(CHex& start, CHex& target);
 	void moveEntity(CGameHexObj* entity, CHex& hex);
 	void add(CGameHexObj* entity, CHex& hex);
-	void removeFromEntityList(CGameHexObj* entity);
+	void removeFromMap(CGameHexObj* entity);
 	TRange getEntitiesAt(CHex& hex);
 	CGameHexObj* getEntityAt(CHex& hex);
 	CGameHexObj* getEntityClassAt(int classId, CHex& hex);
@@ -50,6 +51,8 @@ public:
 
 	CHex findRandomHex(bool unblocked);
 
+	void addActor(CHexActor* actor, CHex& hex);
+
 	void onGetTravelPath(CGetTravelPath& msg);
 	void onMoveEntity(CMoveEntity& msg);
 	void onActorBlockCheck(CFindActorBlock& msg);
@@ -60,8 +63,9 @@ public:
 	void onRandomHex(CRandomHex& msg);
 	void onFindViewField(CCalcVisionField& msg);
 
-	TEntities* entities; ///<To check for collision against.
 
+	TEntities entities; ///<The grand list of entities in the map.
+	std::vector<CHexActor*> actors; ///<Shortlist of entities who are actors
 private:
 
 	std::unordered_multimap<CHex, CGameHexObj*, hex_hash> entityMap;

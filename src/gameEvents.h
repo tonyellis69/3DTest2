@@ -28,6 +28,14 @@ public:
 		}
 	}
 
+	void unsubscribe(CGameEventObserver* observer) {
+		for (auto obsvr = gameObservers.begin(); obsvr != gameObservers.end();)
+			if (*obsvr == observer)
+				obsvr = gameObservers.erase(obsvr);
+			else
+				obsvr++;
+	}
+
 private:
 	std::vector<CGameEventObserver*> gameObservers;
 };

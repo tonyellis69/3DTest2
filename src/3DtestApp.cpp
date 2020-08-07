@@ -1549,7 +1549,6 @@ void C3DtestApp::addGameWindow(CGUIbase* gameWin) {
 
 /** Get the hexWorld ready for use. */
 void C3DtestApp::initHexWorld() {
-	hexWorld.setMainApp(this);
 	hexWorld.setVM(&vm);
 
 	hexWorld.addMesh("test", dataPath + "models\\test.obj");
@@ -1567,9 +1566,11 @@ void C3DtestApp::initHexWorld() {
 
 	//... more models
 
+	GUIroot.Add(hexWorld.hexPosLbl);
+
 	ITigObj* map = vm.getObject("testRoom");
 	hexWorld.makeMap(map);
-	hexWorld.start();
+	hexWorld.startGame();
 }
 
 glm::i32vec2 C3DtestApp::getMousePos() {
@@ -1605,7 +1606,11 @@ bool C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 
 	if (!handled) {
 		if (appMode == hexMode) {
-			hexWorld.onMouseWheel(yoffset);
+			if (keyNow(GLFW_KEY_LEFT_SHIFT))
+				keyState = GLFW_KEY_LEFT_SHIFT;
+			if (keyNow(GLFW_KEY_LEFT_CONTROL))
+				keyState = GLFW_KEY_LEFT_CONTROL;
+			hexWorld.onMouseWheel(yoffset,keyState);
 			handled = true; //cheeky
 		}
 	}

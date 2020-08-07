@@ -4,8 +4,6 @@
 
 #include "Ivm.h"
 
-#include "IMainApp.h"
-
 #include "gameHexArray.h"
 
 #include "mapMaker.h"
@@ -40,22 +38,20 @@ enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase, playerDeadPh
 
 
 /** A class encapsulating the hex-based representation of the world. */
-class IMainApp;
 class CHexWorld :  public CGameEventSubject,
 	public CMessenger, public CTigObjptr {
 public:
 	CHexWorld();
-	void setMainApp(IMainApp* pApp);
 	void setVM(Ivm* pVM);
 	void addMesh(const std::string& name, const std::string& fileName);
 	void makeMap(ITigObj* tigMap);
-	void start();
+	void deleteMap();
 	void startGame();
 	void moveCamera(glm::vec3& direction);
 	void rightClick();
 	void leftClick();
 	void onKeyDown(int key, long mod);
-	void onMouseWheel(float delta);
+	void onMouseWheel(float delta, int key);
 	void onMouseMove(int x, int y, int key);
 	void draw();
 	void setAspectRatio(glm::vec2& ratio);
@@ -68,17 +64,12 @@ public:
 
 	void enterKeyDown();
 
+	CGUIlabel2* hexPosLbl;
+
 private:
-	THexList calcPath(CHex& start, CHex& end);
 
 	void createCursorObject();
 	void onNewMouseHex(CHex& mouseHex);
-	THexList* getCursorPath();
-	CGameHexObj* getPlayerObj();
-
-	CHexObject* getCursorObj();
-
-
 
 	void chooseActions();
 	void startActionPhase();
@@ -88,7 +79,6 @@ private:
 	bool resolvingSerialActions();
 	bool resolvingSimulActions();
 
-	void tempPopulateMap();
 
 	int tigCall(int memberId) ;
 
@@ -96,7 +86,6 @@ private:
 
 	CGroupItem* createGroupItem();
 
-	void removeFromEntityList(CGameHexObj& entity);
 	void removeGridObj(CGridObj& gridObj);
 
 	CGameHexObj* getItemAt(CHex& position);
@@ -107,9 +96,6 @@ private:
 
 	CGridObj* createBolt();
 
-
-	void popupMsg(const std::string& text);
-;
 
 
 	void onAddActor(CAddActor& msg);
@@ -138,26 +124,15 @@ private:
 	void killEntity(CGameHexObj* entity);
 
 
-	CGameHexArray map;
+	CGameHexArray* map;
 
-	IMainApp* mainApp; ///<Pointer to app used for callbacks.
 	CHexRenderer hexRenderer;
 
 
 	CPlayerObject* playerObj;
-	CGameHexObj* hexCursor;
-	CRobot* robot;
-	CRobot* robot2;
-	CHexItem* wrench;
-	CHexItem* shield;
-	CHexItem* blaster;
-	CHexItem* desk;
-	CDoor* door;
+	CGameHexObj* hexCursor = NULL;;
+	
 
-	CGameHexObj* tempSolid;
-
-
-	TEntities entities; ///<Live objects in the hex world.
 	TEntities entitiesToDraw; ///<Quick bodge: same entities, diff order
 
 
@@ -173,9 +148,6 @@ private:
 
 	Ivm* vm; ///<Interface to the virtual machine/
 
-	std::vector< CGameTextWin*> popupWindows;
-
-	CGUIlabel2 *hexPosLbl;
 
 	glm::i32vec2 mousePos;
 

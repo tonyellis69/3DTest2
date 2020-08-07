@@ -12,10 +12,11 @@ class CMapMaker {
 public:
 
 	void attachVM(Ivm* pVM);
+	CGameHexArray* makeMap(ITigObj* mapObj);
 	void attachMapObject(ITigObj* mapObj);
-	CGameHexArray createMap();
+	CGameHexArray* createMap();
 
-	TEntities* entities;
+
 private:
 	void tmpAddBlocks();
 
@@ -33,10 +34,12 @@ private:
 
 	CGameHexObj* tmpCreateDesk();
 
+	void tempPopulateMap();
+
 
 	ITigObj* mapObj; ///<The Tig template for the map we're creating.
 	Ivm* vm; ///<Interface to the Tig VM.
-	CGameHexArray hexArray;
+	CGameHexArray* hexArray;
 
 
 	std::mt19937 randEngine;
