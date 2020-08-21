@@ -15,6 +15,12 @@ CPlayerObject::CPlayerObject() {
 	messageBus.setHandler<CGetPlayerObj>(this, &CPlayerObject::onGetPlayerObj);
 
 	tmpHP = 12;
+
+
+	viewField.centre = CHex(0);
+	viewField.setField(10);
+
+
 }
 
 /** Do the necessary one-off prep work for the given action. */
@@ -120,7 +126,9 @@ void CPlayerObject::hitTarget() {
 
 
 void CPlayerObject::draw() {
-	//draw self
+	//for (auto hex : viewField.visibleHexes)
+	//	hexRendr->highlightHex(hex);
+
 	CHexObject::draw();
 }
 
@@ -222,6 +230,23 @@ int CPlayerObject::getMissileDamage() {
 	send(msg);
 
 	return msg.power;
+}
+
+/** Called when player has arrived at a new hex.*/
+void CPlayerObject::onMovedHex() {
+	CActorMovedHex msg(hexPosition, this);
+	send(msg);
+
+	//update view field
+	viewField.update(hexPosition);
+	CCalcVisionField calcFieldMsg(hexPosition, viewField.ringHexes);
+	send(calcFieldMsg);
+	viewField.visibleHexes = calcFieldMsg.visibleHexes;
+
+	//update fog of war
+	CUpdateFog fogMsg(calcFieldMsg.visibleHexes);
+	send(fogMsg);
+
 }
 
 

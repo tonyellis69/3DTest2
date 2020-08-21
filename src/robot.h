@@ -23,11 +23,9 @@ public:
 	void hitTarget();
 	int getMissileDamage();
 
-	void checkView(CHex& hex);
-	CHex lookFor(CGameHexObj* target);
 	bool canSee(CGameHexObj* target);
 
-	CViewField viewField;
+	CViewFieldArc viewField;
 
 private:
 	int tigCall(int memberId);
@@ -40,6 +38,10 @@ private:
 	void deathRoutine();
 
 	CHex getLastSeen();
+
+	void updateViewField();
+
+	void checkForPlayer();
 
 
 //tracking stuff

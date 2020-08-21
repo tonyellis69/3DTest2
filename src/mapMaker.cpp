@@ -83,6 +83,7 @@ CGameHexArray* CMapMaker::createMap() {
 					hexArray->getHexOffset(x, y).content = 2;
 				else
 					hexArray->getHexOffset(x, y).content = 1;
+				hexArray->getHexOffset(x, y).fogged = true;
 			}
 		}
 

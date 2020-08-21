@@ -123,6 +123,8 @@ private:
 
 	void killEntity(CGameHexObj* entity);
 
+	void showEntitiesInPlayerFov();
+
 
 	CGameHexArray* map;
 

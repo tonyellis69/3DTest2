@@ -8,6 +8,8 @@
 #include "gameEvents.h"
 #include "hexMsg.h"
 
+#include "viewField.h"
+
 /** A class describing characteristics and behaviour unique to
 	the player hex-world object. */
 class CPlayerObject : public CHexActor , public CGameEventSubject {
@@ -36,10 +38,14 @@ public:
 
 	int getMissileDamage();
 
+	void onMovedHex();
+
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
 	
 	CPowerSupply* psu;
+
+	CViewFieldCircle viewField;
 
 private:
 

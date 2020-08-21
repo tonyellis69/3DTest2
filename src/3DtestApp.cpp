@@ -1655,7 +1655,10 @@ void C3DtestApp::onPopupText(CSendText& msg) {
 		powerQueueWin->addText(msg.text);
 	}
 	else if (msg.popupType == combatLog) {
-		combatLogWin->addText(msg.text);
+		if (msg.clear)
+			combatLogWin->clearText();
+		else
+			combatLogWin->addText(msg.text);
 	}
 }
 

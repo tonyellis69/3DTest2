@@ -19,6 +19,7 @@ void CGameHexArray::setMessageHandlers() {
 	messageBus.setHandler< CLineOfSight>(this, &CGameHexArray::onLineOfSight);
 	messageBus.setHandler< CRandomHex>(this, &CGameHexArray::onRandomHex);
 	messageBus.setHandler< CCalcVisionField>(this, &CGameHexArray::onFindViewField);
+	messageBus.setHandler<CUpdateFog>(this, &CGameHexArray::onUpdateFog);
 }
 
 void CGameHexArray::setEntityList(TEntities* pEntities) {
@@ -299,18 +300,29 @@ void CGameHexArray::onFindViewField(CCalcVisionField& msg) {
 	std::unordered_set<CHex, hex_hash> uniqueHexes;
 
 
-	for (auto arcHex : *msg.arc) {
-		THexList line = /*findLineHexes*/*hexLine(msg.apex, arcHex);
+	for (auto perimeterHex : *msg.perimeterHexes) {
+		THexList line = /*findLineHexes*/*hexLine(msg.apex, perimeterHex);
 
 		for (auto hex = line.begin()+1; hex != line.end();) {
 			if (lineOfSight2(msg.apex, (CHex&)*hex))
 				uniqueHexes.insert(*hex);
-			else
+			else {
+				uniqueHexes.insert(*hex);
 				break;
+			}
 			hex++;
 		}
 	}
+	
+	uniqueHexes.insert(msg.apex);
 
 	msg.visibleHexes.assign(uniqueHexes.begin(), uniqueHexes.end());
 
+}
+
+/** Clear the fog-of-war wherever the given viewfield indicates a visible hex. */
+void CGameHexArray::onUpdateFog(CUpdateFog& msg) {
+	for (auto visibleHex : msg.visibleHexes) {
+		getHexCube(visibleHex).fogged = false;
+	}
 }

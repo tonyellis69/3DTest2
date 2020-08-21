@@ -11,13 +11,16 @@ public:
 	void setGoalAttack(CGameHexObj* target);
 	void setGoalGotoLastSeen(CHex& dest, CGameHexObj* target);
 
+	int getGoal();
+
 	void chooseTurnAction();
 	void chooseWanderAction();
 	void chooseAttackAction();
 	void chooseGotoLastSeenAction();
 
 
-	virtual CHex lookFor(CGameHexObj* target) = 0;
+
+
 	virtual bool canSee(CGameHexObj* target) = 0;
 	virtual CHex getLastSeen() = 0;
 

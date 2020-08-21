@@ -72,12 +72,14 @@ void CHexWorld::startGame() {
 	//create new player object
 	playerObj = new CPlayerObject();
 	playerObj->setLineModel("player");
-	map->add(playerObj, CHex(-13, 5, 8));
-	//map->add(playerObj, CHex(10, -2, -8));
+	//map->add(playerObj, CHex(-13, 5, 8));
+	map->add(playerObj, CHex(0, 0, 0));
 
 	playerObj->setTigObj(vm->getObject("player"));
 	map->entities.push_back(playerObj);
 	subscribe(playerObj);
+	playerObj->onMovedHex();
+	showEntitiesInPlayerFov();
 
 	entitiesToDraw.assign(map->entities.rbegin(),map->entities.rend());
 
@@ -85,6 +87,9 @@ void CHexWorld::startGame() {
 
 	if (hexCursor == NULL)
 		createCursorObject();
+
+	CSendText msg(combatLog, "", true);
+	send(msg);
 }
 
 
@@ -114,6 +119,10 @@ void CHexWorld::onKeyDown(int key, long mod) {
 	if (key == 'F') {
 		hexRenderer.toggleFollowCam();
 		hexRenderer.followTarget(playerObj->worldPos);
+	}
+
+	if (key == 'R') {
+		hexRenderer.hexShader->recompile();
 	}
 
 }
@@ -170,7 +179,7 @@ void CHexWorld::draw() {
 			gridObj->draw();
 	}
 
-	
+	hexRenderer.drawFog();
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
@@ -255,8 +264,7 @@ void CHexWorld::createCursorObject() {
 /** Respond to mouse cursor moving to a new hex. */
 void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	hexCursor->setPosition(mouseHex);
-
-	cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition);
+	cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition, true);
 
 
 	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
@@ -528,6 +536,8 @@ void CHexWorld::onPlayerNewHex(CPlayerNewHex& msg) {
 
 void CHexWorld::onActorMovedHex(CActorMovedHex& msg) {
 	notify(msg);
+
+	showEntitiesInPlayerFov();
 }
 
 /** Return the highest priority object at this hex. ie, the one if 
@@ -602,6 +612,15 @@ void CHexWorld::killEntity(CGameHexObj* entity) {
 		turnPhase = playerDeadPhase;
 
 	delete entity;
+}
+
+void CHexWorld::showEntitiesInPlayerFov() {
+	//update which robots are now visible
+	for (auto& actor : map->actors) {
+		if (actor == playerObj)
+			continue;
+		actor->inPlayerFov = playerObj->viewField.searchView(actor->hexPosition);
+	}
 }
 
 

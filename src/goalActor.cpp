@@ -10,6 +10,7 @@ void CGoalActor::setGoalWander() {
 	goalDestinationHex = msg.hex;
 }
 
+
 /** Give this actor the goal of killing the given target. */
 void CGoalActor::setGoalAttack(CGameHexObj* target) {
 	goal = tig::goalAttack;
@@ -21,6 +22,10 @@ void CGoalActor::setGoalGotoLastSeen(CHex& dest, CGameHexObj* target) {
 	goal = tig::goalGotoLastSeen;
 	goalTarget = target;
 	goalDestinationHex = dest;
+}
+
+int CGoalActor::getGoal() {
+	return goal;
 }
 
 
@@ -37,8 +42,6 @@ void CGoalActor::chooseTurnAction() {
 	case tig::goalGotoLastSeen:
 		chooseGotoLastSeenAction();
 		break;
-
-
 	}
 
 }
@@ -68,6 +71,8 @@ void CGoalActor::chooseAttackAction() {
 		CHex lastSeen = getLastSeen();
 		setGoalGotoLastSeen(lastSeen, goalTarget);
 		chooseGotoLastSeenAction();
+		CSendText msg(combatLog, "\n\nLost player!");
+		send(msg);
 	}
 
 }
@@ -82,7 +87,9 @@ void CGoalActor::chooseGotoLastSeenAction() {
 
 		setGoalWander();
 		chooseWanderAction();
+		lineModel.setColourR(normalColour);
 	}
 
 
 }
+

@@ -44,6 +44,15 @@ bool CHexActor::update(float dT) {
 
 	}
 
+	if (earlyExit && action == tig::actNone) {
+		earlyExit = false;
+		action = earlyExitAction;
+		actionTarget = earlyExitTarget;
+		targetHex = actionTarget->hexPosition;
+		return unresolved;
+	}
+	
+
 	return unresolved;
 }
 
@@ -100,6 +109,10 @@ bool CHexActor::navigatePath(float dT) {
 				travelPath.erase(travelPath.begin());
 				if (travelPath.empty())
 					return true;
+				if (earlyExit) {
+					travelPath.clear();
+					return true;
+				}
 				destHexClaimed = false; 
 			}
 		}
@@ -179,10 +192,8 @@ bool CHexActor::moveTo(CHex& hex) {
 	if (glm::length(frameTravel) > remainingDist) {
 		worldPos = dest;
 		setPosition(hex);
-		buildWorldMatrix();
 
-		CActorMovedHex msg(hex, this);
-		send(msg);
+		onMovedHex();
 
 		return true;
 	}
@@ -223,6 +234,7 @@ bool CHexActor::turnTo(float dT) {
 	return false;
 }
 
+
 /** Continue the lunge animation. */
 bool CHexActor::lungeAt(CHex& hex) {
 	float lungeDistance = animCycle * 2.0f - 1.0f;
@@ -244,6 +256,15 @@ bool CHexActor::lungeAt(CHex& hex) {
 	else {
 		return false;
 	}
+}
+
+
+
+
+/** Called when actor has arrived at a new hex.*/
+void CHexActor::onMovedHex() {
+	CActorMovedHex msg(hexPosition, this);
+	send(msg);
 }
 
 

@@ -17,18 +17,12 @@ CRobot::CRobot() {
 	tmpOrigHP = tmpHP;
 
 	viewField.setField(5, 60);
+	normalColour = glm::vec4(0.3, 1, 0.3, 1); //temp!
 }
 
 void CRobot::frameUpdate(float dT) {
-	if (viewField.update(hexPosition, rotation)) {
-		CCalcVisionField msg(hexPosition, viewField.arcHexes);
-		send(msg);
-		viewField.visibleHexes = msg.visibleHexes;
-
-		CGetPlayerPos playerPos;
-		send(playerPos);
-		checkView(playerPos.position);
-	}
+	updateViewField();
+	
 }
 
 bool CRobot::update(float dT) {	
@@ -38,8 +32,10 @@ bool CRobot::update(float dT) {
 }
 
 void CRobot::draw() {
-	for (auto hex : viewField.visibleHexes)
-		hexRendr->highlightHex(hex);
+	if (!inPlayerFov)
+		return;
+	//for (auto hex : viewField.visibleHexes)
+	//	hexRendr->highlightHex(hex);
 
 	CHexObject::draw();
 }
@@ -94,30 +90,6 @@ int CRobot::getMissileDamage() {
 	return 6 + msg.result - 2;
 }
 
-/** Check if the given hex lies in this robot's view field. */
-void CRobot::checkView(CHex& hex) {
-	if (viewField.searchView(hex) && trackingTarget == NULL) {
-		CSendText msg(combatLog, "\n\nPlayer spotted!");
-		send(msg);
-
-		setActionTurnTo(hex);
-
-		CGetPlayerObj getPlayer;
-		send(getPlayer);
-		setGoalAttack(getPlayer.playerObj);
-
-		trackingTarget = getPlayer.playerObj;
-		lastSeen = hex;
-		lostTrackee = false;
-	}
-
-}
-
-/** If we can see this object in our viewfield, say where. */
-CHex CRobot::lookFor(CGameHexObj* target) {
-	//TO DO: may not need this
-	return CHex();
-}
 
 /** If we can see the hex this object is in, return true. */
 bool CRobot::canSee(CGameHexObj* target) {
@@ -153,7 +125,7 @@ void CRobot::onNotify(COnNewHex& msg) {
 }
 
 void CRobot::onNotify(CPlayerNewHex& msg) {
-	checkView(msg.newHex);
+	checkForPlayer();
 }
 
 void CRobot::onNotify(CActorMovedHex& msg) {
@@ -183,7 +155,44 @@ CHex CRobot::getLastSeen() {
 	return lastSeen;
 }
 
+/** Reconstruct our viewfield if it needs it. If we do, check if the player is in sight. */
+void CRobot::updateViewField() {
+	bool rebuilt = viewField.calculateOutline(hexPosition, rotation);
+	if (rebuilt) {
+		CCalcVisionField msg(hexPosition, viewField.arcHexes);
+		send(msg);
+		viewField.visibleHexes = msg.visibleHexes;
 
+		checkForPlayer();
+	}
+}
+
+void CRobot::checkForPlayer() {
+	CGetPlayerObj getPlayer;
+	send(getPlayer);
+	//return;
+
+	if (canSee(getPlayer.playerObj) && trackingTarget == NULL) {
+		CSendText msg(combatLog, "\n\nPlayer spotted!");
+		send(msg);
+
+		earlyExit = true;
+		earlyExitAction = tig::actTurnToTarget;
+		earlyExitTarget = getPlayer.playerObj;
+
+
+	//	setGoalReact(getPlayer.playerObj);
+
+	//	setActionTurnTo(getPlayer.playerObj->hexPosition);
+
+		setGoalAttack(getPlayer.playerObj);
+		trackingTarget = getPlayer.playerObj;
+		lastSeen = getPlayer.playerObj->hexPosition;
+
+		lineModel.setColourR(glm::vec4(1,0,0,1));
+
+	}
+}
 
 
 

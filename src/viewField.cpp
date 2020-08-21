@@ -7,12 +7,12 @@
 
 #include "hex/hex.h"
 
-void CViewField::setField(int radius, float fovAngleDegrees) {
+void CViewFieldArc::setField(int radius, float fovAngleDegrees) {
 	this->radius = radius;
 	fovAngle = glm::radians(fovAngleDegrees);
 }
 
-bool CViewField::update(CHex& pos, float rotation) {
+bool CViewFieldArc::calculateOutline(CHex& pos, float rotation) {
 	bool recalc = false;;
 	if (pos != apexPos) {
 		apexPos = pos;
@@ -32,7 +32,7 @@ bool CViewField::update(CHex& pos, float rotation) {
 	return recalc;
 }
 
-bool CViewField::searchView(CHex& hex) {
+bool CViewFieldArc::searchView(CHex& hex) {
 	for (auto viewHex : visibleHexes) {
 		if (viewHex == hex) {
 			return true;
@@ -41,14 +41,34 @@ bool CViewField::searchView(CHex& hex) {
 	return false;
 }
 
-/** Find all hexes in field by tracing lines from the apex to the arc. */
-void CViewField::calcField(THexList& arcHexes) {
-	std::unordered_set<CHex, hex_hash> uniqueHexes;
 
-	for (auto arcHex : arcHexes) {
-		THexList line = *hexLine(apexPos, arcHex);
-		uniqueHexes.insert(line.begin() +1, line.end());
+
+//Code for player viewfield //
+
+
+void CViewFieldCircle::setField(int radius) {
+	this->radius = radius;
+
+	//create ring of hexes at radius from centre
+	//make this our visible hexes
+	ringHexes = *findRing(radius, centre);
+
+
+}
+
+void CViewFieldCircle::update(CHex& pos) {
+	centre = pos;
+	ringHexes = *findRing(radius, centre);
+}
+
+bool CViewFieldCircle::searchView(CHex& hex) {
+	if (hex == centre)
+		return false;
+
+	for (auto viewHex : visibleHexes) {
+		if (viewHex == hex) {
+			return true;
+		}
 	}
-
-	arcHexes.assign(uniqueHexes.begin(),uniqueHexes.end());
+	return false;
 }

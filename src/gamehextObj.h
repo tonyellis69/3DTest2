@@ -54,6 +54,9 @@ public:
 	unsigned int mBlocks; ///<If true, blocks travel path
 	bool deleteMe;
 
+	bool inPlayerFov = false; ///<True if object in player line of sight
+
+	glm::vec4 normalColour;
 	
 
 protected:

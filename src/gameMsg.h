@@ -20,11 +20,12 @@ enum TPopup { defencePopup, statusPopup, powerQ, combatLog };
 
 class CSendText : public CMsg {
 public:
-	CSendText(TPopup popType, const std::string& txt) : popupType(popType),
-	text(txt) {}
+	CSendText(TPopup popType, const std::string& txt, bool c = false) : popupType(popType),
+	text(txt), clear(c) {}
 
 	std::string text;
 	TPopup popupType;
+	bool clear = false;
 };
 
 
@@ -75,10 +76,10 @@ public:
 class CCalcVisionField : public CMsg {
 public:
 	CCalcVisionField(CHex& a, THexList& r) :
-		apex(a), arc(&r) {}
+		apex(a), perimeterHexes(&r) {}
 
 	CHex apex;
-	THexList* arc;
+	THexList* perimeterHexes;
 	THexList visibleHexes;
 };
 
@@ -98,6 +99,13 @@ public:
 
 	CHex newHex;
 	CGameHexObj* actor;
+};
+
+class CUpdateFog : public CMsg {
+public:
+	CUpdateFog(THexList& h) : visibleHexes(h) {}
+
+	THexList & visibleHexes;
 };
 
 

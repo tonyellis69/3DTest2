@@ -62,6 +62,7 @@ public:
 	void onLineOfSight(CLineOfSight& msg);
 	void onRandomHex(CRandomHex& msg);
 	void onFindViewField(CCalcVisionField& msg);
+	void onUpdateFog(CUpdateFog& msg);
 
 
 	TEntities entities; ///<The grand list of entities in the map.

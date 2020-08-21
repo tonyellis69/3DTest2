@@ -23,6 +23,10 @@ public:
 	virtual void setActionMelee(CGameHexObj* target);
 	virtual void setActionTurnTo(CHex& hex);
 
+	bool earlyExit = false;
+	int earlyExitAction;
+	CGameHexObj* earlyExitTarget;
+
 protected:
 	bool navigatePath(float dT);
 	bool meleeAttack(float dT);
@@ -43,6 +47,7 @@ protected:
 
 
 
+
 	float dT;
 	int action = tig::actNone;
 
@@ -56,7 +61,8 @@ protected:
 	CHex targetHex; ///<Target hex, if any, for the current action.
 	CGameHexObj* actionTarget; ///<Subject, if any, for the current action
 
-
+private:
+	virtual void onMovedHex();
 };
 
 enum TAction {actionSerial, actionSimul};
