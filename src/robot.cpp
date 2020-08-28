@@ -32,7 +32,7 @@ bool CRobot::update(float dT) {
 }
 
 void CRobot::draw() {
-	if (!inPlayerFov)
+	if (!visibleToPlayer)
 		return;
 	//for (auto hex : viewField.visibleHexes)
 	//	hexRendr->highlightHex(hex);
@@ -94,6 +94,12 @@ int CRobot::getMissileDamage() {
 /** If we can see the hex this object is in, return true. */
 bool CRobot::canSee(CGameHexObj* target) {
 	return viewField.searchView(target->hexPosition);
+}
+
+/** Called to update whether this robot is in the
+player's fov. */
+void CRobot::playerSight(bool inView) {
+	visibleToPlayer = inView;
 }
 
 

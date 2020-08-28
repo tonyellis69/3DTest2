@@ -62,6 +62,7 @@ public:
 	void onLineOfSight(CLineOfSight& msg);
 	void onRandomHex(CRandomHex& msg);
 	void onFindViewField(CCalcVisionField& msg);
+	void onFindViewField2(CCalcVisionField& msg);
 	void onUpdateFog(CUpdateFog& msg);
 
 

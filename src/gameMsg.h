@@ -103,9 +103,11 @@ public:
 
 class CUpdateFog : public CMsg {
 public:
-	CUpdateFog(THexList& h) : visibleHexes(h) {}
+	CUpdateFog(THexList& h, THexList& u) : visibleHexes(h),
+	unvisibledHexes(u) {}
 
 	THexList & visibleHexes;
+	THexList& unvisibledHexes;
 };
 
 

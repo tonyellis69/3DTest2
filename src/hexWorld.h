@@ -123,7 +123,7 @@ private:
 
 	void killEntity(CGameHexObj* entity);
 
-	void showEntitiesInPlayerFov();
+	void alertEntitiesInPlayerFov();
 
 
 	CGameHexArray* map;
@@ -163,6 +163,8 @@ private:
 	bool powerMode = false;
 
 	CQPS qps; ///<Quantum power system.
+
+	bool lineOfSight = false;
 };
 
 

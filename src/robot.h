@@ -25,6 +25,9 @@ public:
 
 	bool canSee(CGameHexObj* target);
 
+
+	void playerSight(bool inView);
+
 	CViewFieldArc viewField;
 
 private:

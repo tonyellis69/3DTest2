@@ -9,6 +9,12 @@ CGameHexObj::CGameHexObj() {
 	deleteMe = false;
 }
 
+void CGameHexObj::draw() {
+	if (!visibleToPlayer)
+		return;
+	CHexObject::draw();
+}
+
 
 
 bool CGameHexObj::isNeighbour(CGameHexObj& obj) {
@@ -37,6 +43,13 @@ unsigned int CGameHexObj::blocks() {
 bool CGameHexObj::blocks(THexDir direction) {
 	unsigned int dirBit = 1 << direction;
 	return blocks() & dirBit;
+}
+
+/** Called to update whether this entity is in the 
+player's fov. */
+void CGameHexObj::playerSight(bool inView) {
+	if (inView)
+		visibleToPlayer = true; //will stay in view by default
 }
 
 void CGameHexObj::receiveDamage(CGameHexObj& attacker, int damage) {

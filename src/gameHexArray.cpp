@@ -301,16 +301,14 @@ void CGameHexArray::onFindViewField(CCalcVisionField& msg) {
 
 
 	for (auto perimeterHex : *msg.perimeterHexes) {
-		THexList line = /*findLineHexes*/*hexLine(msg.apex, perimeterHex);
+		for (int corner = 0; corner < 6; corner++) {
+			THexList line = *hexLine3(msg.apex, perimeterHex,corner);
 
-		for (auto hex = line.begin()+1; hex != line.end();) {
-			if (lineOfSight2(msg.apex, (CHex&)*hex))
+			for (auto hex = line.begin() + 1; hex != line.end();hex++) {
 				uniqueHexes.insert(*hex);
-			else {
-				uniqueHexes.insert(*hex);
-				break;
+				if (getHexCube(*hex).content == 2)
+					break;
 			}
-			hex++;
 		}
 	}
 	
@@ -320,9 +318,40 @@ void CGameHexArray::onFindViewField(CCalcVisionField& msg) {
 
 }
 
+void CGameHexArray::onFindViewField2(CCalcVisionField& msg) {
+	std::unordered_set<CHex, hex_hash> uniqueHexes;
+
+
+	for (auto perimeterHex : *msg.perimeterHexes) {
+		THexList line = /*findLineHexes*/*hexLine(msg.apex, perimeterHex);
+
+		for (auto hex = line.begin() + 1; hex != line.end();) {
+			if (inLineOfSight2(msg.apex, (CHex&)*hex))
+				uniqueHexes.insert(*hex);
+			else {
+				uniqueHexes.insert(*hex);
+				break;
+			}
+			hex++;
+		}
+	}
+
+	uniqueHexes.insert(msg.apex);
+
+	msg.visibleHexes.assign(uniqueHexes.begin(), uniqueHexes.end());
+
+}
+
+
+
+
 /** Clear the fog-of-war wherever the given viewfield indicates a visible hex. */
 void CGameHexArray::onUpdateFog(CUpdateFog& msg) {
 	for (auto visibleHex : msg.visibleHexes) {
-		getHexCube(visibleHex).fogged = false;
+		getHexCube(visibleHex).fogged = 0;
+	}
+
+	for (auto unvisibledHex : msg.unvisibledHexes) {
+		getHexCube(unvisibledHex).fogged = 0.5f;
 	}
 }

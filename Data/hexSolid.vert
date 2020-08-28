@@ -1,6 +1,8 @@
 #version 330
 
 layout(location = 0) in ivec2 index;
+in uint content;
+in float fog;
 
 uniform mat4 mvpMatrix;
 
@@ -12,7 +14,12 @@ out squareData {
 	vec4 cVert;
 	vec4 dVert;
 	
+	uint content;
+	float fog;
+	
 } outData;
+
+//out int outFog;
 
 const float d = 1.0f;
 const float hexWidth = sqrt(3.0f);
@@ -34,7 +41,6 @@ void main() {
 	outData.cVert = mvpMatrix * ( vec4(position,1) +  vec4(d,-d,0,0) );
 	outData.dVert = mvpMatrix * ( vec4(position,1) +  vec4(-d,-d,0,0) );
 	
-	
-	
-	
+	outData.content = content;
+	outData.fog = fog;
 }

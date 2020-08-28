@@ -12,63 +12,57 @@ in squareData {
 	vec4 fVert;
 	vec4 origin;
 	
-	vec2 lineCentre[6];
+	float fog;
 	
 } hex[];
 
+in uint outContent[];
 
-out vec2 lineCentre;
+out float outFog;
 
 void main() {
+
+		if (hex[0].fog == 1.0)
+			return;
+
+		outFog = hex[0].fog;
 		
-		gl_Position =  hex[0].vert;
-		lineCentre = hex[0].lineCentre[0];	
+		gl_Position =  hex[0].vert;	
 		EmitVertex();
 		gl_Position =  hex[0].bVert;
-		lineCentre = hex[0].lineCentre[1];	
 		EmitVertex();
 		EndPrimitive();
 
 		
 		gl_Position =  hex[0].bVert;
-		lineCentre = hex[0].lineCentre[1];	
 		EmitVertex();
 		gl_Position =  hex[0].cVert;
-		lineCentre = hex[0].lineCentre[2];	
 		EmitVertex();
 		EndPrimitive();
 		
 		
 		gl_Position =  hex[0].cVert;
-		lineCentre = hex[0].lineCentre[2];	
 		EmitVertex();
 		gl_Position =  hex[0].dVert;
-		lineCentre = hex[0].lineCentre[3];	
 		EmitVertex();
 		EndPrimitive();
 		
 				
 		gl_Position =  hex[0].dVert;
-		lineCentre = hex[0].lineCentre[3];	
 		EmitVertex();
 		gl_Position =  hex[0].eVert;
-		lineCentre = hex[0].lineCentre[4];	
 		EmitVertex();
 		EndPrimitive();
 		
 		gl_Position =  hex[0].eVert;
-		lineCentre = hex[0].lineCentre[4];	
 		EmitVertex();
 		gl_Position =  hex[0].fVert;
-		lineCentre = hex[0].lineCentre[5];	
 		EmitVertex();;
 		EndPrimitive();
 		
 		gl_Position =  hex[0].fVert;
-		lineCentre = hex[0].lineCentre[5];	
 		EmitVertex();
-		gl_Position =  hex[0].vert;
-		lineCentre = hex[0].lineCentre[0];	
+		gl_Position =  hex[0].vert;	
 		EmitVertex();
 		EndPrimitive();
 

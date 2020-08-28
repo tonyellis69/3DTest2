@@ -79,7 +79,9 @@ void CHexWorld::startGame() {
 	map->entities.push_back(playerObj);
 	subscribe(playerObj);
 	playerObj->onMovedHex();
-	showEntitiesInPlayerFov();
+	alertEntitiesInPlayerFov();
+
+
 
 	entitiesToDraw.assign(map->entities.rbegin(),map->entities.rend());
 
@@ -87,6 +89,7 @@ void CHexWorld::startGame() {
 
 	if (hexCursor == NULL)
 		createCursorObject();
+	hexCursor->visibleToPlayer = true;
 
 	CSendText msg(combatLog, "", true);
 	send(msg);
@@ -122,9 +125,15 @@ void CHexWorld::onKeyDown(int key, long mod) {
 	}
 
 	if (key == 'R') {
-		hexRenderer.hexShader->recompile();
+		hexRenderer.hexLineShader->recompile();
+		hexRenderer.hexSolidShader->recompile();
 	}
 
+	if (key == 'L') {
+		lineOfSight = !lineOfSight;
+
+	}
+ 
 }
 
 void CHexWorld::onMouseWheel(float delta, int key) {
@@ -179,7 +188,7 @@ void CHexWorld::draw() {
 			gridObj->draw();
 	}
 
-	hexRenderer.drawFog();
+
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
@@ -264,7 +273,10 @@ void CHexWorld::createCursorObject() {
 /** Respond to mouse cursor moving to a new hex. */
 void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	hexCursor->setPosition(mouseHex);
-	cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition, true);
+	if (!lineOfSight)
+		cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition, true);
+	else
+		cursorPath = *hexLine2(playerObj->hexPosition, hexCursor->hexPosition);
 
 
 	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
@@ -532,12 +544,13 @@ void CHexWorld::onDiceRoll(CDiceRoll& msg) {
 
 void CHexWorld::onPlayerNewHex(CPlayerNewHex& msg) {
 	notify(msg);
+	hexRenderer.updateHexShaderBuffer();
 }
 
 void CHexWorld::onActorMovedHex(CActorMovedHex& msg) {
 	notify(msg);
 
-	showEntitiesInPlayerFov();
+	alertEntitiesInPlayerFov();
 }
 
 /** Return the highest priority object at this hex. ie, the one if 
@@ -574,6 +587,7 @@ void CHexWorld::beginNewTurn() {
 	qps.beginNewTurn();
 	playerObj->onTurnBegin();
 	map->updateBlocking();
+	hexRenderer.updateHexShaderBuffer();
 	chooseActions();
 	cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition);
 
@@ -614,12 +628,13 @@ void CHexWorld::killEntity(CGameHexObj* entity) {
 	delete entity;
 }
 
-void CHexWorld::showEntitiesInPlayerFov() {
-	//update which robots are now visible
-	for (auto& actor : map->actors) {
-		if (actor == playerObj)
+/** Update which entities are now visible to the player. */
+void CHexWorld::alertEntitiesInPlayerFov() {
+	for (auto& entity : map->entities) {
+		if (entity == playerObj)
 			continue;
-		actor->inPlayerFov = playerObj->viewField.searchView(actor->hexPosition);
+		bool inView = playerObj->viewField.searchView(entity->hexPosition);
+		entity->playerSight(inView);
 	}
 }
 

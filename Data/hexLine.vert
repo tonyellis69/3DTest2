@@ -1,6 +1,8 @@
 #version 330
 
 layout(location = 0) in ivec2 index;
+in uint content;
+in float fog;
 
 uniform mat4 mvpMatrix;
 
@@ -17,11 +19,12 @@ out squareData {
 	vec4 fVert;
 	vec4 origin;
 	
-	vec2 lineCentre[6];
-
+	float fog;
 } outData;
 
-const float d = 0.65f;
+out uint outContent;
+
+
 const float hexWidth = sqrt(3.0f);
 const float hexHeight = 2;
 
@@ -42,13 +45,7 @@ void main() {
 	outData.eVert = mvpMatrix * ( vec4(position,1) +  vec4(hexWidth * 0.5f,-hexHeight * 0.25f,0,0) );
 	outData.fVert = mvpMatrix * ( vec4(position,1) +  vec4(hexWidth * 0.5f,hexHeight * 0.25f,0,0) );
 	outData.origin = mvpMatrix * vec4(position,1);
-	
-	outData.lineCentre[0] = 0.5*(outData.vert.xy / outData.vert.w + vec2(1, 1))*viewPort;
-	outData.lineCentre[1] = 0.5*(outData.bVert.xy / outData.bVert.w + vec2(1, 1))*viewPort;
-	outData.lineCentre[2] = 0.5*(outData.cVert.xy / outData.cVert.w + vec2(1, 1))*viewPort;
-	outData.lineCentre[3] = 0.5*(outData.dVert.xy / outData.dVert.w + vec2(1, 1))*viewPort;
-	outData.lineCentre[4] = 0.5*(outData.eVert.xy / outData.eVert.w + vec2(1, 1))*viewPort;
-	outData.lineCentre[5] = 0.5*(outData.fVert.xy / outData.fVert.w + vec2(1, 1))*viewPort;
-	
 
+	outContent = content;
+	outData.fog = fog;
 }

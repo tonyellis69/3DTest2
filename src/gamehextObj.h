@@ -27,6 +27,8 @@ class CGameHexObj : public CHexObject, public CTigObjptr,
 public:
 	CGameHexObj();
 
+	void draw();
+
 	virtual void receiveDamage(CGameHexObj& attacker, int damage);
 
 	bool reduceHitPoints(int damage);
@@ -51,10 +53,12 @@ public:
 	virtual void leftClick() {}
 	virtual void leftClickPowerMode() {}
 
+	virtual void playerSight(bool inView);
+
 	unsigned int mBlocks; ///<If true, blocks travel path
 	bool deleteMe;
 
-	bool inPlayerFov = false; ///<True if object in player line of sight
+	bool visibleToPlayer = false; ///<True if object in player line of sight
 
 	glm::vec4 normalColour;
 	

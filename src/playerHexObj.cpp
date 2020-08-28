@@ -241,10 +241,19 @@ void CPlayerObject::onMovedHex() {
 	viewField.update(hexPosition);
 	CCalcVisionField calcFieldMsg(hexPosition, viewField.ringHexes);
 	send(calcFieldMsg);
+
+	std::vector<CHex> unvisibledHexes;
+	for (auto hex : viewField.visibleHexes) {
+		if (std::find(calcFieldMsg.visibleHexes.begin(), calcFieldMsg.visibleHexes.end(),
+			hex) == calcFieldMsg.visibleHexes.end()) {
+			unvisibledHexes.push_back(hex);
+		}
+	}
+
 	viewField.visibleHexes = calcFieldMsg.visibleHexes;
 
 	//update fog of war
-	CUpdateFog fogMsg(calcFieldMsg.visibleHexes);
+	CUpdateFog fogMsg(calcFieldMsg.visibleHexes,unvisibledHexes);
 	send(fogMsg);
 
 }
