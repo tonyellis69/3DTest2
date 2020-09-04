@@ -10,12 +10,15 @@
 
 #include "viewField.h"
 
+#include "UI/gui.h"
+
 /** A class describing characteristics and behaviour unique to
 	the player hex-world object. */
 class CPlayerObject : public CHexActor , public CGameEventSubject {
 public:
 	CPlayerObject();
-	void initAction();
+	~CPlayerObject();
+	void onActionKey(bool pressed);
 	void setActionMoveTo(CHex& hex);
 	bool update(float dT);
 	void hitTarget();
@@ -25,6 +28,7 @@ public:
 	void dropItem(int itemNo);
 	void equipItem(int itemNo);
 	void leftClickPowerMode();
+	void updateActionPoints(int change);
 	void onTurnBegin();
 	void onTurnEnd();
 	void onGetPlayerPos(CGetPlayerPos& msg);
@@ -40,6 +44,11 @@ public:
 
 	void onMovedHex();
 
+	void updateViewField();
+
+	
+
+
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
 	
@@ -47,6 +56,10 @@ public:
 
 	CViewFieldCircle viewField;
 
+	CGUIlabel2* APlabel;
+
 private:
+
+	int actionPoints;
 
 };

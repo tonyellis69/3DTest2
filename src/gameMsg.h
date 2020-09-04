@@ -36,9 +36,11 @@ public:
 
 class CGetTravelPath : public CMsg {
 public:
-	CGetTravelPath(CHex& A, CHex& B) : start(A), end(B) {}
+	CGetTravelPath(CHex& A, CHex& B, bool fog = false) : start(A), end(B),
+	fogOn(fog) {}
 	CHex start;
 	CHex end;
+	bool fogOn;
 	THexList travelPath;
 };
 
@@ -108,6 +110,11 @@ public:
 
 	THexList & visibleHexes;
 	THexList& unvisibledHexes;
+};
+
+class CPlayerTurnEnd : public CMsg {
+public:
+
 };
 
 

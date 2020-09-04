@@ -32,7 +32,7 @@ public:
 
 private:
 	int tigCall(int memberId);
-	void onNotify(COnNewHex& msg);
+	void onNotify(COnCursorNewHex& msg);
 
 	void onNotify(CPlayerNewHex& msg);
 

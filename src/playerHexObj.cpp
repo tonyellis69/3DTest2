@@ -4,6 +4,8 @@
 
 #include "hexItem.h"
 
+#include "gameState.h"
+
 
 
 CPlayerObject::CPlayerObject() {
@@ -15,52 +17,61 @@ CPlayerObject::CPlayerObject() {
 	messageBus.setHandler<CGetPlayerObj>(this, &CPlayerObject::onGetPlayerObj);
 
 	tmpHP = 12;
-
+	actionPoints = 12;
 
 	viewField.centre = CHex(0);
 	viewField.setField(10);
 
+	APlabel = gui::addLabel(std::to_string(actionPoints), 600, style::mainWinCtrlBorder);
+	APlabel->setTextColour(style::uiWhite);
+	APlabel->setSize(style::labelPresets[1]);
+	APlabel->setFont(style::themes2.at("gameTheme").styles.at("mainHeader").font);
 
 }
 
-/** Do the necessary one-off prep work for the given action. */
-void CPlayerObject::initAction() {
-	switch (action) {
-	case tig::actPlayerMove: {
-		/*CGetTravelPath pathRequest(hexPosition, targetHex);
+CPlayerObject::~CPlayerObject() {
+	gui::removeControl(APlabel);
+}
+
+/** Player has pressed or released the action key. */
+void CPlayerObject::onActionKey(bool pressed) {
+
+	if (pressed && world.getTurnPhase() == playerPhase) {
+		//TO DO: for now assume move, may/should be other possibilities later
+
+		if (hexPosition == world.cursorPos  )
+			return;
+		CGetTravelPath pathRequest(hexPosition, world.cursorPos,true);
 		send(pathRequest);
+		if (pathRequest.travelPath.empty())
+			return;
+
 		travelPath = pathRequest.travelPath;
-		if (travelPath.size() > movePoints2)
-			travelPath.resize(movePoints2);
-		destHexClaimed = false;*/
-		return;
-	}
 
-	case tig::actMelee: {
-		;// animCycle = 0;
-		return;
+		setActionMoveTo(world.cursorPos);
+		//world.setTurnPhase(actionPhase);
 	}
-	
-	case tig::actShoot: {
-		//CGetLineEnd msg(hexPosition,targetHex);
-		//send(msg);
-		//targetHex = msg.end;
-		return;
-	}
+	else {
+		if (action == tig::actMoveTo) {
+			if (!travelPath.empty())
+				travelPath.erase(travelPath.begin() + 1, travelPath.end());
 
+
+		}
 
 
 	}
-
 }
+
+
 
 
 void CPlayerObject::setActionMoveTo(CHex& hex) {
 	action = tig::actMoveTo;
 	targetHex = hex;
-	CGetTravelPath pathRequest(hexPosition, targetHex);
-	send(pathRequest);
-	travelPath = pathRequest.travelPath;
+//	CGetTravelPath pathRequest(hexPosition, targetHex);
+//	send(pathRequest);
+//	travelPath = pathRequest.travelPath;
 	if (travelPath.size() > movePoints2)
 		travelPath.resize(movePoints2);
 	destHexClaimed = false;
@@ -167,12 +178,19 @@ void CPlayerObject::leftClickPowerMode() {
 	send(msg);
 }
 
+void CPlayerObject::updateActionPoints(int change) {
+	actionPoints += change;
+	APlabel->setText(std::to_string(actionPoints));
+}
+
 
 void CPlayerObject::onTurnBegin() {
 	liveLog << "\nPlayer turn begin";
 	psu->topUp();
 
 	psu->updateDisplay();
+
+	actionPoints = 12;
 }
 
 /**Tidy up player state ready for the next round. */
@@ -237,6 +255,18 @@ void CPlayerObject::onMovedHex() {
 	CActorMovedHex msg(hexPosition, this);
 	send(msg);
 
+	updateViewField();
+
+	updateActionPoints(-1);
+
+	if (actionPoints == 0) {
+		CPlayerTurnEnd msg;
+		send(msg);
+	}
+}
+
+
+void CPlayerObject::updateViewField() {
 	//update view field
 	viewField.update(hexPosition);
 	CCalcVisionField calcFieldMsg(hexPosition, viewField.ringHexes);
@@ -253,9 +283,11 @@ void CPlayerObject::onMovedHex() {
 	viewField.visibleHexes = calcFieldMsg.visibleHexes;
 
 	//update fog of war
-	CUpdateFog fogMsg(calcFieldMsg.visibleHexes,unvisibledHexes);
+	CUpdateFog fogMsg(calcFieldMsg.visibleHexes, unvisibledHexes);
 	send(fogMsg);
 
 }
+
+
 
 

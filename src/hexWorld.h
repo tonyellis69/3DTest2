@@ -32,10 +32,9 @@
 #include "hexMsg.h"
 
 #include "qps.h"
+
+#include "gameState.h"
   
-enum TTurnPhase {actionPhase, chooseActionPhase, playerChoosePhase, playerDeadPhase};
-
-
 
 /** A class encapsulating the hex-based representation of the world. */
 class CHexWorld :  public CGameEventSubject,
@@ -50,6 +49,7 @@ public:
 	void moveCamera(glm::vec3& direction);
 	void rightClick();
 	void leftClick();
+	void onActionKey(bool released);
 	void onKeyDown(int key, long mod);
 	void onMouseWheel(float delta, int key);
 	void onMouseMove(int x, int y, int key);
@@ -71,11 +71,12 @@ private:
 	void createCursorObject();
 	void onNewMouseHex(CHex& mouseHex);
 
-	void chooseActions();
+	void robotsChooseActions();
 	void startActionPhase();
 
 
 	bool resolvingGridObjActions();
+	bool resolvingPlayerSerialActions();
 	bool resolvingSerialActions();
 	bool resolvingSimulActions();
 
@@ -113,6 +114,7 @@ private:
 	void onPlayerNewHex(CPlayerNewHex& msg);
 
 	void onActorMovedHex(CActorMovedHex& msg);
+	void onPlayerTurnEnd(CPlayerTurnEnd& msg);
 
 	CGameHexObj* getPrimaryObjectAt(CHex& hex);
 
@@ -131,7 +133,7 @@ private:
 	CHexRenderer hexRenderer;
 
 
-	CPlayerObject* playerObj;
+	CPlayerObject* playerObj = NULL;
 	CGameHexObj* hexCursor = NULL;;
 	
 
@@ -140,7 +142,6 @@ private:
 
 	std::vector<CGridObj*> gridObjects;
 
-	TTurnPhase turnPhase;
 
 	float dT; ///<Interval since last app loop.
 
@@ -158,6 +159,8 @@ private:
 
 	std::vector<CHexActor*> simulList; ///< Actors performing simultaneous actions this turn
 	std::vector<CHexActor*> serialList;
+	std::vector<CHexActor*> playerSerialList;
+
 	CHexActor* currentSerialActor = NULL;
 
 	bool powerMode = false;

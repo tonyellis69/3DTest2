@@ -22,6 +22,9 @@ public:
 	virtual void setActionShoot(CHex& hex);
 	virtual void setActionMelee(CGameHexObj* target);
 	virtual void setActionTurnTo(CHex& hex);
+	int getAction() {
+		return action;
+	}
 
 	bool earlyExit = false;
 	int earlyExitAction;
@@ -74,6 +77,8 @@ public:
 	CHexActor* actor;
 	TAction addTo;
 };
+
+
 
 class CFindActorBlock : public CMsg {
 public:

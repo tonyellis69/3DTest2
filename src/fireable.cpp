@@ -125,7 +125,7 @@ void CShield::cancelDefence(CGameHexObj* robot) {
 }
 
 /** Mouse entered new hex. */
-void CShield::onNotify(COnNewHex& msg) {
+void CShield::onNotify(COnCursorNewHex& msg) {
 	//check if we have a defence on a robot at this hex. 
 	for (auto defence : defences) {
 		if (defence.first->hexPosition == msg.newHex) {

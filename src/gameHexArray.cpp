@@ -249,7 +249,7 @@ void CGameHexArray::onGetTravelPath(CGetTravelPath& msg) {
 	int b = getHexCube(CHex(0, 4, -4)).blocks;
 	//zero here!!!
 
-	msg.travelPath = aStarPath(msg.start, msg.end);
+	msg.travelPath = aStarPath(msg.start, msg.end, msg.fogOn);
 }
 
 void CGameHexArray::onMoveEntity(CMoveEntity& msg) {
@@ -301,8 +301,8 @@ void CGameHexArray::onFindViewField(CCalcVisionField& msg) {
 
 
 	for (auto perimeterHex : *msg.perimeterHexes) {
-		for (int corner = 0; corner < 6; corner++) {
-			THexList line = *hexLine3(msg.apex, perimeterHex,corner);
+		for (int offset = 0; offset < 3; offset++) {
+			THexList line = *hexLine4(msg.apex, perimeterHex,offset);
 
 			for (auto hex = line.begin() + 1; hex != line.end();hex++) {
 				uniqueHexes.insert(*hex);

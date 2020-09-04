@@ -32,10 +32,9 @@ bool CRobot::update(float dT) {
 }
 
 void CRobot::draw() {
-	if (!visibleToPlayer)
-		return;
-	//for (auto hex : viewField.visibleHexes)
-	//	hexRendr->highlightHex(hex);
+	//if (!visibleToPlayer)
+	//	return;
+
 
 	CHexObject::draw();
 }
@@ -119,7 +118,7 @@ int CRobot::tigCall(int memberId) {
 	return 0;
 }
 
-void CRobot::onNotify(COnNewHex& msg) {
+void CRobot::onNotify(COnCursorNewHex& msg) {
 	if (msg.newHex == hexPosition) {
 		std::string status = callTigStr(tig::getStatus);
 		if (tmpOrigHP > tmpHP) {

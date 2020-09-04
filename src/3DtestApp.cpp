@@ -740,6 +740,15 @@ void C3DtestApp::onKeyUp(int key, long mod) {
 
 
 void C3DtestApp::onMouseButton(int button, int action, int mods) {
+	if (button == GLFW_MOUSE_BUTTON_LEFT) {
+		if (action == GLFW_PRESS)
+			hexWorld.onActionKey(true);
+		else
+			hexWorld.onActionKey(false);
+	}
+
+	//TO DO: get rid of this shit:
+
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
 		hexWorld.rightClick();
 	}

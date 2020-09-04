@@ -6,6 +6,8 @@
 
 #include "gameTextWin.h"
 
+#include "gameState.h"
+
 CGameHexObj nullGameHexObj;
 
 CHexWorld::CHexWorld() {
@@ -22,6 +24,10 @@ CHexWorld::CHexWorld() {
 	messageBus.setHandler<CDiceRoll>(this, &CHexWorld::onDiceRoll);
 	messageBus.setHandler<CPlayerNewHex>(this, &CHexWorld::onPlayerNewHex);
 	messageBus.setHandler<CActorMovedHex>(this, &CHexWorld::onActorMovedHex);
+	messageBus.setHandler<CPlayerTurnEnd>(this, &CHexWorld::onPlayerTurnEnd);
+
+
+	subscribe(&world);
 
 	hexPosLbl = new CGUIlabel2(10, 10, 550, 30);
 	hexPosLbl->setTextColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -78,14 +84,14 @@ void CHexWorld::startGame() {
 	playerObj->setTigObj(vm->getObject("player"));
 	map->entities.push_back(playerObj);
 	subscribe(playerObj);
-	playerObj->onMovedHex();
+	playerObj->updateViewField();
 	alertEntitiesInPlayerFov();
 
 
 
 	entitiesToDraw.assign(map->entities.rbegin(),map->entities.rend());
 
-	turnPhase = actionPhase;
+	world.setTurnPhase(playerPhase);
 
 	if (hexCursor == NULL)
 		createCursorObject();
@@ -93,6 +99,9 @@ void CHexWorld::startGame() {
 
 	CSendText msg(combatLog, "", true);
 	send(msg);
+
+	map->updateBlocking();
+	hexRenderer.updateHexShaderBuffer();
 }
 
 
@@ -150,10 +159,15 @@ void CHexWorld::onMouseWheel(float delta, int key) {
 }
 
 void CHexWorld::onMouseMove(int x, int y, int key) {
-	if (turnPhase == playerDeadPhase) {
+	if (world.getTurnPhase() == playerDeadPhase) {
 		//TO DO: temp! player death should turn off input at the source
 		return;
 	}
+
+	if (world.getTurnPhase() != playerPhase)
+		return;
+
+
 	mousePos = { x,y };
 	CHex mouseHex = hexRenderer.pickHex(x, y);
 	if (mouseHex != hexCursor->hexPosition) {
@@ -167,7 +181,7 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 
 
 void CHexWorld::draw() {
-	if (turnPhase == playerChoosePhase) {
+	if (world.getTurnPhase() == playerPhase && playerObj->getAction() == tig::actNone) {
 		hexRenderer.draw();
 		hexCursor->draw();
 
@@ -182,10 +196,13 @@ void CHexWorld::draw() {
 	else {
 		hexRenderer.draw();
 
+
 		for (auto entity : entitiesToDraw)
 			entity->draw();
 		for (auto gridObj : gridObjects)
 			gridObj->draw();
+
+		hexRenderer.drawPath(&cursorPath, glm::vec4{ 0.3, 0.2, 1, 0.1f }, glm::vec4{ 0.3, 0.2, 1, 0.75f });
 	}
 
 
@@ -208,7 +225,13 @@ void CHexWorld::update(float dT) {
 	for (auto entity : map->entities)
 		entity->frameUpdate(dT);
 
-	if (turnPhase == actionPhase) { 
+	if (world.getTurnPhase() == playerPhase) {
+		if (resolvingPlayerSerialActions())
+			return;
+	}
+
+
+	if (world.getTurnPhase() == robotPhase) {
 		if (resolvingGridObjActions())
 			return;
 
@@ -292,7 +315,7 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	coords << " mouse " << mousePos.x << " " << mousePos.y;
 	hexPosLbl->setText(coords.str());
 
-	COnNewHex msg;
+	COnCursorNewHex msg;
 	msg.newHex = mouseHex;
 	notify(msg);
 }
@@ -300,37 +323,34 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 
 
 /** All entities choose their action for the coming turn. */
-void CHexWorld::chooseActions() {
+void CHexWorld::robotsChooseActions() {
 	currentSerialActor = NULL;
 	for (auto actor : map->actors) {
 		actor->chooseTurnAction();
 	}
-	turnPhase = playerChoosePhase;
+//	world.setTurnPhase(playerChoosePhase);
 }
 
 
 void CHexWorld::startActionPhase() {
-	turnPhase = actionPhase;
+	//world.setTurnPhase(actionPhase);
 }
 
 /** Begin a player right-click action. */
 void CHexWorld::rightClick() {
-	if (turnPhase != playerChoosePhase )
+	/*if (world.getTurnPhase() != playerChoosePhase )
 		return;
 
 	if (powerMode)
-		return;
+		return;*/
 
-	if (hexCursor->hexPosition == playerObj->hexPosition ||
-		map->fromToBlocked(playerObj->hexPosition, hexCursor->hexPosition) )
-		return;
-	playerObj->setActionMoveTo(hexCursor->hexPosition);
-	startActionPhase();
 }
 
 /** Begin a player left-click action. */
 void CHexWorld::leftClick() {
-	if (turnPhase != playerChoosePhase)
+	return;
+
+	if (world.getTurnPhase() != playerPhase)
 		return;
 
 	CGameHexObj* obj = getPrimaryObjectAt(hexCursor->hexPosition);
@@ -353,6 +373,10 @@ void CHexWorld::leftClick() {
 	return;
 }
 
+void CHexWorld::onActionKey(bool pressed) {
+	playerObj->onActionKey(pressed);
+}
+
 
 
 /** If there are any gridObjects, update the lead one and return true. */
@@ -364,6 +388,26 @@ bool CHexWorld::resolvingGridObjActions() {
 		return true;
 	}
 	return false;
+}
+
+bool CHexWorld::resolvingPlayerSerialActions() {
+	if (playerSerialList.empty())
+		return resolved;
+
+	if (currentSerialActor != playerSerialList[0]) {
+		currentSerialActor = playerSerialList[0];
+		playerSerialList[0]->initAction();
+	}
+
+	if (playerSerialList[0]->update(dT) == resolved) {
+		playerSerialList.erase(playerSerialList.begin());
+		if (playerSerialList.empty()) {
+			map->updateBlocking();
+			return resolved;
+		}
+	}
+
+	return unresolved;
 }
 
 /** If any entity is performing a serial action, update the lead one and return true. */
@@ -403,7 +447,7 @@ bool CHexWorld::resolvingSimulActions() {
 	if (stillResolving)
 		return true;
 
-	turnPhase = chooseActionPhase;
+	//world.setTurnPhase(chooseActionPhase);
 	playerObj->onTurnEnd(); liveLog << "\nturn end!";
 	return false;
 }
@@ -490,6 +534,13 @@ CGridObj* CHexWorld::createBolt() {
 
 /** Add this actor to an action list. */
 void CHexWorld::onAddActor(CAddActor& msg) {
+	if (msg.actor == playerObj) {
+		playerSerialList.push_back(playerObj);
+		return;
+	}
+	//TO DO: kludgy, look for a better way to handle player
+
+
 	if (msg.addTo == actionSimul)
 		simulList.push_back(msg.actor);
 	else
@@ -544,6 +595,7 @@ void CHexWorld::onDiceRoll(CDiceRoll& msg) {
 
 void CHexWorld::onPlayerNewHex(CPlayerNewHex& msg) {
 	notify(msg);
+	cursorPath.erase(cursorPath.begin());
 	hexRenderer.updateHexShaderBuffer();
 }
 
@@ -551,6 +603,11 @@ void CHexWorld::onActorMovedHex(CActorMovedHex& msg) {
 	notify(msg);
 
 	alertEntitiesInPlayerFov();
+}
+
+void CHexWorld::onPlayerTurnEnd(CPlayerTurnEnd& msg){
+	world.setTurnPhase(robotPhase);
+	robotsChooseActions();
 }
 
 /** Return the highest priority object at this hex. ie, the one if 
@@ -584,11 +641,12 @@ void CHexWorld::updateCameraPosition() {
 }
 
 void CHexWorld::beginNewTurn() {
+	world.setTurnPhase(playerPhase);
 	qps.beginNewTurn();
 	playerObj->onTurnBegin();
 	map->updateBlocking();
 	hexRenderer.updateHexShaderBuffer();
-	chooseActions();
+	//chooseActions();
 	cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition);
 
 
@@ -597,7 +655,7 @@ void CHexWorld::beginNewTurn() {
 		CSendText msg(combatLog, "\n\nYOU HAVE WON");
 		send(msg);
 
-		turnPhase = playerDeadPhase;
+		world.setTurnPhase(playerDeadPhase);
 	}
 }
 
@@ -623,7 +681,7 @@ void CHexWorld::killEntity(CGameHexObj* entity) {
 	map->removeFromMap(entity);
 
 	if (entity == playerObj)
-		turnPhase = playerDeadPhase;
+		world.setTurnPhase(playerDeadPhase);
 
 	delete entity;
 }

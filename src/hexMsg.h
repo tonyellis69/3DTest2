@@ -3,7 +3,7 @@
 #include "messaging/msg.h" 
 #include "hex/hex.h"
 
-class COnNewHex : public CMsg {
+class COnCursorNewHex : public CMsg {
 public:
 	CHex newHex;
 };
