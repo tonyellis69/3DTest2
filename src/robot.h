@@ -47,10 +47,7 @@ private:
 	void checkForPlayer();
 
 
-//tracking stuff
-	CHexActor* trackingTarget = NULL;
-	CHex lastSeen;
-	bool lostTrackee = false;
+
 
 
 };

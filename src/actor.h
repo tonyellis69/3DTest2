@@ -48,7 +48,7 @@ protected:
 
 	bool lungeAt(CHex& hex);
 
-
+	void trackPoint(glm::vec3& point);
 
 
 	float dT;
@@ -64,8 +64,15 @@ protected:
 	CHex targetHex; ///<Target hex, if any, for the current action.
 	CGameHexObj* actionTarget; ///<Subject, if any, for the current action
 
+
+	//tracking stuff
+	CHexActor* trackingTarget = NULL;
+	CHex lastSeen;
+	bool canSeePlayer = false;
+
 private:
 	virtual void onMovedHex();
+
 };
 
 enum TAction {actionSerial, actionSimul};

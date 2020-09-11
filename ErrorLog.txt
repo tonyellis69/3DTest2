@@ -1,5 +1,3 @@
 
 
-Total SCs 680
-Passed SCs 116
 Member showPlayerOptions not found.

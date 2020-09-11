@@ -36,6 +36,8 @@ public:
 	void onTakeItem(CTakeItem& msg);
 	void onGetPlayerObj(CGetPlayerObj& msg);
 
+	void onPlayerSeen(CPlayerSeen& msg);
+
 	void deathRoutine();
 
 	void receiveDamage(CGameHexObj& attacker, int damage);

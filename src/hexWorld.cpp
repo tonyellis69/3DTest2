@@ -79,7 +79,7 @@ void CHexWorld::startGame() {
 	playerObj = new CPlayerObject();
 	playerObj->setLineModel("player");
 	//map->add(playerObj, CHex(-13, 5, 8));
-	map->add(playerObj, CHex(0, 0, 0));
+	map->add(playerObj, CHex(0, -3, 3));
 
 	playerObj->setTigObj(vm->getObject("player"));
 	map->entities.push_back(playerObj);
@@ -102,6 +102,8 @@ void CHexWorld::startGame() {
 
 	map->updateBlocking();
 	hexRenderer.updateHexShaderBuffer();
+
+	beginNewTurn(); //NB!!! Repeats some of the stuff above
 }
 
 
@@ -165,6 +167,9 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 	}
 
 	if (world.getTurnPhase() != playerPhase)
+		return;
+
+	if (playerObj->getAction() != tig::actNone)
 		return;
 
 
@@ -415,6 +420,8 @@ bool CHexWorld::resolvingSerialActions() {
 	if (serialList.empty())
 		return resolved;
 
+	world.onscreenRobotAction = true;
+
 	if (currentSerialActor != serialList[0]) {
 		currentSerialActor = serialList[0];
 		 serialList[0]->initAction();
@@ -433,6 +440,9 @@ bool CHexWorld::resolvingSerialActions() {
 /** If any entity is performing a simultaneous action, update each one and return true. */
 bool CHexWorld::resolvingSimulActions() {
 	bool stillResolving = false;
+
+	if (!simulList.empty())
+		world.onscreenRobotAction = true;
 
 	for (auto actor = simulList.begin(); actor != simulList.end();) {
 		bool resolving = (*actor)->update(dT);
@@ -642,6 +652,7 @@ void CHexWorld::updateCameraPosition() {
 
 void CHexWorld::beginNewTurn() {
 	world.setTurnPhase(playerPhase);
+	world.onscreenRobotAction = false;
 	qps.beginNewTurn();
 	playerObj->onTurnBegin();
 	map->updateBlocking();

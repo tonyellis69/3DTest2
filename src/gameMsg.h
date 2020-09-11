@@ -77,12 +77,13 @@ public:
 
 class CCalcVisionField : public CMsg {
 public:
-	CCalcVisionField(CHex& a, THexList& r) :
-		apex(a), perimeterHexes(&r) {}
+	CCalcVisionField(CHex& a, THexList& r, bool obv = false) :
+		apex(a), perimeterHexes(&r), obsessive(obv) {}
 
 	CHex apex;
 	THexList* perimeterHexes;
 	THexList visibleHexes;
+	bool obsessive;
 };
 
 class CRandomHex : public CMsg {
@@ -117,4 +118,11 @@ public:
 
 };
 
+
+class CPlayerSeen : public CMsg {
+public:
+	CPlayerSeen(CGameHexObj* v) : viewer(v) {}
+
+	CGameHexObj* viewer;
+};
 

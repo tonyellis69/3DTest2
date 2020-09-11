@@ -75,7 +75,7 @@ public:
 	void GUImsg(int ctrlId, TGUImessage& msg);
 	
 	void initWireSCs();
-	void onTerrainAdvance(Tdirection direction);
+
 
 	void initHeightmapGUI();
 	void updateHeightmapImage();
@@ -125,7 +125,7 @@ public:
 	CGameTerrain terrain;
 	CTerrain2 terrain2;
 	
-	double oldTime;
+	
 
 	bool mouseLook; ///<True if mouselook mode on.
 	glm::vec2 oldMousePos;
@@ -143,14 +143,13 @@ public:
 
 	bool supWire; ///<True when superchunk wireframe is on.
 
-	int chunkCall;
+	
 
 	CBaseBuf* tempFeedbackBuf; 
 	CBuf tempFeedbackBuf2;
 
 	float bigGap;
 
-	int tmpSCno;
 
 	CSkyDome* skyDome;
 
@@ -158,9 +157,8 @@ public:
 	//CBaseTexture* triTableTex; ///<Data texture for MC triangles table
 	
 
-	CBasePhysObj* physCube;
 
-	bool tmp;
+	
 
 	CPlayerObj playerObj;
 	
@@ -190,8 +188,6 @@ public:
 	
 	CModel* tree;
 
-//	CGUIrichText* textWindow;
-	bool shownChoice; ///<True if we've displayed the user's choices in the console.
 
 //	unsigned int textWindowID;
 	const int optionHotText = 0x10;
@@ -217,7 +213,7 @@ public:
 	unsigned int hWireColour;
 	//std::vector<glm::vec3> wireCubeVerts;
 
-	glm::vec3 oldPos;//<Temporary clunky way to track player movement for terrain2. Tidy!
+	glm::vec3 oldPos = glm::vec3(0);//<Temporary clunky way to track player movement for terrain2. Tidy!
 
 	CModel2 tmpModel2;
 	ComposeTest testCompositor;

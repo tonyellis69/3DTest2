@@ -3,6 +3,8 @@
 
 #include "utils/log.h"
 
+#include "gameState.h"
+
 
 const float rad360 = M_PI * 2;
 
@@ -21,8 +23,12 @@ CRobot::CRobot() {
 }
 
 void CRobot::frameUpdate(float dT) {
+	this->dT = dT;
+	if (canSeePlayer && world.getTurnPhase() == playerPhase) {
+		trackPoint(trackingTarget->worldPos);
+	}
+
 	updateViewField();
-	
 }
 
 bool CRobot::update(float dT) {	
@@ -34,7 +40,8 @@ bool CRobot::update(float dT) {
 void CRobot::draw() {
 	//if (!visibleToPlayer)
 	//	return;
-
+	for (auto hex : viewField.visibleHexes)
+		hexRendr->highlightHex(hex);
 
 	CHexObject::draw();
 }
@@ -134,15 +141,16 @@ void CRobot::onNotify(CPlayerNewHex& msg) {
 }
 
 void CRobot::onNotify(CActorMovedHex& msg) {
-	if (trackingTarget == msg.actor) {
+	/*if (trackingTarget == msg.actor) {
 		if (canSee(msg.actor)) {
 			lastSeen = msg.newHex;
+			canSeeTrackee = true;
 		}
 		else {
-			lostTrackee = true;
+			canSeeTrackee = false;
 		}
 
-	}
+	}*/
 }
 
 /** What to do when someone dies. */ 
@@ -164,7 +172,7 @@ CHex CRobot::getLastSeen() {
 void CRobot::updateViewField() {
 	bool rebuilt = viewField.calculateOutline(hexPosition, rotation);
 	if (rebuilt) {
-		CCalcVisionField msg(hexPosition, viewField.arcHexes);
+		CCalcVisionField msg(hexPosition, viewField.arcHexes, true);
 		send(msg);
 		viewField.visibleHexes = msg.visibleHexes;
 
@@ -172,31 +180,49 @@ void CRobot::updateViewField() {
 	}
 }
 
+/** Performed after the player moves to a new hex or we recalculate the viewfield, so
+	we can respond if the player is in view. */
 void CRobot::checkForPlayer() {
 	CGetPlayerObj getPlayer;
 	send(getPlayer);
-	//return;
 
-	if (canSee(getPlayer.playerObj) && trackingTarget == NULL) {
-		CSendText msg(combatLog, "\n\nPlayer spotted!");
-		send(msg);
-
-		earlyExit = true;
-		earlyExitAction = tig::actTurnToTarget;
-		earlyExitTarget = getPlayer.playerObj;
-
-
-	//	setGoalReact(getPlayer.playerObj);
-
-	//	setActionTurnTo(getPlayer.playerObj->hexPosition);
-
-		setGoalAttack(getPlayer.playerObj);
-		trackingTarget = getPlayer.playerObj;
+	if (canSee(getPlayer.playerObj)) {
 		lastSeen = getPlayer.playerObj->hexPosition;
+		if (!canSeePlayer) {
+			CSendText msg(combatLog, "\n\nPlayer spotted! Tracking on");
+			send(msg);
 
-		lineModel.setColourR(glm::vec4(1,0,0,1));
+			canSeePlayer = true;
+			CPlayerSeen seenMsg(this);
+			send(seenMsg);
 
+			earlyExit = true;
+			earlyExitAction = tig::actTurnToTarget;
+			earlyExitTarget = getPlayer.playerObj;
+
+
+			setGoalAttack(getPlayer.playerObj);
+			trackingTarget = getPlayer.playerObj;
+
+
+			lineModel.setColourR(glm::vec4(1, 0, 0, 1));
+
+		}
+		else {
+			//CSendText msg(combatLog, "\n\nPlayer seen again!");
+			//send(msg);
+		}
 	}
+	else {
+		if (canSeePlayer) {
+			CSendText msg(combatLog, "\n\nPlayer lost!!!! (new)");
+			send(msg);
+		}
+		canSeePlayer = false;
+	}
+
+
+
 }
 
 

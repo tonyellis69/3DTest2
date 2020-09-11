@@ -68,11 +68,13 @@ void CGoalActor::chooseAttackAction() {
 		goalDestinationHex = goalTarget->hexPosition;
 	}
 	else {
-		CHex lastSeen = getLastSeen();
-		setGoalGotoLastSeen(lastSeen, goalTarget);
-		chooseGotoLastSeenAction();
-		CSendText msg(combatLog, "\n\nLost player!");
+		CSendText msg(combatLog, "\n\nLost player! (old)");
 		send(msg);
+		CHex seenLast = getLastSeen();
+		setGoalGotoLastSeen(seenLast, goalTarget);
+		chooseGotoLastSeenAction();
+
+		lineModel.setColourR(glm::vec4(0, 1, 0, 1));
 	}
 
 }
@@ -81,9 +83,14 @@ void CGoalActor::chooseAttackAction() {
 void CGoalActor::chooseGotoLastSeenAction() {
 	//have we reached the last-seen-at hex?
 	if (hexPosition != goalDestinationHex) { //no: keep heading to
+		CSendText msg(combatLog, "\n\nHeading to last seen.");
+		send(msg);
 		setActionMoveTo(goalDestinationHex);
 	}
 	else { 	//yes? Look for target. For now, by wandering 
+		CSendText msg(combatLog, "\n\nAt last seen point, should cancel tracking?");
+		send(msg);
+		trackingTarget = NULL;
 
 		setGoalWander();
 		chooseWanderAction();

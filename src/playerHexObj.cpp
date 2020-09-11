@@ -15,9 +15,10 @@ CPlayerObject::CPlayerObject() {
 	messageBus.setHandler<CSetPlayerAction>(this, &CPlayerObject::onSetPlayerAction);
 	messageBus.setHandler<CTakeItem>(this, &CPlayerObject::onTakeItem);
 	messageBus.setHandler<CGetPlayerObj>(this, &CPlayerObject::onGetPlayerObj);
+	messageBus.setHandler<CPlayerSeen>(this, &CPlayerObject::onPlayerSeen);
 
 	tmpHP = 12;
-	actionPoints = 12;
+	actionPoints = 6;
 
 	viewField.centre = CHex(0);
 	viewField.setField(10);
@@ -39,6 +40,13 @@ void CPlayerObject::onActionKey(bool pressed) {
 	if (pressed && world.getTurnPhase() == playerPhase) {
 		//TO DO: for now assume move, may/should be other possibilities later
 
+
+		if (action == tig::actMoveTo) { //if we're already moving we want to stop
+			if (!travelPath.empty())
+				travelPath.erase(travelPath.begin() + 1, travelPath.end());
+			return;
+		}
+
 		if (hexPosition == world.cursorPos  )
 			return;
 		CGetTravelPath pathRequest(hexPosition, world.cursorPos,true);
@@ -52,12 +60,13 @@ void CPlayerObject::onActionKey(bool pressed) {
 		//world.setTurnPhase(actionPhase);
 	}
 	else {
-		if (action == tig::actMoveTo) {
+		return;
+		/*if (action == tig::actMoveTo) {
 			if (!travelPath.empty())
 				travelPath.erase(travelPath.begin() + 1, travelPath.end());
 
 
-		}
+		}*/
 
 
 	}
@@ -190,11 +199,20 @@ void CPlayerObject::onTurnBegin() {
 
 	psu->updateDisplay();
 
-	actionPoints = 12;
+	actionPoints = 6;
 }
 
 /**Tidy up player state ready for the next round. */
 void CPlayerObject::onTurnEnd() {
+
+	if (world.onscreenRobotAction == true) {
+		if (action == tig::actMoveTo) { //if we're already moving we want to stop
+			travelPath.clear();
+			action = tig::actNone;
+		}
+
+	}
+
 
 	psu->onTurnEnd();
 	psu->updateDisplay();
@@ -215,6 +233,16 @@ void CPlayerObject::onTakeItem(CTakeItem& msg) {
 void CPlayerObject::onGetPlayerObj(CGetPlayerObj& msg) {
 	msg.playerObj =  this;
 }
+
+void CPlayerObject::onPlayerSeen(CPlayerSeen& msg) {
+	if (action == tig::actMoveTo) {
+		if (!travelPath.empty()) {
+			travelPath.clear();
+			action = tig::actNone;
+		}
+	}
+}
+
 
 void CPlayerObject::deathRoutine() {
 	std::string deathLog = "\nYou were killed!";
@@ -269,7 +297,7 @@ void CPlayerObject::onMovedHex() {
 void CPlayerObject::updateViewField() {
 	//update view field
 	viewField.update(hexPosition);
-	CCalcVisionField calcFieldMsg(hexPosition, viewField.ringHexes);
+	CCalcVisionField calcFieldMsg(hexPosition, viewField.ringHexes, true);
 	send(calcFieldMsg);
 
 	std::vector<CHex> unvisibledHexes;

@@ -633,12 +633,12 @@ float tmp(vec2 n) {
 float terrainValue (  int octaves,   vec3 xyz ) {
 
 	// Test steps - uncomment to use
-	 if (xyz.x < -1 && xyz.z < -1)
+	/* if (xyz.x < -1 && xyz.z < -1)
 		return xyz.y;
 	if (xyz.x < 0 && xyz.z < 0)
 		return xyz.y - 0.1;
 	return xyz.y - 0.2;
-	
+	*/
 
 	//perturbing the actual coordinates like this makes for very blocky erosion
 	//xyz.x += fbm3Dclassic(5,xyz * 16 ) * 0.005;
@@ -675,7 +675,7 @@ float terrainValue (  int octaves,   vec3 xyz ) {
 	
 	//spikey mountain scenery, but no spikes on the path, looks pretty good:
 	float test = fbm2DclassicFreq(3,xy,4) ;
-	terrain = ((test  * 0.15) +moonRockinesss) * broadMask;
+	//terrain = ((test  * 0.15) +moonRockinesss) * broadMask;
 	terrain += (pos + neg) * 0.25;// * mask ;
 	
 	//terrain =  0.1 * mask; //flat - good for seeing where the mask is.

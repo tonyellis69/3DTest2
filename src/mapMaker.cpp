@@ -19,10 +19,11 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 
 	map->updateBlocking();
 
-	for (int x = 0; x < 7; x++) {
+	for (int x = 0; x < 1; x++) {
 		CRobot* robotM = new CRobot();
 		robotM->setLineModel("robot");
-		map->addActor(robotM, map->findRandomHex(true));
+		//map->addActor(robotM, map->findRandomHex(true));
+		map->addActor(robotM, CHex(-2,-4,6));
 		robotM->setTigObj(pRobot);
 		robotM->setGoalWander();
 	}

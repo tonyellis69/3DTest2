@@ -268,6 +268,41 @@ void CHexActor::onMovedHex() {
 }
 
 
+/** Rotate in the direction of the given worldspace point. */
+void CHexActor::trackPoint(glm::vec3& point) {
+	glm::vec3 targetVec = glm::normalize(point - worldPos);
+
+	float angle = glm::acos(glm::dot(targetVec, glm::vec3(1, 0, 0)));
+	if (targetVec.y > 0)
+		angle = 2 * M_PI - angle;
+
+	if (rotation == angle)
+		return;
+
+	//find total distance to turn by shortest direction
+	float turnDist = rad360 + angle - rotation;
+	turnDist = fmod(turnDist, rad360);
+	if (turnDist > M_PI)
+		turnDist = -(rad360 - turnDist);
+
+	//distance to turn this frame
+	float frameTurnDist = turnSpeed * dT;
+
+	//will it turn us too far? adjust
+	if (frameTurnDist > abs(turnDist)) {
+		rotation = angle;
+	}
+	else {
+		float turnDir = (turnDist > 0) - (turnDist < 0);
+		rotation = rotation + turnDir * frameTurnDist;
+		rotation = glm::mod<float>(rotation, rad360);
+	}
+	//liveLog << "\nTurn! " << frameTurnDist;
+	buildWorldMatrix();
+	
+}
+
+
 
 
 

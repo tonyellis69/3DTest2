@@ -31,10 +31,7 @@ using namespace glm;
 
 
 C3DtestApp::C3DtestApp() {
-	tmpSCno = 0;
-	tmp = false;
-	physCube = NULL;
-	shownChoice = false;
+
 	oldPos = vec3(0);
 	defencePopWin = NULL;
 }
@@ -46,7 +43,6 @@ void C3DtestApp::onStart() {
 	if (appMode == hexMode)
 		logWindow->setTextColour(glm::vec4(1));
 
-	chunkCall = 0;
 
 	dataPath = homeDir + "Data\\";
 	lastMousePos = glm::vec2(0, 0);
@@ -65,14 +61,6 @@ void C3DtestApp::onStart() {
 	cylinder.setPos(vec3(0, 300, -4));
 	Engine.modelDrawList.push_back(&cylinder);
 
-	//position the default camera
-	Engine.getCurrentCamera()->setPos(vec3(-3, 300, 3));
-	Engine.getCurrentCamera()->lookAt(vec3(0.0746933, -0.291096, 0.953797));
-
-	//for centre/tree view
-	Engine.getCurrentCamera()->setPos(vec3(0.499624, 6.46961, 21.5411));
-	Engine.getCurrentCamera()->lookAt(vec3(0.0130739, -0.0538602, -0.998463));
-
 	//pulled back view
 	Engine.getCurrentCamera()->setPos(vec3(-1510.24, 2833.93, 3682.67));
 	Engine.getCurrentCamera()->lookAt(vec3(0.31595, -0.609743, -0.726901));
@@ -88,54 +76,32 @@ void C3DtestApp::onStart() {
 	renderer.defaultLightPos = vec3(4000, 4000, 4000);
 	renderer.defaultLightDir = vec3(0, 0, -1);
 
-	/*CTerrainPhysObj* terrainPhysObj = new CTerrainPhysObj();
-	terrainPhysObj->attachModel(&terrain);
-	terrainPhysObj->setCollides(false);
-	Engine.physObjManager.addPhysObj(terrainPhysObj);
-	*/
-
-
-
-
-
-
-
-
 
 	createRegion();
 
 
 
-	CBaseBuf* terrainBuf = &terrain.multiBuf; //TO DO: ugh, make a setter
-	//((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
-
-	terrainBuf->setSize(175000000);
-
-	terrainBuf->storeLayout(3, 3, 0, 0);
-
-	tempFeedbackBuf = Engine.createBuffer();
-	tempFeedbackBuf->setSize(1000000);
-
-	terrain.EXTfreeChunkModel.Set(&Engine, &CEngine::freeModel);
-	//
-
-	terrain.chunkDrawShader = Engine.Renderer.phongShader;
+	//terrain.chunkDrawShader = Engine.Renderer.phongShader;
 
 	terrain.setSizes(chunksPerSuperChunkEdge, cubesPerChunkEdge, cubeSize);
+	//!!!!!!!!!!!!!!!!!!!!!latest error causer
+
+
 	//terrain->createShells(5120, 320, 2); //1280 320
 	//terrain->createShells(1280, 320, 0);
-	terrain.createShells(10000, 320, 2);
+	//terrain.createShells(10000, 320, 2);
 	//terrain->createShells(1280, 320, 0);
 	//terrain->createShells(8, 2, 2); //(8, 3, 2); //(4,2,1);
 
-	terrain.initChunkShell();
-	terrain.initChunkGrid(cubesPerChunkEdge);
+	//terrain.initChunkShell();
+	//terrain.initChunkGrid(cubesPerChunkEdge);
 
 
 
-	terrain.initHeightFinder();
+	//terrain.initHeightFinder();
 	//terrain.createTerrain(vec2(0.05, 0.05)); //seem to get striations above 999
-	terrain.createTerrain(playerStartOffset); //seem to get striations above 999
+//	terrain.createTerrain(playerStartOffset); //seem to get striations above 999
+	///!!!!!!!!!!most recent removal, seems OK
 
 	initHeightmapGUI();
 
@@ -143,7 +109,7 @@ void C3DtestApp::onStart() {
 	double t = Engine.Time.milliseconds();
 	SCpassed = SCrejected = 0;
 
-	terrain.createAllChunks();
+	//terrain.createAllChunks();
 
 
 	////////////NEW TERRAIN STUFF
@@ -151,18 +117,31 @@ void C3DtestApp::onStart() {
 	CBaseBuf* terrainBuf2 = &multiBuf; //TO DO: ugh, make a setter
 //((CMultiBuf*)terrainBuf)->setRenderer(&Engine.Renderer);
 
-	terrain2.setInitialChunkStorageSize(27650512); //175000000 27650512
+	terrain2.setInitialChunkStorageSize(90000000); //175000000 27650512
 
 	terrain2.setChunkVertLayout({ 3, 3, 0, 0 });
 
 	//tempFeedbackBuf2 = Engine.createBuffer();
 	tempFeedbackBuf2.setSize(1000000);
 
+	terrain2.loadShaders();
+	terrain.initChunkShell();
+	terrain2.initChunkGrid(cubesPerChunkEdge);
 
+	terrain2.initHeightFinder();
+
+	terrain2.chunkDrawShader = Engine.Renderer.phongShader;
 
 	shellTotalVerts = terrain.shellTotalVerts;
 	int numCentralShellSCs = 5;
-	terrain2.setSampleSpacePosition(terrain.sampleOffset);
+
+	const float defaultStart = terrain2.worldUnitsPerSampleUnit / 1000;
+	float height = terrain2.findTerrainHeight(vec3(playerStartOffset.x, -defaultStart, playerStartOffset.y));
+	//setSampleCentre(vec3(centre.x, height, centre.y));
+	glm::vec3 sampleOffset = vec3(playerStartOffset.x, height, playerStartOffset.y);
+
+	terrain2.setSampleSpacePosition(sampleOffset);
+//	terrain2.setSampleSpacePosition(terrain.sampleOffset); ///TO DO SHOULD BE ABOVE WHY NO WORK?
 	terrain2.setWorldScale(2560);
 	terrain2.setCallbackApp(this);
 	terrain2.createCentralShell(cubeSize, cubesPerChunkEdge, chunksPerSuperChunkEdge, numCentralShellSCs);
@@ -184,8 +163,7 @@ void C3DtestApp::onStart() {
 
 	skyDome = Engine.createSkyDome();
 
-	oldTime = Engine.Time.seconds();
-
+	
 	initWireSCs();
 	supWire = false;
 
@@ -207,7 +185,8 @@ void C3DtestApp::onStart() {
 	//physics2 playerobj!!!!!!
 
 	playerObj2.loadMesh(shape::cubeMesh());
-	playerObj2.scale(vec3{ 40, 40, 40 });
+	//playerObj2.scale(vec3{ 40, 40, 40 });
+	playerObj2.scale(vec3{ 5, 5, 5 });
 	playerObj2.setPos(vec3(0, 20, 0));
 	playerObj2.setMass(10);
 	Engine.modelDrawList.push_back(&playerObj2);
@@ -215,29 +194,29 @@ void C3DtestApp::onStart() {
 
 
 
-	CFractalTree fractalTree;
+	//CFractalTree fractalTree;
 
 
 
-	fractalTree.setLength(10.0f, 0.2f);
-	fractalTree.setMaxJoints(3);
-	fractalTree.setJointAngle(5, 0);
-	fractalTree.setNumBranches(4, 1);
-	fractalTree.setBranchAngle(40, 0.2f);
-	fractalTree.setStemRadius(0.5f);
-	fractalTree.setMaxStages(4);
-	fractalTree.setStemFaces(5);
-	fractalTree.setStageScale(0.6f);
-	fractalTree.setBranchType(split);
-	fractalTree.setNumLateralPoints(2);
-	fractalTree.setLeadingBranch(true);
+	//fractalTree.setLength(10.0f, 0.2f);
+	//fractalTree.setMaxJoints(3);
+	//fractalTree.setJointAngle(5, 0);
+	//fractalTree.setNumBranches(4, 1);
+	//fractalTree.setBranchAngle(40, 0.2f);
+	//fractalTree.setStemRadius(0.5f);
+	//fractalTree.setMaxStages(4);
+	//fractalTree.setStemFaces(5);
+	//fractalTree.setStageScale(0.6f);
+	//fractalTree.setBranchType(split);
+	//fractalTree.setNumLateralPoints(2);
+	//fractalTree.setLeadingBranch(true);
 
-	fractalTree.create();
-	terrain.tree = Engine.createModel();
-	fractalTree.getModel(terrain.tree);
+	//fractalTree.create();
+	//terrain.tree = Engine.createModel();
+//	fractalTree.getModel(terrain.tree);
 
-	terrain.initTreeFinding();
-	terrain.initGrassFinding();
+	//terrain.initTreeFinding();
+	//terrain.initGrassFinding();
 
 
 
@@ -470,12 +449,7 @@ void C3DtestApp::keyCheck() {
 
 				vec3 flip;
 
-				if (keyNow(' ') && physCube == NULL) {
-					playerPhys->velocity.y += 20;
-					playerPhys->velocity.x *= 2.5f;
-					playerPhys->velocity.z *= 2.5f;
 
-				}
 
 				if (keyNow('W')) {
 					groundNormal = vec3(0, 1, 0);
@@ -658,7 +632,7 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 
 			//!!!!!!!!!!!!!!!!!!Look into this:
 			terrain2.setViewpoint(playerObj2.getPos());
-			renderer.setCurrentCamera(&playerObj2.povCam);
+			//renderer.setCurrentCamera(&playerObj2.povCam);
 			physEng.addObj(&playerObj2);
 		}
 		else {
@@ -740,20 +714,22 @@ void C3DtestApp::onKeyUp(int key, long mod) {
 
 
 void C3DtestApp::onMouseButton(int button, int action, int mods) {
-	if (button == GLFW_MOUSE_BUTTON_LEFT) {
-		if (action == GLFW_PRESS)
-			hexWorld.onActionKey(true);
-		else
-			hexWorld.onActionKey(false);
-	}
+	if (appMode == hexMode) {
+		if (button == GLFW_MOUSE_BUTTON_LEFT) {
+			if (action == GLFW_PRESS)
+				hexWorld.onActionKey(true);
+			else
+				hexWorld.onActionKey(false);
+		}
 
-	//TO DO: get rid of this shit:
+		//TO DO: get rid of this shit:
 
-	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-		hexWorld.rightClick();
-	}
-	else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-		hexWorld.leftClick();
+		if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+			hexWorld.rightClick();
+		}
+		else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+			hexWorld.leftClick();
+		}
 	}
 };
 
@@ -802,20 +778,12 @@ void C3DtestApp::draw() {
 	//terrain.drawVisibleChunks();/////////////////////////////
 	drawVisibleChunks();
 
-	//draw grass
-	//TO DO: temporarily commented out while I remove Soil
-	Engine.Renderer.setShader(terrain.grassShader);
-	//	Engine.Renderer.attachTexture(0, *terrain.grassTex);
-	terrain.grassShader->setTextureUnit(0, terrain.hGrassTexure);
-	terrain.grassShader->setShaderValue(terrain.hGrassTime, (float)Time);
-	terrain.grassShader->setShaderValue(terrain.hGrassMVP, mvp);
-	//	terrain.drawGrass(mvp, terrain.visibleSClist);
-
+	
 
 		//draw trees
-	Engine.Renderer.setShader(Engine.Renderer.phongShaderInstanced);
-	Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstNormalModelToCameraMatrix, tmp);
-	Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstMVP, mvp);
+	//Engine.Renderer.setShader(Engine.Renderer.phongShaderInstanced);
+//	Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstNormalModelToCameraMatrix, tmp);
+	//Engine.Renderer.phongShaderInstanced->setShaderValue(Engine.Renderer.hPhongInstMVP, mvp);
 
 	//glEnable(GL_PRIMITIVE_RESTART);
 
@@ -927,10 +895,19 @@ void C3DtestApp::terrain2TestDraw() {
 				renderer.drawBuf(wireCube, drawLinesStrip);
 
 			//draw chunks
-			//if (shell != 3 && shell !=2 )
-			//	 continue;
+			if (shell != 0 )
+				 continue;
 			for (auto chunk : SCiter->scChunks) {
+				//if (SCiter.getIndex() != glm::i32vec3(2, 2, 1) )
+				//	continue;
+
 				i32vec3 chunkIndex = terrain2.chunks[chunk].index;
+
+				//if (chunkIndex!= i32vec3(0,1,0 ) )
+					//continue;
+
+				chunkIndex = i32vec3(0, 0, 0);
+
 				vec3 chunkOrigin = vec3(chunkIndex) * actualChunkSize;
 				chunkOrigin += actualChunkSize * 0.5; //move orgin to centre of chunk
 				chunkOrigin -= scActualSize * 0.5; // and make relative to centre of SC ???? may need actual SC size
@@ -940,7 +917,7 @@ void C3DtestApp::terrain2TestDraw() {
 				wireCubeMVP = Engine.getCurrentCamera()->clipMatrix * chunkM * chunkShape;
 				wire2Shader->setShaderValue(hWireMVP, wireCubeMVP);
 				wire2Shader->setShaderValue(hWireColour, terrain2.shells[shell].scArray.element(index.x, index.y, index.z)->colour);
-				//renderer.drawBuf(wireCube, drawLinesStrip);
+				renderer.drawBuf(wireCube, drawLinesStrip);
 			}
 
 		}
@@ -1085,7 +1062,7 @@ void C3DtestApp::advance(Tdirection direction) {
 
 		terrain.advance(direction);
 
-		onTerrainAdvance(direction);
+		//onTerrainAdvance(direction);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////
@@ -1191,16 +1168,7 @@ void C3DtestApp::initWireSCs() {
 	//wireCubeVerts = verts;
 }
 
-/**	Called when terrain advances - ie, moves. */
-void C3DtestApp::onTerrainAdvance(Tdirection direction) {
-	if (physCube) {
-		//	physCube->pModel->translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
-			//physCube->positionHint += -dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize;
-	}
-	//playerObject.translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
-//	building.translate(-dirToVec(direction) * (float)cubesPerChunkEdge * cubeSize);
-	//liveLog << "\nonTerrainAdvance called!";
-}
+
 
 /** Create the GUI and textures for displaying 2D terrain heightmaps. */
 void C3DtestApp::initHeightmapGUI() {
@@ -1354,8 +1322,7 @@ bool C3DtestApp::scIntersectionCheckCallback(glm::vec3& nwSamplePos, float SCsam
 
 /** Returns true if terrain *intersects* the given chunk volume .*/
 bool C3DtestApp::chunkCheckCallback(glm::vec3& chunkSamplePos, float chunkSampleSize) {
-	tmpHitCount++;
-	tmpCount2++;
+	
 
 	Engine.Renderer.setShader(terrain.chunkCheckShader);
 
@@ -1386,29 +1353,29 @@ bool C3DtestApp::chunkCheckCallback(glm::vec3& chunkSamplePos, float chunkSample
 /*  Create a mesh for this chunk, and register it with the renderer.  */
 void C3DtestApp::createChunkMesh(Chunk2& chunk) {
 
-	Engine.Renderer.setShader(terrain.chunkShader);
-	terrain.chunkShader->setShaderValue(terrain.hChunkCubeSize, chunk.cubeSize);
+	Engine.Renderer.setShader(terrain2.chunkShader);
+	terrain2.chunkShader->setShaderValue(terrain2.hChunkCubeSize, chunk.cubeSize);
 
 	float LoDscale = chunk.LoD;
-	terrain.chunkShader->setShaderValue(terrain.hChunkLoDscale, LoDscale);
-	terrain.chunkShader->setShaderValue(terrain.hChunkSamplePos, chunk.sampleCorner);
+	terrain2.chunkShader->setShaderValue(terrain2.hChunkLoDscale, LoDscale);
+	terrain2.chunkShader->setShaderValue(terrain2.hChunkSamplePos, chunk.sampleCorner);
 
-	float samplesPerCube = cubeSize / terrain.worldUnitsPerSampleUnit;
-	terrain.chunkShader->setShaderValue(terrain.hSamplesPerCube, samplesPerCube);
+	float samplesPerCube = cubeSize / terrain2.worldUnitsPerSampleUnit;
+	terrain2.chunkShader->setShaderValue(terrain2.hSamplesPerCube, samplesPerCube);
 
-	terrain.chunkShader->setShaderValue(terrain.hChunkTriTable, *terrain.triTableTex);
-	terrain.chunkShader->setShaderValue(terrain.hChunkTerrainPos, chunk.terrainPos);
+	terrain2.chunkShader->setShaderValue(terrain2.hChunkTriTable, *terrain2.triTableTex);
+	terrain2.chunkShader->setShaderValue(terrain2.hChunkTerrainPos, chunk.terrainPos);
 
-	Engine.Renderer.attachTexture(0, terrain.tmpTerrainMap.handle);
-	terrain.chunkShader->setShaderValue(terrain.hChunkTerrainTexture, 0);
+	Engine.Renderer.attachTexture(0, terrain2.tmpTerrainMap.handle);
+	terrain2.chunkShader->setShaderValue(terrain2.hChunkTerrainTexture, 0);
 
 	int chunkAttribs = 2;
 	int vertsPerPrimitive = 3 * chunkAttribs;
 	int maxMCverts = 16; //The maximum vertices needed for a surface inside one MC cube.
 	int nVertsOut = cubesPerChunkEdge * cubesPerChunkEdge * cubesPerChunkEdge * maxMCverts;
 
-	CBaseBuf* terrainBuf = &multiBuf;
-	CBuf* srcBuf = &((CRenderModel*)terrain.shaderChunkGrid)->buf;
+	//CBaseBuf* terrainBuf = &multiBuf;
+	CBuf* srcBuf = &((CRenderModel*)terrain2.shaderChunkGrid)->buf;
 	unsigned int primitives = Engine.Renderer.getGeometryFeedback(*srcBuf, drawLinesAdjacency, tempFeedbackBuf2, drawTris);
 
 
@@ -1494,10 +1461,10 @@ void C3DtestApp::drawVisibleChunks() {
 		Chunk2* chunk = &terrain2.chunks[chunkNo];
 		if (chunk->status != chSkinned)
 			continue;
-		terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatDiffuse, chunk->drawDetails2.colour);
-		terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatAmbient, chunk->drawDetails2.colour);
-		terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatSpecular, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-		terrain.chunkDrawShader->setShaderValue(Engine.Renderer.hMatShininess, 32.0f);
+		terrain2.chunkDrawShader->setShaderValue(Engine.Renderer.hMatDiffuse, chunk->drawDetails2.colour);
+		terrain2.chunkDrawShader->setShaderValue(Engine.Renderer.hMatAmbient, chunk->drawDetails2.colour);
+		terrain2.chunkDrawShader->setShaderValue(Engine.Renderer.hMatSpecular, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+		terrain2.chunkDrawShader->setShaderValue(Engine.Renderer.hMatShininess, 32.0f);
 		//Engine.Renderer.drawMultiBufChildVerts(drawTris, multiBuf, chunk->drawDetails.childBufNo, chunk->drawDetails.vertStart, chunk->drawDetails.vertCount);
 		Engine.Renderer.drawMultiBufChildVerts(drawTris, multiBuf, chunk->drawDetails.childBufNo, chunk->drawDetails2.vertStart, chunk->drawDetails2.vertCount);
 
@@ -1514,6 +1481,7 @@ void C3DtestApp::createRegion() {
 	testCompositor.restore(dataPath + "terrainTest.gen");
 	testCompositor.compose();
 	terrain.tmpTerrainMap = testCompositor.getComposedTexture();
+	terrain2.tmpTerrainMap = testCompositor.getComposedTexture();
 	playerStartOffset = static_cast<CTerrainTex*>(testCompositor.currentTexGen)->getStartPoint();
 	vec2 endPoint = static_cast<CTerrainTex*>(testCompositor.currentTexGen)->getEndPoint();
 

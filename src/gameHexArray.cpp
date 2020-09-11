@@ -299,15 +299,21 @@ void CGameHexArray::onRandomHex(CRandomHex& msg) {
 void CGameHexArray::onFindViewField(CCalcVisionField& msg) {
 	std::unordered_set<CHex, hex_hash> uniqueHexes;
 
+	int attempts;
+	if (msg.obsessive)
+		attempts = 3;
+	else
+		attempts = 1;
 
 	for (auto perimeterHex : *msg.perimeterHexes) {
-		for (int offset = 0; offset < 3; offset++) {
+		for (int offset = 0; offset < attempts; offset++) {
 			THexList line = *hexLine4(msg.apex, perimeterHex,offset);
 
 			for (auto hex = line.begin() + 1; hex != line.end();hex++) {
 				uniqueHexes.insert(*hex);
-				if (getHexCube(*hex).content == 2)
+				if (getHexCube(*hex).content == 2) {
 					break;
+				}
 			}
 		}
 	}

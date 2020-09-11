@@ -11,16 +11,14 @@ public:
 
 	void setTurnPhase(TTurnPhase phase);
 	TTurnPhase getTurnPhase();
-
-
 	void onNotify(COnCursorNewHex& msg);
 
 	CHex cursorPos;
 	THexList cursorPath;
-
+	bool onscreenRobotAction; ///<True if happened this turn.
 private:
 	TTurnPhase turnPhase;
-
+	
 };
 
 extern CGameState world;

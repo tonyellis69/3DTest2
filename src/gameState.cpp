@@ -11,6 +11,7 @@ TTurnPhase CGameState::getTurnPhase() {
 	return turnPhase;
 }
 
+
 void CGameState::onNotify(COnCursorNewHex& msg) {
 	cursorPos = msg.newHex;
 }
