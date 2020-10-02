@@ -74,12 +74,15 @@ void CHexWorld::deleteMap() {
 /** Required each time we restart. */
 void CHexWorld::startGame() {
 	hexRenderer.setMap(map);
+	world.setMap(map);
 	
 	//create new player object
 	playerObj = new CPlayerObject();
 	playerObj->setLineModel("player");
 	//map->add(playerObj, CHex(-13, 5, 8));
 	map->add(playerObj, CHex(0, -3, 3));
+	world.player = playerObj;
+
 
 	playerObj->setTigObj(vm->getObject("player"));
 	map->entities.push_back(playerObj);
@@ -104,6 +107,10 @@ void CHexWorld::startGame() {
 	hexRenderer.updateHexShaderBuffer();
 
 	beginNewTurn(); //NB!!! Repeats some of the stuff above
+}
+
+void CHexWorld::update2(float dT) {
+	world.player->update2(dT);
 }
 
 
@@ -223,9 +230,12 @@ void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 void CHexWorld::update(float dT) {
 	this->dT = dT;
 
+
 	removeDeletedEntities();
 
 	updateCameraPosition();
+
+	update2(dT);
 
 	for (auto entity : map->entities)
 		entity->frameUpdate(dT);

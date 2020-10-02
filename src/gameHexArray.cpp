@@ -28,32 +28,15 @@ void CGameHexArray::setEntityList(TEntities* pEntities) {
 
 /** Returns true if the transition from this hex to the next is blocked. */
 bool CGameHexArray::fromToBlocked(CHex& from, CHex& to) {
-	/*THexDir travelDirection = neighbourDirection(from, to);
-	unsigned int directionBit = 1 << travelDirection;
-
-	if (getHexCube(from).blocks & directionBit)
-		return true;
-	return false;*/
-	//FAIL: can't use blocking info of from hex because first from hex
-	//will always be entity's own hex and thus always blocked
-	//all we can do is test if the destination hex is blocking our access to it.
-
-	//find the direction of potential entry
-	//can we enter the destination hex from that direction?
-
 	THexDir travelDirection = neighbourDirection(to, from);
 	unsigned int directionBit = 1 << travelDirection;
 
-	if (getHexCube(to).blocks & directionBit)
-		return true;
-
-	return false;
+	return getHexCube(to).blocks & directionBit;
 }
 
 
 
-
-/** Returns true if this hex is entirely freee. */
+/** Returns true if this hex is entirely free. */
 bool CGameHexArray::isEmpty(glm::i32vec2& hex) {
 	if (getHexOffset(hex.x, hex.y).content != 1)
 		return false;
@@ -170,10 +153,11 @@ void CGameHexArray::updateBlocking() {
 			if (element.content == 2)
 				element.blocks = blocksAll;
 			else {
-				auto [first, last] = getEntitiesAt(indexToCube(x, y));
+				//TO DO: old hex claiming system - scrap!
+				/*auto [first, last] = getEntitiesAt(indexToCube(x, y));
 				for (auto it = first; it != last; it++) {
 					element.blocks |= it->second->blocks();
-				}
+				}*/
 			}
 		}
 	}

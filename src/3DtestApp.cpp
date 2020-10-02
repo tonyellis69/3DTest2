@@ -342,18 +342,52 @@ void C3DtestApp::onStart() {
 /** Called every frame, provides a place for the user to check input where constant feedback is required. */
 void C3DtestApp::keyCheck() {
 	if (appMode == hexMode) {
-		if (keyNow('W')) {
-			hexWorld.moveCamera(glm::vec3{ 0, 1, 0 });
+		if (keyNow(GLFW_KEY_LEFT_CONTROL)) {
+			if (keyNow('W')) {
+				hexWorld.moveCamera(glm::vec3{ 0, 1, 0 });
+			}
+			else if (keyNow('S')) {
+				hexWorld.moveCamera(glm::vec3{ 0, -1, 0 });
+			}
+			else if (keyNow('A')) {
+				hexWorld.moveCamera(glm::vec3{ -1,0,0 });
+			}
+			else if (keyNow('D')) {
+				hexWorld.moveCamera(glm::vec3{ 1,0,0 });
+			}
 		}
-		else if (keyNow('S')) {
-			hexWorld.moveCamera(glm::vec3{ 0, -1, 0 });
+		else {
+			/*keyHit++;
+			if (keyHit < 5)
+				return;
+			keyHit = 0;*/
+
+			if (keyNow('A')) {
+				if (keyNow('W'))
+					world.player->moveCommand(moveNW);
+				else if (keyNow('S'))
+					world.player->moveCommand(moveSW);
+				else
+					world.player->moveCommand(moveWest);
+			}
+			else if (keyNow('D')) {
+				if (keyNow('W'))
+					world.player->moveCommand(moveNE);
+				else if (keyNow('S'))
+					world.player->moveCommand(moveSE);
+				else
+					world.player->moveCommand(moveEast);
+			}
+			else if (keyNow('W')) {
+				world.player->moveCommand(moveNorth);
+			}
+			else if (keyNow('S')) {
+				world.player->moveCommand(moveSouth);
+			}
+
 		}
-		else if (keyNow('A')) {
-			hexWorld.moveCamera(glm::vec3{ -1,0,0 });
-		}
-		else if (keyNow('D')) {
-			hexWorld.moveCamera(glm::vec3{ 1,0,0 });
-		}
+
+
 
 		//triggered if button held down
 		if (mouseButtonNow(GLFW_MOUSE_BUTTON_RIGHT)) {
@@ -710,6 +744,11 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 void C3DtestApp::onKeyUp(int key, long mod) {
 	if (key == GLFW_KEY_LEFT_CONTROL)
 		hexWorld.powerKeyRelease();
+	//TO DO: scrap above
+
+	if (key == 'W' || key == 'S')
+		world.player->onVerticalKeyRelease();
+
 }
 
 
@@ -897,6 +936,7 @@ void C3DtestApp::terrain2TestDraw() {
 			//draw chunks
 			if (shell != 0 )
 				 continue;
+
 			for (auto chunk : SCiter->scChunks) {
 				//if (SCiter.getIndex() != glm::i32vec3(2, 2, 1) )
 				//	continue;
@@ -906,8 +946,7 @@ void C3DtestApp::terrain2TestDraw() {
 				//if (chunkIndex!= i32vec3(0,1,0 ) )
 					//continue;
 
-				chunkIndex = i32vec3(0, 0, 0);
-
+				
 				vec3 chunkOrigin = vec3(chunkIndex) * actualChunkSize;
 				chunkOrigin += actualChunkSize * 0.5; //move orgin to centre of chunk
 				chunkOrigin -= scActualSize * 0.5; // and make relative to centre of SC ???? may need actual SC size

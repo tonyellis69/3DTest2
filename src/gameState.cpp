@@ -7,6 +7,10 @@ void CGameState::setTurnPhase(TTurnPhase phase) {
 	turnPhase = phase;
 }
 
+void CGameState::setMap(CGameHexArray* map) {
+	this->map = map;
+}
+
 TTurnPhase CGameState::getTurnPhase() {
 	return turnPhase;
 }
@@ -14,4 +18,10 @@ TTurnPhase CGameState::getTurnPhase() {
 
 void CGameState::onNotify(COnCursorNewHex& msg) {
 	cursorPos = msg.newHex;
+}
+
+
+/** Returns true if an entity can't move to this adjacent hex.*/
+bool CGameState::isBlocked(CHex& pos, CHex& dest) {
+	return map->fromToBlocked(pos, dest);
 }

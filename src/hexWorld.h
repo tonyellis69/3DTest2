@@ -46,6 +46,7 @@ public:
 	void makeMap(ITigObj* tigMap);
 	void deleteMap();
 	void startGame();
+	void update2(float dT);
 	void moveCamera(glm::vec3& direction);
 	void rightClick();
 	void leftClick();

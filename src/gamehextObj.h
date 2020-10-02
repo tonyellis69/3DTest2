@@ -61,6 +61,10 @@ public:
 	bool visibleToPlayer = false; ///<True if object in player line of sight
 
 	glm::vec4 normalColour;
+
+	CHex moveDest; ///<Adjacent hex we're moving to.
+	CHex moveDest2; ///<Second hex if travelling north/south
+	//TO DO: consider moving to CHexActor
 	
 
 protected:

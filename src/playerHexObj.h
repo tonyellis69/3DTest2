@@ -12,6 +12,9 @@
 
 #include "UI/gui.h"
 
+enum TPlayerMoveDir {moveNone,moveEast,moveWest,moveNE,moveSE,
+	moveSW,moveNW,moveNorth,moveSouth,moveNS2,moveNS2blocked};
+
 /** A class describing characteristics and behaviour unique to
 	the player hex-world object. */
 class CPlayerObject : public CHexActor , public CGameEventSubject {
@@ -48,7 +51,10 @@ public:
 
 	void updateViewField();
 
-	
+	void moveCommand(TPlayerMoveDir dir);
+	void startNorthSouthMove(TPlayerMoveDir dir);
+	void onVerticalKeyRelease();
+	void update2(float dT);
 
 
 
@@ -61,7 +67,12 @@ public:
 	CGUIlabel2* APlabel;
 
 private:
+	void moveReal();
 
 	int actionPoints;
 
+	TPlayerMoveDir travelDir = moveNone;
+	float playerMoveSpeed = 5.0f;
+
+	bool northSouthKeyReleased = true;
 };

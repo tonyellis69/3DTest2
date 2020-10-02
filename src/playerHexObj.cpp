@@ -316,6 +316,125 @@ void CPlayerObject::updateViewField() {
 
 }
 
+/** Respond to player move instruction. */
+void CPlayerObject::moveCommand(TPlayerMoveDir dir) {
+	if (travelDir == moveNone) {
+		switch (dir) {
+		case moveEast: moveDest = getNeighbour(hexPosition, hexEast); break;
+		case moveWest: moveDest = getNeighbour(hexPosition, hexWest); break;
+		case moveNE: moveDest = getNeighbour(hexPosition, hexNE); break;
+		case moveSE: moveDest = getNeighbour(hexPosition, hexSE); break;
+		case moveNW: moveDest = getNeighbour(hexPosition, hexNW); break;
+		case moveSW: moveDest = getNeighbour(hexPosition, hexSW); break;
+		case moveNorth:
+		case moveSouth: {
+			startNorthSouthMove(dir);
+			break;
+		}
+		case moveNS2: {
+			moveDest = moveDest2;
+			break;
+		}
+		} //end switch
+
+		//check if move possible
+		if (world.isBlocked(hexPosition, moveDest)) {
+			if (dir == moveNS2)
+				travelDir = moveNS2blocked;
+			return;
+		}
+
+		//find angle to turn to
+		rotation = hexAngle(hexPosition, moveDest);
+		buildWorldMatrix();
+
+		travelDir = dir;
+	}
+
+}
+
+void CPlayerObject::startNorthSouthMove(TPlayerMoveDir dir) {
+	northSouthKeyReleased = false;
+	THexDir eastRoute;	THexDir westRoute;
+	if (dir == moveNorth) {
+		eastRoute = hexNE;
+		westRoute = hexNW;
+	}
+	else {
+		eastRoute = hexSE;
+		westRoute = hexSW;
+	}
+
+	CHex alt;
+	if (rotation < M_PI_2 || rotation > M_PI + M_PI_2) {
+		moveDest = getNeighbour(hexPosition, eastRoute);
+		alt = getNeighbour(hexPosition, westRoute);
+	}
+	else {
+		moveDest = getNeighbour(hexPosition, westRoute);
+		alt = getNeighbour(hexPosition, eastRoute);
+	}
+	if (world.isBlocked(hexPosition, moveDest))
+		moveDest = alt;
+
+	if (dir == moveNorth) 
+		moveDest2 = hexPosition + CHex(1, 1, -2);
+	else
+		moveDest2 = hexPosition + CHex(-1, -1, 2);
+}
+
+/** Player released up or down key - useful to know so that we don't 
+	continue a north or south movement. */
+void CPlayerObject::onVerticalKeyRelease() {
+	northSouthKeyReleased = true;
+}
+
+
+void CPlayerObject::update2(float dT) {
+	this->dT = dT;
+
+	switch (travelDir) {
+	case moveNone:
+		break;
+	case  moveNS2blocked: {
+		if (northSouthKeyReleased) //stops a blocked secondary NS move becoming another NS start
+			travelDir = moveNone;
+		break;
+		}
+	default:
+		moveReal();
+		if (hexPosition == moveDest) {
+			if ((travelDir == moveNorth || travelDir == moveSouth) && !northSouthKeyReleased) {
+				travelDir = moveNone;
+				moveCommand(moveNS2);
+			}
+			else
+				travelDir = moveNone;
+		}
+	}
+}
+
+/** Move realtime toward the destination hex, unless we reach it. */
+void CPlayerObject::moveReal() {
+	glm::vec3 dest = cubeToWorldSpace(moveDest);
+	glm::vec3 travel = dest - worldPos;
+
+	glm::vec3 moveVec = glm::normalize(travel) * playerMoveSpeed * dT;
+
+	float remainingDist = glm::length(travel);
+
+	if (glm::length(moveVec) > remainingDist) {
+		worldPos = dest;
+		setPosition(moveDest);
+
+		onMovedHex();
+		return;
+	}
+
+	worldPos += moveVec;
+	buildWorldMatrix();
+}
+
 
 
 

@@ -240,6 +240,8 @@ public:
 
 	CGameTextWin* powerQueueWin; ///<Handle for power queue window.
 	CGameTextWin* combatLogWin; ///<Handle for combat log window.
+
+	int keyHit = 0;
 };
 
 const float yawAng = 0.22f;
