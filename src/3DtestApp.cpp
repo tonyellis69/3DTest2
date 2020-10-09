@@ -1568,7 +1568,7 @@ void C3DtestApp::initHexWorld() {
 	hexWorld.setVM(&vm);
 
 	hexWorld.addMesh("test", dataPath + "models\\test.obj");
-	hexWorld.addMesh("cursor", dataPath + "models\\cursor.obj");
+	hexWorld.addMesh("cursor", dataPath + "models\\cursor.dae");
 	hexWorld.addMesh("player", dataPath + "models\\player.obj");
 	hexWorld.addMesh("robot", dataPath + "models\\robot.obj");
 	hexWorld.addMesh("shield", dataPath + "models\\shield.obj");

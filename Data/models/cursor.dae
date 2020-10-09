@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <asset>
+    <contributor>
+      <author>Blender User</author>
+      <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
+    </contributor>
+    <created>2020-10-05T12:48:46</created>
+    <modified>2020-10-05T12:48:46</modified>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_images/>
+  <library_geometries>
+    <geometry id="Circle_002-mesh" name="Circle.002">
+      <mesh>
+        <source id="Circle_002-mesh-positions">
+          <float_array id="Circle_002-mesh-positions-array" count="54">0 2 0 -1.732051 1 0 -1.732051 -1 0 0 -2 0 1.732051 1 0 1.732051 -1 0 -0.4330127 1.75 0 -1.732051 0.4999999 0 -1.299038 -1.25 0 0.4330127 1.75 0 -1.299038 1.25 0 -1.732051 -0.5000001 0 -0.4330126 -1.75 0 1.732051 0.4999999 0 1.299038 -1.25 0 1.299038 1.25 0 1.732051 -0.5000001 0 0.4330126 -1.75 0</float_array>
+          <technique_common>
+            <accessor source="#Circle_002-mesh-positions-array" count="18" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Circle_002-mesh-normals">
+          <float_array id="Circle_002-mesh-normals-array" count="0"/>
+          <technique_common>
+            <accessor source="#Circle_002-mesh-normals-array" count="0" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Circle_002-mesh-vertices">
+          <input semantic="POSITION" source="#Circle_002-mesh-positions"/>
+        </vertices>
+        <lines count="12">
+          <input semantic="VERTEX" source="#Circle_002-mesh-vertices" offset="0"/>
+          <p>4 13 15 4 0 6 1 7 2 8 5 14 10 1 11 2 12 3 16 5 17 3 0 9</p>
+        </lines>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_controllers/>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Cursor" name="Cursor" type="NODE">
+        <matrix sid="transform">0.4 0 0 0 0 0.4 0 0 0 0 0.4 0 0 0 0 1</matrix>
+        <instance_geometry url="#Circle_002-mesh" name="Cursor"/>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

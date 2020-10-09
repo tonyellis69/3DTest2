@@ -144,6 +144,7 @@ void CHexWorld::onKeyDown(int key, long mod) {
 
 	if (key == 'R') {
 		hexRenderer.hexLineShader->recompile();
+		hexRenderer.lineShader->recompile();
 		hexRenderer.hexSolidShader->recompile();
 	}
 
