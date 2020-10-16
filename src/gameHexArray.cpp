@@ -230,9 +230,6 @@ void CGameHexArray::addActor(CHexActor* actor, CHex& hex) {
 
 void CGameHexArray::onGetTravelPath(CGetTravelPath& msg) {
 
-	int b = getHexCube(CHex(0, 4, -4)).blocks;
-	//zero here!!!
-
 	msg.travelPath = aStarPath(msg.start, msg.end, msg.fogOn);
 }
 

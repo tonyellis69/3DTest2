@@ -1,4 +1,4 @@
-*** Friday October 09, 2020  time: 16:40:25 ***
+*** Friday October 16, 2020  time: 14:52:28 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
@@ -6,8 +6,3 @@ OpenGL version: 4.6.0 NVIDIA 432.00
 Has NPOT
 glsl version: 4.60 NVIDIA
 BaseApp constructor finished. Yay!
-
-Compile failure in D:\projects\3DTest\Debug\..\Data\lineModel.frag0(10) : error C0000: syntax error, unexpected ')', expecting ',' or ';' at token ")"
-
-Compile failure in D:\projects\3DTest\Debug\..\Data\lineModel.frag0(10) : error C1503: undefined variable "lateralFade"
-0(14) : error C1503: undefined variable "lateralFade"

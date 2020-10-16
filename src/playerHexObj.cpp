@@ -47,9 +47,9 @@ void CPlayerObject::onActionKey(bool pressed) {
 			return;
 		}
 
-		if (hexPosition == world.cursorPos  )
+		if (hexPosition == world.cursorPos)
 			return;
-		CGetTravelPath pathRequest(hexPosition, world.cursorPos,true);
+		CGetTravelPath pathRequest(hexPosition, world.cursorPos, true);
 		send(pathRequest);
 		if (pathRequest.travelPath.empty())
 			return;
@@ -78,9 +78,9 @@ void CPlayerObject::onActionKey(bool pressed) {
 void CPlayerObject::setActionMoveTo(CHex& hex) {
 	action = tig::actMoveTo;
 	targetHex = hex;
-//	CGetTravelPath pathRequest(hexPosition, targetHex);
-//	send(pathRequest);
-//	travelPath = pathRequest.travelPath;
+	//	CGetTravelPath pathRequest(hexPosition, targetHex);
+	//	send(pathRequest);
+	//	travelPath = pathRequest.travelPath;
 	if (travelPath.size() > movePoints2)
 		travelPath.resize(movePoints2);
 	destHexClaimed = false;
@@ -167,12 +167,12 @@ void CPlayerObject::showInventory() {
 	callTig(tig::onInventory);
 }
 
-void CPlayerObject::dropItem(int itemNo) {	
+void CPlayerObject::dropItem(int itemNo) {
 	ITigObj* item = callTigObj(tig::onDrop, itemNo);
 	CGameHexObj* gameObj = (CGameHexObj*)item->getCppObj();
 	auto playerItem = std::find(playerItems.begin(), playerItems.end(), gameObj);
 
-	CDropItem msg((CHexItem *) *playerItem, hexPosition);
+	CDropItem msg((CHexItem*)*playerItem, hexPosition);
 	send(msg);
 	playerItems.erase(playerItem);
 }
@@ -231,7 +231,7 @@ void CPlayerObject::onTakeItem(CTakeItem& msg) {
 }
 
 void CPlayerObject::onGetPlayerObj(CGetPlayerObj& msg) {
-	msg.playerObj =  this;
+	msg.playerObj = this;
 }
 
 void CPlayerObject::onPlayerSeen(CPlayerSeen& msg) {
@@ -317,43 +317,67 @@ void CPlayerObject::updateViewField() {
 }
 
 /** Respond to player move instruction. */
-void CPlayerObject::moveCommand(TPlayerMoveDir dir) {
-	if (travelDir == moveNone) {
-		switch (dir) {
-		case moveEast: moveDest = getNeighbour(hexPosition, hexEast); break;
-		case moveWest: moveDest = getNeighbour(hexPosition, hexWest); break;
-		case moveNE: moveDest = getNeighbour(hexPosition, hexNE); break;
-		case moveSE: moveDest = getNeighbour(hexPosition, hexSE); break;
-		case moveNW: moveDest = getNeighbour(hexPosition, hexNW); break;
-		case moveSW: moveDest = getNeighbour(hexPosition, hexSW); break;
-		case moveNorth:
-		case moveSouth: {
-			startNorthSouthMove(dir);
-			break;
-		}
-		case moveNS2: {
-			moveDest = moveDest2;
-			break;
-		}
-		} //end switch
+void CPlayerObject::moveCommand(TMoveDir commandDir) {
+	if (commandDir == travelDir)
+		return; //already heading in the right direction.
 
-		//check if move possible
-		if (world.isBlocked(hexPosition, moveDest)) {
-			if (dir == moveNS2)
-				travelDir = moveNS2blocked;
-			return;
-		}
+	CHex origin = hexPosition;
 
-		//find angle to turn to
-		rotation = hexAngle(hexPosition, moveDest);
-		buildWorldMatrix();
+	if (worldSpaceToHex(worldPos) != hexPosition)
+		return;
 
-		travelDir = dir;
+	//handle a change in direction if we're already moving
+	switch (travelDir) {
+	case moveNE: if (commandDir == moveEast)
+		commandDir = moveNE;
+		break;
+	case moveSE: if (commandDir == moveEast)
+		commandDir = moveSE;
+		break;
+	case moveNW: if (commandDir == moveWest)
+		commandDir = moveNW;
+		break;
+	case moveSW: if (commandDir == moveWest)
+		commandDir = moveSW;
+		break;
 	}
 
+	switch (commandDir) {
+	case moveEast: moveDest = getNeighbour(origin, hexEast); break;
+	case moveWest: moveDest = getNeighbour(origin, hexWest); break;
+	case moveNE: moveDest = getNeighbour(origin, hexNE); break;
+	case moveSE: moveDest = getNeighbour(origin, hexSE); break;
+	case moveNW: moveDest = getNeighbour(origin, hexNW); break;
+	case moveSW: moveDest = getNeighbour(origin, hexSW); break;
+	case moveNorth:
+	case moveSouth: {
+		startNorthSouthMove(commandDir);
+		break;
+	}
+	case moveNS2: {
+		moveDest = moveDest2;
+		break;
+	}
+	} //end switch
+
+	//check if move possible
+	if (world.isBlocked(origin, moveDest)) {
+		if (commandDir == moveNS2)
+			travelDir = moveNS2blocked;
+		else
+			travelDir = moveNone;
+		return;
+	}
+
+	//turn to destination hex
+	rotation = hexAngle(origin, moveDest);
+	buildWorldMatrix();
+	//TO DO: probably scrap this
+
+	travelDir = commandDir;
 }
 
-void CPlayerObject::startNorthSouthMove(TPlayerMoveDir dir) {
+void CPlayerObject::startNorthSouthMove(TMoveDir dir) {
 	northSouthKeyReleased = false;
 	THexDir eastRoute;	THexDir westRoute;
 	if (dir == moveNorth) {
@@ -377,13 +401,13 @@ void CPlayerObject::startNorthSouthMove(TPlayerMoveDir dir) {
 	if (world.isBlocked(hexPosition, moveDest))
 		moveDest = alt;
 
-	if (dir == moveNorth) 
+	if (dir == moveNorth)
 		moveDest2 = hexPosition + CHex(1, 1, -2);
 	else
 		moveDest2 = hexPosition + CHex(-1, -1, 2);
 }
 
-/** Player released up or down key - useful to know so that we don't 
+/** Player released up or down key - useful to know so that we don't
 	continue a north or south movement. */
 void CPlayerObject::onVerticalKeyRelease() {
 	northSouthKeyReleased = true;
@@ -400,7 +424,7 @@ void CPlayerObject::update2(float dT) {
 		if (northSouthKeyReleased) //stops a blocked secondary NS move becoming another NS start
 			travelDir = moveNone;
 		break;
-		}
+	}
 	default:
 		moveReal();
 		if (hexPosition == moveDest) {
@@ -408,8 +432,9 @@ void CPlayerObject::update2(float dT) {
 				travelDir = moveNone;
 				moveCommand(moveNS2);
 			}
-			else
+			else {
 				travelDir = moveNone;
+			}
 		}
 	}
 }

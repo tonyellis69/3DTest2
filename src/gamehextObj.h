@@ -17,6 +17,10 @@
 const bool resolved = false;
 const bool unresolved = true;
 
+enum TMoveDir {
+	moveNone, moveEast, moveWest, moveNE, moveSE,
+	moveSW, moveNW, moveNorth, moveSouth, moveNS2, moveNS2blocked
+};
 
 
 /** Basic hex object to derive game hex objects from,
@@ -55,6 +59,8 @@ public:
 
 	virtual void playerSight(bool inView);
 
+	virtual void update2(float dT) {}
+
 	unsigned int mBlocks; ///<If true, blocks travel path
 	bool deleteMe;
 
@@ -66,6 +72,7 @@ public:
 	CHex moveDest2; ///<Second hex if travelling north/south
 	//TO DO: consider moving to CHexActor
 	
+	TMoveDir travelDir = moveNone;
 
 protected:
 	int tigCall(int memberId) { return 0; };

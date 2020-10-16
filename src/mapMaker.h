@@ -7,6 +7,9 @@
 
 #include "gameHexArray.h"
 
+
+
+ 
 /** A class for creating maps of individual rooms or areas. */
 class CMapMaker {
 public:
@@ -15,6 +18,7 @@ public:
 	CGameHexArray* makeMap(ITigObj* mapObj);
 	void attachMapObject(ITigObj* mapObj);
 	CGameHexArray* createMap();
+
 
 
 private:

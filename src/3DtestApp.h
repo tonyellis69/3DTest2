@@ -241,8 +241,15 @@ public:
 	CGameTextWin* powerQueueWin; ///<Handle for power queue window.
 	CGameTextWin* combatLogWin; ///<Handle for combat log window.
 
-	int keyHit = 0;
+	unsigned int moveKeyDown = false;
+	float moveKeyChangeTimer = 0;
 };
+
+const unsigned int upKey = 1;
+const unsigned int rightKey = 2;
+const unsigned int downKey = 4;
+const unsigned int leftKey = 8;
+
 
 const float yawAng = 0.22f;
 const int cubesPerChunkEdge = 16;// 16; //8 ///<Number of cubes along a chunk edge

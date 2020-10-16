@@ -22,9 +22,11 @@ public:
 	THexList cursorPath;
 	bool onscreenRobotAction; ///<True if happened this turn.
 	CPlayerObject* player;
+	CGameHexArray* map;
+
 private:
 	TTurnPhase turnPhase;
-	CGameHexArray* map;
+
 	
 };
 

@@ -37,6 +37,50 @@ bool CRobot::update(float dT) {
 	return result;
 }
 
+void CRobot::update2(float dT) {
+	this->dT = dT;
+
+	if (state == robotSleep)
+		return;
+
+	if (state == robotChase && !travelling) {
+		if (world.player->hexPosition != chaseHex) {
+			chaseHex = world.player->hexPosition;
+			travelPath = world.map->aStarPath(hexPosition, chaseHex);
+			liveLog << "\nChaseHex at " << chaseHex.x << " " << chaseHex.y << " " << chaseHex.z;
+		}
+
+		if (::isNeighbour(hexPosition, world.player->hexPosition)) {
+			state = robotSleep;
+			return;
+		}
+
+	}
+
+
+	//if (travelPath.empty()) {
+	//	chooseRandomDestination();
+	//}
+
+	travelling = true;
+	moveDest = travelPath.front();
+	moveReal();
+	if (hexPosition == moveDest) {
+		travelPath.erase(travelPath.begin());
+		if (!travelPath.empty()) {
+			moveDest = travelPath.front();
+		}
+		
+	}
+
+}
+
+/** TO DO probably temporary! */
+void CRobot::chooseRandomDestination() {
+	CHex goalHex = world.map->findRandomHex(true);
+	travelPath = world.map->aStarPath(hexPosition, goalHex);
+}
+
 void CRobot::draw() {
 	//if (!visibleToPlayer)
 	//	return;
@@ -201,7 +245,7 @@ void CRobot::checkForPlayer() {
 			earlyExitTarget = getPlayer.playerObj;
 
 
-			setGoalAttack(getPlayer.playerObj);
+		//	setGoalAttack(getPlayer.playerObj);
 			trackingTarget = getPlayer.playerObj;
 
 
@@ -220,11 +264,27 @@ void CRobot::checkForPlayer() {
 		}
 		canSeePlayer = false;
 	}
-
-
-
 }
 
+/** Move realtime toward the destination hex, unless we reach it. */
+void CRobot::moveReal() {
+	glm::vec3 dest = cubeToWorldSpace(moveDest);
+	glm::vec3 travel = dest - worldPos;
+
+	glm::vec3 moveVec = glm::normalize(travel) * robotMoveSpeed * dT;
+
+	float remainingDist = glm::length(travel);
+
+	if (glm::length(moveVec) > remainingDist) {
+		worldPos = dest;
+		setPosition(moveDest);
+		travelling = false;
+		return;
+	}
+
+	worldPos += moveVec;
+	buildWorldMatrix();
+}
 
 
 

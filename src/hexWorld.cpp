@@ -80,7 +80,10 @@ void CHexWorld::startGame() {
 	playerObj = new CPlayerObject();
 	playerObj->setLineModel("player");
 	//map->add(playerObj, CHex(-13, 5, 8));
-	map->add(playerObj, CHex(0, -3, 3));
+	//map->add(playerObj, CHex(0, -3, 3));
+	//map->add(playerObj, CHex(2, -4, 2));
+	map->add(playerObj, CHex(4, -10, 6));
+
 	world.player = playerObj;
 
 
@@ -110,7 +113,10 @@ void CHexWorld::startGame() {
 }
 
 void CHexWorld::update2(float dT) {
-	world.player->update2(dT);
+//	world.player->update2(dT);
+	for (auto entity : map->entities) {
+		entity->update2(dT);
+	}
 }
 
 
@@ -215,10 +221,11 @@ void CHexWorld::draw() {
 		for (auto gridObj : gridObjects)
 			gridObj->draw();
 
-		hexRenderer.drawPath(&cursorPath, glm::vec4{ 0.3, 0.2, 1, 0.1f }, glm::vec4{ 0.3, 0.2, 1, 0.75f });
+		//hexRenderer.drawPath(&cursorPath, glm::vec4{ 0.3, 0.2, 1, 0.1f }, glm::vec4{ 0.3, 0.2, 1, 0.75f });
+		
 	}
 
-
+	hexRenderer.drawPath(&map->testBot->travelPath, glm::vec4{ 0.3, 0.2, 1, 0.1f }, glm::vec4{ 0.3, 0.2, 1, 0.75f });
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
@@ -238,25 +245,25 @@ void CHexWorld::update(float dT) {
 
 	update2(dT);
 
-	for (auto entity : map->entities)
-		entity->frameUpdate(dT);
+	//for (auto entity : map->entities)
+	//	entity->frameUpdate(dT);
 
-	if (world.getTurnPhase() == playerPhase) {
-		if (resolvingPlayerSerialActions())
-			return;
-	}
+	//if (world.getTurnPhase() == playerPhase) {
+	//	if (resolvingPlayerSerialActions())
+	//		return;
+	//}
 
 
 	if (world.getTurnPhase() == robotPhase) {
 		if (resolvingGridObjActions())
 			return;
 
-		if (resolvingSerialActions())
+	/*	if (resolvingSerialActions())
 			return;
 
 		if (resolvingSimulActions()) {
 			return;
-		}
+		}*/
 
 		//end of action phase
 		endTurn();
@@ -628,7 +635,7 @@ void CHexWorld::onActorMovedHex(CActorMovedHex& msg) {
 
 void CHexWorld::onPlayerTurnEnd(CPlayerTurnEnd& msg){
 	world.setTurnPhase(robotPhase);
-	robotsChooseActions();
+	//robotsChooseActions();
 }
 
 /** Return the highest priority object at this hex. ie, the one if 

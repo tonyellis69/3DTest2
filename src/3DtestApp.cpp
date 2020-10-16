@@ -357,10 +357,13 @@ void C3DtestApp::keyCheck() {
 			}
 		}
 		else {
-			/*keyHit++;
-			if (keyHit < 5)
+
+			if (moveKeyDown)
+				moveKeyChangeTimer += dT;
+			
+			if (moveKeyChangeTimer < 0.05f)
 				return;
-			keyHit = 0;*/
+
 
 			if (keyNow('A')) {
 				if (keyNow('W'))
@@ -622,6 +625,23 @@ void C3DtestApp::keyCheck() {
 void C3DtestApp::onKeyDown(int key, long mod) {
 	if (appMode == hexMode) {
 
+		if (key == 'W')
+			moveKeyDown |= upKey;
+		else if (key == 'D')
+			moveKeyDown |= rightKey;
+		else if (key == 'S')
+			moveKeyDown |= downKey;
+		else if (key == 'A')
+			moveKeyDown |= leftKey;
+
+		if (key == 'P') {
+			if (world.map->testBot->state == robotSleep)
+				world.map->testBot->state = robotChase;
+			else
+				world.map->testBot->state = robotChase;
+		}
+
+
 		if (key == GLFW_KEY_LEFT_CONTROL)
 			hexWorld.powerKeyDown();
 
@@ -742,13 +762,28 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 }
 
 void C3DtestApp::onKeyUp(int key, long mod) {
-	if (key == GLFW_KEY_LEFT_CONTROL)
-		hexWorld.powerKeyRelease();
-	//TO DO: scrap above
+	if (appMode == hexMode) {
+		if (key == GLFW_KEY_LEFT_CONTROL)
+			hexWorld.powerKeyRelease();
+		//TO DO: scrap above
 
-	if (key == 'W' || key == 'S')
-		world.player->onVerticalKeyRelease();
+		unsigned int prev = moveKeyDown;
+		if (key == 'W')
+			moveKeyDown &= ~upKey;
+		else if (key == 'D')
+			moveKeyDown &= ~rightKey;
+		else if (key == 'S')
+			moveKeyDown &= ~downKey;
+		else if (key == 'A')
+			moveKeyDown &= ~leftKey;
+		
+		if (moveKeyDown != prev)
+			moveKeyChangeTimer = 0;
 
+
+		if (key == 'W' || key == 'S')
+			world.player->onVerticalKeyRelease();
+	}
 }
 
 

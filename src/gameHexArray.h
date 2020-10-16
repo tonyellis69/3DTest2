@@ -13,7 +13,7 @@
 
 #include "messaging/messenger.h"
 
-
+#include "robot.h" //temp for testBot!
 
 	
 
@@ -68,6 +68,10 @@ public:
 
 	TEntities entities; ///<The grand list of entities in the map.
 	std::vector<CHexActor*> actors; ///<Shortlist of entities who are actors
+
+	CRobot* testBot;
+	//TO DO: temp!!
+
 private:
 
 	std::unordered_multimap<CHex, CGameHexObj*, hex_hash> entityMap;
