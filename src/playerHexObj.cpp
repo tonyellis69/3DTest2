@@ -56,7 +56,7 @@ void CPlayerObject::onActionKey(bool pressed) {
 
 		travelPath = pathRequest.travelPath;
 
-		setActionMoveTo(world.cursorPos);
+
 		//world.setTurnPhase(actionPhase);
 	}
 	else {
@@ -74,20 +74,6 @@ void CPlayerObject::onActionKey(bool pressed) {
 
 
 
-
-void CPlayerObject::setActionMoveTo(CHex& hex) {
-	action = tig::actMoveTo;
-	targetHex = hex;
-	//	CGetTravelPath pathRequest(hexPosition, targetHex);
-	//	send(pathRequest);
-	//	travelPath = pathRequest.travelPath;
-	if (travelPath.size() > movePoints2)
-		travelPath.resize(movePoints2);
-	destHexClaimed = false;
-	blockedFor = 0;
-	CAddActor msg(this, actionSerial);
-	send(msg);
-}
 
 bool CPlayerObject::update(float dT) {
 	this->dT = dT;
@@ -287,10 +273,6 @@ void CPlayerObject::onMovedHex() {
 
 	updateActionPoints(-1);
 
-	if (actionPoints == 0) {
-		CPlayerTurnEnd msg;
-		send(msg);
-	}
 }
 
 

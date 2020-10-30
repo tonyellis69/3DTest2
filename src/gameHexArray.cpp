@@ -12,7 +12,6 @@ CGameHexArray::~CGameHexArray() {
 
 void CGameHexArray::setMessageHandlers() {
 	messageBus.setHandler< CGetTravelPath>(this, &CGameHexArray::onGetTravelPath);
-	messageBus.setHandler< CMoveEntity>(this, &CGameHexArray::onMoveEntity);
 	messageBus.setHandler< CFindActorBlock>(this, &CGameHexArray::onActorBlockCheck);
 	messageBus.setHandler< CGetLineEnd>(this, &CGameHexArray::onGetLineEnd);
 	messageBus.setHandler< CGetActorAt>(this, &CGameHexArray::onGetActorAt);
@@ -35,7 +34,7 @@ bool CGameHexArray::fromToBlocked(CHex& from, CHex& to) {
 }
 
 
-
+//TO DO: replace with isFree below
 /** Returns true if this hex is entirely free. */
 bool CGameHexArray::isEmpty(glm::i32vec2& hex) {
 	if (getHexOffset(hex.x, hex.y).content != 1)
@@ -46,6 +45,16 @@ bool CGameHexArray::isEmpty(glm::i32vec2& hex) {
 		if (entity->hexPosition == cubePos)
 			return false;
 	}
+	return true;
+}
+
+/** Return true if there is no robot in this hex or heading into it. */
+bool CGameHexArray::isFree(CHex& hex) {
+	for (auto entity : entities) {
+		if (entity->hexPosition == hex || entity->moveDest == hex)
+			return false;
+	}
+
 	return true;
 }
 
@@ -71,18 +80,18 @@ void CGameHexArray::moveEntity(CGameHexObj* entity, CHex& newHex) {
 
 /** Add this entity to the map at the given position. */
 void CGameHexArray::add(CGameHexObj* entity, CHex& hexPos) {
-	entityMap.insert({ hexPos, entity });
+	//entityMap.insert({ hexPos, entity });
 	entity->setPosition(hexPos);
 }
 
 /** Remove this entity from the map. */
 void CGameHexArray::removeFromMap(CGameHexObj* entity) {
-	for (auto entry : entityMap) {
-		if (entry.second == entity) {
-			entityMap.erase(entry.first);
-			break;
-		}
-	}
+	//for (auto entry : entityMap) {
+	//	if (entry.second == entity) {
+	//		entityMap.erase(entry.first);
+	//		break;
+	//	}
+	//}
 
 	auto removee = std::find(entities.begin(), entities.end(), entity);
 	if (removee != entities.end())
@@ -233,10 +242,7 @@ void CGameHexArray::onGetTravelPath(CGetTravelPath& msg) {
 	msg.travelPath = aStarPath(msg.start, msg.end, msg.fogOn);
 }
 
-void CGameHexArray::onMoveEntity(CMoveEntity& msg) {
-	moveEntity(msg.entity, msg.newHex);
 
-}
 
 /** If an actor is blocking this hex, return it. */
 void CGameHexArray::onActorBlockCheck(CFindActorBlock& msg) {
@@ -263,9 +269,7 @@ void CGameHexArray::onGetActorAt(CGetActorAt& msg) {
 	}
 }
 
-void CGameHexArray::onGetObjectAt(CGetObjectAt& msg) {
-	msg.obj = getEntityAt(msg.hex);
-}
+
 
 void CGameHexArray::onLineOfSight(CLineOfSight& msg) {
 	msg.result = lineOfSight(msg.start, msg.end);

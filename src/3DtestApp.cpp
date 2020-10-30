@@ -635,15 +635,29 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 			moveKeyDown |= leftKey;
 
 		if (key == 'P') {
-			if (world.map->testBot->state == robotSleep)
-				world.map->testBot->state = robotChase;
-			else
-				world.map->testBot->state = robotChase;
+			if (world.map->testBot->getState() == robotSleep) {
+				world.map->testBot->setState(robotWander);
+				world.map->testBot2->setState(robotWander);
+			}
+			else {
+				world.map->testBot->setState(robotSleep);
+				world.map->testBot2->setState(robotSleep);
+
+			}
 		}
 
+		if (key == 'O') {
+			if (world.map->testBot->getState() == robotSleep) {
+				world.map->testBot->setState(robotChase);
+				world.map->testBot2->setState(robotChase);
+			}
+			else {
+				world.map->testBot->setState(robotSleep);
+				world.map->testBot2->setState(robotSleep);
 
-		if (key == GLFW_KEY_LEFT_CONTROL)
-			hexWorld.powerKeyDown();
+			}
+		}
+
 
 		if (key == GLFW_KEY_ENTER)
 			hexWorld.enterKeyDown();
@@ -763,9 +777,6 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 
 void C3DtestApp::onKeyUp(int key, long mod) {
 	if (appMode == hexMode) {
-		if (key == GLFW_KEY_LEFT_CONTROL)
-			hexWorld.powerKeyRelease();
-		//TO DO: scrap above
 
 		unsigned int prev = moveKeyDown;
 		if (key == 'W')

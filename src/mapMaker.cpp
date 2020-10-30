@@ -25,9 +25,17 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 		//map->addActor(robotM, map->findRandomHex(true));
 		map->addActor(robotM, CHex(-2,-4,6));
 		robotM->setTigObj(pRobot);
-		robotM->setGoalWander();
 		map->testBot = robotM;
 	}
+
+	CRobot* robotM = new CRobot();
+	robotM->setLineModel("robot");
+	map->addActor(robotM, CHex(-1, -4, 5));
+	robotM->setTigObj(pRobot);
+	map->testBot2 = robotM;
+
+
+
 
 	//add items & door
 	tempPopulateMap();

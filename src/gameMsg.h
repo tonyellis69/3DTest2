@@ -113,11 +113,6 @@ public:
 	THexList& unvisibledHexes;
 };
 
-class CPlayerTurnEnd : public CMsg {
-public:
-
-};
-
 
 class CPlayerSeen : public CMsg {
 public:

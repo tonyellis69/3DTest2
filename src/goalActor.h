@@ -13,10 +13,8 @@ public:
 
 	int getGoal();
 
-	void chooseTurnAction();
-	void chooseWanderAction();
-	void chooseAttackAction();
-	void chooseGotoLastSeenAction();
+
+
 
 
 

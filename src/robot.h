@@ -9,7 +9,8 @@
 
 #include "viewField.h"
 
-enum TRobotState {robotSleep, robotChase};
+enum TRobotState {robotSleep, robotChase, robotWander, 
+	robotMelee};
 
 /** A class describing basic robot characteristics and
 	behaviour. */
@@ -17,12 +18,11 @@ class CRobot : public CGoalActor {
 public:
 	CRobot();
 	void frameUpdate(float dT);
-	bool update(float dT);
 	void update2(float dT);
-	void chooseRandomDestination();
+	void setState(TRobotState newState);
+	TRobotState getState();
+	CHex getNextTravelHex(CHex& destination);
 	void draw();
-	void leftClick();
-	void leftClickPowerMode();
 
 	void hitTarget();
 	int getMissileDamage();
@@ -34,9 +34,9 @@ public:
 
 	CViewFieldArc viewField;
 
-	TRobotState state = robotSleep;
-	bool travelling = false;
-	CHex chaseHex;
+
+	bool travellingToHex = false;
+	CHex destination = CHex(-1);
 
 private:
 	int tigCall(int memberId);
@@ -44,7 +44,7 @@ private:
 
 	void onNotify(CPlayerNewHex& msg);
 
-	void onNotify(CActorMovedHex& msg);
+
 
 	void deathRoutine();
 
@@ -56,10 +56,22 @@ private:
 
 	void moveReal();
 
+	void melee();
 
-	float robotMoveSpeed = 2.5f;
+
+	TRobotState state = robotSleep;
 
 
+	float robotMoveSpeed = 3;// 2.5f;
+
+	float robotLungeSpeed = 8;
+	float robotMeleeRange = 1.8f;
+	float robotLungeDistance = 1.0f;
+	float meleeHitCooldown = 0;
+	glm::vec3 lungeTarget = glm::vec3(0);
+	glm::vec3 lungeDir = glm::vec3(0);
+	bool lungeReturning = false;
+	glm::vec3 lungeEndPos;
 };
 
 

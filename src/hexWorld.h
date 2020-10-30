@@ -46,7 +46,6 @@ public:
 	void makeMap(ITigObj* tigMap);
 	void deleteMap();
 	void startGame();
-	void update2(float dT);
 	void moveCamera(glm::vec3& direction);
 	void rightClick();
 	void leftClick();
@@ -59,9 +58,6 @@ public:
 	void update(float dt);
 
 	void onCtrlLMouse();
-	void powerKeyRelease();
-
-	void powerKeyDown();
 
 	void enterKeyDown();
 
@@ -72,35 +68,20 @@ private:
 	void createCursorObject();
 	void onNewMouseHex(CHex& mouseHex);
 
-	void robotsChooseActions();
-	void startActionPhase();
-
-
-	bool resolvingGridObjActions();
-	bool resolvingPlayerSerialActions();
-	bool resolvingSerialActions();
-	bool resolvingSimulActions();
-
-
 	int tigCall(int memberId) ;
 
 	void dropItem(CGameHexObj* item, CHex& location);
 
 	CGroupItem* createGroupItem();
 
-	void removeGridObj(CGridObj& gridObj);
-
 	CGameHexObj* getItemAt(CHex& position);
 
 	void tempGetGroupItem(int itemNo);
 
-	void removeDeletedEntities();
 
 	CGridObj* createBolt();
 
 
-
-	void onAddActor(CAddActor& msg);
 	void onShootAt(CShootAt& msg);
 	void onDropItem(CDropItem& msg);
 	void onRemoveEntity(CRemoveEntity& msg);
@@ -115,14 +96,14 @@ private:
 	void onPlayerNewHex(CPlayerNewHex& msg);
 
 	void onActorMovedHex(CActorMovedHex& msg);
-	void onPlayerTurnEnd(CPlayerTurnEnd& msg);
+
 
 	CGameHexObj* getPrimaryObjectAt(CHex& hex);
 
 	void updateCameraPosition();
 
 	void beginNewTurn();
-	void endTurn();
+	
 
 	void killEntity(CGameHexObj* entity);
 
@@ -169,6 +150,8 @@ private:
 	CQPS qps; ///<Quantum power system.
 
 	bool lineOfSight = false;
+	glm::vec3 mouseWorldPos; ///<Mouse position on the worldspace XY plane
+
 };
 
 

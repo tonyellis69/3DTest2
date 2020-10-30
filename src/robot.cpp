@@ -10,14 +10,6 @@ const float rad360 = M_PI * 2;
 
 
 CRobot::CRobot() {
-	movePoints2 = 4;
-
-	CDiceRoll msg(3);
-	send(msg);
-
-	tmpHP = 6 + msg.result - 2;
-	tmpOrigHP = tmpHP;
-
 	viewField.setField(5, 60);
 	normalColour = glm::vec4(0.3, 1, 0.3, 1); //temp!
 }
@@ -31,55 +23,115 @@ void CRobot::frameUpdate(float dT) {
 	updateViewField();
 }
 
-bool CRobot::update(float dT) {	
-	bool result = CHexActor::update(dT);
-
-	return result;
-}
 
 void CRobot::update2(float dT) {
 	this->dT = dT;
 
+	if (meleeHitCooldown > 0)
+		meleeHitCooldown -= dT;
+
+	if (travellingToHex) {
+		moveReal();
+		return;
+	}
+
 	if (state == robotSleep)
 		return;
 
-	if (state == robotChase && !travelling) {
-		if (world.player->hexPosition != chaseHex) {
-			chaseHex = world.player->hexPosition;
-			travelPath = world.map->aStarPath(hexPosition, chaseHex);
-			liveLog << "\nChaseHex at " << chaseHex.x << " " << chaseHex.y << " " << chaseHex.z;
+	//if the player is adjacent, hit player
+	if (state == robotChase && glm::distance(worldPos, world.player->worldPos) 
+			< robotMeleeRange && meleeHitCooldown <= 0) {
+		setState(robotMelee);
+		return;
+	}
+
+
+	if (state == robotChase) {
+		if (world.player->hexPosition != destination) {
+			destination = world.player->hexPosition;
 		}
 
-		if (::isNeighbour(hexPosition, world.player->hexPosition)) {
-			state = robotSleep;
+		moveDest = getNextTravelHex(destination);
+		if (moveDest == CHex(-1)) {
 			return;
 		}
-
+		travellingToHex = true;
 	}
 
-
-	//if (travelPath.empty()) {
-	//	chooseRandomDestination();
-	//}
-
-	travelling = true;
-	moveDest = travelPath.front();
-	moveReal();
-	if (hexPosition == moveDest) {
-		travelPath.erase(travelPath.begin());
-		if (!travelPath.empty()) {
-			moveDest = travelPath.front();
+	if (state == robotWander) {
+		moveDest = getNextTravelHex(destination);
+		if (moveDest == CHex(-1)) {
+			setState(robotSleep);
+			return;
 		}
-		
+		travellingToHex = true;
 	}
 
+	if (state == robotMelee) {
+		melee();
+
+
+	}
+
+
 }
 
-/** TO DO probably temporary! */
-void CRobot::chooseRandomDestination() {
-	CHex goalHex = world.map->findRandomHex(true);
-	travelPath = world.map->aStarPath(hexPosition, goalHex);
+
+/** Switch to the given state, performing the necessary initialisation. */
+void CRobot::setState(TRobotState newState) {
+
+	switch (newState) {
+	case robotWander:
+		destination = world.map->findRandomHex(true);
+		break;
+	case robotChase:
+		destination = world.player->hexPosition;
+		break;
+	case robotMelee:
+		//TO DO: can set target here later
+		travelPath.clear();
+		destination = CHex(-1);
+		meleeHitCooldown = 3.0f;
+		lungeDir = glm::normalize(world.player->worldPos - worldPos);
+		lungeReturning = false;
+		lungeEndPos = worldPos;
+		break;
+	case robotSleep:
+		destination = CHex(-1);
+		break;
+	}
+
+	state = newState;
 }
+
+TRobotState CRobot::getState() {
+	return state;
+}
+
+
+/** Return the next destination hex, if any, in this robot's ongoing journey. 
+	If the current path is blocked, try to find a way around it. */
+CHex CRobot::getNextTravelHex(CHex& destination) {
+	if (travelPath.empty() || travelPath.back() != destination) {
+		travelPath = world.map->aStarPath(hexPosition, destination);
+		//!!!!check for blocking robots in the first hex and we can exit early
+		if (travelPath.empty()) //no route to destination
+			return CHex(-1);
+	}
+
+	//is previously calculated next destination hex still free ?
+	if (!world.map->isFree(travelPath.front())) {
+		travelPath = world.map->aStarPath(hexPosition, destination, travelPath.front());
+	}
+
+	if (travelPath.empty()) 
+		return CHex(-1);
+
+	CHex hex = travelPath.front();
+	travelPath.erase(travelPath.begin());
+	return hex;
+}
+
 
 void CRobot::draw() {
 	//if (!visibleToPlayer)
@@ -90,36 +142,7 @@ void CRobot::draw() {
 	CHexObject::draw();
 }
 
-/** Respond to the player's left-click/primary action on this robot. */
-void CRobot::leftClick() {
-	CGetPlayerPos msg;
-	send(msg);
 
-	//ensure a power blob is assigned to this attack
-	CGetPlayerObj getPlayer;
-	send(getPlayer);  
-
-	CFindPowerUser pwrMsg(getPlayer.playerObj, true);
-	send(pwrMsg);
-	if (pwrMsg.power == 0) //none available apparently
-		return;
-
-
-	if (isNeighbour(msg.position)) {
-		getPlayer.playerObj->setActionMelee(this);
-
-		return;
-	}
-
-	getPlayer.playerObj->setActionShoot(this->hexPosition);
-
-}
-
-/** Respond to left-click/primary action in power mode. */
-void CRobot::leftClickPowerMode() {
-	CReserveNextPower msg(this);
-	send(msg);
-}
 
 /** Deliver melee damage to our current target. */
 void CRobot::hitTarget() {
@@ -184,18 +207,7 @@ void CRobot::onNotify(CPlayerNewHex& msg) {
 	checkForPlayer();
 }
 
-void CRobot::onNotify(CActorMovedHex& msg) {
-	/*if (trackingTarget == msg.actor) {
-		if (canSee(msg.actor)) {
-			lastSeen = msg.newHex;
-			canSeeTrackee = true;
-		}
-		else {
-			canSeeTrackee = false;
-		}
 
-	}*/
-}
 
 /** What to do when someone dies. */ 
 void CRobot::deathRoutine() {
@@ -278,11 +290,29 @@ void CRobot::moveReal() {
 	if (glm::length(moveVec) > remainingDist) {
 		worldPos = dest;
 		setPosition(moveDest);
-		travelling = false;
+		travellingToHex = false;
 		return;
 	}
 
 	worldPos += moveVec;
+	buildWorldMatrix();
+}
+
+/** Perform realtime melee action. Eg, lunging at target. */
+void CRobot::melee() {
+	worldPos += lungeDir * robotLungeSpeed * dT;
+	if (glm::distance(worldPos, lungeEndPos) > robotLungeDistance) {
+		if (lungeReturning) {
+			setState(robotChase);
+			lungeDir = glm::vec3(0);
+		}
+		else {
+			lungeEndPos = worldPos;
+			lungeDir = -lungeDir;
+			lungeReturning = true;
+		}
+	}
+
 	buildWorldMatrix();
 }
 

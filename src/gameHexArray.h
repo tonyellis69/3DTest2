@@ -31,6 +31,7 @@ public:
 	void setEntityList(TEntities* pEntities);
 	bool fromToBlocked(CHex& current, CHex& hex);
 	bool isEmpty(glm::i32vec2& hex);
+	bool isFree(CHex& hex);
 	CHex findLineEnd(CHex& start, CHex& target);
 	void moveEntity(CGameHexObj* entity, CHex& hex);
 	void add(CGameHexObj* entity, CHex& hex);
@@ -54,11 +55,9 @@ public:
 	void addActor(CHexActor* actor, CHex& hex);
 
 	void onGetTravelPath(CGetTravelPath& msg);
-	void onMoveEntity(CMoveEntity& msg);
 	void onActorBlockCheck(CFindActorBlock& msg);
 	void onGetLineEnd(CGetLineEnd& msg);
 	void onGetActorAt(CGetActorAt& msg);
-	void onGetObjectAt(CGetObjectAt& msg);
 	void onLineOfSight(CLineOfSight& msg);
 	void onRandomHex(CRandomHex& msg);
 	void onFindViewField(CCalcVisionField& msg);
@@ -70,6 +69,7 @@ public:
 	std::vector<CHexActor*> actors; ///<Shortlist of entities who are actors
 
 	CRobot* testBot;
+	CRobot* testBot2;
 	//TO DO: temp!!
 
 private:

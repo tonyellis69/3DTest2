@@ -21,7 +21,6 @@ public:
 	CPlayerObject();
 	~CPlayerObject();
 	void onActionKey(bool pressed);
-	void setActionMoveTo(CHex& hex);
 	bool update(float dT);
 	void hitTarget();
 	void draw();

@@ -91,13 +91,7 @@ using TEntities = std::vector<CGameHexObj*>;
 
 class CGroupItem;
 
-class CMoveEntity : public CMsg {
-public:
-	CMoveEntity(CGameHexObj* ent, CHex& hex) : entity(ent), newHex(hex) {}
 
-	CGameHexObj* entity;
-	CHex& newHex;
-};
 
 class CRemoveEntity : public CMsg {
 public:
@@ -128,15 +122,6 @@ public:
 };
 
 
-class CGetObjectAt : public CMsg {
-public:
-	CGetObjectAt(CHex& h, CGameHexObj* n = NULL)
-		: hex(h), notObj(n) {}
-
-	CHex hex;
-	CGameHexObj* obj = NULL;
-	CGameHexObj* notObj;
-};
 
 class CReserveNextPower : public CMsg {
 public:

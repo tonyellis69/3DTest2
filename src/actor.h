@@ -13,15 +13,10 @@ enum TActorBlock {notBlocked, currentBlocked, permBlocked, unknownBlocked};
 /** A class encapuslating the movement code for game entities. */
 class CHexActor : public CGameHexObj {
 public:
-	virtual void chooseTurnAction() {}
-	virtual void initAction() {};
 	virtual bool update(float dT);
 	bool isActor() { return true; }
 	virtual int getMissileDamage() { return 0; }
-	virtual void setActionMoveTo(CHex& hex);
-	virtual void setActionShoot(CHex& hex);
-	virtual void setActionMelee(CGameHexObj* target);
-	virtual void setActionTurnTo(CHex& hex);
+
 	int getAction() {
 		return action;
 	}
@@ -36,7 +31,7 @@ protected:
 	bool shootTarget(float dT);
 	bool turnTo(float dT);
 
-	bool checkForBlock(CHex& destHex);
+
 
 	virtual void hitTarget() {};
 
@@ -44,7 +39,7 @@ protected:
 
 	bool isFacing(CHex& hex);
 	bool moveTo(CHex& hex);
-	void claimMapPos(CHex& newHex);
+
 
 	bool lungeAt(CHex& hex);
 
@@ -56,7 +51,6 @@ protected:
 
 	float moveSpeed2 = 7.0f;
 	float turnSpeed = 10;
-	int movePoints2; ///<Number of hexes we can travel in one move.
 	bool destHexClaimed = false;
 	float blockedFor;
 
@@ -75,15 +69,7 @@ private:
 
 };
 
-enum TAction {actionSerial, actionSimul};
-class CAddActor : public CMsg {
-public:
-	CAddActor(CHexActor* add, TAction listType) : actor(add),
-	 addTo(listType) {};
 
-	CHexActor* actor;
-	TAction addTo;
-};
 
 
 
