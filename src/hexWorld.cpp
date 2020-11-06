@@ -102,7 +102,7 @@ void CHexWorld::startGame() {
 	send(msg);
 
 	map->updateBlocking();
-	hexRenderer.updateHexShaderBuffer();
+	hexRenderer.updateFogBuffer();
 
 	beginNewTurn(); //NB!!! Repeats some of the stuff above
 }
@@ -184,16 +184,16 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 
 void CHexWorld::draw() {
 
-		hexRenderer.drawFloorPlan(); 
-		hexCursor->draw();
+	hexRenderer.drawFloorPlan(); 
+	hexCursor->draw();
 
-		for (auto entity : entitiesToDraw)
+	for (auto entity : entitiesToDraw)
 			entity->draw();
-		for (auto gridObj : gridObjects)
+	for (auto gridObj : gridObjects)
 			gridObj->draw();
 
 
-		hexRenderer.drawPath(&cursorPath, glm::vec4{ 0.6, 0.4, 1, 0.1f }, glm::vec4{ 0.6, 0.4, 1, 0.75f });
+	hexRenderer.drawPath(&cursorPath, glm::vec4{ 0.6, 0.4, 1, 0.1f }, glm::vec4{ 0.6, 0.4, 1, 0.75f });
 
 	hexRenderer.drawPath(&map->testBot->travelPath, glm::vec4{ 0.3, 0.2, 1, 0.1f }, glm::vec4{ 0.3, 0.2, 1, 0.75f });
 
@@ -420,8 +420,8 @@ void CHexWorld::onDiceRoll(CDiceRoll& msg) {
 
 void CHexWorld::onPlayerNewHex(CPlayerNewHex& msg) {
 	notify(msg);
-	cursorPath.erase(cursorPath.begin());
-	hexRenderer.updateHexShaderBuffer();
+	//cursorPath.erase(cursorPath.begin());
+	//hexRenderer.updateFogBuffer();
 }
 
 void CHexWorld::onActorMovedHex(CActorMovedHex& msg) {
@@ -467,7 +467,7 @@ void CHexWorld::beginNewTurn() {
 	qps.beginNewTurn();
 	playerObj->onTurnBegin();
 	map->updateBlocking();
-	hexRenderer.updateHexShaderBuffer();
+	hexRenderer.updateFogBuffer();
 	//chooseActions();
 	cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition);
 

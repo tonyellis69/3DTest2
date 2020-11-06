@@ -2,11 +2,13 @@
 
 layout(location = 0) in ivec2 index;
 in uint content;
-in float fog;
+//in float fog;
 
 uniform mat4 mvpMatrix;
 
 uniform ivec2 gridSize;
+
+uniform samplerBuffer fogTex;
 
 out squareData {
 	vec4 vert;
@@ -42,5 +44,8 @@ void main() {
 	outData.dVert = mvpMatrix * ( vec4(position,1) +  vec4(-d,-d,0,0) );
 	
 	outData.content = content;
-	outData.fog = fog;
+	//outData.fog = fog;
+	
+	int fogIndex = (index.y * int(22)) + index.x;
+	outData.fog = texelFetch(fogTex, fogIndex ).r;
 }

@@ -29,7 +29,6 @@ public:
 	void dropItem(int itemNo);
 	void equipItem(int itemNo);
 	void leftClickPowerMode();
-	void updateActionPoints(int change);
 	void onTurnBegin();
 	void onTurnEnd();
 	void onGetPlayerPos(CGetPlayerPos& msg);

@@ -61,8 +61,10 @@ public:
 	void onLineOfSight(CLineOfSight& msg);
 	void onRandomHex(CRandomHex& msg);
 	void onFindViewField(CCalcVisionField& msg);
+	THexList findVisibleHexes(CHex& apex, THexList& perimeterHexes, bool obsessive);
 	void onFindViewField2(CCalcVisionField& msg);
-	void onUpdateFog(CUpdateFog& msg);
+
+	void updateFog(THexList& visibleHexes, THexList& unvisibleHexes);
 
 
 	TEntities entities; ///<The grand list of entities in the map.

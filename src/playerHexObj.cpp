@@ -173,11 +173,6 @@ void CPlayerObject::leftClickPowerMode() {
 	send(msg);
 }
 
-void CPlayerObject::updateActionPoints(int change) {
-	actionPoints += change;
-	APlabel->setText(std::to_string(actionPoints));
-}
-
 
 void CPlayerObject::onTurnBegin() {
 	liveLog << "\nPlayer turn begin";
@@ -268,33 +263,43 @@ int CPlayerObject::getMissileDamage() {
 void CPlayerObject::onMovedHex() {
 	CActorMovedHex msg(hexPosition, this);
 	send(msg);
+	//eventually calls hexWorld alertEntitiesInPlayerFov, which notifies entities
+	//if they're now in view of the player. Find a more direct way to do this
 
 	updateViewField();
 
-	updateActionPoints(-1);
-
+	CPlayerNewHex msg2(hexPosition);
+	send(msg2);
+	//eventually updates map's fog of war, might also be better done more directly
+	//if nothing else, turn this into one message handled by hexWorld
 }
 
 
 void CPlayerObject::updateViewField() {
 	//update view field
 	viewField.update(hexPosition);
-	CCalcVisionField calcFieldMsg(hexPosition, viewField.ringHexes, true);
-	send(calcFieldMsg);
+	//CCalcVisionField calcFieldMsg(hexPosition, viewField.ringHexes, true);
+	//send(calcFieldMsg);
+
+	THexList visibleHexes = world.map->findVisibleHexes(hexPosition, viewField.ringHexes, true);
 
 	std::vector<CHex> unvisibledHexes;
 	for (auto hex : viewField.visibleHexes) {
-		if (std::find(calcFieldMsg.visibleHexes.begin(), calcFieldMsg.visibleHexes.end(),
-			hex) == calcFieldMsg.visibleHexes.end()) {
+		if (std::find(visibleHexes.begin(), visibleHexes.end(),
+			hex) == visibleHexes.end()) {
 			unvisibledHexes.push_back(hex);
 		}
 	}
 
-	viewField.visibleHexes = calcFieldMsg.visibleHexes;
+	viewField.visibleHexes = visibleHexes;
 
 	//update fog of war
-	CUpdateFog fogMsg(calcFieldMsg.visibleHexes, unvisibledHexes);
-	send(fogMsg);
+	//CUpdateFog fogMsg(visibleHexes, unvisibledHexes);
+//	send(fogMsg);
+
+	world.map->updateFog(visibleHexes, unvisibledHexes);
+
+	hexRendr->updateFogBuffer();
 
 }
 

@@ -104,14 +104,6 @@ public:
 	CGameHexObj* actor;
 };
 
-class CUpdateFog : public CMsg {
-public:
-	CUpdateFog(THexList& h, THexList& u) : visibleHexes(h),
-	unvisibledHexes(u) {}
-
-	THexList & visibleHexes;
-	THexList& unvisibledHexes;
-};
 
 
 class CPlayerSeen : public CMsg {

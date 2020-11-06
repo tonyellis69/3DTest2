@@ -8,7 +8,8 @@
 enum TTurnPhase { playerPhase, robotPhase, playerDeadPhase };
 
 
-/** A class encapsulating useful global state stuff. */
+/** A class encapsulating useful global state stuff everyone 
+	needs direct access to. */
 class CGameState : public CGameEventObserver  {
 public:
 
