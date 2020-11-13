@@ -74,7 +74,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -97,7 +97,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -134,15 +134,18 @@
     <ClCompile Include="src\GUIhealthPanel.cpp" />
     <ClCompile Include="src\GUIrichTextPanel.cpp" />
     <ClCompile Include="src\hexItem.cpp" />
+    <ClCompile Include="src\hexRenderer.cpp" />
     <ClCompile Include="src\hexWorld.cpp" />
     <ClCompile Include="src\localHotList.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mapMaker.cpp" />
+    <ClCompile Include="src\missile.cpp" />
     <ClCompile Include="src\playerHexObj.cpp" />
     <ClCompile Include="src\powerSupply.cpp" />
     <ClCompile Include="src\qps.cpp" />
     <ClCompile Include="src\robot.cpp" />
     <ClCompile Include="src\gridObj.cpp" />
+    <ClCompile Include="src\sprite.cpp" />
     <ClCompile Include="src\viewField.cpp" />
     <ClCompile Include="src\worldUI.cpp" />
   </ItemGroup>
@@ -169,15 +172,19 @@
     <ClInclude Include="src\GUIrichTextPanel.h" />
     <ClInclude Include="src\hexItem.h" />
     <ClInclude Include="src\hexMsg.h" />
+    <ClInclude Include="src\hexRenderer.h" />
     <ClInclude Include="src\hexWorld.h" />
+    <ClInclude Include="src\IHexRenderer.h" />
     <ClInclude Include="src\localHotList.h" />
     <ClInclude Include="src\mapMaker.h" />
+    <ClInclude Include="src\missile.h" />
     <ClInclude Include="src\playerHexObj.h" />
     <ClInclude Include="src\powerSupply.h" />
     <ClInclude Include="src\powerUser.h" />
     <ClInclude Include="src\qps.h" />
     <ClInclude Include="src\robot.h" />
     <ClInclude Include="src\gridObj.h" />
+    <ClInclude Include="src\sprite.h" />
     <ClInclude Include="src\viewField.h" />
   </ItemGroup>
   <ItemGroup>

@@ -66,6 +66,10 @@ public:
 
 	void updateFog(THexList& visibleHexes, THexList& unvisibleHexes);
 
+	CHex getSegmentFirstHex(glm::vec3& A, glm::vec3& B);
+
+	std::tuple<THexDir, glm::vec3> findSegmentExit(glm::vec3& A, glm::vec3& B, CHex& hex);
+
 
 	TEntities entities; ///<The grand list of entities in the map.
 	std::vector<CHexActor*> actors; ///<Shortlist of entities who are actors
@@ -79,3 +83,6 @@ private:
 	std::unordered_multimap<CHex, CGameHexObj*, hex_hash> entityMap;
 
 };
+
+const int solidHex = 2;
+const int emptyHex = 1;

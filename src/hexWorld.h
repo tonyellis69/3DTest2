@@ -8,7 +8,7 @@
 
 #include "mapMaker.h"
 
-#include "hex/hexRenderer.h"
+#include "hexRenderer.h"
 
 #include "robot.h"
 #include "playerHexObj.h"
@@ -49,7 +49,7 @@ public:
 	void moveCamera(glm::vec3& direction);
 	void rightClick();
 	void leftClick();
-	void onActionKey(bool released);
+	void onFireKey(bool released);
 	void onKeyDown(int key, long mod);
 	void onMouseWheel(float delta, int key);
 	void onMouseMove(int x, int y, int key);
@@ -112,7 +112,7 @@ private:
 
 	CGameHexArray* map;
 
-	CHexRenderer hexRenderer;
+	//CHexRenderer* hexRenderer;
 
 
 	CPlayerObject* playerObj = NULL;

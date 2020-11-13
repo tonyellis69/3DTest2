@@ -4,11 +4,11 @@
 #include <glm/glm.hpp>
 
 #include "renderer/buf.h"
-#include "hex/IHexRenderer.h"
+#include "IHexRenderer.h"
 
 #include "hex/hex.h"
 
-#include "hex/lineModel.h"
+#include "lineModel.h"
 
 
 /** A base class for 3D grid objects. */

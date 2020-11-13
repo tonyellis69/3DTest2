@@ -2,17 +2,23 @@
 
 #include <string>
 
+#include <glm/gtx/vector_angle.hpp> 
+
 #include "utils/log.h"
 
 #include "gameTextWin.h"
 
 #include "gameState.h"
 
+#include "hexRenderer.h"
+
 CGameHexObj nullGameHexObj;
 
 CHexWorld::CHexWorld() {
-	CHexObject::setHexRenderer(&hexRenderer);
-	CGridObj::setHexRenderer(&hexRenderer);
+	//hexRenderer = &hexRendr2;
+	hexRendr2.init();
+	CHexObject::setHexRenderer(&hexRendr2);
+	CGridObj::setHexRenderer(&hexRendr2);
 	
 	messageBus.setHandler<CShootAt>(this, &CHexWorld::onShootAt);
 	messageBus.setHandler<CDropItem>(this, &CHexWorld::onDropItem);
@@ -41,7 +47,7 @@ void CHexWorld::setVM(Ivm* pVM) {
 
 /**	Load a multipart mesh for storage under the given name. */
 void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
-	hexRenderer.loadMesh(name, fileName);
+	hexRendr2.loadMesh(name, fileName);
 }
 
 /** Create a map using the data in the given Tig file. */
@@ -59,7 +65,7 @@ void CHexWorld::makeMap(ITigObj* tigMap) {
 	for (auto entity : map->entities)
 		subscribe(entity);
 
-	hexRenderer.setMap(map);
+	hexRendr2.setMap(map);
 }
 
 void CHexWorld::deleteMap() {
@@ -71,7 +77,7 @@ void CHexWorld::deleteMap() {
 
 /** Required each time we restart. */
 void CHexWorld::startGame() {
-	hexRenderer.setMap(map);
+	hexRendr2.setMap(map);
 	world.setMap(map);
 	
 	//create new player object
@@ -102,7 +108,7 @@ void CHexWorld::startGame() {
 	send(msg);
 
 	map->updateBlocking();
-	hexRenderer.updateFogBuffer();
+	hexRendr2.updateFogBuffer();
 
 	beginNewTurn(); //NB!!! Repeats some of the stuff above
 }
@@ -111,7 +117,7 @@ void CHexWorld::startGame() {
 void CHexWorld::moveCamera(glm::vec3& direction) {
 	float camSpeed = 6.0f * dT;
 	glm::vec3 vector = direction *= camSpeed;
-	hexRenderer.moveCamera(vector);
+	hexRendr2.moveCamera(vector);
 }
 
 /** Called when a key is pressed. */
@@ -132,14 +138,14 @@ void CHexWorld::onKeyDown(int key, long mod) {
 	}
 
 	if (key == 'F') {
-		hexRenderer.toggleFollowCam();
-		hexRenderer.followTarget(playerObj->worldPos);
+		hexRendr2.toggleFollowCam();
+		hexRendr2.followTarget(playerObj->worldPos);
 	}
 
 	if (key == 'R') {
-		hexRenderer.hexLineShader->recompile();
-		hexRenderer.lineShader->recompile();
-		hexRenderer.hexSolidShader->recompile();
+		hexRendr2.hexLineShader->recompile();
+		hexRendr2.lineShader->recompile();
+		hexRendr2.hexSolidShader->recompile();
 	}
 
 	if (key == 'L') {
@@ -151,11 +157,11 @@ void CHexWorld::onKeyDown(int key, long mod) {
 
 void CHexWorld::onMouseWheel(float delta, int key) {
 	if (key == GLFW_KEY_LEFT_SHIFT) {
-		hexRenderer.pitchCamera(delta);
+		hexRendr2.pitchCamera(delta);
 	}
 	else {
 		if (key == GLFW_KEY_LEFT_CONTROL)
-			hexRenderer.dollyCamera(delta);
+			hexRendr2.dollyCamera(delta);
 		else {
 			;
 		}
@@ -163,15 +169,14 @@ void CHexWorld::onMouseWheel(float delta, int key) {
 }
 
 void CHexWorld::onMouseMove(int x, int y, int key) {
-	if (world.getTurnPhase() == playerDeadPhase) {
-		//TO DO: temp! player death should turn off input at the source
-		return;
-	}
-
 	mousePos = { x,y };
 
-	auto [mouseHex, mouseWS ] = hexRenderer.pickHex(x, y);
+	auto [mouseHex, mouseWS ] = hexRendr2.pickHex(x, y);
 	mouseWorldPos = mouseWS;
+	glm::vec3 mouseVec = mouseWorldPos - playerObj->worldPos;
+	playerObj->setTargetAngle(glm::orientedAngle(glm::normalize(mouseVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, -1)));
+
+
 	if (mouseHex != hexCursor->hexPosition) {
 		CMouseExitHex msg;
 		msg.leavingHex = hexCursor->hexPosition;
@@ -184,26 +189,29 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 
 void CHexWorld::draw() {
 
-	hexRenderer.drawFloorPlan(); 
+	hexRendr2.drawFloorPlan();
 	hexCursor->draw();
 
 	for (auto entity : entitiesToDraw)
 			entity->draw();
+
 	for (auto gridObj : gridObjects)
 			gridObj->draw();
 
+	for (auto sprite : world.sprites)
+		sprite->draw();
 
-	hexRenderer.drawPath(&cursorPath, glm::vec4{ 0.6, 0.4, 1, 0.1f }, glm::vec4{ 0.6, 0.4, 1, 0.75f });
+	hexRendr2.drawPath(&cursorPath, glm::vec4{ 0.6, 0.4, 1, 0.1f }, glm::vec4{ 0.6, 0.4, 1, 0.75f });
 
-	hexRenderer.drawPath(&map->testBot->travelPath, glm::vec4{ 0.3, 0.2, 1, 0.1f }, glm::vec4{ 0.3, 0.2, 1, 0.75f });
+	hexRendr2.drawPath(&map->testBot->travelPath, glm::vec4{ 0.3, 0.2, 1, 0.1f }, glm::vec4{ 0.3, 0.2, 1, 0.75f });
 
-	hexRenderer.drawSightLine(playerObj->worldPos, mouseWorldPos);
+	hexRendr2.drawSightLine(playerObj->worldPos, mouseWorldPos);
 
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
 void CHexWorld::setAspectRatio(glm::vec2& ratio) {
-	hexRenderer.setCameraAspectRatio(ratio);
+	hexRendr2.setCameraAspectRatio(ratio);
 }
 
 
@@ -215,6 +223,10 @@ void CHexWorld::update(float dT) {
 
 	for (auto entity : map->entities) {
 		entity->update2(dT);
+	}
+
+	for (auto entity : world.sprites) {
+		entity->update(dT);
 	}
 }
 
@@ -302,8 +314,8 @@ void CHexWorld::leftClick() {
 	return;
 }
 
-void CHexWorld::onActionKey(bool pressed) {
-	//playerObj->onActionKey(pressed);
+void CHexWorld::onFireKey(bool pressed) {
+	playerObj->onFireKey(pressed);
 }
 
 
@@ -364,7 +376,7 @@ void CHexWorld::tempGetGroupItem(int itemNo) {
 
 CGridObj* CHexWorld::createBolt() {
 	CBolt* bolt = new CBolt();
-	bolt->setLineModel(hexRenderer.getLineModel("bolt"));
+	bolt->setLineModel(hexRendr2.getLineModel("bolt"));
 	gridObjects.push_back(bolt);
 	return bolt;
 }
@@ -455,10 +467,10 @@ CGameHexObj* CHexWorld::getPrimaryObjectAt(CHex& hex) {
 }
 
 void CHexWorld::updateCameraPosition() {
-	if (hexRenderer.following())
-		hexRenderer.followTarget(playerObj->worldPos);
+	if (hexRendr2.following())
+		hexRendr2.followTarget(playerObj->worldPos);
 	else
-		hexRenderer.attemptScreenScroll(/*mainApp->getMousePos()*/mousePos, dT);
+		hexRendr2.attemptScreenScroll(/*mainApp->getMousePos()*/mousePos, dT);
 }
 
 void CHexWorld::beginNewTurn() {
@@ -467,7 +479,7 @@ void CHexWorld::beginNewTurn() {
 	qps.beginNewTurn();
 	playerObj->onTurnBegin();
 	map->updateBlocking();
-	hexRenderer.updateFogBuffer();
+	hexRendr2.updateFogBuffer();
 	//chooseActions();
 	cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition);
 

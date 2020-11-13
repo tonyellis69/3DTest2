@@ -23,7 +23,7 @@ public:
 	template <typename T>
 	void notify(T& msg) {
 
-		for (int b = 0; b < gameObservers.size(); b++ ) {
+		for (unsigned int b = 0; b < gameObservers.size(); b++ ) {
 			gameObservers[b]->onNotify(msg);			
 		}
 	}

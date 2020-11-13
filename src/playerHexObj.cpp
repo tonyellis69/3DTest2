@@ -6,6 +6,8 @@
 
 #include "gameState.h"
 
+#include "missile.h"
+
 
 
 CPlayerObject::CPlayerObject() {
@@ -34,42 +36,16 @@ CPlayerObject::~CPlayerObject() {
 	gui::removeControl(APlabel);
 }
 
-/** Player has pressed or released the action key. */
-void CPlayerObject::onActionKey(bool pressed) {
-
-	if (pressed && world.getTurnPhase() == playerPhase) {
-		//TO DO: for now assume move, may/should be other possibilities later
-
-
-		if (action == tig::actMoveTo) { //if we're already moving we want to stop
-			if (!travelPath.empty())
-				travelPath.erase(travelPath.begin() + 1, travelPath.end());
-			return;
-		}
-
-		if (hexPosition == world.cursorPos)
-			return;
-		CGetTravelPath pathRequest(hexPosition, world.cursorPos, true);
-		send(pathRequest);
-		if (pathRequest.travelPath.empty())
-			return;
-
-		travelPath = pathRequest.travelPath;
-
-
-		//world.setTurnPhase(actionPhase);
-	}
-	else {
+/** Player has pressed or released the fire button. */
+void CPlayerObject::onFireKey(bool pressed) {
+	if (!pressed)
 		return;
-		/*if (action == tig::actMoveTo) {
-			if (!travelPath.empty())
-				travelPath.erase(travelPath.begin() + 1, travelPath.end());
 
+	//hard-coded default action: launch a missile!
+	auto missile = std::make_shared<CMissile>();
+	missile->setPosition(worldPos, targetAngle);
 
-		}*/
-
-
-	}
+	world.sprites.push_back(missile);
 }
 
 
@@ -424,6 +400,10 @@ void CPlayerObject::update2(float dT) {
 			}
 		}
 	}
+}
+
+void CPlayerObject::setTargetAngle(float angle) {
+	targetAngle = angle;
 }
 
 /** Move realtime toward the destination hex, unless we reach it. */

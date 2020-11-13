@@ -1,8 +1,14 @@
 #pragma once
 
+#include <string>
+#include <memory>
+
 #include "gameEvents.h"
 #include "playerHexObj.h"
 #include "gameHexArray.h"
+
+
+#include "sprite.h"
 
 
 enum TTurnPhase { playerPhase, robotPhase, playerDeadPhase };
@@ -19,11 +25,16 @@ public:
 	void onNotify(COnCursorNewHex& msg);
 	bool isBlocked(CHex& pos, CHex& dest);
 
+
 	CHex cursorPos;
 	THexList cursorPath;
 	bool onscreenRobotAction; ///<True if happened this turn.
 	CPlayerObject* player;
 	CGameHexArray* map;
+
+
+
+	std::vector<std::shared_ptr<CSprite>> sprites;
 
 private:
 	TTurnPhase turnPhase;

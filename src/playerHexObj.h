@@ -20,7 +20,7 @@ class CPlayerObject : public CHexActor , public CGameEventSubject {
 public:
 	CPlayerObject();
 	~CPlayerObject();
-	void onActionKey(bool pressed);
+	void onFireKey(bool pressed);
 	bool update(float dT);
 	void hitTarget();
 	void draw();
@@ -53,7 +53,8 @@ public:
 	void onVerticalKeyRelease();
 	void update2(float dT);
 
-
+	void setTargetAngle(float angle);
+	float getTargetAngle() { return targetAngle;  }
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
 	
@@ -72,5 +73,7 @@ private:
 	float playerMoveSpeed = 5.0f;
 
 	bool northSouthKeyReleased = true;
+
+	float targetAngle;
 
 };

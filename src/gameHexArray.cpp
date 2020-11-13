@@ -355,3 +355,64 @@ void CGameHexArray::updateFog(THexList& visibleHexes, THexList& unvisibledHexes)
 		setFog(unvisibledHex, 0.5f);
 	}
 }
+
+/** Return the first hex intersected by this segment. */
+CHex CGameHexArray::getSegmentFirstHex(glm::vec3& A, glm::vec3& B) {
+	glm::vec3 segmentDir = B - A;
+
+	glm::vec3 segmentNormal = glm::normalize(glm::vec3(-segmentDir.y, segmentDir.x, 0));
+
+	float smallestDist = FLT_MAX;
+	CHex nearestHex;
+
+	//starting with the hex at A...
+	//for each of the surrounding hexes
+	//find which has the centre closest to our segment
+	CHex hexA = worldSpaceToHex(A);
+
+
+	for (int dir = hexEast; dir <= hexNE; dir++) {
+		CHex neighbour = getNeighbour(hexA, THexDir(dir));
+		glm::vec3 centre = cubeToWorldSpace(neighbour);
+
+		if (glm::dot(centre - A, segmentDir) < 0)
+			continue;
+
+
+		glm::vec3 centreToSeg = A - centre;
+		float dist = abs( glm::dot(segmentNormal, centreToSeg));
+		if (dist < smallestDist) {
+			nearestHex = neighbour;
+			smallestDist = dist;
+		}
+	}
+
+	return nearestHex;
+}
+
+/** Return the direction of the neighbouring hex into which this segment exits, if any. 
+	Also return the point of intersection. */
+std::tuple<THexDir, glm::vec3> CGameHexArray::findSegmentExit(glm::vec3& A, glm::vec3& B, CHex& hex) {
+	glm::vec3 segmentDir = B - A;
+	glm::vec3 hexCentre = cubeToWorldSpace(hex);
+	glm::vec3 intersection;
+	THexDir exitDir = hexNone;
+
+	for (int face = 0; face < 6; face++) {
+		glm::vec3 faceA = hexCentre + corners[face];
+		glm::vec3 faceB = hexCentre + corners[(face + 1) % 6];
+
+		glm::vec3 faceDir = faceB - faceA;
+		glm::vec3 facePerp = { faceDir.y,-faceDir.x , 0};
+
+		if (glm::dot(A - faceA, facePerp) < 0) //discard faces where the segment enters the hex
+			continue;
+
+		if (segIntersect(A, B, faceA, faceB, intersection)) {
+			exitDir = THexDir(face);
+			break;
+		}
+	}
+	return { exitDir, intersection };
+}
+
