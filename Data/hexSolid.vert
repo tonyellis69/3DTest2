@@ -2,7 +2,7 @@
 
 layout(location = 0) in ivec2 index;
 in uint content;
-//in float fog;
+
 
 uniform mat4 mvpMatrix;
 
@@ -11,17 +11,17 @@ uniform ivec2 gridSize;
 uniform samplerBuffer fogTex;
 
 out squareData {
-	vec4 vert;
-	vec4 bVert;
-	vec4 cVert;
-	vec4 dVert;
+	vec4 a;
+	vec4 b;
+	vec4 c;
+	vec4 d;
 	
 	uint content;
 	float fog;
+	float highlight;
 	
 } outData;
 
-//out int outFog;
 
 const float d = 1.0f;
 const float hexWidth = sqrt(3.0f);
@@ -38,14 +38,14 @@ void main() {
 	position.y = -offset.y * 1.5f;
 		
 		
-	outData.vert = mvpMatrix * ( vec4(position,1) +  vec4(d,d,0,0) );
-	outData.bVert = mvpMatrix * ( vec4(position,1) +  vec4(-d,d,0,0) );
-	outData.cVert = mvpMatrix * ( vec4(position,1) +  vec4(d,-d,0,0) );
-	outData.dVert = mvpMatrix * ( vec4(position,1) +  vec4(-d,-d,0,0) );
+	outData.a = mvpMatrix * ( vec4(position,1) +  vec4(d,d,0,0) );
+	outData.b = mvpMatrix * ( vec4(position,1) +  vec4(-d,d,0,0) );
+	outData.c = mvpMatrix * ( vec4(position,1) +  vec4(d,-d,0,0) );
+	outData.d = mvpMatrix * ( vec4(position,1) +  vec4(-d,-d,0,0) );
 	
 	outData.content = content;
-	//outData.fog = fog;
 	
 	int fogIndex = (index.y * int(22)) + index.x;
 	outData.fog = texelFetch(fogTex, fogIndex ).r;
+	outData.highlight = texelFetch(fogTex, fogIndex ).b;
 }

@@ -62,6 +62,7 @@ public:
 	CShader* hexLineShader;
 	CShader* hexSolidShader;
 	CShader* lineShader;
+	CShader* visibilityShader;
 
 	
 private:
@@ -72,7 +73,7 @@ private:
 	void createSolidHexModel();
 	void createLineShader();
 	void createHexShader();
-
+	void createVisibilityShader();
 
 
 	void drawNode2(TModelNode& node, glm::mat4& parentMatrix, CBuf2* buf);
@@ -104,13 +105,15 @@ private:
 
 	unsigned int hHexMVP;
 	unsigned int hGridSize;
-	unsigned int hViewPort;
 	unsigned int hFogTexUniform;
 
 	unsigned int hHexMVPs;
 	unsigned int hGridSizes;
-	unsigned int hViewPorts;
 	unsigned int hFogTexUniforms;
+
+	unsigned int hHexMVPv;
+	unsigned int hGridSizev;
+	unsigned int hEffectsTexUniformv;
 
 	glm::vec4 floorplanLineColour;
 	glm::vec4 floorplanSpaceColour;

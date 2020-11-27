@@ -2,13 +2,10 @@
 
 layout(location = 0) in ivec2 index;
 in uint content;
-//in float fog;
 
 uniform mat4 mvpMatrix;
 
 uniform ivec2 gridSize;
-
-uniform vec2 viewPort;
 
 uniform samplerBuffer fogTex;
 
@@ -19,12 +16,10 @@ out squareData {
 	vec4 dVert;
 	vec4 eVert;
 	vec4 fVert;
-	vec4 origin;
 	
 	float fog;
 } outData;
 
-out uint outContent;
 
 
 const float hexWidth = sqrt(3.0f);
@@ -46,10 +41,8 @@ void main() {
 	outData.dVert = mvpMatrix * ( vec4(position,1) +  vec4(0,-hexHeight * 0.5f,0,0) );
 	outData.eVert = mvpMatrix * ( vec4(position,1) +  vec4(hexWidth * 0.5f,-hexHeight * 0.25f,0,0) );
 	outData.fVert = mvpMatrix * ( vec4(position,1) +  vec4(hexWidth * 0.5f,hexHeight * 0.25f,0,0) );
-	outData.origin = mvpMatrix * vec4(position,1);
 
-	outContent = content;
-	//outData.fog = fog;
+
 	int fogIndex = (index.y * int(22)) + index.x;
 	outData.fog = texelFetch(fogTex, fogIndex ).r;
 }

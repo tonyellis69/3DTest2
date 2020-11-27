@@ -22,7 +22,7 @@ public:
 
 
 private:
-	void tmpAddBlocks();
+	void tmpaddBlocks();
 
 	glm::i32vec2 randomFreeHex();
 
@@ -34,9 +34,9 @@ private:
 
 	THexDir randomFreeDir(CHex& cubePos);
 
-	void tmpAddDesks();
+	void tmpaddDesks();
 
-	CGameHexObj* tmpCreateDesk();
+	TEntity tmpCreateDesk();
 
 	void tempPopulateMap();
 

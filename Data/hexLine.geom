@@ -10,22 +10,18 @@ in squareData {
 	vec4 dVert;
 	vec4 eVert;
 	vec4 fVert;
-	vec4 origin;
-	
+
 	float fog;
-	
 } hex[];
 
 in uint outContent[];
 
-out float outFog;
 
 void main() {
 
 		if (hex[0].fog == 1.0)
 			return;
 
-		outFog = hex[0].fog;
 		
 		gl_Position =  hex[0].vert;	
 		EmitVertex();

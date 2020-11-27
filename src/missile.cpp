@@ -17,11 +17,14 @@ void CMissile::setPosition(glm::vec3& pos, float rotation) {
 	leadingPoint = worldPos + dirVec * distToPoint;
 	leadingPointLastHex = leadingPoint;
 	lastLeadingPointHex = worldSpaceToHex(pos);
+	startingPos = pos;
 }
 
 void CMissile::update(float dT) {
-	if (collided)
+	if (collided) {
+		world.destroySprite(*this);
 		return;
+	}
 	this->dT = dT;
 	moveReal();
 }
@@ -30,11 +33,16 @@ void CMissile::draw() {
 	hexRendr2.drawLineModel(lineModel);
 }
 
+void CMissile::setOwner(CGameHexObj* owner) {
+	this->owner = owner;
+}
+
 
 /** Move realtime in the current  direction. */
 void CMissile::moveReal() {
 	glm::vec3 moveVec = dirVec * missileMoveSpeed * dT;
 	worldPos += moveVec;
+	leadingPoint += moveVec;
 
 	collisionCheck(moveVec);
 
@@ -44,22 +52,51 @@ void CMissile::moveReal() {
 /** Check for a collision along the line segment from the leading point's last known
 	position to where it is now. */
 bool CMissile::collisionCheck(glm::vec3& moveVec) {
-	leadingPoint += moveVec;
 	CHex leadingPointHex = worldSpaceToHex(leadingPoint);
 
-	if (leadingPointHex != lastLeadingPointHex) { //leading point entered new hex, so check for collision
-		THexDir exitDir = hexNone; glm::vec3 intersection; 
+	//first, collect unique hexes that we've intersected so far
+	if (leadingPointHex != lastLeadingPointHex) { //we've moved at least one hex on
+		THexDir exitDir = hexNone; glm::vec3 intersection;
 		CHex startHex = lastLeadingPointHex;
-
 		while (startHex != leadingPointHex) {
 			std::tie(exitDir, intersection) = world.map->findSegmentExit(leadingPointLastHex, leadingPoint, startHex);
 			CHex entryHex = getNeighbour(startHex, exitDir);
-			if (world.map->getHexCube(entryHex).content == solidHex) {
+			intersectedHexes.insert({entryHex, intersection});
+			startHex = entryHex;
+		}
+	}
+
+
+	//Check every frame if we've collided with a robot in one of those hexes
+	for (auto &hex: intersectedHexes) {
+		CGameHexObj* entity = world.map->getEntityAt2(hex.first);
+		if (entity && entity != owner) {
+			auto [hit, intersection] = entity->collisionCheck(startingPos, leadingPoint);
+			if (hit) {
+				liveLog << "\nHit robot!";
+				entity->receiveDamage(*owner, 10);
 				collided = true;
-				worldPos = intersection - (moveVec * distToPoint);
 				return true;
 			}
-			startHex = entryHex;
+		}
+	}
+
+	//still here? Check if we've collided with scenery - but only if we've entered a new hex.
+	if (leadingPointHex != lastLeadingPointHex) {
+		for (auto& hex : intersectedHexes) {
+
+			if (world.map->getHexCube(hex.first).content == solidHex) {
+				collided = true;
+				worldPos = hex.second - (moveVec * distToPoint);
+				return true;
+			}
+
+		}
+	
+		//optimisation: remove hex from list if safe to do so
+		if (intersectedHexes.size() > 1) {
+			auto exitedHex = intersectedHexes.find(lastLeadingPointHex);
+			intersectedHexes.erase(exitedHex);
 		}
 		lastLeadingPointHex = leadingPointHex;
 	}

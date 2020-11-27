@@ -2,12 +2,15 @@
 
 #include <unordered_set>
 
+#include "utils/log.h"
+
+#include "intersect.h"
+
 CGameHexArray::CGameHexArray() {
 	}
 
 CGameHexArray::~CGameHexArray() {
-	for (auto& entity : entities)
-		delete entity;
+
 }
 
 void CGameHexArray::setMessageHandlers() {
@@ -49,58 +52,24 @@ bool CGameHexArray::isEmpty(glm::i32vec2& hex) {
 
 /** Return true if there is no robot in this hex or heading into it. */
 bool CGameHexArray::isFree(CHex& hex) {
-	for (auto entity : entities) {
-		if (entity->hexPosition == hex || entity->moveDest == hex)
-			return false;
-	}
+	//for (auto entity : entities) {
+	//	if (entity->hexPosition == hex || entity->moveDest == hex)
+	//		return false;
+	//}
+	if (entityMap.count(hex) == 0)
+		return true;
 
-	return true;
+	return false;
 }
 
 CHex CGameHexArray::findLineEnd(CHex& start, CHex& target) {
 	return CHexArray::findLineEnd(start, target);
 }
 
-/** Move this object to a new location in the map. */
-void CGameHexArray::moveEntity(CGameHexObj* entity, CHex& newHex) {
-	//Remove from old position
-	for (TMapIt it = entityMap.begin(); it != entityMap.end(); it++) {
-		if (it->second == entity) {
-			smartBlockClear((CHex&) it->first);
-			entityMap.erase(it);
-			break;
-		}
-	}
 
-	entityMap.insert({ newHex, entity });
-	getHexCube(newHex).blocks &= entity->blocks();
-	
-}
 
-/** Add this entity to the map at the given position. */
-void CGameHexArray::add(CGameHexObj* entity, CHex& hexPos) {
-	//entityMap.insert({ hexPos, entity });
-	entity->setPosition(hexPos);
-}
 
-/** Remove this entity from the map. */
-void CGameHexArray::removeFromMap(CGameHexObj* entity) {
-	//for (auto entry : entityMap) {
-	//	if (entry.second == entity) {
-	//		entityMap.erase(entry.first);
-	//		break;
-	//	}
-	//}
 
-	auto removee = std::find(entities.begin(), entities.end(), entity);
-	if (removee != entities.end())
-		entities.erase(removee);
-
-	auto removee2 = std::find(actors.begin(), actors.end(), entity);
-	if (removee2 != actors.end())
-		actors.erase(removee2);
-
-}
 
 /** Return all entities at this hex position. */
 TRange CGameHexArray::getEntitiesAt(CHex& hex) {
@@ -150,6 +119,16 @@ CGameHexObj* CGameHexArray::getEntityNotSelf(CGameHexObj* self) {
 
 CHexActor* CGameHexArray::getRobotAt(CHex& hex) {
 	return (CHexActor*)getEntityClassAt(tig::CRobot2, hex);
+}
+
+/** NB returns first entity found at this hex. Will need extending. */
+CGameHexObj* CGameHexArray::getEntityAt2(const CHex& hex) {
+	auto entity = entityMap.find(hex);
+	if (entity != entityMap.end()) {
+		return entity->second;
+	}
+
+	return nullptr;
 }
 
 /** Refresh the map's blocking information. */
@@ -230,11 +209,6 @@ CHex CGameHexArray::findRandomHex(bool unblocked) {
 	return hex;
 }
 
-void CGameHexArray::addActor(CHexActor* actor, CHex& hex) {
-	add(actor, hex);
-	entities.push_back(actor);
-	actors.push_back(actor);
-}
 
 void CGameHexArray::onGetTravelPath(CGetTravelPath& msg) {
 
@@ -345,14 +319,16 @@ void CGameHexArray::onFindViewField2(CCalcVisionField& msg) {
 
 
 
-/** Clear the fog-of-war wherever the given viewfield indicates a visible hex. */
-void CGameHexArray::updateFog(THexList& visibleHexes, THexList& unvisibledHexes) {
+/** Clear the fog-of-war wherever the given viewfield indicates a now-visible hex. 
+	Set visibility to zero where a hex has now become non-visible. */
+void CGameHexArray::updateVisibility(THexList& visibleHexes, THexList& unvisibledHexes) {
 	for (auto visibleHex : visibleHexes) {
 		setFog(visibleHex, 0);
+		setVisibility(visibleHex, 1.0f);
 	}
 
 	for (auto unvisibledHex : unvisibledHexes) {
-		setFog(unvisibledHex, 0.5f);
+		setVisibility(unvisibledHex, 0.5f);
 	}
 }
 
@@ -414,5 +390,58 @@ std::tuple<THexDir, glm::vec3> CGameHexArray::findSegmentExit(glm::vec3& A, glm:
 		}
 	}
 	return { exitDir, intersection };
+}
+
+/** Register this entity as being on the map at the given hex.*/
+void CGameHexArray::addEntity(TEntity entity, CHex& hex) {
+	entity->setPosition(hex);
+	entities.push_back(entity);
+	entityMap.insert({ hex, entity.get() });
+}
+
+/** Register this entity as moving from the pos hex to the dest hex,
+	ie, register it in both those locations.*/
+void CGameHexArray::movingTo(CGameHexObj* entity, CHex& pos, CHex& dest) {
+	//erase any old entry, such as a move that we're now aborting
+	for (auto& it = entityMap.begin(); it != entityMap.end();) {
+		if (it->second == entity)
+			it = entityMap.erase(it);
+		else
+			it++;
+	}
+
+	entityMap.insert({ pos, entity });
+	entityMap.insert({ dest, entity });
+}
+
+/** Register this entity as being at newHex, removing any reference to it
+	being at the old hex. */
+void CGameHexArray::movedTo(CGameHexObj* entity, CHex& oldHex, CHex& newHex) {
+	//remove any old reference
+	for (auto& it = entityMap.begin(); it != entityMap.end();) {
+		if (it->second == entity)
+			it = entityMap.erase(it);
+		else
+			it++;
+	}
+
+	entityMap.insert({ newHex, entity });
+}
+
+/** Remove this entity from the map. */
+void CGameHexArray::removeEntity(CGameHexObj* entity) {
+	for (auto& it = entityMap.begin(); it != entityMap.end();) {
+		if (it->second == entity)
+			it = entityMap.erase(it);
+		else
+			it++;
+	}
+
+	for (auto it = entities.begin(); it != entities.end(); it++) {
+		if (it->get() == entity) {
+			entities.erase(it);
+			return;
+		}
+	}
 }
 

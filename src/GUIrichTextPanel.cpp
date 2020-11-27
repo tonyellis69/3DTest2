@@ -20,7 +20,7 @@ CGUIrichTextPanel::CGUIrichTextPanel(int x, int y, int w, int h) : CGUIgamePanel
 	richText->anchorRight = inset;
 	richText->anchorLeft = inset;
 	richText->anchorBottom = inset;
-	Add(richText);
+	add(richText);
 	dragging = false;
 	draggable = false;
 

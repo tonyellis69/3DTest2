@@ -61,6 +61,12 @@ public:
 
 	virtual void update2(float dT) {}
 
+	virtual std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB) {
+		return std::tuple<bool, glm::vec3>();
+	}
+
+
+
 	unsigned int mBlocks; ///<If true, blocks travel path
 	bool deleteMe;
 
@@ -87,7 +93,9 @@ private:
 	virtual void deathRoutine() {}
 };
 
-using TEntities = std::vector<CGameHexObj*>;
+//using TEntities = std::vector<CGameHexObj*>;
+using TEntity = std::shared_ptr<CGameHexObj>;
+using TEntities = std::vector<std::shared_ptr<CGameHexObj>>;
 
 class CGroupItem;
 

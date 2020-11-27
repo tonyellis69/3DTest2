@@ -49,7 +49,7 @@ public:
 	void updateViewField();
 
 	void moveCommand(TMoveDir dir);
-	void startNorthSouthMove(TMoveDir dir);
+	CHex startNorthSouthMove(TMoveDir dir);
 	void onVerticalKeyRelease();
 	void update2(float dT);
 

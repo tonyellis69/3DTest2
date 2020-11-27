@@ -25,3 +25,25 @@ void CGameState::onNotify(COnCursorNewHex& msg) {
 bool CGameState::isBlocked(CHex& pos, CHex& dest) {
 	return map->fromToBlocked(pos, dest);
 }
+
+
+void CGameState::destroySprite(CSprite& deadSprite) {
+	spriteDeathlist.push_back(&deadSprite);
+}
+
+void CGameState::destroyEntity(CGameHexObj& entity) {
+	map->removeEntity(&entity);
+}
+
+void CGameState::update(float dT) {
+	for (auto sprite = spriteDeathlist.begin(); sprite != spriteDeathlist.end(); sprite++) {
+		for (auto it = sprites.begin(); it != sprites.end(); it++) {
+			if (it->get() == *sprite) {
+				sprites.erase(it);
+				return;
+			}
+		}
+	}
+
+	spriteDeathlist.clear();
+}

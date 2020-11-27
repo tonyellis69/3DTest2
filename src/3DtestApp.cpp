@@ -1258,7 +1258,7 @@ void C3DtestApp::initWireSCs() {
 /** Create the GUI and textures for displaying 2D terrain heightmaps. */
 void C3DtestApp::initHeightmapGUI() {
 	heightmapImage = new CGUIimage(10, 10, 500, 500); // 500, 500);
-	GUIroot.Add(heightmapImage);
+	GUIroot.add(heightmapImage);
 	heightmapTex = Engine.Renderer.textureManager.createEmptyTexture(128, 221);// 500, 500);
 	heightmapImage->setTexture(*heightmapTex);
 
@@ -1606,7 +1606,7 @@ void C3DtestApp::onResize(int width, int height) {
 }
 
 void C3DtestApp::addGameWindow(CGUIbase* gameWin) {
-	GUIroot.Add(gameWin);
+	GUIroot.add(gameWin);
 }
 
 /** Get the hexWorld ready for use. */
@@ -1628,7 +1628,7 @@ void C3DtestApp::initHexWorld() {
 
 	//... more models
 
-	GUIroot.Add(hexWorld.hexPosLbl);
+	GUIroot.add(hexWorld.hexPosLbl);
 
 	ITigObj* map = vm.getObject("testRoom");
 	hexWorld.makeMap(map);
@@ -1645,7 +1645,7 @@ void C3DtestApp::makePowerQueueWin() {
 	powerQueueWin->setSize(style::powerQueueWinSize);
 	powerQueueWin->anchorRight = style::mainWinCtrlBorder;
 	powerQueueWin->setTheme("smallNormal");
-	GUIroot.Add(powerQueueWin);
+	GUIroot.add(powerQueueWin);
 }
 
 void C3DtestApp::makeCombatLogWin() {
@@ -1653,7 +1653,7 @@ void C3DtestApp::makeCombatLogWin() {
 	combatLogWin->setLocalPos(style::mainWinCtrlBorder, style::mainWinCtrlBorder + 20);
 	combatLogWin->setSize(style::combatLogWinSize);
 	combatLogWin->setTheme("smallNormal");
-	GUIroot.Add(combatLogWin);
+	GUIroot.add(combatLogWin);
 }
 
 
@@ -1690,7 +1690,7 @@ void C3DtestApp::onPopupText(CSendText& msg) {
 			defencePopWin->setVisible(false);
 			defencePopWin->setTheme("smallNormal");
 			hexWorld.subscribe(defencePopWin);
-			GUIroot.Add(defencePopWin);
+			GUIroot.add(defencePopWin);
 		}
 		defencePopWin->clearText();
 		defencePopWin->addText(msg.text);
@@ -1706,7 +1706,7 @@ void C3DtestApp::onPopupText(CSendText& msg) {
 			statusPopWin->setVisible(false);
 			statusPopWin->setTheme("smallNormal");
 			hexWorld.subscribe(statusPopWin);
-			GUIroot.Add(statusPopWin);
+			GUIroot.add(statusPopWin);
 		}
 		statusPopWin->clearText();
 		statusPopWin->addText(msg.text);

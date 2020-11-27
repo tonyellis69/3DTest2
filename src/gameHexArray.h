@@ -33,9 +33,6 @@ public:
 	bool isEmpty(glm::i32vec2& hex);
 	bool isFree(CHex& hex);
 	CHex findLineEnd(CHex& start, CHex& target);
-	void moveEntity(CGameHexObj* entity, CHex& hex);
-	void add(CGameHexObj* entity, CHex& hex);
-	void removeFromMap(CGameHexObj* entity);
 	TRange getEntitiesAt(CHex& hex);
 	CGameHexObj* getEntityAt(CHex& hex);
 	CGameHexObj* getEntityClassAt(int classId, CHex& hex);
@@ -43,6 +40,8 @@ public:
 	CGameHexObj* getEntityNotSelf(CGameHexObj* self);
 
 	CHexActor* getRobotAt(CHex& hex);
+
+	CGameHexObj* getEntityAt2(const CHex& hex);
 
 
 	void updateBlocking();
@@ -52,7 +51,7 @@ public:
 
 	CHex findRandomHex(bool unblocked);
 
-	void addActor(CHexActor* actor, CHex& hex);
+
 
 	void onGetTravelPath(CGetTravelPath& msg);
 	void onActorBlockCheck(CFindActorBlock& msg);
@@ -64,11 +63,17 @@ public:
 	THexList findVisibleHexes(CHex& apex, THexList& perimeterHexes, bool obsessive);
 	void onFindViewField2(CCalcVisionField& msg);
 
-	void updateFog(THexList& visibleHexes, THexList& unvisibleHexes);
+	void updateVisibility(THexList& visibleHexes, THexList& unvisibleHexes);
 
 	CHex getSegmentFirstHex(glm::vec3& A, glm::vec3& B);
 
 	std::tuple<THexDir, glm::vec3> findSegmentExit(glm::vec3& A, glm::vec3& B, CHex& hex);
+
+
+	void addEntity(TEntity entity, CHex& hex);
+	void movingTo(CGameHexObj* entity, CHex& pos, CHex& dest);
+	void movedTo(CGameHexObj* entity, CHex& oldHex, CHex& newHex);
+	void removeEntity(CGameHexObj* entity);
 
 
 	TEntities entities; ///<The grand list of entities in the map.
@@ -77,6 +82,7 @@ public:
 	CRobot* testBot;
 	CRobot* testBot2;
 	//TO DO: temp!!
+
 
 private:
 

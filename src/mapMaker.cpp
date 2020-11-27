@@ -20,19 +20,19 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 	map->updateBlocking();
 
 	for (int x = 0; x < 1; x++) {
-		CRobot* robotM = new CRobot();
+		auto robotM = std::make_shared<CRobot>();
 		robotM->setLineModel("robot");
-		//map->addActor(robotM, map->findRandomHex(true));
-		map->addActor(robotM, CHex(-2,-4,6));
+		//map->addEntityActor(robotM, map->findRandomHex(true));
+		map->addEntity(robotM, CHex(-2,-4,6));
 		robotM->setTigObj(pRobot);
-		map->testBot = robotM;
+		map->testBot = robotM.get();
 	}
 
-	CRobot* robotM = new CRobot();
+	auto robotM = std::make_shared<CRobot>();
 	robotM->setLineModel("robot");
-	map->addActor(robotM, CHex(-1, -4, 5));
+	map->addEntity(robotM, CHex(-1, -4, 5));
 	robotM->setTigObj(pRobot);
-	map->testBot2 = robotM;
+	map->testBot2 = robotM.get();
 
 
 
@@ -99,9 +99,9 @@ CGameHexArray* CMapMaker::createMap() {
 		}
 
 
-		tmpAddBlocks();
+		tmpaddBlocks();
 		hexArray->updateBlocking();
-		tmpAddDesks();
+		tmpaddDesks();
 
 	//} while (!hexArray->isValidPath(CHex(-13, 5, 8), CHex(13, -4, -9)));
 
@@ -109,7 +109,7 @@ CGameHexArray* CMapMaker::createMap() {
 }
 
 
-void CMapMaker::tmpAddBlocks() {
+void CMapMaker::tmpaddBlocks() {
 	int numBlocks = 20;
 	int numSteps = 4;// 5;
 
@@ -205,19 +205,19 @@ THexDir CMapMaker::randomFreeDir(CHex& cubePos) {
 }
 
 
-void CMapMaker::tmpAddDesks() {
+void CMapMaker::tmpaddDesks() {
 	int numDesks = 7;
 	for (int d = 0; d < numDesks; d++) {
 		CHex deskPos = hexArray->indexToCube(randomFreeHex());
-		CGameHexObj* desk = tmpCreateDesk();
+		auto desk = tmpCreateDesk();
 		//desk->setPosition(deskPos);
-		hexArray->add(desk, deskPos);
+		hexArray->addEntity(desk, deskPos);
 	}
 
 }
 
-CGameHexObj* CMapMaker::tmpCreateDesk() {
-	CGameHexObj* desk = new CGameHexObj();
+TEntity CMapMaker::tmpCreateDesk() {
+	auto desk = std::make_shared<CGameHexObj>();
 	//desk->setMap(&hexArray);
 	desk->setLineModel("desk");
 	desk->setTigObj(vm->getObject(tig::desk));
@@ -228,33 +228,33 @@ CGameHexObj* CMapMaker::tmpCreateDesk() {
 /** Fill the map with its permanent entities. */
 void CMapMaker::tempPopulateMap() {
 
-	CHexItem* wrench;
-	CHexItem* shield;
-	CHexItem* blaster;
-	CDoor* door;
+	//CHexItem* wrench;
+	//CHexItem* shield;
+	//CHexItem* blaster;
+	//CDoor* door;
 
-	wrench = new CHexItem();
+	auto wrench = std::make_shared<CHexItem>();
 	wrench->setLineModel("test");
-	hexArray->add(wrench, CHex(-7, 0, 7));
+	hexArray->addEntity(wrench, CHex(-7, 0, 7));
 	wrench->setTigObj(vm->getObject(tig::monkeyWrench));
-	hexArray->entities.push_back(wrench);
+	//hexArray->entities.push_back(wrench);
 
-	shield = new CHexItem();
+	auto shield = std::make_shared<CHexItem>();
 	shield->setLineModel("test");
-	hexArray->add(shield, CHex(-5, -2, 7));
+	hexArray->addEntity(shield, CHex(-5, -2, 7));
 	shield->setTigObj(vm->getObject(tig::shield));
-	hexArray->entities.push_back(shield);
+	//hexArray->entities.push_back(shield);
 
-	blaster = new CHexItem();
+	auto blaster = std::make_shared<CHexItem>();
 	blaster->setLineModel("test");
-	hexArray->add(blaster, CHex(-6, -1, 7));
+	hexArray->addEntity(blaster, CHex(-6, -1, 7));
 	blaster->setTigObj(vm->getObject(tig::blaster));
-	hexArray->entities.push_back(blaster);
+	//hexArray->entities.push_back(blaster);
 
-	door = new CDoor();
+	auto door = std::make_shared<CDoor>();
 	door->setLineModel("door");
-	hexArray->add(door, CHex(13, -4, -9));
+	hexArray->addEntity(door, CHex(13, -4, -9));
 	door->setTigObj(vm->getObject(tig::CDoor));
 	door->setZheight(0.01f); //TO DO: sort this!!!!!
-	hexArray->entities.push_back(door);
+	//hexArray->entities.push_back(door);
 }

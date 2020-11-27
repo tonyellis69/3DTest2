@@ -24,6 +24,9 @@ public:
 	TTurnPhase getTurnPhase();
 	void onNotify(COnCursorNewHex& msg);
 	bool isBlocked(CHex& pos, CHex& dest);
+	void destroySprite(CSprite& sprite);
+	void destroyEntity(CGameHexObj& entity);
+	void update(float dT);
 
 
 	CHex cursorPos;
@@ -39,7 +42,7 @@ public:
 private:
 	TTurnPhase turnPhase;
 
-	
+	std::vector<CSprite*> spriteDeathlist;
 };
 
 extern CGameState world;

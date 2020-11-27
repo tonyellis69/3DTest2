@@ -29,6 +29,7 @@ void CHexRenderer::init() {
 
 	createLineShader();
 	createHexShader();
+	createVisibilityShader();
 
 	camera.setNearFar(0.1f, 1000.0f);
 	camera.setPos(glm::vec3(0, -0, 12));
@@ -85,22 +86,33 @@ void CHexRenderer::drawFloorPlan() {
 
 
 	//!!!!!!!!!!!!!!!!!!temp hardcoding
+
+	if (hexArray->effectsNeedUpdate) {
+		updateFogBuffer();
+		hexArray->effectsNeedUpdate = false;
+	}
+
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_BUFFER, hFogTex);
+	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, hFogBuffer);
+	glUniform1i(hFogTexUniform, 0);
+	glUniform1i(hEffectsTexUniformv, 0);
+
 	pRenderer->setShader(hexSolidShader);
-	hexLineShader->setShaderValue(hHexMVPs, mvp);
-	hexLineShader->setShaderValue(hGridSizes, glm::i32vec2(hexArray->width, hexArray->height));
-	hexLineShader->setShaderValue(hViewPorts, camera.getView());
+	hexSolidShader->setShaderValue(hHexMVPs, mvp);
+	hexSolidShader->setShaderValue(hGridSizes, glm::i32vec2(hexArray->width, hexArray->height));
 	pRenderer->drawPointsBuf(hexShaderBuf, 0, hexShaderBuf.numElements);
 
 	pRenderer->setShader(hexLineShader);
 	hexLineShader->setShaderValue(hHexMVP, mvp);
 	hexLineShader->setShaderValue(hGridSize, glm::i32vec2(hexArray->width, hexArray->height));
-	hexLineShader->setShaderValue(hViewPort, camera.getView());
+	pRenderer->drawPointsBuf(hexShaderBuf, 0, hexShaderBuf.numElements);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_BUFFER, hFogTex);
-	glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, hFogBuffer);
-	glUniform1i(hFogTexUniform, 0);
 
+	pRenderer->setShader(visibilityShader);
+	visibilityShader->setShaderValue(hHexMVPv, mvp);
+	visibilityShader->setShaderValue(hGridSizev, glm::i32vec2(hexArray->width, hexArray->height));
 	pRenderer->drawPointsBuf(hexShaderBuf, 0, hexShaderBuf.numElements);
 
 
@@ -177,7 +189,7 @@ void CHexRenderer::createFogBuffer(int w, int h) {
 
 	glGenBuffers(1, &hFogBuffer);
 	glBindBuffer(GL_TEXTURE_BUFFER, hFogBuffer);
-	glBufferData(GL_TEXTURE_BUFFER, sizeof(float) * w * h, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_TEXTURE_BUFFER, sizeof(TMapEffects) * w * h, NULL, GL_DYNAMIC_DRAW);
 
 	glGenTextures(1, &hFogTex);
 
@@ -189,7 +201,7 @@ void CHexRenderer::createFogBuffer(int w, int h) {
 void CHexRenderer::updateFogBuffer() {
 
 	glBindBuffer(GL_TEXTURE_BUFFER, hFogBuffer);
-	glBufferData(GL_TEXTURE_BUFFER, sizeof(float) * hexArray->fogData.size(), hexArray->fogData.data(), GL_STATIC_DRAW);
+	glBufferData(GL_TEXTURE_BUFFER, sizeof(TMapEffects) * hexArray->effectsData.size(), hexArray-> effectsData.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_TEXTURE_BUFFER, 0);
 
 }
@@ -367,14 +379,19 @@ void CHexRenderer::createHexShader() {
 	hexLineShader = pRenderer->createShader("hexLine");
 	hHexMVP = hexLineShader->getUniformHandle("mvpMatrix");
 	hGridSize = hexLineShader->getUniformHandle("gridSize");
-	hViewPort = hexLineShader->getUniformHandle("viewPort");
 	hFogTexUniform = hexLineShader->getUniformHandle("fogTex");
 
 	hexSolidShader = pRenderer->createShader("hexSolid");
 	hHexMVPs = hexSolidShader->getUniformHandle("mvpMatrix");
 	hGridSizes = hexSolidShader->getUniformHandle("gridSize");
-	hViewPorts = hexSolidShader->getUniformHandle("viewPort");
 	hFogTexUniforms = hexSolidShader->getUniformHandle("fogTex");
+}
+
+void CHexRenderer::createVisibilityShader() {
+	visibilityShader = pRenderer->createShader("visibilityShader");
+	hHexMVPv = visibilityShader->getUniformHandle("mvpMatrix");
+	hGridSizev = visibilityShader->getUniformHandle("gridSize");
+	hEffectsTexUniformv = visibilityShader->getUniformHandle("effectsTex");
 }
 
 void CHexRenderer::setCameraAspectRatio(glm::vec2 ratio) {
@@ -424,8 +441,17 @@ void CHexRenderer::loadMesh(const std::string& name, const std::string& fileName
 	//store model
 	TModelNode& model = importer.getMeshNodes();
 	model.name = name;
-	lineModels[name] = { model,&modelBuffers2.back(),&modelBuffers.back() };
-	lineModels[name].setColourR(floorplanLineColour); //////temp!!!!!!!!!!!
+	//lineModels[name] = { model,&modelBuffers2.back(),&modelBuffers.back() };
+
+	CLineModel lineModel;
+	lineModel.model = model;
+	lineModel.buffer = &modelBuffers2.back();
+	lineModel.buffer2 = &modelBuffers.back();
+	lineModel.setColourR(floorplanLineColour); //////temp!!!!!!!!!!!
+
+	lineModels[name] = lineModel;
+
+	
 }
 
 

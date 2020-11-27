@@ -52,15 +52,9 @@ void CGameHexObj::playerSight(bool inView) {
 		visibleToPlayer = true; //will stay in view by default
 }
 
+
 void CGameHexObj::receiveDamage(CGameHexObj& attacker, int damage) {
-	std::string damageLog = "\n" + getName();
-	damageLog += " hit by " + attacker.getName();
-	damageLog += " for " + std::to_string(damage) + " damage.\n";
 
-	CSendText msg(combatLog, damageLog);
-	send(msg);
-
-	reduceHitPoints(damage);
 }
 
 /** Returns false if this was fatal. */

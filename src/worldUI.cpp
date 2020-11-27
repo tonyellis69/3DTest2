@@ -329,7 +329,7 @@ void CWorldUI::vmMessage(const std::string& p1, int p2) {
 
 }
 
-/** Add the given message to the queue for eventual processing. */
+/** add the given message to the queue for eventual processing. */
 void CWorldUI::queueMsg(TvmAppMsg& msg) {
 	messages.push(msg);
 }
@@ -350,7 +350,7 @@ void CWorldUI::createMainWindow() {
 	mainTextPanel->setTextTheme("gameNormal");
 	//mainTextPanel->setTextStyle("mainBody");
 	///////////////mainTextPanel->setDefaultTextStyle("mainBody");
-	pApp->GUIroot.Add(mainTextPanel);
+	pApp->GUIroot.add(mainTextPanel);
 	mainTextPanel->richText->transcriptLog = &transcript;
 	mainTextPanel->deliveryMode = byCharacter;// byClause;
 	mainTextPanel->setLineFadeIn(false);
@@ -378,7 +378,7 @@ void CWorldUI::createInventoryWindow() {
 	//got here
 	invPanel->displayText("Inventory:");
 	
-	pApp->GUIroot.Add(invPanel);
+	pApp->GUIroot.add(invPanel);
 	invPanel->setGUIcallback(this);
 	//didn't get here
 }
@@ -404,7 +404,7 @@ CGUIrichTextPanel* CWorldUI::spawnPopText(bool modal) {
 	//if (modal)
 	//	pApp->GUIroot.addModal(popupPanel);
 	//else
-		pApp->GUIroot.Add(popupPanel);
+		pApp->GUIroot.add(popupPanel);
 	return popupPanel;
 }
 
@@ -421,7 +421,7 @@ void CWorldUI::createDistributor() {
 	distributor->setBorderOn(true);
 	distributor->anchorRight = 10;
 	distributor->hFormat = hRight;
-	pApp->GUIroot.Add(distributor);
+	pApp->GUIroot.add(distributor);
 }
 
 void CWorldUI::createHealthPanel() {
@@ -438,7 +438,7 @@ void CWorldUI::createHealthPanel() {
 	healthPanel->setBorderOn(true);
 	healthPanel->anchorRight = 10;
 	healthPanel->hFormat = hRight;
-	pApp->GUIroot.Add(healthPanel);
+	pApp->GUIroot.add(healthPanel);
 
 
 }

@@ -44,6 +44,7 @@ void CPlayerObject::onFireKey(bool pressed) {
 	//hard-coded default action: launch a missile!
 	auto missile = std::make_shared<CMissile>();
 	missile->setPosition(worldPos, targetAngle);
+	missile->setOwner(this);
 
 	world.sprites.push_back(missile);
 }
@@ -120,7 +121,7 @@ void CPlayerObject::takeItem(CGameHexObj& item) {
 	CRemoveEntity msg(&item);
 	send(msg);
 
-	playerItems.push_back(&item);
+	playerItems.push_back(TEntity(&item));
 
 	callTig(tig::onTake, item);
 }
@@ -132,9 +133,9 @@ void CPlayerObject::showInventory() {
 void CPlayerObject::dropItem(int itemNo) {
 	ITigObj* item = callTigObj(tig::onDrop, itemNo);
 	CGameHexObj* gameObj = (CGameHexObj*)item->getCppObj();
-	auto playerItem = std::find(playerItems.begin(), playerItems.end(), gameObj);
+	auto playerItem = std::find(playerItems.begin(), playerItems.end(), TEntity(gameObj));
 
-	CDropItem msg((CHexItem*)*playerItem, hexPosition);
+	CDropItem msg((CHexItem*)playerItem->get(), hexPosition);
 	send(msg);
 	playerItems.erase(playerItem);
 }
@@ -273,9 +274,10 @@ void CPlayerObject::updateViewField() {
 	//CUpdateFog fogMsg(visibleHexes, unvisibledHexes);
 //	send(fogMsg);
 
-	world.map->updateFog(visibleHexes, unvisibledHexes);
+	world.map->updateVisibility(visibleHexes, unvisibledHexes);
 
-	hexRendr->updateFogBuffer();
+	//hexRendr->updateFogBuffer();
+	world.map->effectsNeedUpdate = true;
 
 }
 
@@ -284,10 +286,10 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 	if (commandDir == travelDir)
 		return; //already heading in the right direction.
 
-	CHex origin = hexPosition;
-
-	if (worldSpaceToHex(worldPos) != hexPosition)
+	if (worldSpaceToHex(worldPos) != hexPosition) //ignore commands received after leaving start hex
 		return;
+
+
 
 	//handle a change in direction if we're already moving
 	switch (travelDir) {
@@ -306,25 +308,25 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 	}
 
 	switch (commandDir) {
-	case moveEast: moveDest = getNeighbour(origin, hexEast); break;
-	case moveWest: moveDest = getNeighbour(origin, hexWest); break;
-	case moveNE: moveDest = getNeighbour(origin, hexNE); break;
-	case moveSE: moveDest = getNeighbour(origin, hexSE); break;
-	case moveNW: moveDest = getNeighbour(origin, hexNW); break;
-	case moveSW: moveDest = getNeighbour(origin, hexSW); break;
+	case moveEast: moveDest = getNeighbour(hexPosition, hexEast); break;
+	case moveWest: moveDest = getNeighbour(hexPosition, hexWest); break;
+	case moveNE: moveDest = getNeighbour(hexPosition, hexNE); break;
+	case moveSE: moveDest = getNeighbour(hexPosition, hexSE); break;
+	case moveNW: moveDest = getNeighbour(hexPosition, hexNW); break;
+	case moveSW: moveDest = getNeighbour(hexPosition, hexSW); break;
 	case moveNorth:
 	case moveSouth: {
-		startNorthSouthMove(commandDir);
+		moveDest = startNorthSouthMove(commandDir);
 		break;
 	}
-	case moveNS2: {
-		moveDest = moveDest2;
+	case moveNS2: { //handles the extended keypress of a north/south command
+		moveDest = moveDest2; //pick the second-stage destination we've previously lined up.
 		break;
 	}
 	} //end switch
 
-	//check if move possible
-	if (world.isBlocked(origin, moveDest)) {
+	//check if requested move possible
+	if (world.isBlocked(hexPosition, moveDest)) {
 		if (commandDir == moveNS2)
 			travelDir = moveNS2blocked;
 		else
@@ -333,14 +335,18 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 	}
 
 	//turn to destination hex
-	rotation = hexAngle(origin, moveDest);
+	rotation = hexAngle(hexPosition, moveDest);
 	buildWorldMatrix();
 	//TO DO: probably scrap this
 
+	if (travelDir != moveNS2) //because we'll have already called movingTo when the moveNS2 command was handled
+		world.map->movingTo(this, hexPosition, moveDest);
+
 	travelDir = commandDir;
+
 }
 
-void CPlayerObject::startNorthSouthMove(TMoveDir dir) {
+CHex CPlayerObject::startNorthSouthMove(TMoveDir dir) {
 	northSouthKeyReleased = false;
 	THexDir eastRoute;	THexDir westRoute;
 	if (dir == moveNorth) {
@@ -368,6 +374,8 @@ void CPlayerObject::startNorthSouthMove(TMoveDir dir) {
 		moveDest2 = hexPosition + CHex(1, 1, -2);
 	else
 		moveDest2 = hexPosition + CHex(-1, -1, 2);
+
+	return moveDest;
 }
 
 /** Player released up or down key - useful to know so that we don't
@@ -417,6 +425,7 @@ void CPlayerObject::moveReal() {
 
 	if (glm::length(moveVec) > remainingDist) {
 		worldPos = dest;
+		world.map->movedTo(this, hexPosition, moveDest);
 		setPosition(moveDest);
 
 		onMovedHex();

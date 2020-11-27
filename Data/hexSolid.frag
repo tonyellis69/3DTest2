@@ -3,12 +3,9 @@
 uniform vec4 colour = vec4(0, 0.47f, 0.16f, 1);
 
 in vec3 texCoord;
-flat in uint content;
-flat in float outFog;
+flat in float outHighlight;
 
 out vec4 outputColor;
-
-const float lineWidth = 0.15f;
 
 
 float calcHexDistance(vec2 p) {
@@ -19,14 +16,14 @@ float calcHexDistance(vec2 p) {
 }
 
 void main() {
-	float dist = calcHexDistance(texCoord.xy); // dist < 0 = inside hex
+	float dist = calcHexDistance(texCoord.xy);    //dist < 0 = inside hex
 	
-	float s = 1.0f - step(0,dist);
+	dist = 1.0f - step(0,dist);
+	
+	if (outHighlight == 1.0f)
+		outputColor = vec4(0,0,0.6,1.0f) * dist;
+	else
+		outputColor = colour * dist;
 	
 	
-	outputColor = colour * s;
-	
-	vec4 fogColour = vec4(0.5,0.5,0.5,0.5) * s;
-	
-	outputColor = mix(outputColor, fogColour, outFog);
 }

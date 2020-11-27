@@ -55,15 +55,18 @@ void CRobot::update2(float dT) {
 		if (moveDest == CHex(-1)) {
 			return;
 		}
+		world.map->movingTo(this, hexPosition, moveDest);
 		travellingToHex = true;
 	}
 
 	if (state == robotWander) {
 		moveDest = getNextTravelHex(destination);
 		if (moveDest == CHex(-1)) {
+			world.map->setHighlight(destination, 0.0f);
 			setState(robotSleep);
 			return;
 		}
+		world.map->movingTo(this, hexPosition, moveDest);
 		travellingToHex = true;
 	}
 
@@ -83,6 +86,7 @@ void CRobot::setState(TRobotState newState) {
 	switch (newState) {
 	case robotWander:
 		destination = world.map->findRandomHex(true);
+		world.map->setHighlight(destination, 1.0f); //temp test!
 		break;
 	case robotChase:
 		destination = world.player->hexPosition;
@@ -173,6 +177,24 @@ bool CRobot::canSee(CGameHexObj* target) {
 player's fov. */
 void CRobot::playerSight(bool inView) {
 	visibleToPlayer = inView;
+}
+
+/** Check if the given segment intersects this robot. */
+std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
+	//first, try simple bounding-circle check.
+	//if (lineModel.circleCollision(segA, segB))
+	//	return { true, glm::vec3() };
+
+	if (lineModel.BBcollision(segA, segB))
+		return { true, glm::vec3() };
+
+	return { false, glm::vec3()};
+}
+
+
+void CRobot::receiveDamage(CGameHexObj& attacker, int damage) {
+	//temp!!!!!!!!!!!!!!
+	world.destroyEntity(*this);
 }
 
 
@@ -289,6 +311,7 @@ void CRobot::moveReal() {
 
 	if (glm::length(moveVec) > remainingDist) {
 		worldPos = dest;
+		world.map->movedTo(this, hexPosition, moveDest);
 		setPosition(moveDest);
 		travellingToHex = false;
 		return;

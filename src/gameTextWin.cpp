@@ -12,7 +12,7 @@ CGameTextWin::CGameTextWin() {
 	richText->resizeMax = { 400, 500 };
 	richText->setTextTheme("gameTheme");
 	richText->setHotTextVM(pVM);
-	Add(richText);
+	add(richText);
 }
 
 void CGameTextWin::addText(const std::string& text) {

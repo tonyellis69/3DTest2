@@ -32,6 +32,10 @@ public:
 
 	void playerSight(bool inView);
 
+	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
+
+	void receiveDamage(CGameHexObj& attacker, int damage);
+
 	CViewFieldArc viewField;
 
 
@@ -62,7 +66,7 @@ private:
 	TRobotState state = robotSleep;
 
 
-	float robotMoveSpeed = 3;// 2.5f;
+	float robotMoveSpeed = 3.0f;// 2.5f;
 
 	float robotLungeSpeed = 8;
 	float robotMeleeRange = 1.8f;
