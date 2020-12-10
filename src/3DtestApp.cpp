@@ -648,8 +648,8 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 
 		if (key == 'O') {
 			if (world.map->testBot->getState() == robotSleep) {
-				world.map->testBot->setState(robotChase);
-				world.map->testBot2->setState(robotChase);
+				world.map->testBot->setState(robotShoot);
+				world.map->testBot2->setState(robotShoot);
 			}
 			else {
 				world.map->testBot->setState(robotSleep);

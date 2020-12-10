@@ -73,7 +73,6 @@ bool CMissile::collisionCheck(glm::vec3& moveVec) {
 		if (entity && entity != owner) {
 			auto [hit, intersection] = entity->collisionCheck(startingPos, leadingPoint);
 			if (hit) {
-				liveLog << "\nHit robot!";
 				entity->receiveDamage(*owner, 10);
 				collided = true;
 				return true;

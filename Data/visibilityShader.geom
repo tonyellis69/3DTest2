@@ -15,21 +15,20 @@ in hexQuad {
 	float visibility;
 	float highlight;
 
-	vec3[6] neighbours;	
+	vec3[9] lattice;
 	
 	ivec3 cube;
 	ivec2 index;
-	ivec2[6] neighbourIndexes; //Temp!
 } hex[];
 
 out vec3 texCoord;
 
 flat out float fog;
 flat out float visibility;
-flat out vec3[6] neighbours;
+flat out vec3[9] lattice;
 flat out ivec3 cube;	
 flat out ivec2 index;
-flat out ivec2[6] neighbourIndexes;
+
 
 void main() {
 
@@ -38,10 +37,9 @@ void main() {
 			
 		fog = hex[0].fog;
 		visibility = hex[0].visibility;
-		neighbours = hex[0].neighbours;
+		lattice = hex[0].lattice;
 		cube = hex[0].cube;
 		index = hex[0].index;
-		neighbourIndexes = hex[0].neighbourIndexes; //Temp!
 			
 		gl_Position =  hex[0].a;
 		texCoord = vec3(1,1,0);

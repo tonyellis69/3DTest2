@@ -213,19 +213,7 @@ void CPlayerObject::deathRoutine() {
 }
 
 void CPlayerObject::receiveDamage(CGameHexObj& attacker, int damage) {
-	CFindPowerUser msg(&attacker);
-	send(msg);
-
-	damage -= msg.power;
-
-	if (damage <= 0) {
-		CSendText block(combatLog, "\nAttack from " + attacker.getName()
-			+ " blocked!");
-		send(block);
-		return;
-	}
-
-	CGameHexObj::receiveDamage(attacker, damage);
+	liveLog << "\nPlayer hit!";
 }
 
 int CPlayerObject::getMissileDamage() {
@@ -412,6 +400,19 @@ void CPlayerObject::update2(float dT) {
 
 void CPlayerObject::setTargetAngle(float angle) {
 	targetAngle = angle;
+}
+
+
+/** Check if the given segment intersects this robot. */
+std::tuple<bool, glm::vec3> CPlayerObject::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
+	//first, try simple bounding-circle check.
+	//if (lineModel.circleCollision(segA, segB))
+	//	return { true, glm::vec3() };
+
+	if (lineModel.BBcollision(segA, segB))
+		return { true, glm::vec3() };
+
+	return { false, glm::vec3() };
 }
 
 /** Move realtime toward the destination hex, unless we reach it. */

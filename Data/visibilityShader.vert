@@ -9,7 +9,7 @@ uniform ivec2 gridSize;
 
 uniform samplerBuffer effectsTex;
 
-out hexQuad {
+out hexQuad { //describes a quad that describes a hex
 	vec4 a;
 	vec4 b;
 	vec4 c;
@@ -19,13 +19,11 @@ out hexQuad {
 	float visibility;
 	float highlight;
 
-	vec3[6] neighbours;
+	vec3[9] lattice;
 	
 	ivec3 cube;
 	ivec2 index;
-	
-	ivec2[6] neighbourIndexes; //Temp!
-	
+		
 } hexQuadOut;
 
 
@@ -35,6 +33,11 @@ const float hexHeight = 2;
 
 
 ivec3[] moveVectorCube = ivec3[] (ivec3(1,-1,0), ivec3(0,-1,1), ivec3(-1,0,1), ivec3(-1,1,0), ivec3(0,1,-1), ivec3(1,0,-1) );
+
+ivec3[] latticeOffsets = ivec3[] ( 	ivec3(0,1,-1), ivec3(1,0,-1), ivec3(2,-1,-1), 
+									ivec3(-1,1,0), ivec3(0,0,0), ivec3(1,-1,0), 
+									ivec3(-2,1,1), ivec3(-1,0,1), ivec3(0,-1,1) );
+
 
 /** Convert odd-row offset coordinates to cube coordinates. */
 ivec3 offsetToCube(ivec2 index) {
@@ -62,6 +65,13 @@ ivec3 getNeighbour(ivec3 hex, int direction){
 	return hex + moveVectorCube[direction];
 }
 
+vec4 getTexel(int latticePos, ivec3 centreHex) {
+	ivec3 hex = centreHex + latticeOffsets[latticePos];
+	ivec2 hexIndex = cubeToOffset(hex);
+	int flatIndex = (hexIndex.y * gridSize.x) + hexIndex.x;
+	return texelFetch(effectsTex,flatIndex);
+}
+
 void main() {
 
 	ivec2 centreOffset = index - ivec2(gridSize * 0.5f);
@@ -81,15 +91,14 @@ void main() {
 	hexQuadOut.fog = visData.r;
 	hexQuadOut.visibility = visData.g;
 	hexQuadOut.highlight = visData.b;
-	
+
 	
 	ivec3 hex = offsetToCube(index);
-	for (int dir = 0; dir < 6; dir++) {
-		ivec3 neighbour = getNeighbour(hex,dir);
-		ivec2 neighbourIndex = cubeToOffset(neighbour);
-		hexQuadOut.neighbours[dir] = texelFetch(effectsTex, (neighbourIndex.y * gridSize.x) + neighbourIndex.x).rgb;	
-		hexQuadOut.neighbourIndexes[dir] = neighbourIndex;
+	for (int latticePos = 0; latticePos < 9; latticePos++) {
+		hexQuadOut.lattice[latticePos] = getTexel(latticePos,hex).rgb;
 	}
+	
+	
 	
 	hexQuadOut.cube = hex;
 	hexQuadOut.index = index;

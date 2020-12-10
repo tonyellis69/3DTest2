@@ -79,6 +79,10 @@ void CHexWorld::deleteMap() {
 void CHexWorld::startGame() {
 	hexRendr2.setMap(map);
 	world.setMap(map);
+
+
+	
+
 	
 	//create new player object
 	playerObj = new CPlayerObject();
@@ -221,6 +225,8 @@ void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 /** Called every frame to get the hex world up to date.*/
 void CHexWorld::update(float dT) {
 	this->dT = dT;
+	map->setFog(CHex(2, -7, 5), 1.0f);
+	map->setFog(CHex(3, -8, 5), 1.0f);
 
 	updateCameraPosition();
 

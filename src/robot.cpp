@@ -5,6 +5,10 @@
 
 #include "gameState.h"
 
+#include "missile.h"
+
+#include <glm/gtx/vector_angle.hpp>
+
 
 const float rad360 = M_PI * 2;
 
@@ -30,7 +34,10 @@ void CRobot::update2(float dT) {
 	if (meleeHitCooldown > 0)
 		meleeHitCooldown -= dT;
 
-	if (travellingToHex) {
+	if (missileCooldown > 0)
+		missileCooldown -= dT;
+
+	if (tranistioningToHex) {
 		moveReal();
 		return;
 	}
@@ -56,7 +63,7 @@ void CRobot::update2(float dT) {
 			return;
 		}
 		world.map->movingTo(this, hexPosition, moveDest);
-		travellingToHex = true;
+		tranistioningToHex = true;
 	}
 
 	if (state == robotWander) {
@@ -67,11 +74,45 @@ void CRobot::update2(float dT) {
 			return;
 		}
 		world.map->movingTo(this, hexPosition, moveDest);
-		travellingToHex = true;
+		tranistioningToHex = true;
 	}
 
 	if (state == robotMelee) {
 		melee();
+	}
+
+	if (state == robotShoot && missileCooldown <= 0) {
+		if (hasLineOfSight(targetEntity)) {
+			fireMissile(targetEntity);
+			missileCooldown = 3;
+		}
+		else
+			setState(robotHunt);
+			
+	}
+
+	if (state == robotHunt) {
+		//no longer transitioning, so can we see player from this new hex?
+		if (hasLineOfSight(targetEntity)) {
+			setState(robotShoot);
+			return;
+		}
+
+
+		if (world.player->hexPosition != destination) {
+			destination = world.player->hexPosition;
+			//TO DO: should only update if robot can *see* target position is
+			//no longer destination
+		}
+
+
+
+		moveDest = getNextTravelHex(destination);
+		if (moveDest == CHex(-1)) {
+			return;
+		}
+		world.map->movingTo(this, hexPosition, moveDest);
+		tranistioningToHex = true;
 
 
 	}
@@ -102,6 +143,12 @@ void CRobot::setState(TRobotState newState) {
 		break;
 	case robotSleep:
 		destination = CHex(-1);
+		break;
+	case robotShoot:
+		targetEntity = world.player;
+		break;
+	case robotHunt:
+		targetEntity = world.player;
 		break;
 	}
 
@@ -194,6 +241,7 @@ std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& s
 
 void CRobot::receiveDamage(CGameHexObj& attacker, int damage) {
 	//temp!!!!!!!!!!!!!!
+	liveLog << "\nHit robot!";
 	world.destroyEntity(*this);
 }
 
@@ -313,7 +361,7 @@ void CRobot::moveReal() {
 		worldPos = dest;
 		world.map->movedTo(this, hexPosition, moveDest);
 		setPosition(moveDest);
-		travellingToHex = false;
+		tranistioningToHex = false;
 		return;
 	}
 
@@ -337,6 +385,41 @@ void CRobot::melee() {
 	}
 
 	buildWorldMatrix();
+}
+
+/** Return true if we can a line to the target without hitting anything. */
+bool CRobot::hasLineOfSight(CGameHexObj* target) {
+	//find vector to target worldpos
+	//For each hex line passes through, check for scenery collision
+
+	THexDir exitDir; glm::vec3 intersection;
+	CHex startHex = hexPosition;
+
+	glm::vec3 targetPos = targetEntity->worldPos;
+	CHex targetHex = worldSpaceToHex(targetPos);
+	while (startHex != targetHex) {
+		std::tie(exitDir, intersection) = world.map->findSegmentExit(worldPos, targetPos, startHex);
+		CHex entryHex = getNeighbour(startHex, exitDir);
+		
+		if (world.map->getHexCube(entryHex).content != emptyHex)
+			return false;
+
+		startHex = entryHex;
+	}
+
+
+	return true;
+}
+
+void CRobot::fireMissile(CGameHexObj* target) {
+	auto missile = std::make_shared<CMissile>();
+
+	glm::vec3 targetVec = target->worldPos - worldPos;
+	float targetAngle = glm::orientedAngle(glm::normalize(targetVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, -1));
+
+	missile->setPosition(worldPos, targetAngle);
+	missile->setOwner(this);
+	world.sprites.push_back(missile);
 }
 
 

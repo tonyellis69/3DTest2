@@ -10,7 +10,7 @@
 #include "viewField.h"
 
 enum TRobotState {robotSleep, robotChase, robotWander, 
-	robotMelee};
+	robotMelee, robotShoot, robotHunt};
 
 /** A class describing basic robot characteristics and
 	behaviour. */
@@ -39,7 +39,7 @@ public:
 	CViewFieldArc viewField;
 
 
-	bool travellingToHex = false;
+	bool tranistioningToHex = false;
 	CHex destination = CHex(-1);
 
 private:
@@ -62,6 +62,10 @@ private:
 
 	void melee();
 
+	bool hasLineOfSight(CGameHexObj* target);
+
+	void fireMissile(CGameHexObj* target);
+
 
 	TRobotState state = robotSleep;
 
@@ -76,6 +80,9 @@ private:
 	glm::vec3 lungeDir = glm::vec3(0);
 	bool lungeReturning = false;
 	glm::vec3 lungeEndPos;
+
+	float missileCooldown = 0.0f;
+	CGameHexObj* targetEntity;
 };
 
 
