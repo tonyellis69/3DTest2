@@ -18,14 +18,10 @@ CHexWorld::CHexWorld() {
 	//hexRenderer = &hexRendr2;
 	hexRendr2.init();
 	CHexObject::setHexRenderer(&hexRendr2);
-	CGridObj::setHexRenderer(&hexRendr2);
 	
-	messageBus.setHandler<CShootAt>(this, &CHexWorld::onShootAt);
 	messageBus.setHandler<CDropItem>(this, &CHexWorld::onDropItem);
 	messageBus.setHandler<CRemoveEntity>(this, &CHexWorld::onRemoveEntity);
 	messageBus.setHandler<CCreateGroupItem>(this, &CHexWorld::onCreateGroupItem);
-	messageBus.setHandler<CMissileHit>(this, &CHexWorld::onMissileHit);
-	messageBus.setHandler<CKill>(this, &CHexWorld::onKill);
 	messageBus.setHandler<CDiceRoll>(this, &CHexWorld::onDiceRoll);
 	messageBus.setHandler<CPlayerNewHex>(this, &CHexWorld::onPlayerNewHex);
 	messageBus.setHandler<CActorMovedHex>(this, &CHexWorld::onActorMovedHex);
@@ -61,9 +57,6 @@ void CHexWorld::makeMap(ITigObj* tigMap) {
 	} while (true);
 
 	map->setMessageHandlers();
-
-	//for (auto entity : map->entities)
-	//	subscribe(entity.get());
 
 	hexRendr2.setMap(map);
 }
@@ -114,6 +107,8 @@ void CHexWorld::startGame() {
 	map->updateBlocking();
 
 	map->effectsNeedUpdate = true;
+
+	setViewMode(gameView);
 
 	beginNewTurn(); //NB!!! Repeats some of the stuff above
 }
@@ -202,17 +197,11 @@ void CHexWorld::draw() {
 	for (auto& entity : map->entities)
 			entity->draw();
 
-	for (auto gridObj : gridObjects)
-			gridObj->draw();
 
 	for (auto sprite : world.sprites)
 		sprite->draw();
 
-	hexRendr2.drawPath(&cursorPath, glm::vec4{ 0.6, 0.4, 1, 0.1f }, glm::vec4{ 0.6, 0.4, 1, 0.75f });
-
-	//hexRendr2.drawPath(&map->testBot->travelPath, glm::vec4{ 0.3, 0.2, 1, 0.1f }, glm::vec4{ 0.3, 0.2, 1, 0.75f });
-
-	hexRendr2.drawSightLine(playerObj->worldPos, mouseWorldPos);
+	//hexRendr2.drawSightLine(playerObj->worldPos, mouseWorldPos);
 
 }
 
@@ -226,12 +215,13 @@ void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 void CHexWorld::update(float dT) {
 	this->dT = dT;
 	map->setFog(CHex(2, -7, 5), 1.0f);
+	//map->setFog(CHex(2, -8, 6), 1.0f);
 	map->setFog(CHex(3, -8, 5), 1.0f);
 
 	updateCameraPosition();
 
 	for (auto& entity : map->entities) {
-		entity->update2(dT);
+		entity->update(dT);
 	}
 
 	for (auto& entity : world.sprites) {
@@ -258,6 +248,13 @@ void CHexWorld::enterKeyDown() {
 	startGame();
 }
 
+void CHexWorld::toggleView() {
+	if (viewMode == gameView)
+		setViewMode(devView);
+	else
+		setViewMode(gameView);
+}
+
 
 /////////////public - private devide
 
@@ -271,10 +268,11 @@ void CHexWorld::createCursorObject() {
 /** Respond to mouse cursor moving to a new hex. */
 void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	hexCursor->setPosition(mouseHex);
-	if (!lineOfSight)
+
+	/*if (!lineOfSight)
 		cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition, true);
 	else
-		cursorPath = *hexLine2(playerObj->hexPosition, hexCursor->hexPosition);
+		cursorPath = *hexLine2(playerObj->hexPosition, hexCursor->hexPosition);*/
 
 
 	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
@@ -383,23 +381,6 @@ void CHexWorld::tempGetGroupItem(int itemNo) {
 }
 
 
-CGridObj* CHexWorld::createBolt() {
-	CBolt* bolt = new CBolt();
-	bolt->setLineModel(hexRendr2.getLineModel("bolt"));
-	gridObjects.push_back(bolt);
-	return bolt;
-}
-
-
-
-
-/** Called when someone wants to shoot a missile at a target or hex.*/
-void CHexWorld::onShootAt(CShootAt& msg) {
-	CBolt* boltTmp = (CBolt*)createBolt();
-	boltTmp->setPosition(msg.start);
-	boltTmp->damage = msg.damage;
-	boltTmp->fireAt(msg.attacker, msg.target);
-}
 
 void CHexWorld::onDropItem(CDropItem& msg) {
 	dropItem(msg.item, msg.location);
@@ -418,19 +399,7 @@ void CHexWorld::onCreateGroupItem(CCreateGroupItem& msg) {
 	groupItem->setPosition(playerObj->hexPosition);
 }
 
-/** Handle a missile landing in this hex. */
-void CHexWorld::onMissileHit(CMissileHit& msg) {
-	//Anything here?
-	//if so, damage it
-	CGameHexObj* obj = getPrimaryObjectAt(msg.hex);
-	if (obj != &nullGameHexObj)
-		obj->receiveDamage(*msg.attacker, msg.damage);
-}
 
-/** Handle an entity's request to be killed off. */
-void CHexWorld::onKill(CKill& msg) {
-	killEntity(msg.entity);
-}
 
 /** Make psuedo random dice roll and return the result. */
 void CHexWorld::onDiceRoll(CDiceRoll& msg) {
@@ -477,7 +446,7 @@ CGameHexObj* CHexWorld::getPrimaryObjectAt(CHex& hex) {
 }
 
 void CHexWorld::updateCameraPosition() {
-	if (hexRendr2.following())
+	if (viewMode == gameView)
 		hexRendr2.followTarget(playerObj->worldPos);
 	else
 		hexRendr2.attemptScreenScroll(/*mainApp->getMousePos()*/mousePos, dT);
@@ -487,7 +456,7 @@ void CHexWorld::beginNewTurn() {
 	world.setTurnPhase(playerPhase);
 	world.onscreenRobotAction = false;
 	qps.beginNewTurn();
-	playerObj->onTurnBegin();
+	//playerObj->onTurnBegin();
 	map->updateBlocking();
 	//hexRendr2.updateFogBuffer();
 	map->effectsNeedUpdate = true;
@@ -505,28 +474,7 @@ void CHexWorld::beginNewTurn() {
 }
 
 
-void CHexWorld::killEntity(CGameHexObj* entity) {
-	unsubscribe(entity);
 
-	auto simul = std::find(simulList.begin(), simulList.end(), entity);
-	if (simul != simulList.end())
-		simulList.erase(simul);
-
-	auto serial = std::find(serialList.begin(), serialList.end(), entity);
-	if (serial != serialList.end())
-		serialList.erase(serial);
-
-	auto drawable = std::find(entitiesToDraw.begin(), entitiesToDraw.end(), TEntity(entity));
-	if (drawable != entitiesToDraw.end())
-		entitiesToDraw.erase(drawable);
-
-	map->removeEntity(entity);
-
-	if (entity == playerObj)
-		world.setTurnPhase(playerDeadPhase);
-
-	delete entity;
-}
 
 /** Update which entities are now visible to the player. */
 void CHexWorld::alertEntitiesInPlayerFov() {
@@ -536,6 +484,22 @@ void CHexWorld::alertEntitiesInPlayerFov() {
 		bool inView = playerObj->viewField.searchView(entity->hexPosition);
 		entity->playerSight(inView);
 	}
+}
+
+/** Whether we're in standard follow-cam mode or not, etc. */
+void CHexWorld::setViewMode(TViewMode mode) {
+	viewMode = mode;
+
+	if (mode == gameView) {
+		hexRendr2.pointCamera(glm::vec3(0, 0, -1));
+		hexRendr2.setCameraHeight(15);
+	}
+	else if (mode == devView) {
+		hexRendr2.setCameraPos(glm::vec3(0, -0, 12));
+		hexRendr2.setCameraPitch(45);
+
+	}
+
 }
 
 

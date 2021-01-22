@@ -1,10 +1,8 @@
 #include "robot.h"
 
-
 #include "utils/log.h"
 
 #include "gameState.h"
-
 #include "missile.h"
 
 #include <glm/gtx/vector_angle.hpp>
@@ -18,17 +16,17 @@ CRobot::CRobot() {
 	normalColour = glm::vec4(0.3, 1, 0.3, 1); //temp!
 }
 
-void CRobot::frameUpdate(float dT) {
-	this->dT = dT;
-	if (canSeePlayer && world.getTurnPhase() == playerPhase) {
-		trackPoint(trackingTarget->worldPos);
-	}
+//void CRobot::frameUpdate(float dT) {
+//	this->dT = dT;
+//	if (canSeePlayer && world.getTurnPhase() == playerPhase) {
+//		trackPoint(trackingTarget->worldPos);
+//	}
+//
+//	updateViewField();
+//}
 
-	updateViewField();
-}
 
-
-void CRobot::update2(float dT) {
+void CRobot::update(float dT) {
 	this->dT = dT;
 
 	if (meleeHitCooldown > 0)
@@ -193,21 +191,6 @@ void CRobot::draw() {
 	CHexObject::draw();
 }
 
-
-
-/** Deliver melee damage to our current target. */
-void CRobot::hitTarget() {
-	if (actionTarget == NULL)
-		return;
-
-	CDiceRoll msg(3);
-	send(msg);
-	int damage = 6 + msg.result - 2;
-
-	actionTarget->receiveDamage(*this, damage);
-
-}
-
 int CRobot::getMissileDamage() {
 	CDiceRoll msg(3);
 	send(msg);
@@ -273,26 +256,12 @@ void CRobot::onNotify(COnCursorNewHex& msg) {
 	}
 }
 
-void CRobot::onNotify(CPlayerNewHex& msg) {
-	checkForPlayer();
-}
 
 
 
-/** What to do when someone dies. */ 
-void CRobot::deathRoutine() {
-	std::string deathLog = "\n" + getName() + " destroyed!";
-
-	CSendText msg(combatLog, deathLog);
-	send(msg);
-
-	CKill killMsg(this);
-	send(killMsg);
-}
-
-CHex CRobot::getLastSeen() {
-	return lastSeen;
-}
+//CHex CRobot::getLastSeen() {
+//	return lastSeen;
+//}
 
 /** Reconstruct our viewfield if it needs it. If we do, check if the player is in sight. */
 void CRobot::updateViewField() {
@@ -302,51 +271,51 @@ void CRobot::updateViewField() {
 		send(msg);
 		viewField.visibleHexes = msg.visibleHexes;
 
-		checkForPlayer();
+		//checkForPlayer(); TO DO: needs recreating
 	}
 }
 
 /** Performed after the player moves to a new hex or we recalculate the viewfield, so
 	we can respond if the player is in view. */
-void CRobot::checkForPlayer() {
-	CGetPlayerObj getPlayer;
-	send(getPlayer);
-
-	if (canSee(getPlayer.playerObj)) {
-		lastSeen = getPlayer.playerObj->hexPosition;
-		if (!canSeePlayer) {
-			CSendText msg(combatLog, "\n\nPlayer spotted! Tracking on");
-			send(msg);
-
-			canSeePlayer = true;
-			CPlayerSeen seenMsg(this);
-			send(seenMsg);
-
-			earlyExit = true;
-			earlyExitAction = tig::actTurnToTarget;
-			earlyExitTarget = getPlayer.playerObj;
-
-
-		//	setGoalAttack(getPlayer.playerObj);
-			trackingTarget = getPlayer.playerObj;
-
-
-			lineModel.setColourR(glm::vec4(1, 0, 0, 1));
-
-		}
-		else {
-			//CSendText msg(combatLog, "\n\nPlayer seen again!");
-			//send(msg);
-		}
-	}
-	else {
-		if (canSeePlayer) {
-			CSendText msg(combatLog, "\n\nPlayer lost!!!! (new)");
-			send(msg);
-		}
-		canSeePlayer = false;
-	}
-}
+//void CRobot::checkForPlayer() {
+//	CGetPlayerObj getPlayer;
+//	send(getPlayer);
+//
+//	if (canSee(getPlayer.playerObj)) {
+//		lastSeen = getPlayer.playerObj->hexPosition;
+//		if (!canSeePlayer) {
+//			CSendText msg(combatLog, "\n\nPlayer spotted! Tracking on");
+//			send(msg);
+//
+//			canSeePlayer = true;
+//			CPlayerSeen seenMsg(this);
+//			send(seenMsg);
+//
+//			earlyExit = true;
+//			earlyExitAction = tig::actTurnToTarget;
+//			earlyExitTarget = getPlayer.playerObj;
+//
+//
+//		//	setGoalAttack(getPlayer.playerObj);
+//			trackingTarget = getPlayer.playerObj;
+//
+//
+//			lineModel.setColourR(glm::vec4(1, 0, 0, 1));
+//
+//		}
+//		else {
+//			//CSendText msg(combatLog, "\n\nPlayer seen again!");
+//			//send(msg);
+//		}
+//	}
+//	else {
+//		if (canSeePlayer) {
+//			CSendText msg(combatLog, "\n\nPlayer lost!!!! (new)");
+//			send(msg);
+//		}
+//		canSeePlayer = false;
+//	}
+//}
 
 /** Move realtime toward the destination hex, unless we reach it. */
 void CRobot::moveReal() {
@@ -387,11 +356,8 @@ void CRobot::melee() {
 	buildWorldMatrix();
 }
 
-/** Return true if we can a line to the target without hitting anything. */
+/** Return true if we can draw a line to the target without hitting anything. */
 bool CRobot::hasLineOfSight(CGameHexObj* target) {
-	//find vector to target worldpos
-	//For each hex line passes through, check for scenery collision
-
 	THexDir exitDir; glm::vec3 intersection;
 	CHex startHex = hexPosition;
 
@@ -406,7 +372,6 @@ bool CRobot::hasLineOfSight(CGameHexObj* target) {
 
 		startHex = entryHex;
 	}
-
 
 	return true;
 }

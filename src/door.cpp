@@ -4,7 +4,7 @@
 
 #include "hex/hex.h"
 
-#include "actor.h"
+//#include "actor.h"
 
 CDoor::CDoor() {
 	status = doorClosed;
@@ -53,31 +53,31 @@ void CDoor::frameUpdate(float dT) {
 	CHex facingHex = getNeighbour(hexPosition, facing);
 	CHex oppositeHex = getNeighbour(hexPosition,opposite(facing));
 	
-	CGetActorAt facingMsg(facingHex);
-	send(facingMsg);
+	//CGetActorAt facingMsg(facingHex);
+	//send(facingMsg);
 
-	CGetActorAt opMsg(oppositeHex);
-	send(opMsg);
+	//CGetActorAt opMsg(oppositeHex);
+	//send(opMsg);
 
-	CGetActorAt blockerMsg(hexPosition,(CHexActor*) this);
-	send(blockerMsg);
+	//CGetActorAt blockerMsg(hexPosition,(CHexActor*) this);
+	//send(blockerMsg);
 
-	if (facingMsg.actor || opMsg.actor || blockerMsg.actor) {
-		if (status == doorClosed) {
-			mBlocks = blocksAsDoor;
-			anim = 0;
-			status = doorOpening;
-		}
-	}
-	else { //no one there. Close?
-		if (status == doorOpen){
-			mBlocks = blocksAll;
-			anim = 0;
-			status = doorClosing;		
-		}
+	//if (facingMsg.actor || opMsg.actor || blockerMsg.actor) {
+	//	if (status == doorClosed) {
+	//		mBlocks = blocksAsDoor;
+	//		anim = 0;
+	//		status = doorOpening;
+	//	}
+	//}
+	//else { //no one there. Close?
+	//	if (status == doorOpen){
+	//		mBlocks = blocksAll;
+	//		anim = 0;
+	//		status = doorClosing;		
+	//	}
 
 
-	}
+	//}
 
 
 

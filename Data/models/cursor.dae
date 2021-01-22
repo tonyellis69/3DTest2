@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
     </contributor>
-    <created>2020-10-05T12:48:46</created>
-    <modified>2020-10-05T12:48:46</modified>
+    <created>2021-01-22T17:06:16</created>
+    <modified>2021-01-22T17:06:16</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -15,7 +15,7 @@
     <geometry id="Circle_002-mesh" name="Circle.002">
       <mesh>
         <source id="Circle_002-mesh-positions">
-          <float_array id="Circle_002-mesh-positions-array" count="54">0 2 0 -1.732051 1 0 -1.732051 -1 0 0 -2 0 1.732051 1 0 1.732051 -1 0 -0.4330127 1.75 0 -1.732051 0.4999999 0 -1.299038 -1.25 0 0.4330127 1.75 0 -1.299038 1.25 0 -1.732051 -0.5000001 0 -0.4330126 -1.75 0 1.732051 0.4999999 0 1.299038 -1.25 0 1.299038 1.25 0 1.732051 -0.5000001 0 0.4330126 -1.75 0</float_array>
+          <float_array id="Circle_002-mesh-positions-array" count="54">0 0.8 0 -0.6928204 0.4 0 -0.6928203 -0.4 0 0 -0.8 0 0.6928204 0.4 0 0.6928203 -0.4 0 -0.1732051 0.7 0 -0.6928204 0.1999999 0 -0.5196152 -0.5 0 0.1732051 0.7 0 -0.5196153 0.5 0 -0.6928204 -0.2 0 -0.173205 -0.7 0 0.6928204 0.1999999 0 0.5196152 -0.5 0 0.5196153 0.5 0 0.6928204 -0.2 0 0.173205 -0.7 0</float_array>
           <technique_common>
             <accessor source="#Circle_002-mesh-positions-array" count="18" stride="3">
               <param name="X" type="float"/>
@@ -44,11 +44,10 @@
       </mesh>
     </geometry>
   </library_geometries>
-  <library_controllers/>
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="Cursor" name="Cursor" type="NODE">
-        <matrix sid="transform">0.4 0 0 0 0 0.4 0 0 0 0 0.4 0 0 0 0 1</matrix>
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
         <instance_geometry url="#Circle_002-mesh" name="Cursor"/>
       </node>
     </visual_scene>

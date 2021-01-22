@@ -72,28 +72,3 @@ private:
 
 
 
-
-class CFindActorBlock : public CMsg {
-public:
-	CFindActorBlock(CHex& h) : hex(h) {}
-	CHex hex;
-	CHexActor* blockingActor = NULL;
-};
-
-class CGetActorAt : public CMsg {
-public:
-	CGetActorAt(CHex& h, CHexActor* n = NULL)
-		: hex(h), notActor(n) {}
-
-	CHex hex;
-	CHexActor* actor = NULL;
-	CHexActor* notActor;
-};
-
-class CGetPlayerObj : public CMsg {
-public:
-	CGetPlayerObj() {}
-
-	CHexActor* playerObj;
-};
-

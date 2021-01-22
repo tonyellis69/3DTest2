@@ -33,8 +33,8 @@ void CHexRenderer::init() {
 
 	camera.setNearFar(0.1f, 1000.0f);
 	camera.setPos(glm::vec3(0, -0, 12));
-	cameraPitch = 45;
-	camera.pitch(cameraPitch);
+	//cameraPitch = 45;
+	//camera.pitch(cameraPitch);
 	followCam = false;
 	screenScrollSpeed = 20;// 15.0f;
 
@@ -141,6 +141,26 @@ void CHexRenderer::drawPath(THexList* path, glm::vec4& pathStartColour, glm::vec
 void CHexRenderer::drawLineModel(CLineModel& lineModel) {
 	TModelNode& node = lineModel.model;
 	drawNode2(node, glm::mat4(1), lineModel.buffer2);
+}
+
+/** Point the camera in the given direction. Eg, top-down. */
+void CHexRenderer::pointCamera(glm::vec3& dir) {
+	camera.lookAt(dir);
+}
+
+void CHexRenderer::setCameraHeight(float z) {
+	glm::vec3 newPos = camera.getPos();
+	newPos.z = z;
+	camera.setPos(newPos);
+}
+
+void CHexRenderer::setCameraPos(glm::vec3& pos) {
+	camera.setPos(pos);
+}
+
+void CHexRenderer::setCameraPitch(float pitch) {
+	cameraPitch = pitch;
+	camera.pitch(pitch);
 }
 
 //void CHexRenderer::drawNode(TModelNode& node, glm::mat4& parentMatrix, CBuf* buf) {
@@ -491,10 +511,11 @@ void CHexRenderer::toggleFollowCam() {
 
 }
 
-/** Position the camera so that it's displaced from the given target by 
-	whatever the followCamVec currently is. */
+/** Position the camera over the given target. */
 void CHexRenderer::followTarget(glm::vec3& target) {
-	glm::vec3 newPos = target + followCamVec;
+	glm::vec3 newPos = camera.getPos();
+	newPos.x = target.x;
+	newPos.y = target.y;
 	camera.setPos(newPos);
 }
 

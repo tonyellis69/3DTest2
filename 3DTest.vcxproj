@@ -117,7 +117,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp" />
-    <ClCompile Include="src\actor.cpp" />
     <ClCompile Include="src\bolt.cpp" />
     <ClCompile Include="src\door.cpp" />
     <ClCompile Include="src\fireable.cpp" />
@@ -127,7 +126,6 @@
     <ClCompile Include="src\gameTerrain.cpp" />
     <ClCompile Include="src\gameTextWin.cpp" />
     <ClCompile Include="src\gameWin.cpp" />
-    <ClCompile Include="src\goalActor.cpp" />
     <ClCompile Include="src\groupItem.cpp" />
     <ClCompile Include="src\GUIdistributor.cpp" />
     <ClCompile Include="src\GUIgamePanel.cpp" />
@@ -152,7 +150,6 @@
   <ItemGroup>
     <ClInclude Include="..\TC\Debug\tigConst.h" />
     <ClInclude Include="src\3DtestApp.h" />
-    <ClInclude Include="src\actor.h" />
     <ClInclude Include="src\bolt.h" />
     <ClInclude Include="src\door.h" />
     <ClInclude Include="src\fireable.h" />
@@ -164,7 +161,6 @@
     <ClInclude Include="src\gameTerrain.h" />
     <ClInclude Include="src\gameTextWin.h" />
     <ClInclude Include="src\gameWin.h" />
-    <ClInclude Include="src\goalActor.h" />
     <ClInclude Include="src\groupItem.h" />
     <ClInclude Include="src\GUIdistributor.h" />
     <ClInclude Include="src\GUIgamePanel.h" />

@@ -15,7 +15,7 @@
 #include "hexItem.h"
 #include "groupItem.h"
 
-#include "bolt.h"
+//#include "bolt.h"
 
 #include "tigConst.h"
 
@@ -34,6 +34,8 @@
 #include "qps.h"
 
 #include "gameState.h"
+
+enum TViewMode {gameView, devView};
   
 
 /** A class encapsulating the hex-based representation of the world. */
@@ -61,6 +63,8 @@ public:
 
 	void enterKeyDown();
 
+	void toggleView();
+
 	CGUIlabel2* hexPosLbl;
 
 private:
@@ -78,18 +82,9 @@ private:
 
 	void tempGetGroupItem(int itemNo);
 
-
-	CGridObj* createBolt();
-
-
-	void onShootAt(CShootAt& msg);
 	void onDropItem(CDropItem& msg);
 	void onRemoveEntity(CRemoveEntity& msg);
 	void onCreateGroupItem(CCreateGroupItem& msg);
-
-	void onMissileHit(CMissileHit& msg);
-
-	void onKill(CKill& msg);
 
 	void onDiceRoll(CDiceRoll& msg);
 
@@ -109,6 +104,8 @@ private:
 
 	void alertEntitiesInPlayerFov();
 
+	void setViewMode(TViewMode mode);
+
 
 	CGameHexArray* map;
 
@@ -120,9 +117,6 @@ private:
 	
 
 	TEntities entitiesToDraw; ///<Quick bodge: same entities, diff order
-
-
-	std::vector<CGridObj*> gridObjects;
 
 
 	float dT; ///<Interval since last app loop.
@@ -139,11 +133,7 @@ private:
 	THexList cursorPath;
 
 
-	std::vector<CHexActor*> simulList; ///< Actors performing simultaneous actions this turn
-	std::vector<CHexActor*> serialList;
-	std::vector<CHexActor*> playerSerialList;
-
-	CHexActor* currentSerialActor = NULL;
+	
 
 	bool powerMode = false;
 
@@ -151,6 +141,9 @@ private:
 
 	bool lineOfSight = false;
 	glm::vec3 mouseWorldPos; ///<Mouse position on the worldspace XY plane
+	
+	TViewMode viewMode; ///<Camera mode, etc.
+
 
 };
 

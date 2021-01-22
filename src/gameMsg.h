@@ -106,10 +106,3 @@ public:
 
 
 
-class CPlayerSeen : public CMsg {
-public:
-	CPlayerSeen(CGameHexObj* v) : viewer(v) {}
-
-	CGameHexObj* viewer;
-};
-

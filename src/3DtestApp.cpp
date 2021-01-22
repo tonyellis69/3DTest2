@@ -662,6 +662,10 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 		if (key == GLFW_KEY_ENTER)
 			hexWorld.enterKeyDown();
 
+		if (key == 'V') {
+			hexWorld.toggleView();
+		}
+
 		hexWorld.onKeyDown(key, mod);
 		return;
 	}

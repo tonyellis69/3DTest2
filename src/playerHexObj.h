@@ -1,7 +1,7 @@
 #pragma once
 
 #include "hexItem.h"
-#include "actor.h"
+//#include "actor.h"
 
 #include "powerSupply.h"
 
@@ -16,29 +16,20 @@
 
 /** A class describing characteristics and behaviour unique to
 	the player hex-world object. */
-class CPlayerObject : public CHexActor , public CGameEventSubject {
+class CPlayerObject : /*public CHexActor ,*/ public CGameHexObj, public CGameEventSubject {
 public:
 	CPlayerObject();
 	~CPlayerObject();
 	void onFireKey(bool pressed);
-	bool update(float dT);
-	void hitTarget();
 	void draw();
 	void takeItem(CGameHexObj& item);
 	void showInventory();
 	void dropItem(int itemNo);
 	void equipItem(int itemNo);
-	void leftClickPowerMode();
-	void onTurnBegin();
-	void onTurnEnd();
+
 	void onGetPlayerPos(CGetPlayerPos& msg);
 	void onSetPlayerAction(CSetPlayerAction& msg);
 	void onTakeItem(CTakeItem& msg);
-	void onGetPlayerObj(CGetPlayerObj& msg);
-
-	void onPlayerSeen(CPlayerSeen& msg);
-
-	void deathRoutine();
 
 	void receiveDamage(CGameHexObj& attacker, int damage);
 
@@ -51,7 +42,7 @@ public:
 	void moveCommand(TMoveDir dir);
 	CHex startNorthSouthMove(TMoveDir dir);
 	void onVerticalKeyRelease();
-	void update2(float dT);
+	void update(float dT);
 
 	void setTargetAngle(float angle);
 	float getTargetAngle() { return targetAngle;  }
@@ -68,8 +59,8 @@ private:
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
 	void moveReal();
 
-	int actionPoints;
 
+	float dT;
 
 	float playerMoveSpeed = 5.0f;
 

@@ -87,16 +87,10 @@
     <ClCompile Include="src\powerSupply.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\actor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\qps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\viewField.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\goalActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gameState.cpp">
@@ -194,16 +188,10 @@
     <ClInclude Include="src\gameEvents.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\actor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\qps.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\viewField.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\goalActor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gameState.h">

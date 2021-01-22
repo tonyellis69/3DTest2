@@ -5,7 +5,8 @@
 
 #include "gameMsg.h"
 
-#include "goalActor.h"
+//#include "actor.h"
+#include "gamehextObj.h"
 
 #include "viewField.h"
 
@@ -14,17 +15,15 @@ enum TRobotState {robotSleep, robotChase, robotWander,
 
 /** A class describing basic robot characteristics and
 	behaviour. */
-class CRobot : public CGoalActor {
+class CRobot : public CGameHexObj /*CHexActor*/ {
 public:
 	CRobot();
-	void frameUpdate(float dT);
-	void update2(float dT);
+	void update(float dT);
 	void setState(TRobotState newState);
 	TRobotState getState();
 	CHex getNextTravelHex(CHex& destination);
 	void draw();
 
-	void hitTarget();
 	int getMissileDamage();
 
 	bool canSee(CGameHexObj* target);
@@ -46,17 +45,8 @@ private:
 	int tigCall(int memberId);
 	void onNotify(COnCursorNewHex& msg);
 
-	void onNotify(CPlayerNewHex& msg);
-
-
-
-	void deathRoutine();
-
-	CHex getLastSeen();
-
 	void updateViewField();
 
-	void checkForPlayer();
 
 	void moveReal();
 
@@ -66,6 +56,7 @@ private:
 
 	void fireMissile(CGameHexObj* target);
 
+	float dT;
 
 	TRobotState state = robotSleep;
 

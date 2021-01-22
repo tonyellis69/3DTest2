@@ -15,7 +15,7 @@ in hexQuad {
 	float visibility;
 	float highlight;
 
-	vec3[9] lattice;
+	vec3[6] neighbours;
 	
 	ivec3 cube;
 	ivec2 index;
@@ -25,7 +25,7 @@ out vec3 texCoord;
 
 flat out float fog;
 flat out float visibility;
-flat out vec3[9] lattice;
+flat out vec3[6] neighbours;
 flat out ivec3 cube;	
 flat out ivec2 index;
 
@@ -37,7 +37,7 @@ void main() {
 			
 		fog = hex[0].fog;
 		visibility = hex[0].visibility;
-		lattice = hex[0].lattice;
+		neighbours = hex[0].neighbours;
 		cube = hex[0].cube;
 		index = hex[0].index;
 			

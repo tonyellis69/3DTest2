@@ -7,8 +7,8 @@
 
 #include "hex/hexArray.h"
 
-//#include "gamehextObj.h"
-#include "actor.h" //replaces the above
+#include "gamehextObj.h"
+//#include "actor.h" //replaces the above
 
 
 #include "messaging/messenger.h"
@@ -39,7 +39,7 @@ public:
 	CGameHexObj* getBlockingEntityAt(CHex& hex);
 	CGameHexObj* getEntityNotSelf(CGameHexObj* self);
 
-	CHexActor* getRobotAt(CHex& hex);
+
 
 	CGameHexObj* getEntityAt2(const CHex& hex);
 
@@ -54,9 +54,7 @@ public:
 
 
 	void onGetTravelPath(CGetTravelPath& msg);
-	void onActorBlockCheck(CFindActorBlock& msg);
 	void onGetLineEnd(CGetLineEnd& msg);
-	void onGetActorAt(CGetActorAt& msg);
 	void onLineOfSight(CLineOfSight& msg);
 	void onRandomHex(CRandomHex& msg);
 	void onFindViewField(CCalcVisionField& msg);
@@ -77,7 +75,7 @@ public:
 
 
 	TEntities entities; ///<The grand list of entities in the map.
-	std::vector<CHexActor*> actors; ///<Shortlist of entities who are actors
+	
 
 	CRobot* testBot;
 	CRobot* testBot2;

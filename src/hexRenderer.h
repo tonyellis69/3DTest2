@@ -59,6 +59,11 @@ public:
 
 	void drawLineModel(CLineModel& lineModel);
 
+	void pointCamera(glm::vec3& dir);
+	void setCameraHeight(float z);
+	void setCameraPos(glm::vec3& pos);
+	void setCameraPitch(float pitch);
+
 	CShader* hexLineShader;
 	CShader* hexSolidShader;
 	CShader* lineShader;

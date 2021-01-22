@@ -53,22 +53,30 @@ void CMissile::moveReal() {
 	position to where it is now. */
 bool CMissile::collisionCheck(glm::vec3& moveVec) {
 	CHex leadingPointHex = worldSpaceToHex(leadingPoint);
+	THexDir exitDir = hexNone; glm::vec3 intersection;
+	CHex startHex = lastLeadingPointHex;
 
 	//first, collect unique hexes that we've intersected so far
 	if (leadingPointHex != lastLeadingPointHex) { //we've moved at least one hex on
-		THexDir exitDir = hexNone; glm::vec3 intersection;
-		CHex startHex = lastLeadingPointHex;
+		//THexDir exitDir = hexNone; glm::vec3 intersection;
+		//CHex startHex = lastLeadingPointHex;
+		startHex = lastLeadingPointHex;
+		exitDir = hexNone;
 		while (startHex != leadingPointHex) {
 			std::tie(exitDir, intersection) = world.map->findSegmentExit(leadingPointLastHex, leadingPoint, startHex);
 			CHex entryHex = getNeighbour(startHex, exitDir);
+			//if (entryHex == hexNone) { //errors? try reinstating this
+			//	break; //hopefully catch rare case where leading point on hex border.
+			//}
 			intersectedHexes.insert({entryHex, intersection});
 			startHex = entryHex;
 		}
 	}
 
 
+
 	//Check every frame if we've collided with a robot in one of those hexes
-	for (auto &hex: intersectedHexes) {
+	for (auto& hex: intersectedHexes) {
 		CGameHexObj* entity = world.map->getEntityAt2(hex.first);
 		if (entity && entity != owner) {
 			auto [hit, intersection] = entity->collisionCheck(startingPos, leadingPoint);
@@ -83,7 +91,6 @@ bool CMissile::collisionCheck(glm::vec3& moveVec) {
 	//still here? Check if we've collided with scenery - but only if we've entered a new hex.
 	if (leadingPointHex != lastLeadingPointHex) {
 		for (auto& hex : intersectedHexes) {
-
 			if (world.map->getHexCube(hex.first).content == solidHex) {
 				collided = true;
 				worldPos = hex.second - (moveVec * distToPoint);
@@ -95,10 +102,12 @@ bool CMissile::collisionCheck(glm::vec3& moveVec) {
 		//optimisation: remove hex from list if safe to do so
 		if (intersectedHexes.size() > 1) {
 			auto exitedHex = intersectedHexes.find(lastLeadingPointHex);
-			intersectedHexes.erase(exitedHex);
+			if (exitedHex  != intersectedHexes.end())
+				intersectedHexes.erase(exitedHex);
 		}
 		lastLeadingPointHex = leadingPointHex;
 	}
+
 
 	return false;
 }

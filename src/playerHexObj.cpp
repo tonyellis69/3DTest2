@@ -16,24 +16,20 @@ CPlayerObject::CPlayerObject() {
 	messageBus.setHandler<CGetPlayerPos>(this, &CPlayerObject::onGetPlayerPos);
 	messageBus.setHandler<CSetPlayerAction>(this, &CPlayerObject::onSetPlayerAction);
 	messageBus.setHandler<CTakeItem>(this, &CPlayerObject::onTakeItem);
-	messageBus.setHandler<CGetPlayerObj>(this, &CPlayerObject::onGetPlayerObj);
-	messageBus.setHandler<CPlayerSeen>(this, &CPlayerObject::onPlayerSeen);
 
-	tmpHP = 12;
-	actionPoints = 6;
 
 	viewField.centre = CHex(0);
 	viewField.setField(10);
 
-	APlabel = gui::addLabel(std::to_string(actionPoints), 600, style::mainWinCtrlBorder);
-	APlabel->setTextColour(style::uiWhite);
-	APlabel->setSize(style::labelPresets[1]);
-	APlabel->setFont(style::themes2.at("gameTheme").styles.at("mainHeader").font);
+	//APlabel = gui::addLabel(std::to_string(actionPoints), 600, style::mainWinCtrlBorder);
+	//APlabel->setTextColour(style::uiWhite);
+	//APlabel->setSize(style::labelPresets[1]);
+	//APlabel->setFont(style::themes2.at("gameTheme").styles.at("mainHeader").font);
 
 }
 
 CPlayerObject::~CPlayerObject() {
-	gui::removeControl(APlabel);
+	//gui::removeControl(APlabel);
 }
 
 /** Player has pressed or released the fire button. */
@@ -49,62 +45,6 @@ void CPlayerObject::onFireKey(bool pressed) {
 	world.sprites.push_back(missile);
 }
 
-
-
-
-bool CPlayerObject::update(float dT) {
-	this->dT = dT;
-	CHex oldPosition = hexPosition;
-
-	switch (action) {
-	case tig::actMoveTo:
-	case tig::actPlayerMove:
-		if (navigatePath(dT)) {
-			action = tig::actNone;
-		}
-		break;
-
-	case tig::actMelee:
-		if (meleeAttack(dT)) {
-			hitTarget();
-			action = tig::actNone;
-		}
-		break;
-
-	case tig::actShoot:
-		if (shootTarget(dT)) {
-			action = tig::actNone;
-		}
-		break;
-
-	case tig::actNone:
-		return resolved;
-	}
-
-	//TO DO: may not need as well as CActorMovedHex
-	if (hexPosition != oldPosition) {
-		CPlayerNewHex msg(hexPosition);
-		send(msg);
-	}
-
-	return unresolved;
-}
-
-
-
-
-
-/** Deliver melee damage to our current target. */
-void CPlayerObject::hitTarget() {
-	if (actionTarget == NULL)
-		return;
-
-	CFindPowerUser msg(this);
-	send(msg);
-	int damage = msg.power;
-
-	actionTarget->receiveDamage(*this, damage);
-}
 
 
 
@@ -144,37 +84,6 @@ void CPlayerObject::equipItem(int itemNo) {
 	callTigObj(tig::onEquip, itemNo);
 }
 
-/** Respond to left-click/primary action in power mode. */
-void CPlayerObject::leftClickPowerMode() {
-	CReserveNextPower msg(this);
-	send(msg);
-}
-
-
-void CPlayerObject::onTurnBegin() {
-	liveLog << "\nPlayer turn begin";
-	psu->topUp();
-
-	psu->updateDisplay();
-
-	actionPoints = 6;
-}
-
-/**Tidy up player state ready for the next round. */
-void CPlayerObject::onTurnEnd() {
-
-	if (world.onscreenRobotAction == true) {
-		if (action == tig::actMoveTo) { //if we're already moving we want to stop
-			travelPath.clear();
-			action = tig::actNone;
-		}
-
-	}
-
-
-	psu->onTurnEnd();
-	psu->updateDisplay();
-}
 
 void CPlayerObject::onGetPlayerPos(CGetPlayerPos& msg) {
 	msg.position = hexPosition;
@@ -188,29 +97,8 @@ void CPlayerObject::onTakeItem(CTakeItem& msg) {
 	takeItem(*msg.item);
 }
 
-void CPlayerObject::onGetPlayerObj(CGetPlayerObj& msg) {
-	msg.playerObj = this;
-}
-
-void CPlayerObject::onPlayerSeen(CPlayerSeen& msg) {
-	if (action == tig::actMoveTo) {
-		if (!travelPath.empty()) {
-			travelPath.clear();
-			action = tig::actNone;
-		}
-	}
-}
 
 
-void CPlayerObject::deathRoutine() {
-	std::string deathLog = "\nYou were killed!";
-
-	CSendText msg(combatLog, deathLog);
-	send(msg);
-
-	CKill killMsg(this);
-	send(killMsg);
-}
 
 void CPlayerObject::receiveDamage(CGameHexObj& attacker, int damage) {
 	liveLog << "\nPlayer hit!";
@@ -373,7 +261,7 @@ void CPlayerObject::onVerticalKeyRelease() {
 }
 
 
-void CPlayerObject::update2(float dT) {
+void CPlayerObject::update(float dT) {
 	this->dT = dT;
 
 	switch (travelDir) {

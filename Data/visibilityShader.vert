@@ -19,7 +19,7 @@ out hexQuad { //describes a quad that describes a hex
 	float visibility;
 	float highlight;
 
-	vec3[9] lattice;
+	vec3[6] neighbours;
 	
 	ivec3 cube;
 	ivec2 index;
@@ -94,8 +94,11 @@ void main() {
 
 	
 	ivec3 hex = offsetToCube(index);
-	for (int latticePos = 0; latticePos < 9; latticePos++) {
-		hexQuadOut.lattice[latticePos] = getTexel(latticePos,hex).rgb;
+	for (int n = 0; n < 6; n++) {
+		ivec3 neighbourHex =  getNeighbour(hex,n);
+		ivec2 offset = cubeToOffset(neighbourHex);
+		int flatIndex = (offset.y * gridSize.x) + offset.x;	
+		hexQuadOut.neighbours[n] = texelFetch(effectsTex,flatIndex).rgb;
 	}
 	
 	

@@ -15,9 +15,7 @@ CGameHexArray::~CGameHexArray() {
 
 void CGameHexArray::setMessageHandlers() {
 	messageBus.setHandler< CGetTravelPath>(this, &CGameHexArray::onGetTravelPath);
-	messageBus.setHandler< CFindActorBlock>(this, &CGameHexArray::onActorBlockCheck);
 	messageBus.setHandler< CGetLineEnd>(this, &CGameHexArray::onGetLineEnd);
-	messageBus.setHandler< CGetActorAt>(this, &CGameHexArray::onGetActorAt);
 	messageBus.setHandler< CLineOfSight>(this, &CGameHexArray::onLineOfSight);
 	messageBus.setHandler< CRandomHex>(this, &CGameHexArray::onRandomHex);
 	messageBus.setHandler< CCalcVisionField>(this, &CGameHexArray::onFindViewField);
@@ -117,10 +115,6 @@ CGameHexObj* CGameHexArray::getEntityNotSelf(CGameHexObj* self) {
 	return NULL;
 }
 
-CHexActor* CGameHexArray::getRobotAt(CHex& hex) {
-	return (CHexActor*)getEntityClassAt(tig::CRobot2, hex);
-}
-
 /** NB returns first entity found at this hex. Will need extending. */
 CGameHexObj* CGameHexArray::getEntityAt2(const CHex& hex) {
 	auto entity = entityMap.find(hex);
@@ -217,30 +211,11 @@ void CGameHexArray::onGetTravelPath(CGetTravelPath& msg) {
 
 
 
-/** If an actor is blocking this hex, return it. */
-void CGameHexArray::onActorBlockCheck(CFindActorBlock& msg) {
-	auto [first, last] = getEntitiesAt(msg.hex);
-	for (auto it = first; it != last; it++) {
-		if (it->second->isActor()) {
-			msg.blockingActor = (CHexActor*)it->second;
-			return;
-		}
-	}
-}
 
 void CGameHexArray::onGetLineEnd(CGetLineEnd& msg) {
 	msg.end = findLineEnd(msg.start, msg.end);
 }
 
-void CGameHexArray::onGetActorAt(CGetActorAt& msg) {
-	auto [first, last] = getEntitiesAt(msg.hex);
-	for (auto it = first; it != last; it++) {
-		if (it->second->isActor() &&  it->second != msg.notActor) {
-			msg.actor = (CHexActor*)it->second;
-			return;
-		}
-	}
-}
 
 
 
@@ -386,9 +361,14 @@ std::tuple<THexDir, glm::vec3> CGameHexArray::findSegmentExit(glm::vec3& A, glm:
 
 		if (segIntersect(A, B, faceA, faceB, intersection)) {
 			exitDir = THexDir(face);
+			
 			break;
 		}
 	}
+
+//	if (exitDir == hexNone)
+	//	int b = 0;
+
 	return { exitDir, intersection };
 }
 

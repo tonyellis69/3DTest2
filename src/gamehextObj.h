@@ -59,7 +59,7 @@ public:
 
 	virtual void playerSight(bool inView);
 
-	virtual void update2(float dT) {}
+	virtual void update(float dT) {}
 
 	virtual std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB) {
 		return std::tuple<bool, glm::vec3>();
@@ -138,12 +138,7 @@ public:
 	CGameHexObj* reserver;
 };
 
-class CKill : public CMsg {
-public:
-	CKill(CGameHexObj* e) : entity(e) {}
 
-	CGameHexObj* entity;
-};
 
 class CFindPowerUser : public CMsg {
 public:
