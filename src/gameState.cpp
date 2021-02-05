@@ -31,8 +31,8 @@ void CGameState::destroySprite(CSprite& deadSprite) {
 	spriteDeathlist.push_back(&deadSprite);
 }
 
-void CGameState::destroyEntity(CGameHexObj& entity) {
-	map->removeEntity(&entity);
+void CGameState::deleteEntity(CGameHexObj& entity) {
+	map->deleteEntity(entity);
 }
 
 void CGameState::update(float dT) {
@@ -46,4 +46,9 @@ void CGameState::update(float dT) {
 	}
 
 	spriteDeathlist.clear();
+
+	//TO DO: look into tidying the above into something like the below
+
+
+	map->tidyEntityLists();
 }

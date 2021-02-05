@@ -8,7 +8,7 @@
 
 #include "missile.h"
 
-
+#include "sound/sound.h"
 
 CPlayerObject::CPlayerObject() {
 	psu = new CPowerSupply();
@@ -43,6 +43,8 @@ void CPlayerObject::onFireKey(bool pressed) {
 	missile->setOwner(this);
 
 	world.sprites.push_back(missile);
+
+	snd::play("shoot");
 }
 
 

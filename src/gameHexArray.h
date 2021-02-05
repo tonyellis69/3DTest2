@@ -71,8 +71,10 @@ public:
 	void addEntity(TEntity entity, CHex& hex);
 	void movingTo(CGameHexObj* entity, CHex& pos, CHex& dest);
 	void movedTo(CGameHexObj* entity, CHex& oldHex, CHex& newHex);
-	void removeEntity(CGameHexObj* entity);
 
+	void deleteEntity(CGameHexObj& entity);
+
+	void tidyEntityLists();
 
 	TEntities entities; ///<The grand list of entities in the map.
 	
@@ -85,6 +87,8 @@ public:
 private:
 
 	std::unordered_multimap<CHex, CGameHexObj*, hex_hash> entityMap;
+	
+	bool entityListDirty = false;
 
 };
 

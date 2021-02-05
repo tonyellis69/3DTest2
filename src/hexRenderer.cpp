@@ -75,10 +75,10 @@ void CHexRenderer::drawFloorPlan() {
 	
 	glDisable(GL_DEPTH_TEST);
 	//draw inner hex for empty hexes
-	lineShader->setShaderValue(hColour, floorplanSpaceColour);
+	//lineShader->setShaderValue(hColour, floorplanSpaceColour);
 
 	//draw filled hexes for solid hexes
-	lineShader->setShaderValue(hColour, floorplanSolidColour);
+	hexSolidShader->setShaderValue(hColour, floorplanSolidColour);
 
 	//draw hex wireframe grid
 	lineShader->setShaderValue(hColour, floorplanLineColour);
@@ -113,7 +113,8 @@ void CHexRenderer::drawFloorPlan() {
 	pRenderer->setShader(visibilityShader);
 	visibilityShader->setShaderValue(hHexMVPv, mvp);
 	visibilityShader->setShaderValue(hGridSizev, glm::i32vec2(hexArray->width, hexArray->height));
-	pRenderer->drawPointsBuf(hexShaderBuf, 0, hexShaderBuf.numElements);
+	//!!!temporarily disabled to see whole map
+	//pRenderer->drawPointsBuf(hexShaderBuf, 0, hexShaderBuf.numElements);
 
 
 

@@ -10,8 +10,9 @@ CGameHexObj::CGameHexObj() {
 }
 
 void CGameHexObj::draw() {
-	if (!visibleToPlayer)
-		return;
+	//if (!visibleToPlayer)
+	//	return;
+	//!!!temporarily disabled to see map properly
 	CHexObject::draw();
 }
 
@@ -50,6 +51,28 @@ player's fov. */
 void CGameHexObj::playerSight(bool inView) {
 	if (inView)
 		visibleToPlayer = true; //will stay in view by default
+}
+
+/** Return angle between the way we're facing and the given point. */
+float CGameHexObj::angleTo(glm::vec3& targetPos) {
+	//find direction to target
+	glm::vec3 targetDir = targetPos - worldPos;
+	targetDir = glm::normalize(targetDir);
+	float targetAngle = glm::acos(glm::dot(targetDir, glm::vec3(1, 0, 0)));
+
+	//find shortest angle between this and our direction
+	if (targetDir.y > 0)
+		targetAngle = 2 * M_PI - targetAngle;
+
+
+
+	float PI_2 = 2 * M_PI;
+
+	float dist = fmod(PI_2 + targetAngle - rotation, PI_2);
+	if (dist > M_PI)
+		dist = -(PI_2 - dist);
+
+	return dist;
 }
 
 

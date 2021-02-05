@@ -11,11 +11,11 @@
 #include "viewField.h"
 
 enum TRobotState {robotSleep, robotChase, robotWander, 
-	robotMelee, robotShoot, robotHunt};
+	robotMelee, robotShoot, robotHunt, robotLightSleep};
 
 /** A class describing basic robot characteristics and
 	behaviour. */
-class CRobot : public CGameHexObj /*CHexActor*/ {
+class CRobot : public CGameHexObj  {
 public:
 	CRobot();
 	void update(float dT);
@@ -58,7 +58,7 @@ private:
 
 	float dT;
 
-	TRobotState state = robotSleep;
+	TRobotState state = robotLightSleep;
 
 
 	float robotMoveSpeed = 3.0f;// 2.5f;
@@ -74,6 +74,10 @@ private:
 
 	float missileCooldown = 0.0f;
 	CGameHexObj* targetEntity;
+
+
+	glm::vec4 hostileColour = { 1,0,0,1 };
+
 };
 
 

@@ -2,7 +2,7 @@
 
 uniform vec4 colour = vec4(0.545f, 0.0f, 0.545f, 1);
 
-const vec4 fogColour = vec4(0.7,0,0,1); //vec4( 0.1,0.1,0.1,1 );
+const vec4 fogColour = vec4(0.0,0,1,0.25f); //vec4( 0.1,0.1,0.1,1 );
 const vec4 haze = vec4(0.4,0.4,0.4,0.5);
 
 in vec3 texCoord;

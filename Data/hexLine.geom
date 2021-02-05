@@ -20,7 +20,7 @@ in uint outContent[];
 void main() {
 
 		if (hex[0].fog == 1.0)
-			return;
+		 return;
 
 		
 		gl_Position =  hex[0].vert;	

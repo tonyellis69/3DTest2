@@ -5,17 +5,13 @@
 #include <glm/gtx/vector_angle.hpp> 
 
 #include "utils/log.h"
-
 #include "gameTextWin.h"
-
 #include "gameState.h"
-
 #include "hexRenderer.h"
 
 CGameHexObj nullGameHexObj;
 
 CHexWorld::CHexWorld() {
-	//hexRenderer = &hexRendr2;
 	hexRendr2.init();
 	CHexObject::setHexRenderer(&hexRendr2);
 	
@@ -74,19 +70,23 @@ void CHexWorld::startGame() {
 	world.setMap(map);
 
 
-	
-
-	
 	//create new player object
 	playerObj = new CPlayerObject();
 	playerObj->setLineModel("player");
-	map->addEntity(TEntity(playerObj), CHex(0, -8, 8));
+	map->addEntity(TEntity(playerObj), map->findRandomHex(true));
+
+	//temp brute-force remove nearby robots
+	for (auto& entity : map->entities) {
+		if (entity->entityType == entRobot && cubeDistance(entity->hexPosition, playerObj->hexPosition) < 8)
+			map->deleteEntity(*entity);
+	}
+
 
 	world.player = playerObj;
 
 
 	playerObj->setTigObj(vm->getObject("player"));
-	//map->entities.push_back(playerObj);
+
 	subscribe(playerObj);
 	playerObj->updateViewField();
 	alertEntitiesInPlayerFov();
@@ -387,15 +387,14 @@ void CHexWorld::onDropItem(CDropItem& msg) {
 }
 
 void CHexWorld::onRemoveEntity(CRemoveEntity& msg) {
-	map->removeEntity(msg.entity);
+	map->deleteEntity(*msg.entity);
 }
 
 void CHexWorld::onCreateGroupItem(CCreateGroupItem& msg) {
 	CGroupItem* groupItem = createGroupItem();
 	groupItem->items.push_back(msg.item1);
 	groupItem->items.push_back(msg.item2);
-//	map->removeFromMap(msg.item2);
-	map->removeEntity(msg.item2);
+	map->deleteEntity(*msg.item2);
 	groupItem->setPosition(playerObj->hexPosition);
 }
 

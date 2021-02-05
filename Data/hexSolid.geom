@@ -21,8 +21,10 @@ const float halfSquare = 1.0f;
 
 void main() {
 
-		if ( (hex[0].content != uint(2) && hex[0].highlight != 1.0f) 
-			||	hex[0].fog == 1.0f ) 
+		if ( (
+		hex[0].content != uint(2) &&  hex[0].highlight != 1.0f) 
+			/* ||	hex[0].fog == 1.0f*/ ) 
+			//!!!prevents drawing of fogged solid hexes - may not need
 				return;
 		
 

@@ -2,7 +2,7 @@
 
 #define PI 3.1415926538
 
-uniform vec4 colour2 = vec4(0,1,0,1); //TO DO: import colour value
+uniform vec4 colour;
 
 in vec2 gsTexCoord;
 
@@ -10,7 +10,7 @@ out vec4 outputColor;
 
 void main() {
 
-	outputColor = colour2;
+	outputColor = colour;
 
 	float lateralFade =  abs(gsTexCoord.y - 0.5) / 0.5;  // puts in form 1 - 0 - 1, like a graph axis
 	

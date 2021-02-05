@@ -26,6 +26,8 @@
 
 #include "buf2.h"
 
+#include "sound/sound.h"
+
 using namespace glm;
 
 
@@ -332,6 +334,7 @@ void C3DtestApp::onStart() {
 	messageBus.setHandler<CSysMsg>(this, &C3DtestApp::onSysMessage);
 
 
+	snd::loadSample("shoot", dataPath + "sounds\\shoot.wav");
 
 	return;
 }
@@ -344,6 +347,7 @@ void C3DtestApp::keyCheck() {
 	if (appMode == hexMode) {
 		if (keyNow(GLFW_KEY_LEFT_CONTROL)) {
 			if (keyNow('W')) {
+
 				hexWorld.moveCamera(glm::vec3{ 0, 1, 0 });
 			}
 			else if (keyNow('S')) {
@@ -1634,8 +1638,8 @@ void C3DtestApp::initHexWorld() {
 
 	GUIroot.add(hexWorld.hexPosLbl);
 
-	ITigObj* map = vm.getObject("testRoom");
-	hexWorld.makeMap(map);
+	ITigObj* tigMapTemplate = vm.getObject("testRoom");
+	hexWorld.makeMap(tigMapTemplate);
 	hexWorld.startGame();
 }
 

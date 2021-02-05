@@ -19,20 +19,20 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 
 	map->updateBlocking();
 
-	for (int x = 0; x < 1; x++) {
+	for (int x = 0; x < 12; x++) {
 		auto robotM = std::make_shared<CRobot>();
 		robotM->setLineModel("robot");
-		//map->addEntityActor(robotM, map->findRandomHex(true));
-		map->addEntity(robotM, CHex(-2,-4,6));
+		map->addEntity(robotM, map->findRandomHex(true));
+		//map->addEntity(robotM, CHex(-2,-4,6));
 		robotM->setTigObj(pRobot);
-		map->testBot = robotM.get();
+		//map->testBot = robotM.get();
 	}
 
-	auto robotM = std::make_shared<CRobot>();
-	robotM->setLineModel("robot");
-	map->addEntity(robotM, CHex(-1, -4, 5));
-	robotM->setTigObj(pRobot);
-	map->testBot2 = robotM.get();
+	//auto robotM = std::make_shared<CRobot>();
+	//robotM->setLineModel("robot");
+	//map->addEntity(robotM, CHex(-1, -4, 5));
+	//robotM->setTigObj(pRobot);
+	//map->testBot2 = robotM.get();
 
 
 
@@ -101,6 +101,7 @@ CGameHexArray* CMapMaker::createMap() {
 
 		tmpaddBlocks();
 		hexArray->updateBlocking();
+
 		tmpaddDesks();
 
 	//} while (!hexArray->isValidPath(CHex(-13, 5, 8), CHex(13, -4, -9)));
@@ -206,13 +207,13 @@ THexDir CMapMaker::randomFreeDir(CHex& cubePos) {
 
 
 void CMapMaker::tmpaddDesks() {
-	int numDesks = 7;
-	for (int d = 0; d < numDesks; d++) {
-		CHex deskPos = hexArray->indexToCube(randomFreeHex());
-		auto desk = tmpCreateDesk();
-		//desk->setPosition(deskPos);
-		hexArray->addEntity(desk, deskPos);
-	}
+	//int numDesks = 7;
+	//for (int d = 0; d < numDesks; d++) {
+	//	CHex deskPos = hexArray->indexToCube(randomFreeHex());
+	//	auto desk = tmpCreateDesk();
+	//	//desk->setPosition(deskPos);
+	//	hexArray->addEntity(desk, deskPos);
+	//}
 
 }
 
@@ -228,33 +229,26 @@ TEntity CMapMaker::tmpCreateDesk() {
 /** Fill the map with its permanent entities. */
 void CMapMaker::tempPopulateMap() {
 
-	//CHexItem* wrench;
-	//CHexItem* shield;
-	//CHexItem* blaster;
-	//CDoor* door;
+	//auto wrench = std::make_shared<CHexItem>();
+	//wrench->setLineModel("test");
+	//hexArray->addEntity(wrench, CHex(-7, 0, 7));
+	//wrench->setTigObj(vm->getObject(tig::monkeyWrench));
 
-	auto wrench = std::make_shared<CHexItem>();
-	wrench->setLineModel("test");
-	hexArray->addEntity(wrench, CHex(-7, 0, 7));
-	wrench->setTigObj(vm->getObject(tig::monkeyWrench));
-	//hexArray->entities.push_back(wrench);
 
-	auto shield = std::make_shared<CHexItem>();
-	shield->setLineModel("test");
-	hexArray->addEntity(shield, CHex(-5, -2, 7));
-	shield->setTigObj(vm->getObject(tig::shield));
-	//hexArray->entities.push_back(shield);
+	//auto shield = std::make_shared<CHexItem>();
+	//shield->setLineModel("test");
+	//hexArray->addEntity(shield, CHex(-5, -2, 7));
+	//shield->setTigObj(vm->getObject(tig::shield));
 
-	auto blaster = std::make_shared<CHexItem>();
-	blaster->setLineModel("test");
-	hexArray->addEntity(blaster, CHex(-6, -1, 7));
-	blaster->setTigObj(vm->getObject(tig::blaster));
-	//hexArray->entities.push_back(blaster);
+	//auto blaster = std::make_shared<CHexItem>();
+	//blaster->setLineModel("test");
+	//hexArray->addEntity(blaster, CHex(-6, -1, 7));
+	//blaster->setTigObj(vm->getObject(tig::blaster));
 
-	auto door = std::make_shared<CDoor>();
-	door->setLineModel("door");
-	hexArray->addEntity(door, CHex(13, -4, -9));
-	door->setTigObj(vm->getObject(tig::CDoor));
-	door->setZheight(0.01f); //TO DO: sort this!!!!!
-	//hexArray->entities.push_back(door);
+	//auto door = std::make_shared<CDoor>();
+	//door->setLineModel("door");
+	//hexArray->addEntity(door, CHex(13, -4, -9));
+	//door->setTigObj(vm->getObject(tig::CDoor));
+	//door->setZheight(0.01f); //TO DO: sort this!!!!!
+
 }

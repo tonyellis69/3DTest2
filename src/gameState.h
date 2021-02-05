@@ -25,7 +25,7 @@ public:
 	void onNotify(COnCursorNewHex& msg);
 	bool isBlocked(CHex& pos, CHex& dest);
 	void destroySprite(CSprite& sprite);
-	void destroyEntity(CGameHexObj& entity);
+	void deleteEntity(CGameHexObj& entity);
 	void update(float dT);
 
 

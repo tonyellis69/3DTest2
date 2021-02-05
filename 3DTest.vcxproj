@@ -79,7 +79,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>D:\projects\glfw32\include;D:\projects\VMtest\src;$(SolutionDir)..\SFML-1.6\include;$(SolutionDir)..\glew\include\GL;$(SolutionDir)..\glm;$(SolutionDir)..\TC\Debug;$(SolutionDir)..\3DEngine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\projects\glfw32\include;D:\projects\VMtest\src;$(SolutionDir)..\glew\include\GL;$(SolutionDir)..\glm;$(SolutionDir)..\TC\Debug;$(SolutionDir)..\3DEngine\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <UndefinePreprocessorDefinitions>%(UndefinePreprocessorDefinitions)</UndefinePreprocessorDefinitions>
@@ -102,7 +102,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SoltionDir)..\3DEngine\src;$(SolutionDir)..\TC\Debug;$(SolutionDir)..\glm;$(SolutionDir)..\glew\include\GL;$(SolutionDir)..\SFML-1.6\include;$(SolutionDir)..\VMtest\src;$(SolutionDir)..\glfw32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SoltionDir)..\3DEngine\src;$(SolutionDir)..\TC\Debug;$(SolutionDir)..\glm;$(SolutionDir)..\glew\include\GL;$(SolutionDir)..\VMtest\src;$(SolutionDir)..\glfw32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>

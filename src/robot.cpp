@@ -7,6 +7,7 @@
 
 #include <glm/gtx/vector_angle.hpp>
 
+#include "sound/sound.h"
 
 const float rad360 = M_PI * 2;
 
@@ -14,6 +15,8 @@ const float rad360 = M_PI * 2;
 CRobot::CRobot() {
 	viewField.setField(5, 60);
 	normalColour = glm::vec4(0.3, 1, 0.3, 1); //temp!
+
+	entityType = entRobot;
 }
 
 //void CRobot::frameUpdate(float dT) {
@@ -42,6 +45,17 @@ void CRobot::update(float dT) {
 
 	if (state == robotSleep)
 		return;
+
+	if (state == robotLightSleep) {
+		if (cubeDistance(hexPosition, world.player->hexPosition) <= 4) {
+			setState(robotHunt);
+		}
+		else
+			return;
+		
+	}
+
+
 
 	//if the player is adjacent, hit player
 	if (state == robotChase && glm::distance(worldPos, world.player->worldPos) 
@@ -79,14 +93,25 @@ void CRobot::update(float dT) {
 		melee();
 	}
 
-	if (state == robotShoot && missileCooldown <= 0) {
-		if (hasLineOfSight(targetEntity)) {
-			fireMissile(targetEntity);
-			missileCooldown = 3;
+	if (state == robotShoot) {
+		//are we facing target? 
+		//if not, face target
+		//compare robot direction with target direction
+		float angleDiff = angleTo(targetEntity->worldPos);
+		if (abs(angleDiff) > 0.01f) { //not lined up, so rotate
+			rotation += float( (angleDiff > 0) - (angleDiff < 0)) * dT * 5.0f;
+			buildWorldMatrix();
+			return;
 		}
-		else
-			setState(robotHunt);
-			
+
+		if (missileCooldown <= 0) {
+			if (hasLineOfSight(targetEntity)) {
+				fireMissile(targetEntity);
+				missileCooldown = 3;
+			}
+			else
+				setState(robotHunt);
+		}
 	}
 
 	if (state == robotHunt) {
@@ -144,9 +169,11 @@ void CRobot::setState(TRobotState newState) {
 		break;
 	case robotShoot:
 		targetEntity = world.player;
+		missileCooldown = 1.0f;
 		break;
 	case robotHunt:
 		targetEntity = world.player;
+		lineModel.setColourR(hostileColour);
 		break;
 	}
 
@@ -225,7 +252,7 @@ std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& s
 void CRobot::receiveDamage(CGameHexObj& attacker, int damage) {
 	//temp!!!!!!!!!!!!!!
 	liveLog << "\nHit robot!";
-	world.destroyEntity(*this);
+	world.deleteEntity(*this);
 }
 
 
@@ -365,6 +392,11 @@ bool CRobot::hasLineOfSight(CGameHexObj* target) {
 	CHex targetHex = worldSpaceToHex(targetPos);
 	while (startHex != targetHex) {
 		std::tie(exitDir, intersection) = world.map->findSegmentExit(worldPos, targetPos, startHex);
+
+		if (exitDir == hexNone)
+			int b = 0; //!!!!!!!!!!!!!!!!!!!!!!!!!still get infinte loop here sometimes
+		//leave this in until you solve it!
+
 		CHex entryHex = getNeighbour(startHex, exitDir);
 		
 		if (world.map->getHexCube(entryHex).content != emptyHex)
@@ -385,6 +417,8 @@ void CRobot::fireMissile(CGameHexObj* target) {
 	missile->setPosition(worldPos, targetAngle);
 	missile->setOwner(this);
 	world.sprites.push_back(missile);
+
+	snd::play("shoot");
 }
 
 

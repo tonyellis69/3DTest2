@@ -408,20 +408,31 @@ void CGameHexArray::movedTo(CGameHexObj* entity, CHex& oldHex, CHex& newHex) {
 	entityMap.insert({ newHex, entity });
 }
 
-/** Remove this entity from the map. */
-void CGameHexArray::removeEntity(CGameHexObj* entity) {
-	for (auto& it = entityMap.begin(); it != entityMap.end();) {
-		if (it->second == entity)
-			it = entityMap.erase(it);
-		else
-			it++;
-	}
 
-	for (auto it = entities.begin(); it != entities.end(); it++) {
-		if (it->get() == entity) {
-			entities.erase(it);
-			return;
+/** Tag an entity for immediate deletion from the map. */
+void CGameHexArray::deleteEntity(CGameHexObj& entity) {
+	entity.deleteMe = true;
+	entityListDirty = true;
+}
+
+/** Remove any enities marked for deletion from the entity lists. */
+void CGameHexArray::tidyEntityLists() {
+	if (entityListDirty) {
+		for (auto& it = entityMap.begin(); it != entityMap.end();) {
+			if (it->second->deleteMe)
+				it = entityMap.erase(it);
+			else
+				it++;
 		}
+
+		for (auto& it = entities.begin(); it != entities.end(); ) {
+			if (it->get()->deleteMe)
+				it = entities.erase(it);
+			else
+				it++;
+		}
+
+		entityListDirty = false;
 	}
 }
 

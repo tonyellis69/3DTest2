@@ -16,7 +16,7 @@ void CBolt::fireAt(CGameHexObj* attacker , CHex& target) {
 	moveVector = worldSpaceDestination - worldPos;
 	moveVector.z = 0;
 	moveVector = glm::normalize(moveVector);
-	float dot = glm::dot(moveVector, glm::vec3(1, 0, 0));
+	//float dot = glm::dot(moveVector, glm::vec3(1, 0, 0));
 	rotation = glm::acos(glm::dot(moveVector, glm::vec3(1, 0, 0)));
 	if (moveVector.y > 0)
 		rotation = 2*M_PI - rotation;

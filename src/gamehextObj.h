@@ -22,6 +22,7 @@ enum TMoveDir {
 	moveSW, moveNW, moveNorth, moveSouth, moveNS2, moveNS2blocked
 };
 
+enum TEntityType { entNone, entRobot};
 
 /** Basic hex object to derive game hex objects from,
 	such as robots. */
@@ -65,6 +66,7 @@ public:
 		return std::tuple<bool, glm::vec3>();
 	}
 
+	float angleTo(glm::vec3& targetPos);
 
 
 	unsigned int mBlocks; ///<If true, blocks travel path
@@ -79,6 +81,8 @@ public:
 	//TO DO: consider moving to CHexActor
 	
 	TMoveDir travelDir = moveNone;
+
+	TEntityType entityType = entNone;
 
 protected:
 	int tigCall(int memberId) { return 0; };
