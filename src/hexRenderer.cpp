@@ -11,7 +11,7 @@ CHexRenderer hexRendr2;
 #include "../3DTest/src/gameState.h"
 
 #include <cmath>
-
+#include <numeric>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/vector_angle.hpp> 
 
@@ -30,6 +30,7 @@ void CHexRenderer::init() {
 	createLineShader();
 	createHexShader();
 	createVisibilityShader();
+	createExplosionShader();
 
 	camera.setNearFar(0.1f, 1000.0f);
 	camera.setPos(glm::vec3(0, -0, 12));
@@ -49,6 +50,11 @@ void CHexRenderer::init() {
 	std::vector<glm::vec3> lineVerts = { {-0.1,0,0}, {0,0,0}, {1,0,0}, {1.1,0,0} };
 	std::vector<unsigned int> index = { 0,1,2,3 };
 	unitLineBuf.storeVerts(lineVerts, index, 3);
+
+	std::vector<glm::vec3> dummyVerts(90, glm::vec3(0));
+	std::vector<unsigned int> dummyIndex(90);
+	std::iota(std::begin(dummyIndex), std::end(dummyIndex), 0); // Fill with 0, 1, ..., 99.
+	explosionBuf.storeVerts(dummyVerts, dummyIndex, 1);
 }
 
 
@@ -268,7 +274,17 @@ void CHexRenderer::drawSightLine(glm::vec3& posA, glm::vec3& posB) {
 	lineShader->setShaderValue(hColour,glm::vec4(1,0,0,1));
 
 	pRenderer->drawLineStripAdjBuf(unitLineBuf, 0, 4);
+}
 
+void CHexRenderer::drawExplosion( glm::vec3& pos, float& lifeTime, float& size, float& timeOut) {
+	pRenderer->setShader(explosionShader);
+	glm::mat4 mvp = camera.clipMatrix;
+	explosionShader->setShaderValue(hExpMVP, mvp);
+	explosionShader->setShaderValue(hPos, pos);
+	explosionShader->setShaderValue(hLifeTime, lifeTime);
+	explosionShader->setShaderValue(hSize, size);
+	explosionShader->setShaderValue(hTimeOut, timeOut);
+	pRenderer->drawPointsBuf(explosionBuf, 0, explosionBuf.numElements);
 }
 
 
@@ -413,6 +429,15 @@ void CHexRenderer::createVisibilityShader() {
 	hHexMVPv = visibilityShader->getUniformHandle("mvpMatrix");
 	hGridSizev = visibilityShader->getUniformHandle("gridSize");
 	hEffectsTexUniformv = visibilityShader->getUniformHandle("effectsTex");
+}
+
+void CHexRenderer::createExplosionShader() {
+	explosionShader = pRenderer->createShader("shaders\\explosion");
+	hPos = explosionShader->getUniformHandle("pos");
+	hExpMVP = explosionShader->getUniformHandle("mvpMatrix");
+	hLifeTime = explosionShader->getUniformHandle("lifeTime");
+	hSize = explosionShader->getUniformHandle("size");
+	hTimeOut = explosionShader->getUniformHandle("timeOut");
 }
 
 void CHexRenderer::setCameraAspectRatio(glm::vec2 ratio) {

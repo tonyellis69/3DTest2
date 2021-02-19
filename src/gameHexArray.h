@@ -65,7 +65,7 @@ public:
 
 	CHex getSegmentFirstHex(glm::vec3& A, glm::vec3& B);
 
-	std::tuple<THexDir, glm::vec3> findSegmentExit(glm::vec3& A, glm::vec3& B, CHex& hex);
+	std::tuple<THexDir, glm::vec3> findSegmentExit(glm::vec3 A, glm::vec3 B, CHex& hex);
 
 
 	void addEntity(TEntity entity, CHex& hex);

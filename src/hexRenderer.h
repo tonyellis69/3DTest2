@@ -57,6 +57,8 @@ public:
 
 	void drawSightLine(glm::vec3& posA, glm::vec3& posB);
 
+	void drawExplosion( glm::vec3& pos, float& lifeTime, float& size, float& timeOut);
+
 	void drawLineModel(CLineModel& lineModel);
 
 	void pointCamera(glm::vec3& dir);
@@ -68,6 +70,8 @@ public:
 	CShader* hexSolidShader;
 	CShader* lineShader;
 	CShader* visibilityShader;
+	CShader* explosionShader;
+
 
 	
 private:
@@ -79,6 +83,8 @@ private:
 	void createLineShader();
 	void createHexShader();
 	void createVisibilityShader();
+
+	void createExplosionShader();
 
 
 	void drawNode2(TModelNode& node, glm::mat4& parentMatrix, CBuf2* buf);
@@ -120,6 +126,12 @@ private:
 	unsigned int hGridSizev;
 	unsigned int hEffectsTexUniformv;
 
+	unsigned int hPos;
+	unsigned int hExpMVP;
+	unsigned int hLifeTime;
+	unsigned int hSize;
+	unsigned int hTimeOut;
+
 	glm::vec4 floorplanLineColour;
 	glm::vec4 floorplanSpaceColour;
 	glm::vec4 floorplanSolidColour;
@@ -145,6 +157,9 @@ private:
 	CBuf2 hexShaderBuf;
 
 	CBuf2 unitLineBuf; //Should be temp, holds verts to draw sightline
+
+	CBuf2 explosionBuf; //Holds dummy verts for draw calls
+
 };
 
 

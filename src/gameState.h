@@ -24,6 +24,7 @@ public:
 	TTurnPhase getTurnPhase();
 	void onNotify(COnCursorNewHex& msg);
 	bool isBlocked(CHex& pos, CHex& dest);
+	void addSprite(std::shared_ptr<CSprite> sprite);
 	void destroySprite(CSprite& sprite);
 	void deleteEntity(CGameHexObj& entity);
 	void update(float dT);
@@ -42,7 +43,7 @@ public:
 private:
 	TTurnPhase turnPhase;
 
-	std::vector<CSprite*> spriteDeathlist;
+	std::vector<std::shared_ptr<CSprite>> addSpritesList;
 };
 
 extern CGameState world;

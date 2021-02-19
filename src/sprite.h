@@ -21,7 +21,7 @@ public:
 	float rotation;
 	CLineModel lineModel;
 
-
+	bool killMe = false;
 
 protected:
 	void buildWorldMatrix();

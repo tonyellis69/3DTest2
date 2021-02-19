@@ -39,6 +39,14 @@ void CRobot::update(float dT) {
 		missileCooldown -= dT;
 
 	if (tranistioningToHex) {
+		float angleToDest = angleTo(cubeToWorldSpace(moveDest));
+		if (abs(angleToDest) > 0.01f) { //not lined up, so rotate
+			rotateAlong(angleToDest);
+			//rotation += angleToDest;
+			return;
+		}
+
+
 		moveReal();
 		return;
 	}
@@ -94,13 +102,10 @@ void CRobot::update(float dT) {
 	}
 
 	if (state == robotShoot) {
-		//are we facing target? 
-		//if not, face target
-		//compare robot direction with target direction
-		float angleDiff = angleTo(targetEntity->worldPos);
-		if (abs(angleDiff) > 0.01f) { //not lined up, so rotate
-			rotation += float( (angleDiff > 0) - (angleDiff < 0)) * dT * 5.0f;
-			buildWorldMatrix();
+
+		float angleToTarget = angleTo(targetEntity->worldPos);
+		if (abs(angleToTarget) > 0.01f) { //not lined up, so rotate
+			rotateAlong(angleToTarget);
 			return;
 		}
 
@@ -136,6 +141,9 @@ void CRobot::update(float dT) {
 		}
 		world.map->movingTo(this, hexPosition, moveDest);
 		tranistioningToHex = true;
+
+
+
 
 
 	}
@@ -365,6 +373,17 @@ void CRobot::moveReal() {
 	buildWorldMatrix();
 }
 
+/** Perform as much of the given rotation as we can in this tick. */
+void CRobot::rotateAlong(const float& angle) {
+	float dRotate = float((angle > 0) - (angle < 0)) * dT * robotRotateSpeed;
+
+	if (abs(dRotate) > abs(angle))
+		dRotate = angle;
+
+	rotation += dRotate;
+	buildWorldMatrix();
+}
+
 /** Perform realtime melee action. Eg, lunging at target. */
 void CRobot::melee() {
 	worldPos += lungeDir * robotLungeSpeed * dT;
@@ -391,11 +410,14 @@ bool CRobot::hasLineOfSight(CGameHexObj* target) {
 	glm::vec3 targetPos = targetEntity->worldPos;
 	CHex targetHex = worldSpaceToHex(targetPos);
 	while (startHex != targetHex) {
-		std::tie(exitDir, intersection) = world.map->findSegmentExit(worldPos, targetPos, startHex);
+		//A += glm::vec3(1e-4, 2e-4, 0);
+		//B -= glm::vec3(1e-4, 2e-4, 0);
+		std::tie(exitDir, intersection) = world.map->findSegmentExit(worldPos , targetPos, startHex);
 
 		if (exitDir == hexNone)
 			int b = 0; //!!!!!!!!!!!!!!!!!!!!!!!!!still get infinte loop here sometimes
 		//leave this in until you solve it!
+		//NB may have solved it via offset in findSegmentExit 10/02/2021
 
 		CHex entryHex = getNeighbour(startHex, exitDir);
 		
@@ -416,7 +438,7 @@ void CRobot::fireMissile(CGameHexObj* target) {
 
 	missile->setPosition(worldPos, targetAngle);
 	missile->setOwner(this);
-	world.sprites.push_back(missile);
+	world.addSprite(missile);
 
 	snd::play("shoot");
 }

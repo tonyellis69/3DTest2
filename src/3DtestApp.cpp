@@ -36,6 +36,8 @@ C3DtestApp::C3DtestApp() {
 
 	oldPos = vec3(0);
 	defencePopWin = NULL;
+
+	
 }
 
 void C3DtestApp::onStart() {

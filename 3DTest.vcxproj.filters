@@ -105,6 +105,9 @@
     <ClCompile Include="src\hexRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\explosion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -207,6 +210,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\IHexRenderer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\explosion.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

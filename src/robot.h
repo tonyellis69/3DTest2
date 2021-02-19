@@ -50,6 +50,8 @@ private:
 
 	void moveReal();
 
+	void rotateAlong(const float& angle);
+
 	void melee();
 
 	bool hasLineOfSight(CGameHexObj* target);
@@ -62,6 +64,7 @@ private:
 
 
 	float robotMoveSpeed = 3.0f;// 2.5f;
+	float robotRotateSpeed = 5.0f;
 
 	float robotLungeSpeed = 8;
 	float robotMeleeRange = 1.8f;

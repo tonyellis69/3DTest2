@@ -42,9 +42,9 @@ void CPlayerObject::onFireKey(bool pressed) {
 	missile->setPosition(worldPos, targetAngle);
 	missile->setOwner(this);
 
-	world.sprites.push_back(missile);
+	world.addSprite(missile);
 
-	snd::play("shoot");
+//	snd::play("shoot");
 }
 
 

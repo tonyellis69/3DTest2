@@ -4,13 +4,14 @@ layout(lines_adjacency) in;
 layout(triangle_strip, max_vertices = 7) out;
 //layout(line_strip, max_vertices = 8) out; //uncomment for wireframe
   
- uniform vec2 winSize;
+ uniform vec2 winSize; //multiplay by to get screenspace, divide by to get normspace
  
  out vec2 gsTexCoord;
  
  float thickness =  2.0f; //2.0f;
  float miter_limit = 1.0f; //1 = always, -1 = never. 0.75f good default.
 
+//Put vertex into screen space, eg, 1280 x 1060
 vec2 screenSpace(vec4 vertex) {
 	return vec2( vertex.xy / vertex.w ) * winSize;
 }

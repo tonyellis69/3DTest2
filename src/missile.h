@@ -22,6 +22,8 @@ private:
 	void moveReal();
 	bool collisionCheck(glm::vec3& moveVec);
 
+	void spawnExplosion();
+
 	glm::vec3 startingPos;
 	glm::vec3 dirVec;
 	float missileMoveSpeed = 30.0f;
@@ -34,6 +36,8 @@ private:
 	bool collided = false;
 
 	CGameHexObj* owner;
+
+	glm::vec3 collisionPt;
 
 	std::unordered_map<CHex, glm::vec3,hex_hash> intersectedHexes;
 };

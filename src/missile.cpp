@@ -7,6 +7,8 @@
 
 #include "hexRenderer.h"
 
+#include "explosion.h"
+
 CMissile::CMissile() {
 	lineModel = hexRendr2.getLineModel("bolt");
 }
@@ -22,6 +24,7 @@ void CMissile::setPosition(glm::vec3& pos, float rotation) {
 
 void CMissile::update(float dT) {
 	if (collided) {
+		spawnExplosion();
 		world.destroySprite(*this);
 		return;
 	}
@@ -63,11 +66,12 @@ bool CMissile::collisionCheck(glm::vec3& moveVec) {
 		startHex = lastLeadingPointHex;
 		exitDir = hexNone;
 		while (startHex != leadingPointHex) {
-			std::tie(exitDir, intersection) = world.map->findSegmentExit(leadingPointLastHex, leadingPoint, startHex);
+			std::tie(exitDir, intersection) = world.map->findSegmentExit(leadingPointLastHex, leadingPoint, startHex);		
+			if (exitDir == hexNone) {
+				break; //hopefully catch rare case where leading point on hex border.
+				//continue;
+			}
 			CHex entryHex = getNeighbour(startHex, exitDir);
-			//if (entryHex == hexNone) { //errors? try reinstating this
-			//	break; //hopefully catch rare case where leading point on hex border.
-			//}
 			intersectedHexes.insert({entryHex, intersection});
 			startHex = entryHex;
 		}
@@ -83,6 +87,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec) {
 			if (hit) {
 				entity->receiveDamage(*owner, 10);
 				collided = true;
+				collisionPt = entity->worldPos;
 				return true;
 			}
 		}
@@ -94,6 +99,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec) {
 			if (world.map->getHexCube(hex.first).content == solidHex) {
 				collided = true;
 				worldPos = hex.second - (moveVec * distToPoint);
+				collisionPt = hex.second;
 				return true;
 			}
 
@@ -111,3 +117,11 @@ bool CMissile::collisionCheck(glm::vec3& moveVec) {
 
 	return false;
 }
+
+void CMissile::spawnExplosion() {
+	auto explosion = std::make_shared<CExplosion>(1.0f);
+
+	explosion->setPosition(collisionPt);
+	world.addSprite(explosion);
+}
+
