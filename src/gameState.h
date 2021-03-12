@@ -28,7 +28,7 @@ public:
 	void destroySprite(CSprite& sprite);
 	void deleteEntity(CGameHexObj& entity);
 	void update(float dT);
-
+	void togglePause();
 
 	CHex cursorPos;
 	THexList cursorPath;
@@ -39,6 +39,8 @@ public:
 
 
 	std::vector<std::shared_ptr<CSprite>> sprites;
+
+	bool paused = false;
 
 private:
 	TTurnPhase turnPhase;

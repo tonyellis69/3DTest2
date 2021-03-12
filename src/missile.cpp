@@ -61,15 +61,16 @@ bool CMissile::collisionCheck(glm::vec3& moveVec) {
 
 	//first, collect unique hexes that we've intersected so far
 	if (leadingPointHex != lastLeadingPointHex) { //we've moved at least one hex on
-		//THexDir exitDir = hexNone; glm::vec3 intersection;
-		//CHex startHex = lastLeadingPointHex;
 		startHex = lastLeadingPointHex;
 		exitDir = hexNone;
 		while (startHex != leadingPointHex) {
 			std::tie(exitDir, intersection) = world.map->findSegmentExit(leadingPointLastHex, leadingPoint, startHex);		
 			if (exitDir == hexNone) {
+				std::tie(exitDir, intersection) = world.map->findSegmentExit(leadingPointLastHex, leadingPoint, startHex);
 				break; //hopefully catch rare case where leading point on hex border.
-				//continue;
+				//ultimately we must NEVER GET HERE because segment must exit startHex somewhere
+				//if problem persists, look into brute-forcing segments that pass 
+				//along the line between two hexes
 			}
 			CHex entryHex = getNeighbour(startHex, exitDir);
 			intersectedHexes.insert({entryHex, intersection});
@@ -81,6 +82,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec) {
 
 	//Check every frame if we've collided with a robot in one of those hexes
 	for (auto& hex: intersectedHexes) {
+
 		CGameHexObj* entity = world.map->getEntityAt2(hex.first);
 		if (entity && entity != owner) {
 			auto [hit, intersection] = entity->collisionCheck(startingPos, leadingPoint);

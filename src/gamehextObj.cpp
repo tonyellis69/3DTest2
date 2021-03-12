@@ -54,7 +54,7 @@ void CGameHexObj::playerSight(bool inView) {
 }
 
 /** Return angle between the way we're facing and the given point. */
-float CGameHexObj::angleTo(glm::vec3& targetPos) {
+float CGameHexObj::orientationTo(glm::vec3& targetPos) {
 	//find direction to target
 	glm::vec3 targetDir = targetPos - worldPos;
 	targetDir = glm::normalize(targetDir);

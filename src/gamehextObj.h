@@ -66,7 +66,7 @@ public:
 		return std::tuple<bool, glm::vec3>();
 	}
 
-	float angleTo(glm::vec3& targetPos);
+	float orientationTo(glm::vec3& targetPos);
 
 
 	unsigned int mBlocks; ///<If true, blocks travel path

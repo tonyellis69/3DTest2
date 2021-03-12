@@ -32,6 +32,7 @@ public:
 	bool fromToBlocked(CHex& current, CHex& hex);
 	bool isEmpty(glm::i32vec2& hex);
 	bool isFree(CHex& hex);
+	bool isAvailable(CHex& hex);
 	CHex findLineEnd(CHex& start, CHex& target);
 	TRange getEntitiesAt(CHex& hex);
 	CGameHexObj* getEntityAt(CHex& hex);
@@ -86,11 +87,14 @@ public:
 
 private:
 
+
 	std::unordered_multimap<CHex, CGameHexObj*, hex_hash> entityMap;
 	
 	bool entityListDirty = false;
 
 };
+
+
 
 const int solidHex = 2;
 const int emptyHex = 1;

@@ -50,14 +50,16 @@ bool CGameHexArray::isEmpty(glm::i32vec2& hex) {
 
 /** Return true if there is no robot in this hex or heading into it. */
 bool CGameHexArray::isFree(CHex& hex) {
-	//for (auto entity : entities) {
-	//	if (entity->hexPosition == hex || entity->moveDest == hex)
-	//		return false;
-	//}
 	if (entityMap.count(hex) == 0)
 		return true;
 
 	return false;
+}
+
+/** Return true if the hex is available to enter, ie, empty
+	and no one about to enter. */
+bool CGameHexArray::isAvailable(CHex& hex) {
+	return isFree(hex) && getHexCube(hex).content == emptyHex;
 }
 
 CHex CGameHexArray::findLineEnd(CHex& start, CHex& target) {
@@ -344,38 +346,46 @@ CHex CGameHexArray::getSegmentFirstHex(glm::vec3& A, glm::vec3& B) {
 /** Return the direction of the neighbouring hex into which this segment exits, if any. 
 	Also return the point of intersection. */
 std::tuple<THexDir, glm::vec3> CGameHexArray::findSegmentExit(glm::vec3 A, glm::vec3 B, CHex& hex) {
-	A += glm::vec3(1e-4, 2e-4, 0);
-	B -= glm::vec3(1e-4, 2e-4, 0);
-	//above should avoid problem of AB exiting through a corner rather than a face
-	//due to A and B being perfectly centred in their hexes
-
 	glm::vec3 segmentDir = B - A;
 	glm::vec3 hexCentre = cubeToWorldSpace(hex);
-	glm::vec3 intersection;
+	glm::vec3 intersection(0);
 	THexDir exitDir = hexNone;
 
 	for (int face = 0; face < 6; face++) {
 		glm::vec3 faceA = hexCentre + corners[face];
 		glm::vec3 faceB = hexCentre + corners[(face + 1) % 6];
 
-		glm::vec3 faceDir = faceB - faceA;
+		glm::vec3 faceDir = glm::normalize(faceB - faceA);
 		glm::vec3 facePerp = { faceDir.y,-faceDir.x , 0};
 
 		if (glm::dot(A - faceA, facePerp) < 0) //discard faces where the segment enters the hex
 			continue;
 
-		//glm::vec3 faceExtension = faceA + (faceDir * 1.5f);
-
 		if (segIntersect(A, B, faceA, faceB, intersection)) {
-			exitDir = THexDir(face);
-			
-			break;
+			exitDir = THexDir(face);			
+			return { exitDir, intersection };
 		}
+
+		//still here? We may have hit a corner, in which case
+		//extrapolate which hex we've entered.
+
+		if (intersection.x > 0) {
+			intersection = faceA;
+			exitDir = findCornerExit(A, intersection, hex);
+			return { exitDir, intersection };
+		}
+		if (intersection.y > 0) {
+			intersection = faceB;
+			exitDir = findCornerExit(A, intersection, hex);
+			return { exitDir, intersection };
+		}
+
+
+
+
 	}
 
-//	if (exitDir == hexNone)
-	//	int b = 0;
-
+	//getting here is an error! fix!!
 	return { exitDir, intersection };
 }
 
@@ -442,4 +452,5 @@ void CGameHexArray::tidyEntityLists() {
 		entityListDirty = false;
 	}
 }
+
 

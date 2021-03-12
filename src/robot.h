@@ -11,7 +11,8 @@
 #include "viewField.h"
 
 enum TRobotState {robotSleep, robotChase, robotWander, 
-	robotMelee, robotShoot, robotHunt, robotLightSleep};
+	robotMelee, robotShoot, robotHunt, robotLightSleep,
+	robotEvasiveShoot};
 
 /** A class describing basic robot characteristics and
 	behaviour. */
@@ -64,7 +65,7 @@ private:
 
 
 	float robotMoveSpeed = 3.0f;// 2.5f;
-	float robotRotateSpeed = 5.0f;
+	float robotRotateSpeed = 5.0f;// 5.0f;
 
 	float robotLungeSpeed = 8;
 	float robotMeleeRange = 1.8f;

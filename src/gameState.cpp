@@ -59,3 +59,7 @@ void CGameState::update(float dT) {
 	addSpritesList.clear();
 
 }
+
+void CGameState::togglePause() {
+	paused = !paused;
+}

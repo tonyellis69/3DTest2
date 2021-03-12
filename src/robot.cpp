@@ -9,6 +9,8 @@
 
 #include "sound/sound.h"
 
+#include "utils/random.h"
+
 const float rad360 = M_PI * 2;
 
 
@@ -32,6 +34,7 @@ CRobot::CRobot() {
 void CRobot::update(float dT) {
 	this->dT = dT;
 
+
 	if (meleeHitCooldown > 0)
 		meleeHitCooldown -= dT;
 
@@ -39,16 +42,15 @@ void CRobot::update(float dT) {
 		missileCooldown -= dT;
 
 	if (tranistioningToHex) {
-		float angleToDest = angleTo(cubeToWorldSpace(moveDest));
-		if (abs(angleToDest) > 0.01f) { //not lined up, so rotate
+		float angleToDest = orientationTo(cubeToWorldSpace(moveDest));
+		if (abs(angleToDest) > 0.01f && state != robotEvasiveShoot) { //not lined up, so rotate
 			rotateAlong(angleToDest);
-			//rotation += angleToDest;
-			return;
+			//return;
 		}
 
 
 		moveReal();
-		return;
+		//return;
 	}
 
 	if (state == robotSleep)
@@ -103,7 +105,7 @@ void CRobot::update(float dT) {
 
 	if (state == robotShoot) {
 
-		float angleToTarget = angleTo(targetEntity->worldPos);
+		float angleToTarget = orientationTo(targetEntity->worldPos);
 		if (abs(angleToTarget) > 0.01f) { //not lined up, so rotate
 			rotateAlong(angleToTarget);
 			return;
@@ -119,10 +121,66 @@ void CRobot::update(float dT) {
 		}
 	}
 
-	if (state == robotHunt) {
+	if (state == robotEvasiveShoot) {
+		//check we're not already movingToHex
+		// if we are, check if we've arrived
+		//set up move if not moving
+		//do lined-up check as above
+		//fire if lined up as above
+		//float angleToTarget = orientationTo(targetEntity->worldPos);
+		glm::vec3 targetVec = glm::normalize(targetEntity->worldPos - worldPos);
+		float targetAngle = glm::orientedAngle(targetVec, glm::vec3(1, 0, 0), glm::vec3(0, 0, -1));
+
+		if (!tranistioningToHex) { //try to set up a move
+			float perp1 = targetAngle - M_PI_2;
+			float perp2 = targetAngle + M_PI_2;
+			CHex newHex1 = getNeighbour(hexPosition, angleToDir(perp1));
+			CHex newHex2 = getNeighbour(hexPosition, angleToDir(perp2));
+
+			int rand = rnd::dice(2);
+			if (rand == 1 && world.map->isAvailable(newHex1)) {
+				moveDest = newHex1;
+				world.map->movingTo(this, hexPosition, moveDest);
+				tranistioningToHex = true;
+			}
+			else if (world.map->isAvailable(newHex2)) {
+				moveDest = newHex2;
+				world.map->movingTo(this, hexPosition, moveDest);
+				tranistioningToHex = true;
+			}
+		}
+
+		//for now, if we're evasive shooting we should always be facing the target
+
+
+
+		//regardless of if we're evading, try to shoot
+		float angleToTarget = orientationTo(targetEntity->worldPos);
+
+		//if (abs(angleToTarget) > 0.001f) { //not lined up, so rotate
+			//rotateAlong(angleToTarget);
+			//liveLog << "\n" << angleToTarget;
+			rotation += angleToTarget;
+			liveLog << "\ncorrecting by " << angleToTarget;
+			buildWorldMatrix();
+	//	}
+
+		if (missileCooldown <= 0) {
+			if (hasLineOfSight(targetEntity)) {
+				fireMissile(targetEntity);
+				missileCooldown = 3;
+			}
+			else
+				setState(robotHunt);
+		}
+
+	}
+
+	if (state == robotHunt && !tranistioningToHex) {
 		//no longer transitioning, so can we see player from this new hex?
-		if (hasLineOfSight(targetEntity)) {
-			setState(robotShoot);
+		if ( hasLineOfSight(targetEntity)) {
+			//setState(robotShoot);
+			setState(robotEvasiveShoot);
 			return;
 		}
 
@@ -176,6 +234,10 @@ void CRobot::setState(TRobotState newState) {
 		destination = CHex(-1);
 		break;
 	case robotShoot:
+		targetEntity = world.player;
+		missileCooldown = 1.0f;
+		break;
+	case robotEvasiveShoot:
 		targetEntity = world.player;
 		missileCooldown = 1.0f;
 		break;
@@ -377,8 +439,11 @@ void CRobot::moveReal() {
 void CRobot::rotateAlong(const float& angle) {
 	float dRotate = float((angle > 0) - (angle < 0)) * dT * robotRotateSpeed;
 
-	if (abs(dRotate) > abs(angle))
+	if (abs(dRotate) > abs(angle)) {
+		liveLog << "\nOvershot";
 		dRotate = angle;
+	}
+	liveLog << "\nUndershot";
 
 	rotation += dRotate;
 	buildWorldMatrix();
@@ -414,8 +479,11 @@ bool CRobot::hasLineOfSight(CGameHexObj* target) {
 		//B -= glm::vec3(1e-4, 2e-4, 0);
 		std::tie(exitDir, intersection) = world.map->findSegmentExit(worldPos , targetPos, startHex);
 
-		if (exitDir == hexNone)
-			int b = 0; //!!!!!!!!!!!!!!!!!!!!!!!!!still get infinte loop here sometimes
+		if (exitDir == hexNone) {
+			liveLog << "\nLoS fail!";
+			std::tie(exitDir, intersection) = world.map->findSegmentExit(worldPos, targetPos, startHex);
+		}
+			//continue; //!!!!!!!!!!!!!!!!!!!!!!!!!still get infinte loop here sometimes
 		//leave this in until you solve it!
 		//NB may have solved it via offset in findSegmentExit 10/02/2021
 

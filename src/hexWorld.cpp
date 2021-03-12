@@ -9,6 +9,8 @@
 #include "gameState.h"
 #include "hexRenderer.h"
 
+#include "sound/sound.h"
+
 CGameHexObj nullGameHexObj;
 
 CHexWorld::CHexWorld() {
@@ -25,8 +27,10 @@ CHexWorld::CHexWorld() {
 
 	subscribe(&world);
 
-	hexPosLbl = new CGUIlabel2(10, 10, 750, 30);
+	hexPosLbl = new CGUIlabel2(10, 10, 850, 30);
 	hexPosLbl->setTextColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	snd::setVolume(1);
 }
 
 
@@ -66,6 +70,18 @@ void CHexWorld::deleteMap() {
 
 /** Required each time we restart. */
 void CHexWorld::startGame() {
+
+	//auto begin = std::chrono::high_resolution_clock::now();
+	//for (int x = 0; x < 100000; x++) {
+	//	worldSpaceToHex3(glm::vec3(x * 3.146f, x * -2.455, 0));
+	//}
+	//auto end = std::chrono::high_resolution_clock::now();
+	//auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+
+
+
+
+
 	hexRendr2.setMap(map);
 	world.setMap(map);
 
@@ -170,6 +186,9 @@ void CHexWorld::onMouseWheel(float delta, int key) {
 }
 
 void CHexWorld::onMouseMove(int x, int y, int key) {
+	if (world.paused)
+		return;
+
 	mousePos = { x,y };
 
 	auto [mouseHex, mouseWS ] = hexRendr2.pickHex(x, y);
@@ -184,6 +203,15 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 		notify(msg);
 		onNewMouseHex(mouseHex);
 	}
+
+	//std::stringstream coords;
+	//CHex test = worldSpaceToHex(glm::vec3(mouseWorldPos.x, mouseWorldPos.y, 0));
+	//coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
+	//coords << " wsMouse " << mouseWorldPos.x << " " << mouseWorldPos.y;
+	//coords << " new cube " << test.x << " " << test.y << " " << test.z;
+	//glm::i32vec2 off = cubeToOffset(mouseHex);
+	//coords << " my offset coords " << off.x << " " << off.y;
+	//hexPosLbl->setText(coords.str());
 }
 
 
@@ -213,6 +241,8 @@ void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 
 /** Called every frame to get the hex world up to date.*/
 void CHexWorld::update(float dT) {
+	if (world.paused)
+		return;
 	this->dT = dT;
 	map->setFog(CHex(2, -7, 5), 1.0f);
 	//map->setFog(CHex(2, -8, 6), 1.0f);
@@ -286,6 +316,10 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	//glm::vec2 screenPos = hexRenderer.worldPosToScreen(worldSpace);
 	coords << " wsMouse " << mouseWorldPos.x << " " << mouseWorldPos.y;
 	coords << " scrnMouse " << mousePos.x << " " << mousePos.y;
+//	CHex test = worldSpaceToHex3(glm::vec3(mouseWorldPos.x, mouseWorldPos.y,0));
+//	coords << " rect " << test.x << " " << test.z;
+
+
 	hexPosLbl->setText(coords.str());
 
 	COnCursorNewHex msg;

@@ -672,6 +672,11 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 			hexWorld.toggleView();
 		}
 
+		if (key == GLFW_KEY_SPACE) {
+			Paused = !Paused;
+			world.togglePause();
+		}
+
 		hexWorld.onKeyDown(key, mod);
 		return;
 	}
