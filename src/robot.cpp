@@ -88,7 +88,7 @@ void CRobot::update(float dT) {
 		tranistioningToHex = true;
 	}
 
-	if (state == robotWander) {
+	if (!tranistioningToHex && state == robotWander) {
 		moveDest = getNextTravelHex(destination);
 		if (moveDest == CHex(-1)) {
 			world.map->setHighlight(destination, 0.0f);
@@ -122,58 +122,12 @@ void CRobot::update(float dT) {
 	}
 
 	if (state == robotEvasiveShoot) {
-		//check we're not already movingToHex
-		// if we are, check if we've arrived
-		//set up move if not moving
-		//do lined-up check as above
-		//fire if lined up as above
-		//float angleToTarget = orientationTo(targetEntity->worldPos);
-		glm::vec3 targetVec = glm::normalize(targetEntity->worldPos - worldPos);
-		float targetAngle = glm::orientedAngle(targetVec, glm::vec3(1, 0, 0), glm::vec3(0, 0, -1));
+		//sideToSide();
 
-		if (!tranistioningToHex) { //try to set up a move
-			float perp1 = targetAngle - M_PI_2;
-			float perp2 = targetAngle + M_PI_2;
-			CHex newHex1 = getNeighbour(hexPosition, angleToDir(perp1));
-			CHex newHex2 = getNeighbour(hexPosition, angleToDir(perp2));
-
-			int rand = rnd::dice(2);
-			if (rand == 1 && world.map->isAvailable(newHex1)) {
-				moveDest = newHex1;
-				world.map->movingTo(this, hexPosition, moveDest);
-				tranistioningToHex = true;
-			}
-			else if (world.map->isAvailable(newHex2)) {
-				moveDest = newHex2;
-				world.map->movingTo(this, hexPosition, moveDest);
-				tranistioningToHex = true;
-			}
-		}
-
-		//for now, if we're evasive shooting we should always be facing the target
-
-
-
-		//regardless of if we're evading, try to shoot
-		float angleToTarget = orientationTo(targetEntity->worldPos);
-
-		//if (abs(angleToTarget) > 0.001f) { //not lined up, so rotate
-			//rotateAlong(angleToTarget);
-			//liveLog << "\n" << angleToTarget;
-			rotation += angleToTarget;
-			liveLog << "\ncorrecting by " << angleToTarget;
-			buildWorldMatrix();
-	//	}
-
-		if (missileCooldown <= 0) {
-			if (hasLineOfSight(targetEntity)) {
-				fireMissile(targetEntity);
-				missileCooldown = 3;
-			}
-			else
-				setState(robotHunt);
-		}
-
+		//move to random hex:
+		//adjacentHexEvade();
+		evadeRun();
+		
 	}
 
 	if (state == robotHunt && !tranistioningToHex) {
@@ -238,6 +192,7 @@ void CRobot::setState(TRobotState newState) {
 		missileCooldown = 1.0f;
 		break;
 	case robotEvasiveShoot:
+		lineModel.setColourR(shootingColour);
 		targetEntity = world.player;
 		missileCooldown = 1.0f;
 		break;
@@ -440,10 +395,8 @@ void CRobot::rotateAlong(const float& angle) {
 	float dRotate = float((angle > 0) - (angle < 0)) * dT * robotRotateSpeed;
 
 	if (abs(dRotate) > abs(angle)) {
-		liveLog << "\nOvershot";
 		dRotate = angle;
 	}
-	liveLog << "\nUndershot";
 
 	rotation += dRotate;
 	buildWorldMatrix();
@@ -470,13 +423,13 @@ void CRobot::melee() {
 /** Return true if we can draw a line to the target without hitting anything. */
 bool CRobot::hasLineOfSight(CGameHexObj* target) {
 	THexDir exitDir; glm::vec3 intersection;
-	CHex startHex = hexPosition;
+	//CHex startHex = hexPosition;
+	CHex startHex = worldSpaceToHex(worldPos);
+	//This should avoid error from using hexPosition during transition to a new hex.
 
 	glm::vec3 targetPos = targetEntity->worldPos;
 	CHex targetHex = worldSpaceToHex(targetPos);
 	while (startHex != targetHex) {
-		//A += glm::vec3(1e-4, 2e-4, 0);
-		//B -= glm::vec3(1e-4, 2e-4, 0);
 		std::tie(exitDir, intersection) = world.map->findSegmentExit(worldPos , targetPos, startHex);
 
 		if (exitDir == hexNone) {
@@ -485,7 +438,6 @@ bool CRobot::hasLineOfSight(CGameHexObj* target) {
 		}
 			//continue; //!!!!!!!!!!!!!!!!!!!!!!!!!still get infinte loop here sometimes
 		//leave this in until you solve it!
-		//NB may have solved it via offset in findSegmentExit 10/02/2021
 
 		CHex entryHex = getNeighbour(startHex, exitDir);
 		
@@ -511,5 +463,229 @@ void CRobot::fireMissile(CGameHexObj* target) {
 	snd::play("shoot");
 }
 
+/** Rudimentary evasive movement while shooting. */
+void CRobot::sideToSide() {
+	glm::vec3 targetVec = glm::normalize(targetEntity->worldPos - worldPos);
+	float targetAngle = glm::orientedAngle(targetVec, glm::vec3(1, 0, 0), glm::vec3(0, 0, -1));
+
+	if (!tranistioningToHex) { //try to set up a move
+		float perp1 = targetAngle - M_PI_2;
+		float perp2 = targetAngle + M_PI_2;
+		CHex newHex1 = getNeighbour(hexPosition, angleToDir(perp1));
+		CHex newHex2 = getNeighbour(hexPosition, angleToDir(perp2));
+
+		int rand = rnd::dice(2);
+		if (rand == 1 && world.map->isAvailable(newHex1)) {
+			moveDest = newHex1;
+			world.map->movingTo(this, hexPosition, moveDest);
+			tranistioningToHex = true;
+		}
+		else if (world.map->isAvailable(newHex2)) {
+			moveDest = newHex2;
+			world.map->movingTo(this, hexPosition, moveDest);
+			tranistioningToHex = true;
+		}
+	}
+
+
+	//stay facing target
+	float angleToTarget = orientationTo(targetEntity->worldPos);
+	rotation += angleToTarget;
+	buildWorldMatrix();
+
+
+	if (missileCooldown <= 0) {
+		if (hasLineOfSight(targetEntity)) {
+			fireMissile(targetEntity);
+			missileCooldown = 3;
+		}
+		else
+			setState(robotHunt);
+	}
+}
+
+/** Evade by moving to neighbour hex, maybe move. */
+void CRobot::adjacentHexEvade() {
+	float angleToTarget = orientationTo(targetEntity->worldPos);
+	if (!tranistioningToHex) {
+		if (evadeTimer <= 0) {
+			if (rnd::dice(2) == 1)
+				evadeShoot = true;
+			else
+				evadeShoot = false;
+
+			//find viable hexes
+			std::vector<CHex> viableHexes;
+			THexDir dir;
+			for (int x = 0; x < 6; x++) {
+				dir = THexDir(x);
+				CHex hex = getNeighbour(hexPosition, dir);
+				if (!world.map->isAvailable(hex))
+					continue;
+
+				glm::vec3 dirVec = directionToVec(dir);
+				glm::vec3 targetVec = glm::normalize(targetEntity->worldPos - worldPos);
+				float angleToHex = glm::dot(dirVec, targetVec);
+				if (abs(angleToHex) < cos(30))
+					continue;
+
+				viableHexes.push_back(hex);
+				if (angleToHex > 0)
+					viableHexes.push_back(hex);
+
+			}
+
+
+			if (viableHexes.empty())
+				int b = 0;
+
+			CHex newHex = viableHexes[rnd::dice(viableHexes.size()) - 1];
+
+			moveDest = newHex;
+			world.map->movingTo(this, hexPosition, moveDest);
+			
+		}
+
+
+		evadeTimer += dT;
+
+		if (!evadeShoot && evadeTimer > 0.4f) {
+			tranistioningToHex = true;
+			evadeTimer = 0;
+		} 
+			
+		if (evadeShoot) {
+			if (evadeTimer > 0.6f) {
+				tranistioningToHex = true;
+				evadeTimer = 0;
+				hasFired = false;
+			}
+
+			if (evadeTimer > 0.4f && !hasFired) {
+				if (hasLineOfSight(targetEntity)) {
+					fireMissile(targetEntity);
+					hasFired = true;
+				}
+				else {
+					setState(robotHunt);
+					hasFired = false;
+					evadeTimer = 0;
+				}
+			}
+		}
+			
+	}
+
+
+	//stay facing target
+
+	rotation += angleToTarget;
+	buildWorldMatrix();
+
+}
+
+
+/** Make an evasive move in a given direction for several hexes, while firing. */
+void CRobot::evadeRun() {
+	if (midRun) {
+		//return;
+		if (!tranistioningToHex) {
+			moveDest = getNextTravelHex(destination);
+			if (moveDest == CHex(-1)) {
+				midRun = false;
+				for (auto it : pathTemp) {
+					world.map->setHighlight(it, 0.0f);
+				}
+				return;
+			}
+
+			world.map->movingTo(this, hexPosition, moveDest);
+			tranistioningToHex = true;
+		}
+
+		//shoot if we can
+
+
+	}
+	else { //start a new run
+		CHex startHex;
+		THexDir exitDir; glm::vec3 intersection;
+		CHex targetHex;
+		glm::vec3 targetVec = glm::normalize(targetEntity->worldPos - worldPos);
+		float targetAngle = glm::orientedAngle(targetVec, glm::vec3(1, 0, 0), glm::vec3(0, 0, -1));
+
+
+		
+
+		int approach;
+		do { //explore angle
+
+
+			//choose whether we're looking for a lateral angle or a closing one.
+			approach = rnd::dice(6);
+			liveLog << " " << approach;
+			float r1, r2;
+			if (approach < 5) { //lateral
+				r1 = M_PI_2; //90 deg from target angle
+				r2 = M_PI_2 - 0.523599; //60 deg from target angle
+			}
+			else { //closing
+				r1 = M_PI_2 - 0.523599; //60 deg from target angle
+				r2 = 0.523599; //30 deg from target angle
+			}
+
+			if (approach % 2 == 0) {
+				r1 = -r1; r2 = -r2;
+			}
+			if (r1 > r2)
+				std::swap(r1, r2);
+
+			float randAngle = targetAngle + rnd::rand(r1,r2);
+
+			//attempt to plot line down angle
+			glm::vec3 dirVec = glm::rotate(glm::vec3(1, 0, 0), randAngle, glm::vec3(0, 0, 1));
+			dirVec *= 5 * hexWidth;
+			glm::vec3 endPoint = worldPos + dirVec;
+			targetHex = worldSpaceToHex(endPoint);
+			startHex = hexPosition;
+			while (startHex != targetHex) {
+				std::tie(exitDir, intersection) = world.map->findSegmentExit(worldPos, endPoint, startHex);
+
+				if (exitDir == hexNone) {
+					liveLog << "\nLoS fail!";
+					break;
+				}
+
+				CHex entryHex = getNeighbour(startHex, exitDir);
+
+				if (world.map->getHexCube(entryHex).content != emptyHex) {
+					break;
+				}
+
+				startHex = entryHex;
+				
+			}
+
+		} while (startHex != targetHex);
+
+		travelPath = world.map->aStarPath(hexPosition, targetHex);
+		for (auto it : travelPath) {
+			world.map->setHighlight(it, 1.0f);
+		}
+		pathTemp = travelPath;
+
+		destination = travelPath.back();
+		midRun = true;
+
+		if (approach < 5)
+			liveLog << "\ngoing lateral!";
+		else
+			liveLog << "\nclosing!";
+
+	}
+	
+
+
+}
 
 

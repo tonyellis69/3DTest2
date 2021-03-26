@@ -59,6 +59,12 @@ private:
 
 	void fireMissile(CGameHexObj* target);
 
+	void sideToSide();
+
+	void adjacentHexEvade();
+
+	void evadeRun();
+
 	float dT;
 
 	TRobotState state = robotLightSleep;
@@ -79,8 +85,15 @@ private:
 	float missileCooldown = 0.0f;
 	CGameHexObj* targetEntity;
 
+	float evadeTimer = 0.0f;
+	bool evadeShoot;
+	bool hasFired = false;
+
+	bool midRun = false;
+	THexList pathTemp;
 
 	glm::vec4 hostileColour = { 1,0,0,1 };
+	glm::vec4 shootingColour = { 1,1,0,1 };
 
 };
 
