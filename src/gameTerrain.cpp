@@ -36,33 +36,33 @@ void CGameTerrain::initChunkShell() {
 	shellTotalVerts = std::pow(vertsPerEdge, 3) - std::pow(vertsPerEdge - 2, 3);
 	vec3* shell = new vec3[shellTotalVerts];
 	int v = 0;
-	for (int y = 0; y < vertsPerEdge; y++) {
-		for (int x = 0; x < vertsPerEdge; x++) {
-			shell[v++] = vec3(x, y, 0);
-			shell[v++] = vec3(x, y, cubesPerChunkEdge);
-		}
-		for (int z = 1; z < cubesPerChunkEdge; z++) {
-			shell[v++] = vec3(0, y, z);
-			shell[v++] = vec3(cubesPerChunkEdge, y, z);
-		}
-	}
+	//for (int y = 0; y < vertsPerEdge; y++) {
+	//	for (int x = 0; x < vertsPerEdge; x++) {
+	//		shell[v++] = vec3(x, y, 0);
+	//		shell[v++] = vec3(x, y, cubesPerChunkEdge);
+	//	}
+	//	for (int z = 1; z < cubesPerChunkEdge; z++) {
+	//		shell[v++] = vec3(0, y, z);
+	//		shell[v++] = vec3(cubesPerChunkEdge, y, z);
+	//	}
+	//}
 
-	for (int x = 1; x < cubesPerChunkEdge; x++) {
-		for (int z = 1; z < cubesPerChunkEdge; z++) {
-			shell[v++] = vec3(x, 0, z);
-			shell[v++] = vec3(x, cubesPerChunkEdge, z);
-		}
-	}
+	//for (int x = 1; x < cubesPerChunkEdge; x++) {
+	//	for (int z = 1; z < cubesPerChunkEdge; z++) {
+	//		shell[v++] = vec3(x, 0, z);
+	//		shell[v++] = vec3(x, cubesPerChunkEdge, z);
+	//	}
+	//}
 
-	chunkShell = new CRenderModel();
+	//chunkShell = new CRenderModel();
 
-	CRenderMaterial* material = new CRenderMaterial();
-	chunkShell->setMaterial(*material);
-	chunkShell->setDrawMode(drawPoints);
-	chunkShell->storeVertexes(shell, sizeof(vec3), v);
-	chunkShell->storeLayout(3, 0, 0, 0);
-	delete[] shell;
-	chunkShell->getMaterial()->setShader(chunkCheckShader);
+	//CRenderMaterial* material = new CRenderMaterial();
+	//chunkShell->setMaterial(*material);
+	//chunkShell->setDrawMode(drawPoints);
+	//chunkShell->storeVertexes(shell, sizeof(vec3), v);
+	//chunkShell->storeLayout(3, 0, 0, 0);
+	//delete[] shell;
+	//chunkShell->getMaterial()->setShader(chunkCheckShader);
 }
 
 /** Initialise a 3D grid of points to represent the cubes of a chunk in drawing. */
@@ -149,7 +149,7 @@ bool CGameTerrain::superChunkIsEmpty(CSuperChunk & SC) {
 	//unsigned int primitives = Engine.drawModelCount(*chunkShell);
 
 	pRenderer->initQuery();
-	chunkShell->drawNew();
+	//chunkShell->drawNew();
 	unsigned int primitives = pRenderer->query();
 
 	//TO DO: chunkshell is coarse, create a SCshell with more points
@@ -182,7 +182,7 @@ bool CGameTerrain::chunkExists(vec3& sampleCorner, int LoD) {
 	//unsigned int primitives = Engine.drawModelCount(*chunkShell);
 
 	pRenderer->initQuery();
-	chunkShell->drawNew();
+	//chunkShell->drawNew();
 	unsigned int primitives = pRenderer->query();
 
 	if (primitives == 0)
@@ -537,6 +537,6 @@ float CGameTerrain::findTerrainHeight(glm::vec3& basePos) {
 
 CGameTerrain::~CGameTerrain() {
 //	delete chunkCheckShader;
-	delete chunkShell;
+//	delete chunkShell;
 
 }

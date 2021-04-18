@@ -117,18 +117,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp" />
-    <ClCompile Include="src\bolt.cpp" />
     <ClCompile Include="src\door.cpp" />
     <ClCompile Include="src\explosion.cpp" />
     <ClCompile Include="src\fireable.cpp" />
     <ClCompile Include="src\gameHexArray.cpp" />
     <ClCompile Include="src\gamehextObj.cpp" />
     <ClCompile Include="src\gameState.cpp" />
-    <ClCompile Include="src\gameTerrain.cpp" />
     <ClCompile Include="src\gameTextWin.cpp" />
     <ClCompile Include="src\gameWin.cpp" />
     <ClCompile Include="src\groupItem.cpp" />
-    <ClCompile Include="src\GUIdistributor.cpp" />
     <ClCompile Include="src\GUIgamePanel.cpp" />
     <ClCompile Include="src\GUIhealthPanel.cpp" />
     <ClCompile Include="src\GUIrichTextPanel.cpp" />
@@ -143,15 +140,12 @@
     <ClCompile Include="src\powerSupply.cpp" />
     <ClCompile Include="src\qps.cpp" />
     <ClCompile Include="src\robot.cpp" />
-    <ClCompile Include="src\gridObj.cpp" />
     <ClCompile Include="src\sprite.cpp" />
     <ClCompile Include="src\viewField.cpp" />
-    <ClCompile Include="src\worldUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\TC\Debug\tigConst.h" />
     <ClInclude Include="src\3DtestApp.h" />
-    <ClInclude Include="src\bolt.h" />
     <ClInclude Include="src\door.h" />
     <ClInclude Include="src\explosion.h" />
     <ClInclude Include="src\fireable.h" />
@@ -160,11 +154,9 @@
     <ClInclude Include="src\gamehextObj.h" />
     <ClInclude Include="src\gameMsg.h" />
     <ClInclude Include="src\gameState.h" />
-    <ClInclude Include="src\gameTerrain.h" />
     <ClInclude Include="src\gameTextWin.h" />
     <ClInclude Include="src\gameWin.h" />
     <ClInclude Include="src\groupItem.h" />
-    <ClInclude Include="src\GUIdistributor.h" />
     <ClInclude Include="src\GUIgamePanel.h" />
     <ClInclude Include="src\GUIhealthPanel.h" />
     <ClInclude Include="src\GUIrichTextPanel.h" />
@@ -172,7 +164,6 @@
     <ClInclude Include="src\hexMsg.h" />
     <ClInclude Include="src\hexRenderer.h" />
     <ClInclude Include="src\hexWorld.h" />
-    <ClInclude Include="src\IHexRenderer.h" />
     <ClInclude Include="src\localHotList.h" />
     <ClInclude Include="src\mapMaker.h" />
     <ClInclude Include="src\missile.h" />
@@ -181,7 +172,6 @@
     <ClInclude Include="src\powerUser.h" />
     <ClInclude Include="src\qps.h" />
     <ClInclude Include="src\robot.h" />
-    <ClInclude Include="src\gridObj.h" />
     <ClInclude Include="src\sprite.h" />
     <ClInclude Include="src\viewField.h" />
   </ItemGroup>

@@ -64,6 +64,7 @@ private:
 	void adjacentHexEvade();
 
 	void evadeRun();
+	void evadeRun2();
 
 	float dT;
 

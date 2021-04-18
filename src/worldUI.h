@@ -10,8 +10,8 @@
 #include "GUIrichTextPanel.h"
 #include "localHotList.h"
 #include "GUIgamePanel.h"
-#include "GUIdistributor.h"
-#include "GUIhealthPanel.h"
+//#include "GUIdistributor.h"
+//#include "GUIhealthPanel.h"
 
 
 
@@ -123,11 +123,11 @@ public:
 	unsigned int popupPanelID;
 	unsigned int popupTextID;
 
-	CGUIdistributor* distributor;
-	unsigned int distributorID;
+	//CGUIdistributor* distributor;
+	//unsigned int distributorID;
 
-	CGUIhealthPanel* healthPanel;
-	unsigned int healthPanelID;
+	//CGUIhealthPanel* healthPanel;
+	//unsigned int healthPanelID;
 
 
 private:

@@ -4,6 +4,8 @@
 
 #include <glm/gtx/vector_angle.hpp> 
 
+#include "UI\gui.h"
+
 #include "utils/log.h"
 #include "gameTextWin.h"
 #include "gameState.h"
@@ -11,11 +13,12 @@
 
 #include "sound/sound.h"
 
+#include "UI/uiRender.h" //temp debug
+
 CGameHexObj nullGameHexObj;
 
 CHexWorld::CHexWorld() {
 	hexRendr2.init();
-	CHexObject::setHexRenderer(&hexRendr2);
 	
 	messageBus.setHandler<CDropItem>(this, &CHexWorld::onDropItem);
 	messageBus.setHandler<CRemoveEntity>(this, &CHexWorld::onRemoveEntity);
@@ -27,8 +30,9 @@ CHexWorld::CHexWorld() {
 
 	subscribe(&world);
 
-	hexPosLbl = new CGUIlabel2(10, 10, 850, 30);
+	hexPosLbl = gui::addLabel("xxx", 10, 10);
 	hexPosLbl->setTextColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
 
 	snd::setVolume(1);
 }
@@ -241,6 +245,7 @@ void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 
 /** Called every frame to get the hex world up to date.*/
 void CHexWorld::update(float dT) {
+
 	if (world.paused)
 		return;
 	this->dT = dT;
@@ -254,11 +259,17 @@ void CHexWorld::update(float dT) {
 		entity->update(dT);
 	}
 
+
+	renderer.entityNo = 0;
 	for (auto& entity : world.sprites) {
 		entity->update(dT);
+		renderer.entityNo++;
 	}
 
+
 	world.update(dT);
+
+
 }
 
 
@@ -321,6 +332,8 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 
 
 	hexPosLbl->setText(coords.str());
+
+	//hexPosLbl->setText("longer!");
 
 	COnCursorNewHex msg;
 	msg.newHex = mouseHex;

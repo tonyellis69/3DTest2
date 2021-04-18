@@ -2,6 +2,8 @@
 
 #include "utils/log.h"
 
+#include "hexRenderer.h"
+
 #include "gameState.h"
 #include "missile.h"
 
@@ -10,6 +12,7 @@
 #include "sound/sound.h"
 
 #include "utils/random.h"
+
 
 const float rad360 = M_PI * 2;
 
@@ -238,7 +241,7 @@ void CRobot::draw() {
 	//if (!visibleToPlayer)
 	//	return;
 	for (auto hex : viewField.visibleHexes)
-		hexRendr->highlightHex(hex);
+		hexRendr2.highlightHex(hex);
 
 	CHexObject::draw();
 }
@@ -274,9 +277,14 @@ std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& s
 }
 
 
+
 void CRobot::receiveDamage(CGameHexObj& attacker, int damage) {
+
 	//temp!!!!!!!!!!!!!!
-	liveLog << "\nHit robot!";
+
+
+	liveLog << "Hit robot!";
+
 	world.deleteEntity(*this);
 }
 
@@ -587,6 +595,118 @@ void CRobot::adjacentHexEvade() {
 
 /** Make an evasive move in a given direction for several hexes, while firing. */
 void CRobot::evadeRun() {
+	if (midRun) {
+		//return;
+		if (!tranistioningToHex) {
+			moveDest = getNextTravelHex(destination);
+			if (moveDest == CHex(-1)) {
+				midRun = false;
+				for (auto it : pathTemp) {
+					world.map->setHighlight(it, 0.0f);
+				}
+				return;
+			}
+
+			world.map->movingTo(this, hexPosition, moveDest);
+			tranistioningToHex = true;
+		}
+
+		//shoot if we can
+
+
+	}
+	else { //start a new run
+		//collect an 180 arc of hexes, centred on targer
+		glm::vec3 targetVec = glm::normalize(targetEntity->worldPos - worldPos);
+		float targetAngle = glm::orientedAngle(targetVec, glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+		THexList arc = findArc2(hexPosition, 4, M_PI, targetAngle);
+
+		//reverse order 50%
+		if (rnd::dice(2) == 1)
+			std::reverse(arc.begin(), arc.end());
+
+		//store with angle
+		std::vector<std::pair<float, CHex> > hexes;
+		for (auto& it : arc) {
+			glm::vec3 angleVec = cubeToWorldSpace(it) - worldPos;
+			angleVec = glm::normalize(angleVec);
+			float hexAngle = abs(glm::orientedAngle(angleVec, targetVec, glm::vec3(0, 0, 1)));
+			hexes.emplace_back(hexAngle, it);
+		}
+		//sort in descending angle order
+		std::sort(std::begin(hexes), std::end(hexes),
+			[](auto& a, auto& b) {return a.first > b.first; });
+
+		//try to find a working run
+		CHex startHex, targetHex;
+		THexDir exitDir; glm::vec3 intersection;
+
+		bool closing = (rnd::dice(3) == 1) ? true : false;
+
+		for (auto& hex : hexes) {
+			if (closing && (hex.first > M_PI_4 || hex.first < 0.174533) )
+				continue;
+
+
+			bool hitSolidHex = false;
+			do {
+				glm::vec3 endPoint = cubeToWorldSpace(hex.second);
+				targetHex = hex.second;
+				startHex = hexPosition;
+				while (startHex != targetHex) {
+					std::tie(exitDir, intersection) = world.map->findSegmentExit(worldPos, endPoint, startHex);
+
+					if (exitDir == hexNone) {
+						liveLog << "\nLoS fail!";
+						break;
+					}
+
+					CHex entryHex = getNeighbour(startHex, exitDir);
+
+					if (world.map->getHexCube(entryHex).content != emptyHex) {
+						hitSolidHex = true;
+						break;
+					}
+
+					startHex = entryHex;
+
+
+
+				}
+
+
+			} while (startHex != targetHex && !hitSolidHex);
+
+			if (startHex == targetHex) {
+				travelPath = world.map->aStarPath(hexPosition, targetHex);
+				for (auto it : travelPath) {
+					world.map->setHighlight(it, 1.0f);
+				}
+				pathTemp = travelPath;
+
+				destination = travelPath.back();
+				break;
+
+			}
+
+		}
+
+
+
+
+
+
+
+		midRun = true;
+
+	}
+
+}
+
+
+
+
+void CRobot::evadeRun2() {
 	if (midRun) {
 		//return;
 		if (!tranistioningToHex) {

@@ -7,12 +7,13 @@
 #include "glm/glm.hpp"
 
 #include "renderer/renderer.h"
-#include "renderer/buf.h"
+//#include "renderer/buf.h"
+#include "buf2.h"
 #include "importer/importer.h"
 #include "hex/hexArray.h"
 #include "hex/hexObject.h"
 #include "hex/hex.h"
-#include "IHexRenderer.h"
+
 
 #include "lineModel.h"
 
@@ -20,7 +21,7 @@
 
 
 /**	A class for drawing 3D hex-based graphics. */
-class CHexRenderer: public IHexRenderer {
+class CHexRenderer {
 public:
 	CHexRenderer();
 	void init();
@@ -78,7 +79,7 @@ private:
 	void tmpCreateHexagonModel();
 
 	void fillFloorplanLineBuffer();
-	void fillFloorplanSolidBuffer(CBuf& buf, int drawValue, float scale);
+	void fillFloorplanSolidBuffer(CBuf2& buf, int drawValue, float scale);
 	void createSolidHexModel();
 	void createLineShader();
 	void createHexShader();
@@ -95,11 +96,11 @@ private:
 	unsigned int hFogTex;
 
 	CRenderer* pRenderer;
-	CBuf floorplanLineBuf;
-	CBuf floorplanSpaceBuf;
-	CBuf floorplanSolidBuf;
+	CBuf2 floorplanLineBuf;
+	CBuf2 floorplanSpaceBuf;
+	CBuf2 floorplanSolidBuf;
 
-	CBuf solidHexBuf;
+	CBuf2 solidHexBuf;
 	std::vector<glm::vec3> hexModel;
 
 	CLineModel* solidHex;
@@ -145,7 +146,7 @@ private:
 	CHexArray* hexArray;
 
 	std::list<CBuf2> modelBuffers;
-	std::list<CBuf> modelBuffers2;
+	//std::list<CBuf> modelBuffers2;
 
 	std::map<std::string, CLineModel> lineModels;
 

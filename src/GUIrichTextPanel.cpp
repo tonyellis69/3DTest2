@@ -126,7 +126,7 @@ bool CGUIrichTextPanel::OnLMouseDown(const int mouseX, const int mouseY, int key
 		CMessage msg;
 		msg.Msg = uiClickOutside;
 		msg.x = mouseX; msg.y = mouseY;
-		pDrawFuncs->handleUImsg(*this->richText, msg);
+		//pDrawFuncs->handleUImsg(*this->richText, msg);
 
 	}
 	return true;

@@ -21,9 +21,8 @@ CHexRenderer::CHexRenderer() : hexModel(6) {
 }
 
 /** Essential setup. */
-void CHexRenderer::init() {
-	pRenderer = &CRenderer::getInstance();
-
+void CHexRenderer::init() 
+{
 	tmpCreateHexagonModel();
 	createSolidHexModel();
 
@@ -75,7 +74,7 @@ void CHexRenderer::setMap(CHexArray* hexArray){
 
 
 void CHexRenderer::drawFloorPlan() {
-	
+	renderer.setShader(lineShader);
 	glm::mat4 mvp = camera.clipMatrix;
 	lineShader->setShaderValue(hMVP, mvp);
 	
@@ -92,35 +91,44 @@ void CHexRenderer::drawFloorPlan() {
 
 
 	//!!!!!!!!!!!!!!!!!!temp hardcoding
-
 	if (hexArray->effectsNeedUpdate) {
 		updateFogBuffer();
 		hexArray->effectsNeedUpdate = false;
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_BUFFER, hFogTex);
+		glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, hFogBuffer);
+		unsigned int err = glGetError();
+
 	}
 
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_BUFFER, hFogTex);
-	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, hFogBuffer);
+
+
+	
+
+
+	renderer.setShader(hexLineShader);
 	glUniform1i(hFogTexUniform, 0);
+
+	renderer.setShader(visibilityShader);
 	glUniform1i(hEffectsTexUniformv, 0);
 
-	pRenderer->setShader(hexSolidShader);
+	renderer.setShader(hexSolidShader);
 	hexSolidShader->setShaderValue(hHexMVPs, mvp);
 	hexSolidShader->setShaderValue(hGridSizes, glm::i32vec2(hexArray->width, hexArray->height));
-	pRenderer->drawPointsBuf(hexShaderBuf, 0, hexShaderBuf.numElements);
+	renderer.drawPointsBuf(hexShaderBuf, 0, hexShaderBuf.numElements);
 
-	pRenderer->setShader(hexLineShader);
+	renderer.setShader(hexLineShader);
 	hexLineShader->setShaderValue(hHexMVP, mvp);
 	hexLineShader->setShaderValue(hGridSize, glm::i32vec2(hexArray->width, hexArray->height));
-	pRenderer->drawPointsBuf(hexShaderBuf, 0, hexShaderBuf.numElements);
+	renderer.drawPointsBuf(hexShaderBuf, 0, hexShaderBuf.numElements);
 
 
-	pRenderer->setShader(visibilityShader);
+	renderer.setShader(visibilityShader);
 	visibilityShader->setShaderValue(hHexMVPv, mvp);
 	visibilityShader->setShaderValue(hGridSizev, glm::i32vec2(hexArray->width, hexArray->height));
 	//!!!temporarily disabled to see whole map
-	//pRenderer->drawPointsBuf(hexShaderBuf, 0, hexShaderBuf.numElements);
+	//renderer.drawPointsBuf(hexShaderBuf, 0, hexShaderBuf.numElements);
 
 
 
@@ -130,7 +138,7 @@ void CHexRenderer::drawFloorPlan() {
 
 
 void CHexRenderer::drawPath(THexList* path, glm::vec4& pathStartColour, glm::vec4& pathEndColour) {
-	pRenderer->setShader(lineShaderBasic);
+	renderer.setShader(lineShaderBasic);
 	glm::mat4 mvp(1);
 	float inc = 1.0 / path->size();  float t = 0;
 	for (auto hex : *path) {
@@ -139,7 +147,7 @@ void CHexRenderer::drawPath(THexList* path, glm::vec4& pathStartColour, glm::vec
 		lineShaderBasic->setShaderValue(hMVPb, mvp);
 		glm::vec4 pathColour = glm::mix(pathStartColour, pathEndColour, 1 - t);
 		lineShaderBasic->setShaderValue(hColourb, pathColour);
-		pRenderer->drawTriStripBuf(solidHexBuf);
+		renderer.drawTriStripBuf(solidHexBuf);
 		t += inc;
 	}
 }
@@ -176,7 +184,7 @@ void CHexRenderer::setCameraPitch(float pitch) {
 //
 //	for (auto mesh : node.meshes) {
 //		lineShader->setShaderValue(hColour, mesh.colour);
-//		pRenderer->drawLinesRange(mesh.indexStart, mesh.indexSize, *buf);
+//		renderer.drawLinesRange(mesh.indexStart, mesh.indexSize, *buf);
 //	}
 //
 //	for (auto subNode : node.subNodes)
@@ -185,7 +193,7 @@ void CHexRenderer::setCameraPitch(float pitch) {
 //}
 
 void CHexRenderer::drawNode2(TModelNode& node, glm::mat4& parentMatrix, CBuf2* buf) {
-	pRenderer->setShader(lineShader);
+	renderer.setShader(lineShader);
 	glm::mat4 mvp = camera.clipMatrix * node.matrix * parentMatrix;
 	lineShader->setShaderValue(hMVP, mvp);
 	lineShader->setShaderValue(hWinSize, camera.getView());
@@ -194,11 +202,11 @@ void CHexRenderer::drawNode2(TModelNode& node, glm::mat4& parentMatrix, CBuf2* b
 		lineShader->setShaderValue(hColour, mesh.colour);
 	
 		if (mesh.isLine) {//TO DO: ugh, try to avoid
-			pRenderer->drawLineStripAdjBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
-			//pRenderer->drawLinesBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
+			renderer.drawLineStripAdjBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
+			//renderer.drawLinesBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
 		}
 		else
-			pRenderer->drawTrisBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
+			renderer.drawTrisBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
 
 	}
 
@@ -226,7 +234,6 @@ void CHexRenderer::createFogBuffer(int w, int h) {
 
 /** Update the data in the fog data buffer supplied to shaders. */
 void CHexRenderer::updateFogBuffer() {
-
 	glBindBuffer(GL_TEXTURE_BUFFER, hFogBuffer);
 	glBufferData(GL_TEXTURE_BUFFER, sizeof(TMapEffects) * hexArray->effectsData.size(), hexArray-> effectsData.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_TEXTURE_BUFFER, 0);
@@ -266,25 +273,25 @@ void CHexRenderer::drawSightLine(glm::vec3& posA, glm::vec3& posB) {
 
 	glm::mat4 scale =  glm::scale(trans, glm::vec3(glm::length(lineVec),0,0)) ;
 
-	pRenderer->setShader(lineShader);
+	renderer.setShader(lineShader);
 	glm::mat4 mvp = camera.clipMatrix * scale;
 	lineShader->setShaderValue(hMVP, mvp);
 	lineShader->setShaderValue(hWinSize, camera.getView());
 
 	lineShader->setShaderValue(hColour,glm::vec4(1,0,0,1));
 
-	pRenderer->drawLineStripAdjBuf(unitLineBuf, 0, 4);
+	renderer.drawLineStripAdjBuf(unitLineBuf, 0, 4);
 }
 
 void CHexRenderer::drawExplosion( glm::vec3& pos, float& lifeTime, float& size, float& timeOut) {
-	pRenderer->setShader(explosionShader);
+	renderer.setShader(explosionShader);
 	glm::mat4 mvp = camera.clipMatrix;
 	explosionShader->setShaderValue(hExpMVP, mvp);
 	explosionShader->setShaderValue(hPos, pos);
 	explosionShader->setShaderValue(hLifeTime, lifeTime);
 	explosionShader->setShaderValue(hSize, size);
 	explosionShader->setShaderValue(hTimeOut, timeOut);
-	pRenderer->drawPointsBuf(explosionBuf, 0, explosionBuf.numElements);
+	renderer.drawPointsBuf(explosionBuf, 0, explosionBuf.numElements);
 }
 
 
@@ -312,15 +319,17 @@ void CHexRenderer::fillFloorplanLineBuffer() {
 		}
 	}
 
-	floorplanLineBuf.storeVertexes((void*)verts.data(), sizeof(glm::vec3) * verts.size(), verts.size());
-	floorplanLineBuf.storeIndex(indices.data(), indices.size());
-	floorplanLineBuf.storeLayout(3, 0, 0, 0);
+	//floorplanLineBuf.storeVertexes((void*)verts.data(), sizeof(glm::vec3) * verts.size(), verts.size());
+	//floorplanLineBuf.storeIndex(indices.data(), indices.size());
+	//floorplanLineBuf.storeLayout(3, 0, 0, 0);
+
+	floorplanLineBuf.storeVerts(verts, indices, 3);
 
 }
 
 
 /** Fill the floorplan solid buffer with solid hexagon polys translated to worldspace. */
-void CHexRenderer::fillFloorplanSolidBuffer(CBuf& buf, int drawValue, float scale) {
+void CHexRenderer::fillFloorplanSolidBuffer(CBuf2& buf, int drawValue, float scale) {
 	std::vector<glm::vec3> verts;
 	std::vector<unsigned int> indices;
 	int vNum = 0;
@@ -345,9 +354,11 @@ void CHexRenderer::fillFloorplanSolidBuffer(CBuf& buf, int drawValue, float scal
 
 	}
 
-	buf.storeVertexes((void*)verts.data(), sizeof(glm::vec3) * verts.size(), verts.size());
-	buf.storeIndex(indices.data(), indices.size());
-	buf.storeLayout(3, 0, 0, 0);
+	//buf.storeVertexes((void*)verts.data(), sizeof(glm::vec3) * verts.size(), verts.size());
+	//buf.storeIndex(indices.data(), indices.size());
+	//buf.storeLayout(3, 0, 0, 0);
+
+	buf.storeVerts(verts, indices, 3);
 }
 
 void CHexRenderer::createSolidHexModel() {
@@ -367,9 +378,11 @@ void CHexRenderer::createSolidHexModel() {
 	indices.push_back(65535);
 
 
-	solidHexBuf.storeVertexes((void*)verts.data(), sizeof(glm::vec3)* verts.size(), verts.size());
-	solidHexBuf.storeIndex(indices.data(), indices.size());
-	solidHexBuf.storeLayout(3, 0, 0, 0);
+	//solidHexBuf.storeVertexes((void*)verts.data(), sizeof(glm::vec3)* verts.size(), verts.size());
+	//solidHexBuf.storeIndex(indices.data(), indices.size());
+	//solidHexBuf.storeLayout(3, 0, 0, 0);
+
+	solidHexBuf.storeVerts(verts, indices, 3);
 }
 
 
@@ -401,38 +414,38 @@ void CHexRenderer::tmpCreateHexagonModel() {
 }
 
 void CHexRenderer::createLineShader() {
-	lineShader = pRenderer->createShader("lineModel");
+	lineShader = renderer.createShader("lineModel");
 	hMVP = lineShader->getUniformHandle("mvpMatrix");
 	hColour = lineShader->getUniformHandle("colour");
 	hWinSize = lineShader->getUniformHandle("winSize");
 
-	lineShaderBasic = pRenderer->createShader("lineModelBasic");
+	lineShaderBasic = renderer.createShader("lineModelBasic");
 	hMVPb = lineShaderBasic->getUniformHandle("mvpMatrix");
 	hColourb = lineShaderBasic->getUniformHandle("colour");
 
 }
 
 void CHexRenderer::createHexShader() {
-	hexLineShader = pRenderer->createShader("hexLine");
+	hexLineShader = renderer.createShader("hexLine");
 	hHexMVP = hexLineShader->getUniformHandle("mvpMatrix");
 	hGridSize = hexLineShader->getUniformHandle("gridSize");
 	hFogTexUniform = hexLineShader->getUniformHandle("fogTex");
 
-	hexSolidShader = pRenderer->createShader("hexSolid");
+	hexSolidShader = renderer.createShader("hexSolid");
 	hHexMVPs = hexSolidShader->getUniformHandle("mvpMatrix");
 	hGridSizes = hexSolidShader->getUniformHandle("gridSize");
 	hFogTexUniforms = hexSolidShader->getUniformHandle("fogTex");
 }
 
 void CHexRenderer::createVisibilityShader() {
-	visibilityShader = pRenderer->createShader("visibilityShader");
+	visibilityShader = renderer.createShader("visibilityShader");
 	hHexMVPv = visibilityShader->getUniformHandle("mvpMatrix");
 	hGridSizev = visibilityShader->getUniformHandle("gridSize");
 	hEffectsTexUniformv = visibilityShader->getUniformHandle("effectsTex");
 }
 
 void CHexRenderer::createExplosionShader() {
-	explosionShader = pRenderer->createShader("shaders\\explosion");
+	explosionShader = renderer.createShader("shaders\\explosion");
 	hPos = explosionShader->getUniformHandle("pos");
 	hExpMVP = explosionShader->getUniformHandle("mvpMatrix");
 	hLifeTime = explosionShader->getUniformHandle("lifeTime");
@@ -475,13 +488,13 @@ void CHexRenderer::loadMesh(const std::string& name, const std::string& fileName
 	
 	//store vert buffer
 
-	CBuf meshBuf;
-	modelBuffers2.push_back(meshBuf);
+	//CBuf meshBuf;
+	//modelBuffers2.push_back(meshBuf);
 
 	CBuf2 meshBuf2;
 	modelBuffers.push_back(meshBuf2);
 
-	importer.getSingleMesh().exportToBuffer(modelBuffers2.back());
+	//importer.getSingleMesh().exportToBuffer(modelBuffers2.back());
 	importer.getSingleMesh().exportToBuffer(modelBuffers.back());
 
 	//store model
@@ -491,7 +504,7 @@ void CHexRenderer::loadMesh(const std::string& name, const std::string& fileName
 
 	CLineModel lineModel;
 	lineModel.model = model;
-	lineModel.buffer = &modelBuffers2.back();
+	//lineModel.buffer = &modelBuffers2.back();
 	lineModel.buffer2 = &modelBuffers.back();
 	lineModel.setColourR(floorplanLineColour); //////temp!!!!!!!!!!!
 

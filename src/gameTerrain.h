@@ -50,7 +50,7 @@ public:
 	CBaseTexture* triTableTex; ///<Data texture for MC triangles table
 
 
-	CModel* chunkShell; ///<A model to represent the outer layer of a potentianl chunk.
+	//CModel* chunkShell; ///<A model to represent the outer layer of a potentianl chunk.
 	int shellTotalVerts; ///<Total vertices that make up the shell.
 
 	CBaseBuf* grassPoints; ///<A 2D buffer for potential grass placement.

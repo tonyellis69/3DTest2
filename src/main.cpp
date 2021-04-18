@@ -17,11 +17,15 @@
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine,int nCmdShow) {
 	//_CrtSetBreakAlloc(12920);
-	C3DtestApp* testApp = new C3DtestApp;
+	//C3DtestApp* testApp = new C3DtestApp;
+	C3DtestApp testApp;
 	//AllocConsole();
-	testApp->SetWindow(1200,800,"3D test app :-)");
-	testApp->start();
-	delete testApp;
+	testApp.SetWindow(1200,800,"3D test app :-)");
+	testApp.start();
+	//delete testApp;
+
+	//_CrtDumpMemoryLeaks();
+
 
 	return true;
 }

@@ -389,7 +389,7 @@ CGUIrichTextPanel* CWorldUI::spawnPopText(bool modal) {
 	popupPanel->setBackColour1(white);
 	popupPanel->setBackColour2(white);
 	popupPanel->setBorderOn(true);
-	popupPanel->setFont(&pApp->popFont);
+//	popupPanel->setFont(&pApp->popFont);
 	popupPanel->setTextColour(UIwhite);
 	popupPanel->setResizeMode(resizeByWidthMode);
 	popupPanel->setShortestSpaceBreak(50);

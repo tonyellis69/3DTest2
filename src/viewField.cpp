@@ -26,7 +26,7 @@ bool CViewFieldArc::calculateOutline(CHex& pos, float rotation) {
 	}
 
 	if (recalc) {
-		arcHexes = *findArc2(apexPos, radius, fovAngle, rotation);
+		arcHexes = findArc2(apexPos, radius, fovAngle, rotation);
 	}
 
 	return recalc;
