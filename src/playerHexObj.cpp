@@ -275,7 +275,7 @@ void CPlayerObject::update(float dT) {
 		break;
 	}
 	default:
-		moveReal();
+		approachDestHex();
 		if (hexPosition == moveDest) {
 			if ((travelDir == moveNorth || travelDir == moveSouth) && !northSouthKeyReleased) {
 				travelDir = moveNone;
@@ -306,7 +306,7 @@ std::tuple<bool, glm::vec3> CPlayerObject::collisionCheck(glm::vec3& segA, glm::
 }
 
 /** Move realtime toward the destination hex, unless we reach it. */
-void CPlayerObject::moveReal() {
+void CPlayerObject::approachDestHex() {
 	glm::vec3 dest = cubeToWorldSpace(moveDest);
 	glm::vec3 travel = dest - worldPos;
 

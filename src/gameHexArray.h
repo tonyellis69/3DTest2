@@ -19,6 +19,8 @@
 
 using TMapIt = std::unordered_multimap<CHex, CGameHexObj*>::iterator;
 using TRange = std::pair<TMapIt, TMapIt>;
+//using TIntersections = std::unordered_map<CHex, glm::vec3, hex_hash>;
+using TIntersections = std::vector<std::pair<CHex, glm::vec3>>;
 
 /** Extend the hexArray to check for game entities when
 	pathfinding. */
@@ -65,6 +67,8 @@ public:
 	void updateVisibility(THexList& visibleHexes, THexList& unvisibleHexes);
 
 	CHex getSegmentFirstHex(glm::vec3& A, glm::vec3& B);
+
+	TIntersections getIntersectedHexes(glm::vec3& segA, glm::vec3& segB);
 
 	std::tuple<THexDir, glm::vec3> findSegmentExit(glm::vec3 A, glm::vec3 B, CHex& hex);
 

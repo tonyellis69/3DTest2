@@ -8,6 +8,7 @@
 #include "hex/hex.h"
 #include "gamehextObj.h"
 
+using TIntersections = std::vector<std::pair<CHex, glm::vec3>>;
 
 /** Prototype realtime missile. */
 class CMissile : public CSprite {
@@ -19,7 +20,7 @@ public:
 	void setOwner(CGameHexObj* owner);
 
 private:
-	void moveReal();
+	void approachDestHex();
 	bool collisionCheck(glm::vec3& moveVec);
 
 	void spawnExplosion();
@@ -39,5 +40,5 @@ private:
 
 	glm::vec3 collisionPt;
 
-	std::unordered_map<CHex, glm::vec3,hex_hash> intersectedHexes;
+	TIntersections intersectedHexes;
 };

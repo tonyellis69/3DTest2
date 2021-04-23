@@ -57,7 +57,7 @@ public:
 
 private:
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
-	void moveReal();
+	void approachDestHex();
 
 
 	float dT;

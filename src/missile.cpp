@@ -29,7 +29,7 @@ void CMissile::update(float dT) {
 		return;
 	}
 	this->dT = dT;
-	moveReal();
+	approachDestHex();
 }
 
 void CMissile::draw() {
@@ -42,7 +42,7 @@ void CMissile::setOwner(CGameHexObj* owner) {
 
 
 /** Move realtime in the current  direction. */
-void CMissile::moveReal() {
+void CMissile::approachDestHex() {
 	glm::vec3 moveVec = dirVec * missileMoveSpeed * dT;
 	worldPos += moveVec;
 	leadingPoint += moveVec;
@@ -54,35 +54,16 @@ void CMissile::moveReal() {
 
 /** Check for a collision along the line segment from the leading point's last known
 	position to where it is now. */
-bool CMissile::collisionCheck(glm::vec3& moveVec) {
+bool CMissile::collisionCheck(glm::vec3& moveVec) 
+{	
+	//first, collect any new unique hexes that we've intersected
 	CHex leadingPointHex = worldSpaceToHex(leadingPoint);
-	THexDir exitDir = hexNone; glm::vec3 intersection;
-	CHex startHex = lastLeadingPointHex;
-
-	//first, collect unique hexes that we've intersected so far
 	if (leadingPointHex != lastLeadingPointHex) { //we've moved at least one hex on
-		startHex = lastLeadingPointHex;
-		exitDir = hexNone;
-		while (startHex != leadingPointHex) {
-			std::tie(exitDir, intersection) = world.map->findSegmentExit(leadingPointLastHex, leadingPoint, startHex);		
-			if (exitDir == hexNone) {
-				std::tie(exitDir, intersection) = world.map->findSegmentExit(leadingPointLastHex, leadingPoint, startHex);
-				break; //hopefully catch rare case where leading point on hex border.
-				//ultimately we must NEVER GET HERE because segment must exit startHex somewhere
-				//if problem persists, look into brute-forcing segments that pass 
-				//along the line between two hexes
-			}
-			CHex entryHex = getNeighbour(startHex, exitDir);
-			intersectedHexes.insert({entryHex, intersection});
-			startHex = entryHex;
-		}
+		intersectedHexes = world.map->getIntersectedHexes(leadingPointLastHex, leadingPoint);
 	}
 
-
-
-	//Check every frame if we've collided with a robot in one of those hexes
+	//Check if we've collided with a robot in one of those hexes
 	for (auto& hex: intersectedHexes) {
-
 		CGameHexObj* entity = world.map->getEntityAt2(hex.first);
 		if (entity && entity != owner) {
 			auto [hit, intersection] = entity->collisionCheck(startingPos, leadingPoint);
@@ -104,18 +85,17 @@ bool CMissile::collisionCheck(glm::vec3& moveVec) {
 				collisionPt = hex.second;
 				return true;
 			}
-
 		}
 	
-		//optimisation: remove hex from list if safe to do so
+		//optimisation: remove oldest hex from list if safe to do so
 		if (intersectedHexes.size() > 1) {
-			auto exitedHex = intersectedHexes.find(lastLeadingPointHex);
+			//auto exitedHex = intersectedHexes.find(lastLeadingPointHex);
+			auto exitedHex = intersectedHexes.begin();
 			if (exitedHex  != intersectedHexes.end())
 				intersectedHexes.erase(exitedHex);
 		}
 		lastLeadingPointHex = leadingPointHex;
 	}
-
 
 	return false;
 }

@@ -339,9 +339,33 @@ CHex CGameHexArray::getSegmentFirstHex(glm::vec3& A, glm::vec3& B) {
 			smallestDist = dist;
 		}
 	}
-
 	return nearestHex;
 }
+
+/** Return all the hexes intersected by the segment A-B. */
+TIntersections CGameHexArray::getIntersectedHexes(glm::vec3& segA, glm::vec3& segB) {
+	TIntersections intersectedHexes;
+	CHex startHex = worldSpaceToHex(segA);
+	CHex endHex = worldSpaceToHex(segB);
+	THexDir exitDir = hexNone; glm::vec3 intersection;
+	while (startHex != endHex) {
+		std::tie(exitDir, intersection) = findSegmentExit(segA, segB, startHex);
+		if (exitDir == hexNone) {
+			std::tie(exitDir, intersection) = findSegmentExit(segA, segB, startHex);
+			break; //hopefully catch rare case where leading point on hex border.
+			//ultimately we must NEVER GET HERE because segment must exit startHex somewhere
+			//if problem persists, look into brute-forcing segments that pass 
+			//along the line between two hexes
+		}
+		CHex entryHex = getNeighbour(startHex, exitDir);
+		//intersectedHexes.insert({ entryHex, intersection });
+		intersectedHexes.push_back({ entryHex, intersection });
+		startHex = entryHex;
+	}
+
+	return intersectedHexes;
+}
+
 
 /** Return the direction of the neighbouring hex into which this segment exits, if any. 
 	Also return the point of intersection. */

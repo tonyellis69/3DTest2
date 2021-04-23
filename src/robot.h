@@ -25,8 +25,6 @@ public:
 	CHex getNextTravelHex(CHex& destination);
 	void draw();
 
-	int getMissileDamage();
-
 	bool canSee(CGameHexObj* target);
 
 
@@ -45,26 +43,13 @@ public:
 private:
 	int tigCall(int memberId);
 	void onNotify(COnCursorNewHex& msg);
-
 	void updateViewField();
-
-
-	void moveReal();
-
+	void approachDestHex();
 	void rotateAlong(const float& angle);
-
 	void melee();
-
 	bool hasLineOfSight(CGameHexObj* target);
-
 	void fireMissile(CGameHexObj* target);
-
-	void sideToSide();
-
-	void adjacentHexEvade();
-
-	void evadeRun();
-	void evadeRun2();
+	void strafe();
 
 	float dT;
 
