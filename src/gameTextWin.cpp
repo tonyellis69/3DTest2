@@ -31,6 +31,10 @@ void CGameTextWin::clearText() {
 	richText->clear();
 }
 
+bool CGameTextWin::isEmpty() {
+	return richText->isEmpty();
+}
+
 void CGameTextWin::resizeToFit() {
 	richText->resizeToFit();
 

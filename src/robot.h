@@ -12,7 +12,8 @@
 
 enum TRobotState {robotSleep, robotChase, robotWander, 
 	robotMelee, robotShoot, robotHunt, robotLightSleep,
-	robotEvasiveShoot};
+	robotEvasiveShoot, robotWander2, robotCharge, robotLookFor,
+	robotLookAround };
 
 /** A class describing basic robot characteristics and
 	behaviour. */
@@ -37,7 +38,7 @@ public:
 	CViewFieldArc viewField;
 
 
-	bool tranistioningToHex = false;
+	bool transitioningToHex = false;
 	CHex destination = CHex(-1);
 
 private:
@@ -48,12 +49,17 @@ private:
 	void rotateAlong(const float& angle);
 	void melee();
 	bool hasLineOfSight(CGameHexObj* target);
+	bool inFoV(CGameHexObj* target);
 	void fireMissile(CGameHexObj* target);
 	void strafe();
+	void wander2();
+	void charge();
+	void lookFor();
+	void lookAround();
 
 	float dT;
 
-	TRobotState state = robotLightSleep;
+	TRobotState state = robotWander2;// robotLightSleep;
 
 
 	float robotMoveSpeed = 3.0f;// 2.5f;
@@ -81,6 +87,13 @@ private:
 	glm::vec4 hostileColour = { 1,0,0,1 };
 	glm::vec4 shootingColour = { 1,1,0,1 };
 
+
+	bool tmpCharger = false;
+	bool tmpPlayerInFov = false;
+
+	float rotationSearched = 0;
+	CHex targetLastHeading;
+	THexDir targetLastDirection;
 };
 
 

@@ -35,7 +35,10 @@
 
 #include "gameState.h"
 
+#include "physics/hexPhysics.h"
+
 enum TViewMode {gameView, devView};
+enum TMsgType {msgId,msgId2,msgId3};
   
 
 /** A class encapsulating the hex-based representation of the world. */
@@ -43,6 +46,11 @@ class CHexWorld :  public CGameEventSubject,
 	public CMessenger, public CTigObjptr {
 public:
 	CHexWorld();
+	void msgCB(int id);
+	void msgCB2( glm::vec3& v);
+	void msgCB3(float y);
+	//void msgCB4(float y, const std::string& str, int n);
+	void msgCB4(float y, const char* str, int n);
 	void setVM(Ivm* pVM);
 	void addMesh(const std::string& name, const std::string& fileName);
 	void makeMap(ITigObj* tigMap);
@@ -66,6 +74,7 @@ public:
 	void toggleView();
 
 	CGUIlabel2* hexPosLbl;
+
 
 private:
 
@@ -144,6 +153,7 @@ private:
 	
 	TViewMode viewMode; ///<Camera mode, etc.
 
+	CHexPhysics physics;
 
 };
 

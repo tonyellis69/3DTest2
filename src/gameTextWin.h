@@ -13,6 +13,7 @@ public:
 	void setTheme(const std::string& themeName);
 	void setStyle(const std::string& styleName);
 	void clearText();
+	bool isEmpty();
 	void resizeToFit();
 	void message(CGUIbase* sender, CMessage& msg);
 	void resize(int w, int h);

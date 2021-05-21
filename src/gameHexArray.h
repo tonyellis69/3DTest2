@@ -13,7 +13,7 @@
 
 #include "messaging/messenger.h"
 
-#include "robot.h" //temp for testBot!
+//#include "robot.h" //temp for testBot!
 
 	
 
@@ -74,6 +74,8 @@ public:
 
 
 	void addEntity(TEntity entity, CHex& hex);
+	void addExistingEntity(CGameHexObj* entity, CHex& hex);
+	void removeEntity(CGameHexObj*  entity);
 	void movingTo(CGameHexObj* entity, CHex& pos, CHex& dest);
 	void movedTo(CGameHexObj* entity, CHex& oldHex, CHex& newHex);
 
@@ -84,8 +86,8 @@ public:
 	TEntities entities; ///<The grand list of entities in the map.
 	
 
-	CRobot* testBot;
-	CRobot* testBot2;
+	//CRobot* testBot;
+	//CRobot* testBot2;
 	//TO DO: temp!!
 
 
@@ -100,5 +102,3 @@ private:
 
 
 
-const int solidHex = 2;
-const int emptyHex = 1;

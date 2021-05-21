@@ -51,14 +51,14 @@ void CViewFieldCircle::setField(int radius) {
 
 	//create ring of hexes at radius from centre
 	//make this our visible hexes
-	ringHexes = *findRing(radius, centre);
+	ringHexes = findRing(radius, centre);
 
 
 }
 
 void CViewFieldCircle::update(CHex& pos) {
 	centre = pos;
-	ringHexes = *findRing(radius, centre);
+	ringHexes = findRing(radius, centre);
 }
 
 bool CViewFieldCircle::searchView(CHex& hex) {

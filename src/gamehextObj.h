@@ -14,6 +14,8 @@
 #include "messaging/messenger.h"
 #include "gameMsg.h"
 
+#include "physics/phys.h"
+
 const bool resolved = false;
 const bool unresolved = true;
 
@@ -31,6 +33,8 @@ class CGameHexObj : public CHexObject, public CTigObjptr,
 {
 public:
 	CGameHexObj();
+
+	void setLineModel(const std::string& name);
 
 	void draw();
 
@@ -62,11 +66,14 @@ public:
 
 	virtual void update(float dT) {}
 
+	virtual void onMovedHex() {};
+
 	virtual std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB) {
 		return std::tuple<bool, glm::vec3>();
 	}
 
 	float orientationTo(glm::vec3& targetPos);
+	void updatePos(glm::vec3& dPos);
 
 
 	unsigned int mBlocks; ///<If true, blocks travel path
@@ -83,6 +90,10 @@ public:
 	TMoveDir travelDir = moveNone;
 
 	TEntityType entityType = entNone;
+
+	int tmpId = 0;
+
+	CPhys physics;
 
 protected:
 	int tigCall(int memberId) { return 0; };

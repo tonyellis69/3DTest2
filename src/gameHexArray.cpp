@@ -7,6 +7,7 @@
 #include "intersect.h"
 
 CGameHexArray::CGameHexArray() {
+
 	}
 
 CGameHexArray::~CGameHexArray() {
@@ -145,6 +146,10 @@ void CGameHexArray::updateBlocking() {
 		}
 	}
 	
+
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//! TO DO get rid of the below asap: requires every object to have a
+	//! tigObj, etc, etc 
 	//ensure doors can't be exited from the wrong angle
 	for (auto keyValue : entityMap) {
 		CGameHexObj& entity = *keyValue.second;
@@ -162,7 +167,7 @@ void CGameHexArray::updateBlocking() {
 }
 
 /** Clear this hex of any current blocks, but restore those caused by
-	neighbours or occupying entities. */
+	getNeighbours or occupying entities. */
 void CGameHexArray::smartBlockClear( CHex& pos) {
 	getHexCube(pos).blocks = blocksNone;
 
@@ -358,7 +363,11 @@ TIntersections CGameHexArray::getIntersectedHexes(glm::vec3& segA, glm::vec3& se
 			//along the line between two hexes
 		}
 		CHex entryHex = getNeighbour(startHex, exitDir);
-		//intersectedHexes.insert({ entryHex, intersection });
+		if (outsideArray(entryHex))
+			return intersectedHexes;
+		//TO DO: if map bounded by solid hexes, above shouldn't be 
+		//needed! Find why some segments break through
+
 		intersectedHexes.push_back({ entryHex, intersection });
 		startHex = entryHex;
 	}
@@ -418,6 +427,23 @@ void CGameHexArray::addEntity(TEntity entity, CHex& hex) {
 	entity->setPosition(hex);
 	entities.push_back(entity);
 	entityMap.insert({ hex, entity.get() });
+}
+
+void CGameHexArray::addExistingEntity(CGameHexObj* entity, CHex& hex)
+{
+	entity->setPosition(hex);
+	entityMap.insert({ hex, entity });
+}
+
+
+void CGameHexArray::removeEntity(CGameHexObj* entity) {
+	for (auto& it = entityMap.begin(); it != entityMap.end(); it++) {
+		if (it->second == entity) {
+			it = entityMap.erase(it);
+			break;
+		}
+	}
+	entity->setPosition(CHex(-1));
 }
 
 /** Register this entity as moving from the pos hex to the dest hex,

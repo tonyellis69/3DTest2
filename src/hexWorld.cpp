@@ -15,6 +15,10 @@
 
 #include "UI/uiRender.h" //temp debug
 
+#include "messaging/msg2.h" //for test
+
+#include "gameGui.h"
+ 
 CGameHexObj nullGameHexObj;
 
 CHexWorld::CHexWorld() {
@@ -35,8 +39,51 @@ CHexWorld::CHexWorld() {
 
 
 	snd::setVolume(1);
+
+	//msgCB4(2.2f, "hurrah!");
+
+	//int msgId = 66;
+	//int msgId2 = 42;
+	//int msgId3 = 33;
+
+	msg::attach(msgId, this, &CHexWorld::msgCB3);
+	msg::attach(msgId2, this, &CHexWorld::msgCB4);
+	msg::attach(msgId3, this, &CHexWorld::msgCB2);
+
+	glm::vec3 v = { 1,2,3 };
+	msg::emit(msgId3, v);
+	msg::emit(msgId2, 4.2f, "hurrah!", 100);
+
+	msg::remove(msgId2, this);
+
+	msg::emit(msgId2, 4.2f, "hurrah!", 100);
+	msg::emit(msgId3, v);
+
+	gWin::createWin("con", 10, 10, 200, 300);
 }
 
+void CHexWorld::msgCB(int id) {
+	int x = id;
+	int b = 0;
+
+}
+
+void CHexWorld::msgCB2( glm::vec3& v) {
+	int x = 0;
+
+
+}
+
+void CHexWorld::msgCB3(float y) {
+	float test = y;
+	float b = 0;
+}
+
+//void CHexWorld::msgCB4(float y,  const std::string& str, int n) {
+void CHexWorld::msgCB4(float y, const char* str, int n) {
+	float test = y;
+	float b = 0;
+}
 
 void CHexWorld::setVM(Ivm* pVM) {
 	vm = pVM;
@@ -85,9 +132,11 @@ void CHexWorld::startGame() {
 
 
 
-
 	hexRendr2.setMap(map);
 	world.setMap(map);
+	physics.removeEntities();
+
+	physics.setMap(map);
 
 
 	//create new player object
@@ -96,10 +145,10 @@ void CHexWorld::startGame() {
 	map->addEntity(TEntity(playerObj), map->findRandomHex(true));
 
 	//temp brute-force remove nearby robots
-	for (auto& entity : map->entities) {
-		if (entity->entityType == entRobot && cubeDistance(entity->hexPosition, playerObj->hexPosition) < 8)
-			map->deleteEntity(*entity);
-	}
+	//for (auto& entity : map->entities) {
+	//	if (entity->entityType == entRobot && cubeDistance(entity->hexPosition, playerObj->hexPosition) < 8)
+	//		map->deleteEntity(*entity);
+	//}
 
 
 	world.player = playerObj;
@@ -111,7 +160,7 @@ void CHexWorld::startGame() {
 	playerObj->updateViewField();
 	alertEntitiesInPlayerFov();
 
-
+	physics.add(playerObj);
 
 	entitiesToDraw.assign(map->entities.rbegin(),map->entities.rend());
 
@@ -131,6 +180,15 @@ void CHexWorld::startGame() {
 	setViewMode(gameView);
 
 	beginNewTurn(); //NB!!! Repeats some of the stuff above
+
+
+	glm::vec3 A(-9.52627945, -9.50000000, 0.00000000);
+	glm::vec3 B(-9.52627945, -10.50000000, 0.00000000);
+	CHex hex(-9, 3, 6);
+	THexDir exitDir = hexNone; glm::vec3 intersection;
+	std::tie(exitDir, intersection) = map->findSegmentExit(A, B, hex);
+	if (exitDir == hexNone)
+		int b = 0;
 }
 
 
@@ -143,19 +201,15 @@ void CHexWorld::moveCamera(glm::vec3& direction) {
 /** Called when a key is pressed. */
 void CHexWorld::onKeyDown(int key, long mod) {
 	//temp user interface stuff!
+
+	msg::emit(msg::tmpMsg, key); //temp!
+
+
+
 	if (key == 'I')
 		playerObj->showInventory();
 
-	if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9) {
-		int item = key - GLFW_KEY_1;
-		if (mod == GLFW_MOD_SHIFT) {
-			tempGetGroupItem(item);
-		}
-		else if (mod == GLFW_MOD_CONTROL)
-			playerObj->equipItem(item);
-		else
-			playerObj->dropItem(item);
-	}
+
 
 	if (key == 'F') {
 		hexRendr2.toggleFollowCam();
@@ -269,6 +323,7 @@ void CHexWorld::update(float dT) {
 
 	world.update(dT);
 
+	physics.update(dT);
 
 }
 
@@ -309,6 +364,7 @@ void CHexWorld::createCursorObject() {
 /** Respond to mouse cursor moving to a new hex. */
 void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	hexCursor->setPosition(mouseHex);
+
 
 	/*if (!lineOfSight)
 		cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition, true);

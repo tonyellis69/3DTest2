@@ -3,6 +3,7 @@
 #include "hexItem.h"
 #include "door.h"
 #include "robot.h"
+#include "item.h"
 
 void CMapMaker::attachVM(Ivm* pVM) {
 	vm = pVM;
@@ -19,7 +20,7 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 
 	map->updateBlocking();
 
-	for (int x = 0; x < 12; x++) {
+	for (int x = 0; x < 2; x++) {
 		auto robotM = std::make_shared<CRobot>();
 		robotM->setLineModel("robot");
 		map->addEntity(robotM, map->findRandomHex(true));
@@ -28,12 +29,24 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 		//map->testBot = robotM.get();
 	}
 
-	//auto robotM = std::make_shared<CRobot>();
-	//robotM->setLineModel("robot");
-	//map->addEntity(robotM, CHex(-1, -4, 5));
-	//robotM->setTigObj(pRobot);
-	//map->testBot2 = robotM.get();
+	for (int x = 0; x < 6; x++) {
+		auto medkit = std::make_shared<CItem>();
+		medkit->setLineModel("medkit");
+		medkit->itemType = "medkit";
+		medkit->description = "Health replenishment in a pristine box.";
+		map->addEntity(medkit, map->findRandomHex(true));
+		medkit->setTigObj(vm->getObject(tig::CItem) ); //scrap!!!
+	}
 
+
+	for (int x = 0; x < 6; x++) {
+		auto dummyItem = std::make_shared<CItem>();
+		dummyItem->setLineModel("dummyItem");
+		dummyItem->itemType = "dummyItem";
+		dummyItem->description = "Just a worthless placeholder, alas.";
+		map->addEntity(dummyItem, map->findRandomHex(true));
+		dummyItem->setTigObj(vm->getObject(tig::CItem)); //scrap!!!
+	}
 
 
 
@@ -228,6 +241,8 @@ TEntity CMapMaker::tmpCreateDesk() {
 
 /** Fill the map with its permanent entities. */
 void CMapMaker::tempPopulateMap() {
+
+
 
 	//auto wrench = std::make_shared<CHexItem>();
 	//wrench->setLineModel("test");

@@ -10,8 +10,13 @@
 
 #include "sound/sound.h"
 
+#include "messaging/msg2.h"
+
+#include "gameGui.h"
+
+
 CPlayerObject::CPlayerObject() {
-	psu = new CPowerSupply();
+	//psu = new CPowerSupply();
 
 	messageBus.setHandler<CGetPlayerPos>(this, &CPlayerObject::onGetPlayerPos);
 	messageBus.setHandler<CSetPlayerAction>(this, &CPlayerObject::onSetPlayerAction);
@@ -26,10 +31,79 @@ CPlayerObject::CPlayerObject() {
 	//APlabel->setSize(style::labelPresets[1]);
 	//APlabel->setFont(style::themes2.at("gameTheme").styles.at("mainHeader").font);
 
+	msg::attach(msg::tmpMsg, this, &CPlayerObject::tmpKeyCB); //temp!
+
+	physics.invMass = 1.0f/80.0f; //temp!
+
 }
 
 CPlayerObject::~CPlayerObject() {
 	//gui::removeControl(APlabel);
+}
+
+/** Temporary keystroke catcher. */
+void CPlayerObject::tmpKeyCB(int key) {
+
+	if (key >= '1' && key <= '5' && inventoryOn) {
+		itemSelected = key - '1';
+		auto item = inventory[itemSelected];
+		std::string desc = "\n\n" + item->itemType + "\nU) use or (L) leave?";
+		gWin::addText("con", desc);
+		return;
+	}
+
+	if (key == 'U' && inventoryOn) {
+		gWin::addText("con", "\nUsed!");
+		return;
+	}
+
+	if (key == 'L' && inventoryOn) {
+		gWin::addText("con", "\nDropped!");
+		auto item = inventory[itemSelected];
+		inventory.erase(inventory.begin() + itemSelected);
+		world.map->addExistingEntity( item, hexPosition );
+		itemSelected = -1;
+		return;
+	}
+
+
+
+	if (key >= '1' && key <= '5' && !tmpFloorItems.empty()) {
+		itemSelected = key - '1';
+		auto item = tmpFloorItems[itemSelected];
+		std::string desc = "\n\n" + item->itemType + "\n";
+		desc += item->description;
+		desc += "\n\nT) Take?";
+		gWin::addText("con",desc);
+	}
+
+	if (key == 'T' && itemSelected != -1) {
+		auto item = tmpFloorItems[itemSelected];
+		inventory.push_back(item);
+
+		world.map->removeEntity(item);
+	}
+
+	if (key == 'I') {
+		gWin::addText("con", "\nInventory:\n");
+		if (inventory.empty()) {
+			gWin::addText("con", "Nothing!");
+			return;
+		}
+
+		std::string invTxt;
+		auto itemNo = '1';
+		for (auto& item : inventory) {
+			invTxt = itemNo;
+			invTxt += ") " + item->itemType + "\n";
+			itemNo++;
+			gWin::addText("con", invTxt);
+		}
+		inventoryOn = true;
+
+
+	}
+
 }
 
 /** Player has pressed or released the fire button. */
@@ -117,7 +191,7 @@ int CPlayerObject::getMissileDamage() {
 /** Called when player has arrived at a new hex.*/
 void CPlayerObject::onMovedHex() {
 	CActorMovedHex msg(hexPosition, this);
-	send(msg);
+	//send(msg);
 	//eventually calls hexWorld alertEntitiesInPlayerFov, which notifies entities
 	//if they're now in view of the player. Find a more direct way to do this
 
@@ -127,6 +201,31 @@ void CPlayerObject::onMovedHex() {
 	send(msg2);
 	//eventually updates map's fog of war, might also be better done more directly
 	//if nothing else, turn this into one message handled by hexWorld
+
+
+	gWin::clearText("con");
+	tmpFloorItems.clear();
+	itemSelected = -1;
+	inventoryOn = false;
+	
+	auto [first, last] = world.map->getEntitiesAt(hexPosition);
+	for (auto it = first; it != last; it++) {
+		if (it->second->isTigClass(tig::CItem)) {
+			tmpFloorItems.push_back((CItem*)(it->second));
+		}
+	}
+
+	if (!tmpFloorItems.empty()) {
+		auto menuChar = '1';
+		std::string stuff = "You can see:";
+		for (auto& item : tmpFloorItems) {
+			stuff += "\n"; stuff += menuChar;
+			stuff += ") A " + item->itemType;
+			menuChar++;
+		}
+		gWin::addText("con", stuff);
+	}
+
 }
 
 
@@ -161,6 +260,23 @@ void CPlayerObject::updateViewField() {
 
 /** Respond to player move instruction. */
 void CPlayerObject::moveCommand(TMoveDir commandDir) {
+	const float accel = 2000;
+	switch (commandDir) {
+	case moveNorth:  physics.moveImpulse = { 0,1,0 }; break;
+	case moveNE: physics.moveImpulse = { M_SQRT1_2, M_SQRT1_2, 0 }; break;
+	case moveEast: physics.moveImpulse = { 1,0,0 }; break;
+	case moveSE: physics.moveImpulse = { M_SQRT1_2, -M_SQRT1_2, 0 }; break;
+	case moveSouth: physics.moveImpulse = { 0,-1,0 }; break;
+	case moveSW: physics.moveImpulse = { -M_SQRT1_2, -M_SQRT1_2, 0 }; break;
+	case moveWest: physics.moveImpulse = { -1,0,0 }; break;
+	case moveNW: physics.moveImpulse = { -M_SQRT1_2, M_SQRT1_2, 0 }; break;
+	}
+
+	physics.moveImpulse *= accel;
+}
+
+
+void CPlayerObject::moveCommand2(TMoveDir commandDir) {
 	if (commandDir == travelDir)
 		return; //already heading in the right direction.
 

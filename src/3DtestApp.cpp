@@ -145,7 +145,7 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 			moveKeyDown |= leftKey;
 
 		if (key == 'P') {
-			if (world.map->testBot->getState() == robotSleep) {
+			/*if (world.map->testBot->getState() == robotSleep) {
 				world.map->testBot->setState(robotWander);
 				world.map->testBot2->setState(robotWander);
 			}
@@ -153,11 +153,11 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 				world.map->testBot->setState(robotSleep);
 				world.map->testBot2->setState(robotSleep);
 
-			}
+			}*/
 		}
 
 		if (key == 'O') {
-			if (world.map->testBot->getState() == robotSleep) {
+			/*if (world.map->testBot->getState() == robotSleep) {
 				world.map->testBot->setState(robotShoot);
 				world.map->testBot2->setState(robotShoot);
 			}
@@ -165,7 +165,7 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 				world.map->testBot->setState(robotSleep);
 				world.map->testBot2->setState(robotSleep);
 
-			}
+			}*/
 		}
 
 
@@ -367,6 +367,10 @@ void C3DtestApp::initHexWorld() {
 	hexWorld.addMesh("test", dataPath + "models\\test.obj");
 	hexWorld.addMesh("cursor", dataPath + "models\\cursor.dae");
 	hexWorld.addMesh("player", dataPath + "models\\player.obj");
+
+	hexWorld.addMesh("dummyItem", dataPath + "models\\dummyItem.dae");
+	hexWorld.addMesh("medkit", dataPath + "models\\medkit.dae");
+
 	hexWorld.addMesh("robot", dataPath + "models\\robot.obj");
 	hexWorld.addMesh("shield", dataPath + "models\\shield.obj");
 	hexWorld.addMesh("bolt", dataPath + "models\\bolt.obj");
@@ -375,6 +379,9 @@ void C3DtestApp::initHexWorld() {
 	hexWorld.addMesh("door", dataPath + "models\\door.dae");
 
 	hexWorld.addMesh("solidHex", dataPath + "models\\solidHex.dae");
+
+
+
 
 
 	//... more models

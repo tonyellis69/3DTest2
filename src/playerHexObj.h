@@ -12,6 +12,7 @@
 
 #include "UI/gui.h"
 
+#include "item.h"
 
 
 /** A class describing characteristics and behaviour unique to
@@ -20,6 +21,7 @@ class CPlayerObject : /*public CHexActor ,*/ public CGameHexObj, public CGameEve
 public:
 	CPlayerObject();
 	~CPlayerObject();
+	void tmpKeyCB(int key);
 	void onFireKey(bool pressed);
 	void draw();
 	void takeItem(CGameHexObj& item);
@@ -39,7 +41,9 @@ public:
 
 	void updateViewField();
 
-	void moveCommand(TMoveDir dir);
+	void moveCommand(TMoveDir commandDir);
+
+	void moveCommand2(TMoveDir dir);
 	CHex startNorthSouthMove(TMoveDir dir);
 	void onVerticalKeyRelease();
 	void update(float dT);
@@ -49,7 +53,7 @@ public:
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
 	
-	CPowerSupply* psu;
+	//CPowerSupply* psu;
 
 	CViewFieldCircle viewField;
 
@@ -68,4 +72,8 @@ private:
 
 	float targetAngle;
 
+	std::vector<CItem*> inventory;
+	std::vector<CItem*> tmpFloorItems; //temp!
+	int itemSelected = -1; //temp!
+	bool inventoryOn = false;
 };

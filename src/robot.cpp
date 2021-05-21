@@ -15,12 +15,17 @@
 
 
 const float rad360 = M_PI * 2;
+const float rad60 = M_PI / 3;
+const float rad45 = M_PI / 4;
 
 CRobot::CRobot() {
 	viewField.setField(5, 60);
 	normalColour = glm::vec4(0.3, 1, 0.3, 1); //temp!
 
 	entityType = entRobot;
+
+	if (rnd::dice(3) == 1)
+		tmpCharger = true;
 }
 
 
@@ -34,7 +39,7 @@ void CRobot::update(float dT) {
 	if (missileCooldown > 0)
 		missileCooldown -= dT;
 
-	if (tranistioningToHex) {
+	if (transitioningToHex) {
 		float angleToDest = orientationTo(cubeToWorldSpace(moveDest));
 		if (abs(angleToDest) > 0.01f && state != robotEvasiveShoot) { //not lined up, so rotate
 			rotateAlong(angleToDest);
@@ -43,9 +48,31 @@ void CRobot::update(float dT) {
 		approachDestHex();
 	}
 
+
+	if (inFoV(world.player)) {
+		tmpPlayerInFov = true;
+	}
+	else
+		tmpPlayerInFov = false;
+
+
+
+	//TO DO: maybe don't try any state updates while transitioning?
+	//Almost nothing can start while we're still ending travel to hex
 	switch (state) {
 	case robotSleep: return;
-
+	case robotWander2 :
+		wander2();
+		return;
+	case robotCharge:
+		charge();
+		return;
+	case robotLookFor:
+		lookFor();
+		return;
+	case robotLookAround:
+		lookAround();
+		return;
 	case  robotLightSleep:
 		if (cubeDistance(hexPosition, world.player->hexPosition) <= 4) {
 			setState(robotHunt);
@@ -67,11 +94,11 @@ void CRobot::update(float dT) {
 			return;
 		}
 		world.map->movingTo(this, hexPosition, moveDest);
-		tranistioningToHex = true;
+		transitioningToHex = true;
 		return;
 
 	case robotWander:
-		if (!tranistioningToHex) {
+		if (!transitioningToHex) {
 			moveDest = getNextTravelHex(destination);
 			if (moveDest == CHex(-1)) {
 				world.map->setHighlight(destination, 0.0f);
@@ -79,7 +106,7 @@ void CRobot::update(float dT) {
 				return;
 			}
 			world.map->movingTo(this, hexPosition, moveDest);
-			tranistioningToHex = true;
+			transitioningToHex = true;
 		}
 		return;
 
@@ -111,7 +138,7 @@ void CRobot::update(float dT) {
 		return;
 
 	case robotHunt:
-		if (!tranistioningToHex) {
+		if (!transitioningToHex) {
 			//no longer transitioning, so can we see player from this new hex?
 			if (hasLineOfSight(targetEntity)) {
 				setState(robotEvasiveShoot);
@@ -132,7 +159,7 @@ void CRobot::update(float dT) {
 				return;
 			}
 			world.map->movingTo(this, hexPosition, moveDest);
-			tranistioningToHex = true;
+			transitioningToHex = true;
 		}
 
 	}
@@ -143,6 +170,24 @@ void CRobot::update(float dT) {
 void CRobot::setState(TRobotState newState) 
 {
 	switch (newState) {
+	case robotCharge:
+		robotMoveSpeed = 6.0f;
+		lineModel.setColourR(hostileColour);
+		targetEntity = world.player; //TO DO: don't be so absolute!
+		destination = targetEntity->hexPosition; 
+		break;
+	case robotWander2:
+		lineModel.setColourR(glm::vec4(0,1,0,1));
+		robotMoveSpeed = 3.0f;
+		break;
+	case robotLookFor:
+		lineModel.setColourR(glm::vec4(1, 1, 0, 1));
+		destination = targetLastHeading;
+		robotMoveSpeed = 6.0f;
+		break;
+	case robotLookAround:
+		rotationSearched = 0;
+		break;
 	case robotWander:
 		destination = world.map->findRandomHex(true);
 		world.map->setHighlight(destination, 1.0f); //temp test!
@@ -154,7 +199,7 @@ void CRobot::setState(TRobotState newState)
 		//TO DO: can set target here later
 		travelPath.clear();
 		destination = CHex(-1);
-		meleeHitCooldown = 3.0f;
+		meleeHitCooldown = 0.70f;
 		lungeDir = glm::normalize(world.player->worldPos - worldPos);
 		lungeReturning = false;
 		lungeEndPos = worldPos;
@@ -188,6 +233,9 @@ TRobotState CRobot::getState() {
 /** Return the next destination hex, if any, in this robot's ongoing journey. 
 	If the current path is blocked, try to find a way around it. */
 CHex CRobot::getNextTravelHex(CHex& destination) {
+	if (destination == CHex(-1))
+		return destination;
+
 	if (travelPath.empty() || travelPath.back() != destination) {
 		travelPath = world.map->aStarPath(hexPosition, destination);
 		//!!!!check for blocking robots in the first hex and we can exit early
@@ -295,7 +343,7 @@ void CRobot::approachDestHex() {
 		worldPos = dest;
 		world.map->movedTo(this, hexPosition, moveDest);
 		setPosition(moveDest);
-		tranistioningToHex = false;
+		transitioningToHex = false;
 		return;
 	}
 
@@ -345,6 +393,20 @@ bool CRobot::hasLineOfSight(CGameHexObj* target)
 	return true;
 }
 
+/** Return true if target within 90 degree field of view and not obscured by scenery.*/
+// TO DO: optimisations include limiting view distance, *not* checking every damn frame, etc.
+bool CRobot::inFoV(CGameHexObj* target) {
+	//range check:
+	if (cubeDistance(target->hexPosition, hexPosition) > 6)
+		return false;
+
+	if ( abs(orientationTo(target->worldPos)) < rad60 /*rad45*/ ) {
+		if (hasLineOfSight(target))
+			return true;
+	}
+	return false;
+}
+
 void CRobot::fireMissile(CGameHexObj* target) {
 	auto missile = std::make_shared<CMissile>();
 
@@ -362,7 +424,7 @@ void CRobot::fireMissile(CGameHexObj* target) {
 	at an angle. */
 void CRobot::strafe() {
 	if (midRun) {
-		if (!tranistioningToHex) {
+		if (!transitioningToHex) {
 			moveDest = getNextTravelHex(destination);
 			if (moveDest == CHex(-1)) { //reached end of run
 				midRun = false;
@@ -378,7 +440,7 @@ void CRobot::strafe() {
 			}
 
 			world.map->movingTo(this, hexPosition, moveDest);
-			tranistioningToHex = true;
+			transitioningToHex = true;
 		}
 
 		//keep facing target
@@ -464,6 +526,128 @@ void CRobot::strafe() {
 
 	}
 	
+}
+
+void CRobot::wander2() {
+	//are we currenly wandering?
+	if (!transitioningToHex) {
+
+		if (tmpPlayerInFov) {
+			setState(robotCharge);
+			return;
+		}
+
+		moveDest = getNextTravelHex(destination);
+		if (moveDest == CHex(-1)) {
+
+			//for (auto& it : pathTemp) {
+			//	world.map->setHighlight(it, 0.0f);
+			//}
+			//pathTemp.clear();
+
+			
+			THexList ring = findRing(5, hexPosition);
+			int randHex;
+			do {
+				randHex = rnd::dice(ring.size()) - 1;
+				travelPath = world.map->aStarPath(hexPosition, ring[randHex]);
+			} while (travelPath.size() < 3);
+
+			destination = travelPath.back();
+			moveDest = travelPath.front();
+
+
+			//for (auto& it : travelPath) {
+			//	world.map->setHighlight(it, 1.0f);
+			//}
+   //			pathTemp = travelPath;
+
+		}
+
+
+
+		world.map->movingTo(this, hexPosition, moveDest);
+		transitioningToHex = true;
+	}
+}
+
+/** Charge right at the target entity until we reach it or lose it. */
+void CRobot::charge()  {
+
+	//ensure we're looking at the target:
+	float angleToFaceTarget = orientationTo(targetEntity->worldPos);
+	rotation += angleToFaceTarget;
+
+	if (!transitioningToHex) { //again
+		//is player in vicinity?
+		THexList adjacentHexes = getNeighbours(hexPosition);
+		for (auto& local : adjacentHexes) {
+			if (local == targetEntity->hexPosition) {
+				return; //TO DO: switch to melee instead
+				if ((glm::distance(worldPos, world.player->worldPos) < robotMeleeRange) && meleeHitCooldown <= 0) {
+					setState(robotMelee);
+					return;
+				}
+			}
+
+		}
+
+		//lost sight of player?
+		if (!inFoV(targetEntity)) {
+			setState(robotLookFor); 
+			return;
+		}
+
+		//maybe player moved
+		if (destination != targetEntity->hexPosition) {
+			destination = targetEntity->hexPosition;
+		}
+		targetLastHeading = targetEntity->moveDest;
+		
+
+		moveDest = getNextTravelHex(destination);
+
+		world.map->movingTo(this, hexPosition, moveDest);
+		transitioningToHex = true;
+
+	}
+
+}
+
+void CRobot::lookFor() {
+	if (!transitioningToHex) {
+		if (tmpPlayerInFov) {
+			setState(robotCharge);
+			return;
+		}
+
+		moveDest = getNextTravelHex(destination);
+		if (moveDest == CHex(-1)) {
+			setState(robotLookAround); 
+			return;
+		}
+
+		world.map->movingTo(this, hexPosition, moveDest);
+		transitioningToHex = true;
+	}
+}
+
+
+void CRobot::lookAround() {
+	if (tmpPlayerInFov) {
+		setState(robotCharge);
+		return;
+	}
+
+	if (rotationSearched > 2 * M_PI) {
+		setState(robotWander2);
+		return;
+	}
+
+	float dTurn = dT * robotRotateSpeed;
+	rotation += dTurn;
+	rotationSearched += dTurn;
+	buildWorldMatrix();
 }
 
 
