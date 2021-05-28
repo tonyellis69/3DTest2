@@ -7,17 +7,17 @@
 
 #include "hex/hexArray.h"
 
-#include "gamehextObj.h"
+#include "entity.h"
 //#include "actor.h" //replaces the above
 
 
 #include "messaging/messenger.h"
-
+#include "gameMsg.h"
 //#include "robot.h" //temp for testBot!
 
 	
 
-using TMapIt = std::unordered_multimap<CHex, CGameHexObj*>::iterator;
+using TMapIt = std::unordered_multimap<CHex, CEntity*>::iterator;
 using TRange = std::pair<TMapIt, TMapIt>;
 //using TIntersections = std::unordered_map<CHex, glm::vec3, hex_hash>;
 using TIntersections = std::vector<std::pair<CHex, glm::vec3>>;
@@ -37,18 +37,18 @@ public:
 	bool isAvailable(CHex& hex);
 	CHex findLineEnd(CHex& start, CHex& target);
 	TRange getEntitiesAt(CHex& hex);
-	CGameHexObj* getEntityAt(CHex& hex);
-	CGameHexObj* getEntityClassAt(int classId, CHex& hex);
-	CGameHexObj* getBlockingEntityAt(CHex& hex);
-	CGameHexObj* getEntityNotSelf(CGameHexObj* self);
+	CEntity* getEntityAt(CHex& hex);
+	//CGameHexObj* getEntityClassAt(int classId, CHex& hex);
+	//CGameHexObj* getBlockingEntityAt(CHex& hex);
+	CEntity* getEntityNotSelf(CEntity* self);
 
 
 
-	CGameHexObj* getEntityAt2(const CHex& hex);
+	CEntity* getEntityAt2(const CHex& hex);
 
 
 	void updateBlocking();
-	void smartBlockClear( CHex& pos);
+	//void smartBlockClear( CHex& pos);
 
 	bool lineOfSight(CHex& start, CHex& end);
 
@@ -74,12 +74,12 @@ public:
 
 
 	void addEntity(TEntity entity, CHex& hex);
-	void addExistingEntity(CGameHexObj* entity, CHex& hex);
-	void removeEntity(CGameHexObj*  entity);
-	void movingTo(CGameHexObj* entity, CHex& pos, CHex& dest);
-	void movedTo(CGameHexObj* entity, CHex& oldHex, CHex& newHex);
+	void addExistingEntity(CEntity* entity, CHex& hex);
+	void removeEntity(CEntity*  entity);
+	void movingTo(CEntity* entity, CHex& pos, CHex& dest);
+	void movedTo(CEntity* entity, CHex& oldHex, CHex& newHex);
 
-	void deleteEntity(CGameHexObj& entity);
+	void deleteEntity(CEntity& entity);
 
 	void tidyEntityLists();
 
@@ -94,7 +94,7 @@ public:
 private:
 
 
-	std::unordered_multimap<CHex, CGameHexObj*, hex_hash> entityMap;
+	std::unordered_multimap<CHex, CEntity*, hex_hash> entityMap;
 	
 	bool entityListDirty = false;
 

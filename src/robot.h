@@ -6,7 +6,7 @@
 #include "gameMsg.h"
 
 //#include "actor.h"
-#include "gamehextObj.h"
+#include "entity.h"
 
 #include "viewField.h"
 
@@ -17,7 +17,7 @@ enum TRobotState {robotSleep, robotChase, robotWander,
 
 /** A class describing basic robot characteristics and
 	behaviour. */
-class CRobot : public CGameHexObj  {
+class CRobot : public CEntity {
 public:
 	CRobot();
 	void update(float dT);
@@ -26,31 +26,29 @@ public:
 	CHex getNextTravelHex(CHex& destination);
 	void draw();
 
-	bool canSee(CGameHexObj* target);
 
 
-	void playerSight(bool inView);
 
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
 
-	void receiveDamage(CGameHexObj& attacker, int damage);
+	void receiveDamage(CEntity& attacker, int damage);
 
 	CViewFieldArc viewField;
 
 
 	bool transitioningToHex = false;
 	CHex destination = CHex(-1);
+	CHex moveDest; ///<Adjacent hex we're moving to.
 
 private:
-	int tigCall(int memberId);
-	void onNotify(COnCursorNewHex& msg);
-	void updateViewField();
+//	int tigCall(int memberId);
+	//void updateViewField();
 	void approachDestHex();
 	void rotateAlong(const float& angle);
 	void melee();
-	bool hasLineOfSight(CGameHexObj* target);
-	bool inFoV(CGameHexObj* target);
-	void fireMissile(CGameHexObj* target);
+	bool hasLineOfSight(CEntity* target);
+	bool inFoV(CEntity* target);
+	void fireMissile(CEntity* target);
 	void strafe();
 	void wander2();
 	void charge();
@@ -75,7 +73,7 @@ private:
 	glm::vec3 lungeEndPos;
 
 	float missileCooldown = 0.0f;
-	CGameHexObj* targetEntity;
+	CEntity* targetEntity;
 
 	float evadeTimer = 0.0f;
 	bool evadeShoot;

@@ -4,7 +4,8 @@
 #include <map>
 #include <tuple>
 
-#include "../gamehextObj.h"
+//#include "../gamehextObj.h"
+#include "../entity.h"
 #include "hex/hexArray.h"
 
 class CBodyPairKey;
@@ -15,7 +16,7 @@ class CBodyPair;
 class CHexPhysics {
 public:
 	CHexPhysics();
-	void add(CGameHexObj* entity);
+	void add(CEntity* entity);
 	void setMap(CHexArray* hexArray);
 	void removeEntities();
 	void update(float dT);
@@ -27,14 +28,14 @@ private:
 	void integrateForces();
 	void resolveContacts();
 	void integrateVelocities();
-	std::tuple<float, glm::vec3> findSceneryCollision(CGameHexObj* a, glm::vec3& hexPos, int dir);
+	std::tuple<float, glm::vec3> findSceneryCollision(CEntity* a, glm::vec3& hexPos, int dir);
 
-	std::vector<CGameHexObj*> entities;
+	std::vector<CEntity*> entities;
 	float dT;
 
 	CHexArray* hexArray;
 
-	CGameHexObj tmpMapObj;
+	CEntity tmpMapObj;
 
 	std::map<CBodyPairKey, CBodyPair> bodyPairs;
 };
@@ -42,11 +43,11 @@ private:
 
 class CBodyPairKey {
 public:
-	CBodyPairKey(CGameHexObj* a, CGameHexObj* b, int ref=0) ;
+	CBodyPairKey(CEntity* a, CEntity* b, int ref=0) ;
 	bool operator < (const CBodyPairKey& a2) const;
 
-	CGameHexObj* objA;
-	CGameHexObj* objB;
+	CEntity* objA;
+	CEntity* objB;
 
 private:
 	int refCount = 0;
@@ -56,11 +57,11 @@ private:
 class CBodyPair {
 public:
 	CBodyPair() {};
-	CBodyPair(CGameHexObj* a, CGameHexObj* b, float p, glm::vec3& n) :
+	CBodyPair(CEntity* a, CEntity* b, float p, glm::vec3& n) :
 		A(a), B(b), penetration(p), normal(n) {};
 
-	CGameHexObj* A;
-	CGameHexObj* B;
+	CEntity* A;
+	CEntity* B;
 
 	float penetration = 0;
 	glm::vec3 normal = { 0,0,0 };

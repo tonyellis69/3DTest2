@@ -29,10 +29,7 @@ public:
 };
 
 
-class CGetPlayerPos : public CMsg {
-public:
-	CHex position;
-};
+
 
 class CGetTravelPath : public CMsg {
 public:
@@ -94,14 +91,14 @@ public:
 	bool unblocked;
 };
 
-class CGameHexObj;
+class CEntity;
 class CActorMovedHex : public CMsg {
 public:
-	CActorMovedHex(CHex& h, CGameHexObj* a) :
+	CActorMovedHex(CHex& h, CEntity* a) :
 		newHex(h), actor(a) {}
 
 	CHex newHex;
-	CGameHexObj* actor;
+	CEntity* actor;
 };
 
 

@@ -1,9 +1,11 @@
 #include "mapMaker.h"
 
-#include "hexItem.h"
+//#include "hexItem.h"
 #include "door.h"
 #include "robot.h"
 #include "item.h"
+
+#include "tigExport.h"
 
 void CMapMaker::attachVM(Ivm* pVM) {
 	vm = pVM;
@@ -25,7 +27,7 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 		robotM->setLineModel("robot");
 		map->addEntity(robotM, map->findRandomHex(true));
 		//map->addEntity(robotM, CHex(-2,-4,6));
-		robotM->setTigObj(pRobot);
+		//robotM->setTigObj(pRobot);
 		//map->testBot = robotM.get();
 	}
 
@@ -35,7 +37,7 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 		medkit->itemType = "medkit";
 		medkit->description = "Health replenishment in a pristine box.";
 		map->addEntity(medkit, map->findRandomHex(true));
-		medkit->setTigObj(vm->getObject(tig::CItem) ); //scrap!!!
+		//medkit->setTigObj(vm->getObject(tig::CItem) ); //scrap!!!
 	}
 
 
@@ -45,7 +47,7 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 		dummyItem->itemType = "dummyItem";
 		dummyItem->description = "Just a worthless placeholder, alas.";
 		map->addEntity(dummyItem, map->findRandomHex(true));
-		dummyItem->setTigObj(vm->getObject(tig::CItem)); //scrap!!!
+		//dummyItem->setTigObj(vm->getObject(tig::CItem)); //scrap!!!
 	}
 
 
@@ -231,10 +233,10 @@ void CMapMaker::tmpaddDesks() {
 }
 
 TEntity CMapMaker::tmpCreateDesk() {
-	auto desk = std::make_shared<CGameHexObj>();
+	auto desk = std::make_shared<CEntity>();
 	//desk->setMap(&hexArray);
 	desk->setLineModel("desk");
-	desk->setTigObj(vm->getObject(tig::desk));
+	//desk->setTigObj(vm->getObject(tig::desk));
 	hexArray->entities.push_back(desk);
 	return desk;
 }

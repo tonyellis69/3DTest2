@@ -1,9 +1,9 @@
 #pragma once
 
-#include "sprite.h"
+#include "entity.h"
 
 /** Prototype explosion sprite. */
-class CExplosion : public CSprite {
+class CExplosion : public CEntity {
 public:
 	CExplosion(float size);
 	void update(float dT);

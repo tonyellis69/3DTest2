@@ -20,9 +20,6 @@ const float rad45 = M_PI / 4;
 
 CRobot::CRobot() {
 	viewField.setField(5, 60);
-	normalColour = glm::vec4(0.3, 1, 0.3, 1); //temp!
-
-	entityType = entRobot;
 
 	if (rnd::dice(3) == 1)
 		tmpCharger = true;
@@ -261,75 +258,27 @@ void CRobot::draw() {
 	//	return;
 	for (auto hex : viewField.visibleHexes)
 		hexRendr2.highlightHex(hex);
-	CHexObject::draw();
+	CEntity::draw();
 }
 
-/** If we can see the hex this object is in, return true. */
-bool CRobot::canSee(CGameHexObj* target) {
-	return viewField.searchView(target->hexPosition);
-}
 
-/** Called to update whether this robot is in the
-player's fov. */
-void CRobot::playerSight(bool inView) {
-	visibleToPlayer = inView;
-}
+
 
 /** Check if the given segment intersects this robot. */
 std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
-	//if (lineModel.circleCollision(segA, segB))
-	//	return { true, glm::vec3() };
-
 	if (lineModel.BBcollision(segA, segB))
 		return { true, glm::vec3() };
 	return { false, glm::vec3()};
 }
 
-void CRobot::receiveDamage(CGameHexObj& attacker, int damage) {
+void CRobot::receiveDamage(CEntity& attacker, int damage) {
 	//temp!!!!!!!!!!!!!!
 	liveLog << "Hit robot!";
 	world.deleteEntity(*this);
 }
 
 
-int CRobot::tigCall(int memberId) {
-	if (memberId == tig::isNeighbour) {
-		CTigObjptr* gameObj = getParamObj(0)->getCppObj();
-		CGameHexObj* hexObj = (CGameHexObj*) gameObj;
-		return isNeighbour(*hexObj);
-	}
-	else if (memberId == tig::isLineOfSight) {
-		CTigObjptr* gameObj = getParamObj(0)->getCppObj();
-		CGameHexObj* hexObj = (CGameHexObj*)gameObj;
-		CLineOfSight msg(hexPosition, hexObj->hexPosition);
-		send(msg);
-		return msg.result;
-	}
-	return 0;
-}
 
-void CRobot::onNotify(COnCursorNewHex& msg) {
-	if (msg.newHex == hexPosition) {
-		std::string status = callTigStr(tig::getStatus);
-		if (tmpOrigHP > tmpHP) {
-			status += "\nCondition: damaged";
-		}
-		CSendText statusPop(statusPopup, status);
-		send(statusPop);
-	}
-}
-
-/** Reconstruct our viewfield if it needs it. If we do, check if the player is in sight. */
-void CRobot::updateViewField() {
-	bool rebuilt = viewField.calculateOutline(hexPosition, rotation);
-	if (rebuilt) {
-		CCalcVisionField msg(hexPosition, viewField.arcHexes, true);
-		send(msg);
-		viewField.visibleHexes = msg.visibleHexes;
-
-		//checkForPlayer(); TO DO: needs recreating
-	}
-}
 
 
 /** Move in realtime toward the destination hex, unless we reach it. */
@@ -381,7 +330,7 @@ void CRobot::melee() {
 }
 
 /** Return true if we can draw a line to the target without hitting anything. */
-bool CRobot::hasLineOfSight(CGameHexObj* target) 
+bool CRobot::hasLineOfSight(CEntity* target)
 {
 	TIntersections intersectedHexes = world.map->getIntersectedHexes(worldPos, target->worldPos);
 	for (auto& hex : intersectedHexes) {
@@ -395,7 +344,7 @@ bool CRobot::hasLineOfSight(CGameHexObj* target)
 
 /** Return true if target within 90 degree field of view and not obscured by scenery.*/
 // TO DO: optimisations include limiting view distance, *not* checking every damn frame, etc.
-bool CRobot::inFoV(CGameHexObj* target) {
+bool CRobot::inFoV(CEntity* target) {
 	//range check:
 	if (cubeDistance(target->hexPosition, hexPosition) > 6)
 		return false;
@@ -407,7 +356,7 @@ bool CRobot::inFoV(CGameHexObj* target) {
 	return false;
 }
 
-void CRobot::fireMissile(CGameHexObj* target) {
+void CRobot::fireMissile(CEntity* target) {
 	auto missile = std::make_shared<CMissile>();
 
 	glm::vec3 targetVec = target->worldPos - worldPos;
@@ -573,7 +522,6 @@ void CRobot::wander2() {
 
 /** Charge right at the target entity until we reach it or lose it. */
 void CRobot::charge()  {
-
 	//ensure we're looking at the target:
 	float angleToFaceTarget = orientationTo(targetEntity->worldPos);
 	rotation += angleToFaceTarget;
@@ -602,8 +550,8 @@ void CRobot::charge()  {
 		if (destination != targetEntity->hexPosition) {
 			destination = targetEntity->hexPosition;
 		}
-		targetLastHeading = targetEntity->moveDest;
-		
+		//targetLastHeading = targetEntity->moveDest;
+		//bzzzt no longer works with freemoving player
 
 		moveDest = getNextTravelHex(destination);
 

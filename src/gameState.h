@@ -8,7 +8,7 @@
 #include "gameHexArray.h"
 
 
-#include "sprite.h"
+//#include "sprite.h"
 
 
 enum TTurnPhase { playerPhase, robotPhase, playerDeadPhase };
@@ -24,9 +24,9 @@ public:
 	TTurnPhase getTurnPhase();
 	void onNotify(COnCursorNewHex& msg);
 	bool isBlocked(CHex& pos, CHex& dest);
-	void addSprite(std::shared_ptr<CSprite> sprite);
-	void destroySprite(CSprite& sprite);
-	void deleteEntity(CGameHexObj& entity);
+	void addSprite(std::shared_ptr<CEntity> sprite);
+	void destroySprite(CEntity& sprite);
+	void deleteEntity(CEntity& entity);
 	void update(float dT);
 	void togglePause();
 
@@ -38,14 +38,14 @@ public:
 
 
 
-	std::vector<std::shared_ptr<CSprite>> sprites;
+	//std::vector<std::shared_ptr<CEntity>> sprites;
 
 	bool paused = false;
 
 private:
 	TTurnPhase turnPhase;
 
-	std::vector<std::shared_ptr<CSprite>> addSpritesList;
+//	std::vector<std::shared_ptr<CEntity>> addSpritesList;
 };
 
 extern CGameState world;

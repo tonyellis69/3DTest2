@@ -26,37 +26,39 @@ bool CGameState::isBlocked(CHex& pos, CHex& dest) {
 	return map->fromToBlocked(pos, dest);
 }
 
-void CGameState::addSprite(std::shared_ptr<CSprite> sprite) {
-	addSpritesList.push_back(sprite);
+void CGameState::addSprite(std::shared_ptr<CEntity> sprite) {
+	//addSpritesList.push_back(sprite);
+	map->entities.push_back(sprite);
 }
 
 
-void CGameState::destroySprite(CSprite& deadSprite) {
+void CGameState::destroySprite(CEntity& deadSprite) {
 	//spriteDeathlist.push_back(&deadSprite);
-	deadSprite.killMe = true;
+	//deadSprite.killMe = true;
+	deadSprite.deleteMe = true;
 }
 
-void CGameState::deleteEntity(CGameHexObj& entity) {
+void CGameState::deleteEntity(CEntity& entity) {
 	map->deleteEntity(entity);
 }
 
 void CGameState::update(float dT) {
-	for (auto& it = sprites.begin(); it != sprites.end(); ) {
-		if (it->get()->killMe)
-			it = sprites.erase(it);
-		else
-			it++;
-	}
+	//for (auto& it = sprites.begin(); it != sprites.end(); ) {
+	//	if (it->get()->deleteMe)
+	//		it = sprites.erase(it);
+	//	else
+	//		it++;
+	//}
 
 	//TO DO: look into tidying the above into something like the below
 
 
 	map->tidyEntityLists();
 
-	for (auto& sprite = addSpritesList.begin(); sprite != addSpritesList.end(); sprite++) {
-		sprites.push_back(*sprite);
-	}
-	addSpritesList.clear();
+	//for (auto& sprite = addSpritesList.begin(); sprite != addSpritesList.end(); sprite++) {
+	//	sprites.push_back(*sprite);
+	//}
+	//addSpritesList.clear();
 
 }
 

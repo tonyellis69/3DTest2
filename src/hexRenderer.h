@@ -11,7 +11,7 @@
 #include "buf2.h"
 #include "importer/importer.h"
 #include "hex/hexArray.h"
-#include "hex/hexObject.h"
+#include "entity.h"
 #include "hex/hex.h"
 
 

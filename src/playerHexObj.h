@@ -1,41 +1,30 @@
 #pragma once
 
-#include "hexItem.h"
-//#include "actor.h"
+#define _USE_MATH_DEFINES //for cmath
 
-#include "powerSupply.h"
+#include "entity.h"
 
 #include "gameEvents.h"
 #include "hexMsg.h"
-
 #include "viewField.h"
-
-#include "UI/gui.h"
-
 #include "item.h"
 
+enum TMoveDir {
+	moveNone, moveEast, moveWest, moveNE, moveSE,
+	moveSW, moveNW, moveNorth, moveSouth, moveNS2, moveNS2blocked
+};
 
 /** A class describing characteristics and behaviour unique to
 	the player hex-world object. */
-class CPlayerObject : /*public CHexActor ,*/ public CGameHexObj, public CGameEventSubject {
+class CPlayerObject : /*public CHexActor ,*/ public CEntity, public CGameEventSubject {
 public:
 	CPlayerObject();
 	~CPlayerObject();
 	void tmpKeyCB(int key);
 	void onFireKey(bool pressed);
 	void draw();
-	void takeItem(CGameHexObj& item);
-	void showInventory();
-	void dropItem(int itemNo);
-	void equipItem(int itemNo);
 
-	void onGetPlayerPos(CGetPlayerPos& msg);
-	void onSetPlayerAction(CSetPlayerAction& msg);
-	void onTakeItem(CTakeItem& msg);
-
-	void receiveDamage(CGameHexObj& attacker, int damage);
-
-	int getMissileDamage();
+	void receiveDamage(CEntity& attacker, int damage);
 
 	void onMovedHex();
 
@@ -43,9 +32,7 @@ public:
 
 	void moveCommand(TMoveDir commandDir);
 
-	void moveCommand2(TMoveDir dir);
-	CHex startNorthSouthMove(TMoveDir dir);
-	void onVerticalKeyRelease();
+
 	void update(float dT);
 
 	void setTargetAngle(float angle);
@@ -57,18 +44,19 @@ public:
 
 	CViewFieldCircle viewField;
 
-	CGUIlabel2* APlabel;
+
+	TMoveDir travelDir = moveNone;
 
 private:
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
-	void approachDestHex();
+	//void approachDestHex();
 
 
 	float dT;
 
 	float playerMoveSpeed = 5.0f;
 
-	bool northSouthKeyReleased = true;
+	//bool northSouthKeyReleased = true;
 
 	float targetAngle;
 

@@ -5,17 +5,18 @@
 #include "hex/hex.h"
 
 //#include "actor.h"
+#include "hex/hexArray.h"
 
 CDoor::CDoor() {
 	status = doorClosed;
 	anim = 0;
 	doorSpeed = 4.0f;
-	mBlocks = blocksAll; 
+	//mBlocks = blocksAll; 
 }
 
 
 void CDoor::setLineModel(const std::string& name) {
-	CHexObject::setLineModel(name);
+	CEntity::setLineModel(name);
 	doorNode = lineModel.getNode("Door");
 }
 
@@ -85,9 +86,10 @@ void CDoor::frameUpdate(float dT) {
 }
 
 unsigned int CDoor::blocks() {
-	unsigned char rot = mBlocks;
-	for (int dir = hexEast; dir < facing; dir++) {
-		rot = (rot << 1) | (rot >> 5);
-	}
-	return rot;
+	////unsigned char rot = mBlocks;
+	//for (int dir = hexEast; dir < facing; dir++) {
+	//	rot = (rot << 1) | (rot >> 5);
+	//}
+	//return rot;
+	return NULL;
 }

@@ -3,21 +3,21 @@
 #include <unordered_set>
 #include <set>
 
-#include "sprite.h"
+//#include "sprite.h"
 
 #include "hex/hex.h"
-#include "gamehextObj.h"
+#include "entity.h"
 
 using TIntersections = std::vector<std::pair<CHex, glm::vec3>>;
 
 /** Prototype realtime missile. */
-class CMissile : public CSprite {
+class CMissile : public CEntity {
 public:
 	CMissile();
 	void setPosition(glm::vec3& pos, float rotation);
 	void update(float dT);
 	void draw();
-	void setOwner(CGameHexObj* owner);
+	void setOwner(CEntity* owner);
 
 private:
 	void approachDestHex();
@@ -36,7 +36,7 @@ private:
 
 	bool collided = false;
 
-	CGameHexObj* owner;
+	CEntity* owner;
 
 	glm::vec3 collisionPt;
 

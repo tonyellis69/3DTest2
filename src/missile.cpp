@@ -14,7 +14,14 @@ CMissile::CMissile() {
 }
 
 void CMissile::setPosition(glm::vec3& pos, float rotation) {
-	CSprite::setPosition(pos, rotation);
+	//CSprite::setPosition(pos, rotation);
+
+	worldPos = pos;
+	this->rotation = rotation;
+	buildWorldMatrix();
+
+
+
 	dirVec =  glm::normalize( *worldMatrix * glm::vec4(1, 0, 0,0) );
 	leadingPoint = worldPos + dirVec * distToPoint;
 	leadingPointLastHex = leadingPoint;
@@ -25,7 +32,8 @@ void CMissile::setPosition(glm::vec3& pos, float rotation) {
 void CMissile::update(float dT) {
 	if (collided) {
 		spawnExplosion();
-		world.destroySprite(*this);
+		//world.destroySprite(*this);
+		world.deleteEntity(*this);
 		return;
 	}
 	this->dT = dT;
@@ -36,7 +44,7 @@ void CMissile::draw() {
 	hexRendr2.drawLineModel(lineModel);
 }
 
-void CMissile::setOwner(CGameHexObj* owner) {
+void CMissile::setOwner(CEntity* owner) {
 	this->owner = owner;
 }
 
@@ -64,7 +72,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 
 	//Check if we've collided with a robot in one of those hexes
 	for (auto& hex: intersectedHexes) {
-		CGameHexObj* entity = world.map->getEntityAt2(hex.first);
+		CEntity* entity = world.map->getEntityAt2(hex.first);
 		if (entity && entity != owner) {
 			auto [hit, intersection] = entity->collisionCheck(startingPos, leadingPoint);
 			if (hit) {
@@ -103,7 +111,8 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 void CMissile::spawnExplosion() {
 	auto explosion = std::make_shared<CExplosion>(1.0f);
 
-	explosion->setPosition(collisionPt);
+	//explosion->setPosition(collisionPt);
+	explosion->worldPos = collisionPt;
 	world.addSprite(explosion);
 }
 

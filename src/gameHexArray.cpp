@@ -78,7 +78,7 @@ TRange CGameHexArray::getEntitiesAt(CHex& hex) {
 }
 
 /** Return the first entity at this hex position. */
-CGameHexObj* CGameHexArray::getEntityAt(CHex& hex) {
+CEntity* CGameHexArray::getEntityAt(CHex& hex) {
 	auto [first, last] = getEntitiesAt(hex);
 	for (auto it = first; it != last; it++) {
 			return it->second;
@@ -87,27 +87,27 @@ CGameHexObj* CGameHexArray::getEntityAt(CHex& hex) {
 	return NULL;;
 }
 
-CGameHexObj* CGameHexArray::getEntityClassAt(int classId, CHex& hex) {
-	auto [first, last] = getEntitiesAt(hex);
-	for (auto it = first; it != last; it++) {
-		if (it->second->isTigClass(classId))
-		return it->second;
-	}
-	return NULL;
-}
+//CGameHexObj* CGameHexArray::getEntityClassAt(int classId, CHex& hex) {
+//	auto [first, last] = getEntitiesAt(hex);
+//	for (auto it = first; it != last; it++) {
+//		if (it->second->isTigClass(classId))
+//		return it->second;
+//	}
+//	return NULL;
+//}
 
 
-CGameHexObj* CGameHexArray::getBlockingEntityAt(CHex& hex) {
-	auto [first, last] = getEntitiesAt(hex);
-	for (auto it = first; it != last; it++) {
-		if (it->second->blocks())
-			return it->second;
-	}
+//CGameHexObj* CGameHexArray::getBlockingEntityAt(CHex& hex) {
+//	auto [first, last] = getEntitiesAt(hex);
+//	for (auto it = first; it != last; it++) {
+//		if (it->second->blocks())
+//			return it->second;
+//	}
+//
+//	return NULL;
+//}
 
-	return NULL;
-}
-
-CGameHexObj* CGameHexArray::getEntityNotSelf(CGameHexObj* self) {
+CEntity* CGameHexArray::getEntityNotSelf(CEntity* self) {
 	auto [first, last] = getEntitiesAt(self->hexPosition);
 	for (auto it = first; it != last; it++) {
 		if (it->second == self)
@@ -119,7 +119,7 @@ CGameHexObj* CGameHexArray::getEntityNotSelf(CGameHexObj* self) {
 }
 
 /** NB returns first entity found at this hex. Will need extending. */
-CGameHexObj* CGameHexArray::getEntityAt2(const CHex& hex) {
+CEntity* CGameHexArray::getEntityAt2(const CHex& hex) {
 	auto entity = entityMap.find(hex);
 	if (entity != entityMap.end()) {
 		return entity->second;
@@ -151,7 +151,8 @@ void CGameHexArray::updateBlocking() {
 	//! TO DO get rid of the below asap: requires every object to have a
 	//! tigObj, etc, etc 
 	//ensure doors can't be exited from the wrong angle
-	for (auto keyValue : entityMap) {
+	return;
+	/*for (auto keyValue : entityMap) {
 		CGameHexObj& entity = *keyValue.second;
 		if (entity.isTigClass(tig::CDoor)) {
 			unsigned int blockEffect = entity.blocks();
@@ -163,29 +164,29 @@ void CGameHexArray::updateBlocking() {
 				}
 			}
 		}
-	}
+	}*/
 }
 
-/** Clear this hex of any current blocks, but restore those caused by
-	getNeighbours or occupying entities. */
-void CGameHexArray::smartBlockClear( CHex& pos) {
-	getHexCube(pos).blocks = blocksNone;
-
-	auto [first, last] = getEntitiesAt(pos);
-	for (auto it = first; it != last; it++) {
-		getHexCube(pos).blocks |= first->second->blocks();
-	}
-
-	for (unsigned int dir = hexEast; dir < hexNone; dir++) {
-		CHex neighbour = getNeighbour(pos, THexDir(dir));
-		auto [first, last] = getEntitiesAt(neighbour);
-		for (auto it = first; it != last; it++) {
-			if (it->second->isTigClass(tig::CDoor) && it->second->blocks(THexDir(dir))) {
-				getHexCube(pos).blocks |= (1 << dir);
-			}
-		}
-	}
-}
+///** Clear this hex of any current blocks, but restore those caused by
+//	getNeighbours or occupying entities. */
+//void CGameHexArray::smartBlockClear( CHex& pos) {
+//	getHexCube(pos).blocks = blocksNone;
+//
+//	auto [first, last] = getEntitiesAt(pos);
+//	for (auto it = first; it != last; it++) {
+//		getHexCube(pos).blocks |= first->second->blocks();
+//	}
+//
+//	for (unsigned int dir = hexEast; dir < hexNone; dir++) {
+//		CHex neighbour = getNeighbour(pos, THexDir(dir));
+//		auto [first, last] = getEntitiesAt(neighbour);
+//		for (auto it = first; it != last; it++) {
+//			if (it->second->isTigClass(tig::CDoor) && it->second->blocks(THexDir(dir))) {
+//				getHexCube(pos).blocks |= (1 << dir);
+//			}
+//		}
+//	}
+//}
 
 /** Returns true if there is an unblocked straight line of hexes
 	between these points. */
@@ -429,14 +430,14 @@ void CGameHexArray::addEntity(TEntity entity, CHex& hex) {
 	entityMap.insert({ hex, entity.get() });
 }
 
-void CGameHexArray::addExistingEntity(CGameHexObj* entity, CHex& hex)
+void CGameHexArray::addExistingEntity(CEntity* entity, CHex& hex)
 {
 	entity->setPosition(hex);
 	entityMap.insert({ hex, entity });
 }
 
 
-void CGameHexArray::removeEntity(CGameHexObj* entity) {
+void CGameHexArray::removeEntity(CEntity* entity) {
 	for (auto& it = entityMap.begin(); it != entityMap.end(); it++) {
 		if (it->second == entity) {
 			it = entityMap.erase(it);
@@ -448,7 +449,7 @@ void CGameHexArray::removeEntity(CGameHexObj* entity) {
 
 /** Register this entity as moving from the pos hex to the dest hex,
 	ie, register it in both those locations.*/
-void CGameHexArray::movingTo(CGameHexObj* entity, CHex& pos, CHex& dest) {
+void CGameHexArray::movingTo(CEntity* entity, CHex& pos, CHex& dest) {
 	//erase any old entry, such as a move that we're now aborting
 	for (auto& it = entityMap.begin(); it != entityMap.end();) {
 		if (it->second == entity)
@@ -463,7 +464,7 @@ void CGameHexArray::movingTo(CGameHexObj* entity, CHex& pos, CHex& dest) {
 
 /** Register this entity as being at newHex, removing any reference to it
 	being at the old hex. */
-void CGameHexArray::movedTo(CGameHexObj* entity, CHex& oldHex, CHex& newHex) {
+void CGameHexArray::movedTo(CEntity* entity, CHex& oldHex, CHex& newHex) {
 	//remove any old reference
 	for (auto& it = entityMap.begin(); it != entityMap.end();) {
 		if (it->second == entity)
@@ -477,7 +478,7 @@ void CGameHexArray::movedTo(CGameHexObj* entity, CHex& oldHex, CHex& newHex) {
 
 
 /** Tag an entity for immediate deletion from the map. */
-void CGameHexArray::deleteEntity(CGameHexObj& entity) {
+void CGameHexArray::deleteEntity(CEntity& entity) {
 	entity.deleteMe = true;
 	entityListDirty = true;
 }

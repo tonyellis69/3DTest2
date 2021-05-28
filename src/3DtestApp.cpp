@@ -116,11 +116,6 @@ void C3DtestApp::keyCheck() {
 
 
 
-		//triggered if button held down
-		if (mouseButtonNow(GLFW_MOUSE_BUTTON_RIGHT)) {
-			hexWorld.rightClick();
-		}
-
 
 	}
 
@@ -217,8 +212,8 @@ void C3DtestApp::onKeyUp(int key, long mod) {
 			moveKeyChangeTimer = 0;
 
 
-		if (key == 'W' || key == 'S')
-			world.player->onVerticalKeyRelease();
+		//if (key == 'W' || key == 'S')
+		//	world.player->onVerticalKeyRelease();
 	}
 }
 
@@ -232,14 +227,7 @@ void C3DtestApp::onMouseButton(int button, int action, int mods) {
 				hexWorld.onFireKey(false);
 		}
 
-		//TO DO: get rid of this shit:
 
-		if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-			hexWorld.rightClick();
-		}
-		else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-			hexWorld.leftClick();
-		}
 	}
 };
 

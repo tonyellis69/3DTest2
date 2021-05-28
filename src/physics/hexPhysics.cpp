@@ -6,7 +6,7 @@ CHexPhysics::CHexPhysics() {
 	tmpMapObj.physics.invMass = 0;// FLT_MAX;
 }
 
-void CHexPhysics::add(CGameHexObj* entity) {
+void CHexPhysics::add(CEntity* entity) {
 	entities.push_back(entity);
 }
 
@@ -112,7 +112,7 @@ void CHexPhysics::integrateVelocities() {
 	}
 }
 
-std::tuple<float, glm::vec3> CHexPhysics::findSceneryCollision(CGameHexObj* body, glm::vec3& hexPos, int dir) {
+std::tuple<float, glm::vec3> CHexPhysics::findSceneryCollision(CEntity* body, glm::vec3& hexPos, int dir) {
 
 	//check for bounding radius intersection with hex boundary segment
 	glm::vec3 segA = hexPos + corners[dir];
@@ -146,7 +146,7 @@ std::tuple<float, glm::vec3> CHexPhysics::findSceneryCollision(CGameHexObj* body
 }
 
 
-CBodyPairKey::CBodyPairKey(CGameHexObj* a, CGameHexObj* b, int ref ) {
+CBodyPairKey::CBodyPairKey(CEntity* a, CEntity* b, int ref ) {
 	if (a < b) {
 		objA = a;
 		objB = b;

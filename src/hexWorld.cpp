@@ -18,18 +18,20 @@
 #include "messaging/msg2.h" //for test
 
 #include "gameGui.h"
+
+#include "tigExport.h"
  
-CGameHexObj nullGameHexObj;
+//CGameHexObj nullGameHexObj;
 
 CHexWorld::CHexWorld() {
 	hexRendr2.init();
 	
-	messageBus.setHandler<CDropItem>(this, &CHexWorld::onDropItem);
-	messageBus.setHandler<CRemoveEntity>(this, &CHexWorld::onRemoveEntity);
-	messageBus.setHandler<CCreateGroupItem>(this, &CHexWorld::onCreateGroupItem);
+//	messageBus.setHandler<CDropItem>(this, &CHexWorld::onDropItem);
+	//messageBus.setHandler<CRemoveEntity>(this, &CHexWorld::onRemoveEntity);
+	//messageBus.setHandler<CCreateGroupItem>(this, &CHexWorld::onCreateGroupItem);
 	messageBus.setHandler<CDiceRoll>(this, &CHexWorld::onDiceRoll);
-	messageBus.setHandler<CPlayerNewHex>(this, &CHexWorld::onPlayerNewHex);
-	messageBus.setHandler<CActorMovedHex>(this, &CHexWorld::onActorMovedHex);
+//	messageBus.setHandler<CPlayerNewHex>(this, &CHexWorld::onPlayerNewHex);
+//	messageBus.setHandler<CActorMovedHex>(this, &CHexWorld::onActorMovedHex);
 
 
 	subscribe(&world);
@@ -113,8 +115,8 @@ void CHexWorld::makeMap(ITigObj* tigMap) {
 }
 
 void CHexWorld::deleteMap() {
-	for (auto entity : map->entities)
-		unsubscribe(entity.get());
+	//for (auto entity : map->entities)
+	//	unsubscribe(entity.get());
 	delete map;
 }
 
@@ -154,21 +156,21 @@ void CHexWorld::startGame() {
 	world.player = playerObj;
 
 
-	playerObj->setTigObj(vm->getObject("player"));
+	//playerObj->setTigObj(vm->getObject("player"));
 
-	subscribe(playerObj);
+	//subscribe(playerObj);
 	playerObj->updateViewField();
-	alertEntitiesInPlayerFov();
+	//alertEntitiesInPlayerFov();
 
 	physics.add(playerObj);
 
-	entitiesToDraw.assign(map->entities.rbegin(),map->entities.rend());
+	//entitiesToDraw.assign(map->entities.rbegin(),map->entities.rend());
 
 	world.setTurnPhase(playerPhase);
 
 	if (hexCursor == NULL)
 		createCursorObject();
-	hexCursor->visibleToPlayer = true;
+	//hexCursor->visibleToPlayer = true;
 
 	CSendText msg(combatLog, "", true);
 	send(msg);
@@ -206,8 +208,8 @@ void CHexWorld::onKeyDown(int key, long mod) {
 
 
 
-	if (key == 'I')
-		playerObj->showInventory();
+//	if (key == 'I')
+	//	playerObj->showInventory();
 
 
 
@@ -252,7 +254,7 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 	auto [mouseHex, mouseWS ] = hexRendr2.pickHex(x, y);
 	mouseWorldPos = mouseWS;
 	glm::vec3 mouseVec = mouseWorldPos - playerObj->worldPos;
-	playerObj->setTargetAngle(glm::orientedAngle(glm::normalize(mouseVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, -1)));
+	playerObj->setTargetAngle(glm::orientedAngle(glm::normalize(mouseVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1)));
 
 
 	if (mouseHex != hexCursor->hexPosition) {
@@ -284,8 +286,8 @@ void CHexWorld::draw() {
 			entity->draw();
 
 
-	for (auto sprite : world.sprites)
-		sprite->draw();
+	//for (auto sprite : world.sprites)
+	//	sprite->draw();
 
 	//hexRendr2.drawSightLine(playerObj->worldPos, mouseWorldPos);
 
@@ -315,10 +317,10 @@ void CHexWorld::update(float dT) {
 
 
 	renderer.entityNo = 0;
-	for (auto& entity : world.sprites) {
-		entity->update(dT);
-		renderer.entityNo++;
-	}
+	//for (auto& entity : world.sprites) {
+	//	entity->update(dT);
+	//	renderer.entityNo++;
+	//}
 
 
 	world.update(dT);
@@ -338,7 +340,7 @@ void CHexWorld::onCtrlLMouse() {
 /** Player has pressed the enter key. */
 void CHexWorld::enterKeyDown() {
 	deleteMap();
-	entitiesToDraw.clear();
+	//entitiesToDraw.clear();
 
 	makeMap(vm->getObject("testRoom"));
 	startGame();
@@ -355,7 +357,7 @@ void CHexWorld::toggleView() {
 /////////////public - private devide
 
 void CHexWorld::createCursorObject() {
-	hexCursor = new CGameHexObj();
+	hexCursor = new CEntity();
 	hexCursor->setLineModel("cursor");
 	hexCursor->setPosition(CHex(0, 0, 0));
 }
@@ -397,32 +399,7 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 }
 
 
-/** Begin a player right-click action. */
-void CHexWorld::rightClick() {
 
-}
-
-/** Begin a player left-click action. */
-void CHexWorld::leftClick() {
-	return;
-
-	if (world.getTurnPhase() != playerPhase)
-		return;
-
-	CGameHexObj* obj = getPrimaryObjectAt(hexCursor->hexPosition);
-
-	if (powerMode) {
-		obj->leftClickPowerMode();
-		return;
-	}
-
-	if (obj != &nullGameHexObj) {
-		obj->leftClick();
-		return;
-	}
-
-	return;
-}
 
 void CHexWorld::onFireKey(bool pressed) {
 	playerObj->onFireKey(pressed);
@@ -444,62 +421,37 @@ int CHexWorld::tigCall(int memberId) {
 }
 
 
-/** Cope with the player dropping an item. */
-void CHexWorld::dropItem(CGameHexObj* item, CHex& location) {
-	CGameHexObj* existingItem = getItemAt(location);
-	if (existingItem) {
-		existingItem->droppedOnBy(*item);
-		return;
-	}
 
-	item->setPosition(location);
-	//map->entities.push_back(TEntity(item));
-	map->addEntity(TEntity(item), location);
-}
 
-CGroupItem* CHexWorld::createGroupItem() {
-	CGroupItem* groupItem = new CGroupItem();
-	groupItem->setLineModel("test");
-	groupItem->setTigObj(vm->getObject(tig::CGroupItem));
-	map->entities.push_back(TEntity(groupItem));
-	return groupItem;
-}
+///** Return the CItem or CGroupItem object found at this hex, if any. */
+//CGameHexObj* CHexWorld::getItemAt(CHex& position) {
+//	for (auto entity : map->entities) {
+//		if (entity->hexPosition == position && (entity->isTigClass(tig::CItem)
+//			|| entity->isTigClass(tig::CGroupItem)) )
+//			return entity.get();
+//	}
+//	return NULL;
+//}
 
-/** Return the CItem or CGroupItem object found at this hex, if any. */
-CGameHexObj* CHexWorld::getItemAt(CHex& position) {
-	for (auto entity : map->entities) {
-		if (entity->hexPosition == position && (entity->isTigClass(tig::CItem)
-			|| entity->isTigClass(tig::CGroupItem)) )
-			return entity.get();
-	}
-	return NULL;
-}
-
-void CHexWorld::tempGetGroupItem(int itemNo) {
-	CGameHexObj* item = getItemAt(hexCursor->hexPosition);
-	if (item->isTigClass(tig::CGroupItem)) {
-		CGameHexObj*  gotItem = static_cast<CGroupItem*>(item)->removeItem(itemNo);
-		playerObj->takeItem(*gotItem);
-	}
-}
+//void CHexWorld::tempGetGroupItem(int itemNo) {
+//	CGameHexObj* item = getItemAt(hexCursor->hexPosition);
+//	if (item->isTigClass(tig::CGroupItem)) {
+//		CGameHexObj*  gotItem = static_cast<CGroupItem*>(item)->removeItem(itemNo);
+//		playerObj->takeItem(*gotItem);
+//	}
+//}
 
 
 
-void CHexWorld::onDropItem(CDropItem& msg) {
-	dropItem(msg.item, msg.location);
-}
+//void CHexWorld::onDropItem(CDropItem& msg) {
+//	dropItem(msg.item, msg.location);
+//}
 
-void CHexWorld::onRemoveEntity(CRemoveEntity& msg) {
-	map->deleteEntity(*msg.entity);
-}
+//void CHexWorld::onRemoveEntity(CRemoveEntity& msg) {
+//	map->deleteEntity(*msg.entity);
+//}
 
-void CHexWorld::onCreateGroupItem(CCreateGroupItem& msg) {
-	CGroupItem* groupItem = createGroupItem();
-	groupItem->items.push_back(msg.item1);
-	groupItem->items.push_back(msg.item2);
-	map->deleteEntity(*msg.item2);
-	groupItem->setPosition(playerObj->hexPosition);
-}
+
 
 
 
@@ -511,41 +463,20 @@ void CHexWorld::onDiceRoll(CDiceRoll& msg) {
 		msg.result2 = d(randEngine);
 }
 
-void CHexWorld::onPlayerNewHex(CPlayerNewHex& msg) {
-	notify(msg);
-	//cursorPath.erase(cursorPath.begin());
-	//hexRenderer.updateFogBuffer();
-}
+//void CHexWorld::onPlayerNewHex(CPlayerNewHex& msg) {
+//	//notify(msg);
+//	//cursorPath.erase(cursorPath.begin());
+//	//hexRenderer.updateFogBuffer();
+//}
 
-void CHexWorld::onActorMovedHex(CActorMovedHex& msg) {
-	notify(msg);
+//void CHexWorld::onActorMovedHex(CActorMovedHex& msg) {
+//	notify(msg);
+//
+//	//alertEntitiesInPlayerFov();
+//}
 
-	alertEntitiesInPlayerFov();
-}
 
 
-/** Return the highest priority object at this hex. ie, the one if 
-	clicked-on we would want to respond. */
-CGameHexObj* CHexWorld::getPrimaryObjectAt(CHex& hex) {
-	TRange entities = map->getEntitiesAt(hex);
-
-	for (auto it = entities.first; it != entities.second; it++) {
-		if (it->second->isActor())
-			return it->second;
-	}
-
-	for (auto it = entities.first; it != entities.second; it++) {
-		if (it->second->isTigClass(tig::CItem))
-			return it->second;
-	}
-
-	for (auto it = entities.first; it != entities.second; it++) {
-		if (it->second->isTigClass(tig::CDoor))
-			return it->second;
-	}
-
-	return &nullGameHexObj;
-}
 
 void CHexWorld::updateCameraPosition() {
 	if (viewMode == gameView)
@@ -557,7 +488,7 @@ void CHexWorld::updateCameraPosition() {
 void CHexWorld::beginNewTurn() {
 	world.setTurnPhase(playerPhase);
 	world.onscreenRobotAction = false;
-	qps.beginNewTurn();
+	//qps.beginNewTurn();
 	//playerObj->onTurnBegin();
 	map->updateBlocking();
 	//hexRendr2.updateFogBuffer();
@@ -578,15 +509,15 @@ void CHexWorld::beginNewTurn() {
 
 
 
-/** Update which entities are now visible to the player. */
-void CHexWorld::alertEntitiesInPlayerFov() {
-	for (auto& entity : map->entities) {
-		if (entity.get() == playerObj)
-			continue;
-		bool inView = playerObj->viewField.searchView(entity->hexPosition);
-		entity->playerSight(inView);
-	}
-}
+///** Update which entities are now visible to the player. */
+//void CHexWorld::alertEntitiesInPlayerFov() {
+//	for (auto& entity : map->entities) {
+//		if (entity.get() == playerObj)
+//			continue;
+//		bool inView = playerObj->viewField.searchView(entity->hexPosition);
+//		entity->playerSight(inView);
+//	}
+//}
 
 /** Whether we're in standard follow-cam mode or not, etc. */
 void CHexWorld::setViewMode(TViewMode mode) {

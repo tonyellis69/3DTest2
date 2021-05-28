@@ -13,7 +13,8 @@ void CExplosion::update(float dT) {
 	lifeTime += dT;
 
 	if (lifeTime > timeOut) {
-		world.destroySprite(*this);
+		//world.destroySprite(*this);
+		world.deleteEntity(*this);
 		//lifeTime = timeOut;
 
 	}

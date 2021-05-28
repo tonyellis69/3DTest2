@@ -12,8 +12,8 @@
 
 #include "robot.h"
 #include "playerHexObj.h"
-#include "hexItem.h"
-#include "groupItem.h"
+//#include "hexItem.h"
+//#include "groupItem.h"
 
 //#include "bolt.h"
 
@@ -31,7 +31,7 @@
 
 #include "hexMsg.h"
 
-#include "qps.h"
+//#include "qps.h"
 
 #include "gameState.h"
 
@@ -57,8 +57,7 @@ public:
 	void deleteMap();
 	void startGame();
 	void moveCamera(glm::vec3& direction);
-	void rightClick();
-	void leftClick();
+
 	void onFireKey(bool released);
 	void onKeyDown(int key, long mod);
 	void onMouseWheel(float delta, int key);
@@ -83,35 +82,31 @@ private:
 
 	int tigCall(int memberId) ;
 
-	void dropItem(CGameHexObj* item, CHex& location);
+	//CGameHexObj* getItemAt(CHex& position);
 
-	CGroupItem* createGroupItem();
+	//void tempGetGroupItem(int itemNo);
 
-	CGameHexObj* getItemAt(CHex& position);
-
-	void tempGetGroupItem(int itemNo);
-
-	void onDropItem(CDropItem& msg);
-	void onRemoveEntity(CRemoveEntity& msg);
-	void onCreateGroupItem(CCreateGroupItem& msg);
+//	void onDropItem(CDropItem& msg);
+//	void onRemoveEntity(CRemoveEntity& msg);
+//	void onCreateGroupItem(CCreateGroupItem& msg);
 
 	void onDiceRoll(CDiceRoll& msg);
 
-	void onPlayerNewHex(CPlayerNewHex& msg);
+	//void onPlayerNewHex(CPlayerNewHex& msg);
 
-	void onActorMovedHex(CActorMovedHex& msg);
+	//void onActorMovedHex(CActorMovedHex& msg);
 
 
-	CGameHexObj* getPrimaryObjectAt(CHex& hex);
+	//CGameHexObj* getPrimaryObjectAt(CHex& hex);
 
 	void updateCameraPosition();
 
 	void beginNewTurn();
 	
 
-	void killEntity(CGameHexObj* entity);
+	//void killEntity(CGameHexObj* entity);
 
-	void alertEntitiesInPlayerFov();
+	//void alertEntitiesInPlayerFov();
 
 	void setViewMode(TViewMode mode);
 
@@ -122,10 +117,10 @@ private:
 
 
 	CPlayerObject* playerObj = NULL;
-	CGameHexObj* hexCursor = NULL;;
+	CEntity* hexCursor = NULL;;
 	
 
-	TEntities entitiesToDraw; ///<Quick bodge: same entities, diff order
+//	TEntities entitiesToDraw; ///<Quick bodge: same entities, diff order
 
 
 	float dT; ///<Interval since last app loop.
@@ -146,7 +141,7 @@ private:
 
 	bool powerMode = false;
 
-	CQPS qps; ///<Quantum power system.
+	//CQPS qps; ///<Quantum power system.
 
 	bool lineOfSight = false;
 	glm::vec3 mouseWorldPos; ///<Mouse position on the worldspace XY plane

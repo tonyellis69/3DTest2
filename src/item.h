@@ -1,11 +1,11 @@
 #pragma once
 
-#include "gamehextObj.h"
+#include "entity.h"
 
 #include <string>
 
 
-class CItem : public CGameHexObj {
+class CItem : public CEntity {
 public:
 	CItem();
 

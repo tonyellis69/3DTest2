@@ -1,8 +1,10 @@
 #include "playerHexObj.h"
 
+#include <cmath>
+
 #include "utils/log.h"
 
-#include "hexItem.h"
+//#include "hexItem.h"
 
 #include "gameState.h"
 
@@ -16,20 +18,9 @@
 
 
 CPlayerObject::CPlayerObject() {
-	//psu = new CPowerSupply();
-
-	messageBus.setHandler<CGetPlayerPos>(this, &CPlayerObject::onGetPlayerPos);
-	messageBus.setHandler<CSetPlayerAction>(this, &CPlayerObject::onSetPlayerAction);
-	messageBus.setHandler<CTakeItem>(this, &CPlayerObject::onTakeItem);
-
 
 	viewField.centre = CHex(0);
 	viewField.setField(10);
-
-	//APlabel = gui::addLabel(std::to_string(actionPoints), 600, style::mainWinCtrlBorder);
-	//APlabel->setTextColour(style::uiWhite);
-	//APlabel->setSize(style::labelPresets[1]);
-	//APlabel->setFont(style::themes2.at("gameTheme").styles.at("mainHeader").font);
 
 	msg::attach(msg::tmpMsg, this, &CPlayerObject::tmpKeyCB); //temp!
 
@@ -38,7 +29,7 @@ CPlayerObject::CPlayerObject() {
 }
 
 CPlayerObject::~CPlayerObject() {
-	//gui::removeControl(APlabel);
+
 }
 
 /** Temporary keystroke catcher. */
@@ -128,65 +119,22 @@ void CPlayerObject::draw() {
 	//for (auto hex : viewField.visibleHexes)
 	//	hexRendr->highlightHex(hex);
 
-	CHexObject::draw();
+	CEntity::draw();
 }
 
-
-void CPlayerObject::takeItem(CGameHexObj& item) {
-
-	CRemoveEntity msg(&item);
-	send(msg);
-
-	playerItems.push_back(TEntity(&item));
-
-	callTig(tig::onTake, item);
-}
-
-void CPlayerObject::showInventory() {
-	callTig(tig::onInventory);
-}
-
-void CPlayerObject::dropItem(int itemNo) {
-	ITigObj* item = callTigObj(tig::onDrop, itemNo);
-	CGameHexObj* gameObj = (CGameHexObj*)item->getCppObj();
-	auto playerItem = std::find(playerItems.begin(), playerItems.end(), TEntity(gameObj));
-
-	CDropItem msg((CHexItem*)playerItem->get(), hexPosition);
-	send(msg);
-	playerItems.erase(playerItem);
-}
-
-void CPlayerObject::equipItem(int itemNo) {
-	callTigObj(tig::onEquip, itemNo);
-}
-
-
-void CPlayerObject::onGetPlayerPos(CGetPlayerPos& msg) {
-	msg.position = hexPosition;
-}
-
-void CPlayerObject::onSetPlayerAction(CSetPlayerAction& msg) {
-	//TO DO: redundant, scrap
-}
-
-void CPlayerObject::onTakeItem(CTakeItem& msg) {
-	takeItem(*msg.item);
-}
+//
+//void CPlayerObject::onGetPlayerPos(CGetPlayerPos& msg) {
+//	msg.position = hexPosition;
+//}
+//
 
 
 
-
-void CPlayerObject::receiveDamage(CGameHexObj& attacker, int damage) {
+void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
 	liveLog << "\nPlayer hit!";
 }
 
-int CPlayerObject::getMissileDamage() {
-	//get assigned power from QPS
-	CFindPowerUser msg(this);
-	send(msg);
 
-	return msg.power;
-}
 
 /** Called when player has arrived at a new hex.*/
 void CPlayerObject::onMovedHex() {
@@ -197,20 +145,14 @@ void CPlayerObject::onMovedHex() {
 
 	updateViewField();
 
-	CPlayerNewHex msg2(hexPosition);
-	send(msg2);
-	//eventually updates map's fog of war, might also be better done more directly
-	//if nothing else, turn this into one message handled by hexWorld
-
-
 	gWin::clearText("con");
 	tmpFloorItems.clear();
 	itemSelected = -1;
 	inventoryOn = false;
 	
 	auto [first, last] = world.map->getEntitiesAt(hexPosition);
-	for (auto it = first; it != last; it++) {
-		if (it->second->isTigClass(tig::CItem)) {
+	for (auto& it = first; it != last; it++) {
+		if (it->second->isItem) {
 			tmpFloorItems.push_back((CItem*)(it->second));
 		}
 	}
@@ -260,7 +202,7 @@ void CPlayerObject::updateViewField() {
 
 /** Respond to player move instruction. */
 void CPlayerObject::moveCommand(TMoveDir commandDir) {
-	const float accel = 2000;
+	const float accel = 3000;
 	switch (commandDir) {
 	case moveNorth:  physics.moveImpulse = { 0,1,0 }; break;
 	case moveNE: physics.moveImpulse = { M_SQRT1_2, M_SQRT1_2, 0 }; break;
@@ -276,132 +218,9 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 }
 
 
-void CPlayerObject::moveCommand2(TMoveDir commandDir) {
-	if (commandDir == travelDir)
-		return; //already heading in the right direction.
-
-	if (worldSpaceToHex(worldPos) != hexPosition) //ignore commands received after leaving start hex
-		return;
-
-
-
-	//handle a change in direction if we're already moving
-	switch (travelDir) {
-	case moveNE: if (commandDir == moveEast)
-		commandDir = moveNE;
-		break;
-	case moveSE: if (commandDir == moveEast)
-		commandDir = moveSE;
-		break;
-	case moveNW: if (commandDir == moveWest)
-		commandDir = moveNW;
-		break;
-	case moveSW: if (commandDir == moveWest)
-		commandDir = moveSW;
-		break;
-	}
-
-	switch (commandDir) {
-	case moveEast: moveDest = getNeighbour(hexPosition, hexEast); break;
-	case moveWest: moveDest = getNeighbour(hexPosition, hexWest); break;
-	case moveNE: moveDest = getNeighbour(hexPosition, hexNE); break;
-	case moveSE: moveDest = getNeighbour(hexPosition, hexSE); break;
-	case moveNW: moveDest = getNeighbour(hexPosition, hexNW); break;
-	case moveSW: moveDest = getNeighbour(hexPosition, hexSW); break;
-	case moveNorth:
-	case moveSouth: {
-		moveDest = startNorthSouthMove(commandDir);
-		break;
-	}
-	case moveNS2: { //handles the extended keypress of a north/south command
-		moveDest = moveDest2; //pick the second-stage destination we've previously lined up.
-		break;
-	}
-	} //end switch
-
-	//check if requested move possible
-	if (world.isBlocked(hexPosition, moveDest)) {
-		if (commandDir == moveNS2)
-			travelDir = moveNS2blocked;
-		else
-			travelDir = moveNone;
-		return;
-	}
-
-	//turn to destination hex
-	rotation = hexAngle(hexPosition, moveDest);
-	buildWorldMatrix();
-	//TO DO: probably scrap this
-
-	if (travelDir != moveNS2) //because we'll have already called movingTo when the moveNS2 command was handled
-		world.map->movingTo(this, hexPosition, moveDest);
-
-	travelDir = commandDir;
-
-}
-
-CHex CPlayerObject::startNorthSouthMove(TMoveDir dir) {
-	northSouthKeyReleased = false;
-	THexDir eastRoute;	THexDir westRoute;
-	if (dir == moveNorth) {
-		eastRoute = hexNE;
-		westRoute = hexNW;
-	}
-	else {
-		eastRoute = hexSE;
-		westRoute = hexSW;
-	}
-
-	CHex alt;
-	if (rotation < M_PI_2 || rotation > M_PI + M_PI_2) {
-		moveDest = getNeighbour(hexPosition, eastRoute);
-		alt = getNeighbour(hexPosition, westRoute);
-	}
-	else {
-		moveDest = getNeighbour(hexPosition, westRoute);
-		alt = getNeighbour(hexPosition, eastRoute);
-	}
-	if (world.isBlocked(hexPosition, moveDest))
-		moveDest = alt;
-
-	if (dir == moveNorth)
-		moveDest2 = hexPosition + CHex(1, 1, -2);
-	else
-		moveDest2 = hexPosition + CHex(-1, -1, 2);
-
-	return moveDest;
-}
-
-/** Player released up or down key - useful to know so that we don't
-	continue a north or south movement. */
-void CPlayerObject::onVerticalKeyRelease() {
-	northSouthKeyReleased = true;
-}
-
-
 void CPlayerObject::update(float dT) {
 	this->dT = dT;
 
-	switch (travelDir) {
-	case moveNone:
-		break;
-	case  moveNS2blocked: {
-		if (northSouthKeyReleased) //stops a blocked secondary NS move becoming another NS start
-			travelDir = moveNone;
-		break;
-	}
-	default:
-		approachDestHex();
-		if (hexPosition == moveDest) {
-			if ((travelDir == moveNorth || travelDir == moveSouth) && !northSouthKeyReleased) {
-				travelDir = moveNone;
-				moveCommand(moveNS2);
-			}
-			else {
-				travelDir = moveNone;
-			}
-		}
-	}
 }
 
 void CPlayerObject::setTargetAngle(float angle) {
@@ -409,39 +228,14 @@ void CPlayerObject::setTargetAngle(float angle) {
 }
 
 
-/** Check if the given segment intersects this robot. */
+/** Check if the given segment intersects us. */
 std::tuple<bool, glm::vec3> CPlayerObject::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
-	//first, try simple bounding-circle check.
-	//if (lineModel.circleCollision(segA, segB))
-	//	return { true, glm::vec3() };
-
 	if (lineModel.BBcollision(segA, segB))
 		return { true, glm::vec3() };
 
 	return { false, glm::vec3() };
 }
 
-/** Move realtime toward the destination hex, unless we reach it. */
-void CPlayerObject::approachDestHex() {
-	glm::vec3 dest = cubeToWorldSpace(moveDest);
-	glm::vec3 travel = dest - worldPos;
-
-	glm::vec3 moveVec = glm::normalize(travel) * playerMoveSpeed * dT;
-
-	float remainingDist = glm::length(travel);
-
-	if (glm::length(moveVec) > remainingDist) {
-		worldPos = dest;
-		world.map->movedTo(this, hexPosition, moveDest);
-		setPosition(moveDest);
-
-		onMovedHex();
-		return;
-	}
-
-	worldPos += moveVec;
-	buildWorldMatrix();
-}
 
 
 

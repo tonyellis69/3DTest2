@@ -1,11 +1,11 @@
 #pragma once
 
-#include "gamehextObj.h"
+#include "entity.h"
 
 enum TDoorStatus {doorOpening,doorClosing,doorOpen,doorClosed};
 
 /** A hopefully *temporary* class to implement door behaviour. */
-class CDoor : public CGameHexObj {
+class CDoor : public CEntity {
 public:
 	CDoor();
 	void setLineModel(const std::string& name);

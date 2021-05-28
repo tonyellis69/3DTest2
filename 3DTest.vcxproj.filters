@@ -48,16 +48,7 @@
     <ClCompile Include="src\mapMaker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gamehextObj.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\gameHexArray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\hexItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\groupItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gameWin.cpp">
@@ -69,22 +60,10 @@
     <ClCompile Include="src\door.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\fireable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\powerSupply.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\qps.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\viewField.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gameState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\missile.cpp">
@@ -107,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="src\physics\hexPhysics.cpp">
       <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -140,16 +122,7 @@
     <ClInclude Include="..\TC\Debug\tigConst.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gamehextObj.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\gameHexArray.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\hexItem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\groupItem.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gameWin.h">
@@ -159,12 +132,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\door.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\fireable.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\powerSupply.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\powerUser.h">
@@ -179,16 +146,10 @@
     <ClInclude Include="src\gameEvents.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\qps.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\viewField.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gameState.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sprite.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\missile.h">
@@ -211,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="src\physics\hexPhysics.h">
       <Filter>Source Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
