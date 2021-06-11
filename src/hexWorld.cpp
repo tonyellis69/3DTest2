@@ -132,7 +132,14 @@ void CHexWorld::startGame() {
 	//auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
 
 
-
+	gWin::addText("con", "Here is some \\bbold\\b text.");
+	gWin::addText("con", "\nHere is some more text.");
+	gWin::addText("con", "\nHere is some more text.");
+	gWin::addText("con", "\nHere is some more text.");
+	gWin::addText("con", "\nHere is some more text.");
+	gWin::addText("con", "\nHere is some more text.");
+	gWin::addText("con", "\nHere is some more text.");
+	gWin::addText("con", "\nAnd here is some more text.");
 
 	hexRendr2.setMap(map);
 	world.setMap(map);
