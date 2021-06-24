@@ -27,6 +27,10 @@ void CGameTextWin::setStyle(const std::string& styleName) {
 	richText->setTextStyle(styleName);
 }
 
+void CGameTextWin::setFont(const std::string& fontName) {
+	richText->setFont(fontName);
+}
+
 void CGameTextWin::clearText() {
 	richText->clear();
 }

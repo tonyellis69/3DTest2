@@ -12,6 +12,7 @@ public:
 	void addText(const std::string& text);
 	void setTheme(const std::string& themeName);
 	void setStyle(const std::string& styleName);
+	void setFont(const std::string& fontName);
 	void clearText();
 	bool isEmpty();
 	void resizeToFit();
@@ -22,6 +23,8 @@ public:
 	void positionOffset();
 
 	void onNotify(CMouseExitHex& msg);
+
+
 
 
 	inline static Ivm* pVM; ///<Virtual machine to send hot text calls to.

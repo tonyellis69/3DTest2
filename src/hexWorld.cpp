@@ -21,7 +21,7 @@
 
 #include "tigExport.h"
  
-//CGameHexObj nullGameHexObj;
+#include "UI/fonts.h" //temp test
 
 CHexWorld::CHexWorld() {
 	hexRendr2.init();
@@ -132,14 +132,22 @@ void CHexWorld::startGame() {
 	//auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
 
 
-	gWin::addText("con", "Here is some \\bbold\\b text.");
-	gWin::addText("con", "\nHere is some more text.");
-	gWin::addText("con", "\nHere is some more text.");
-	gWin::addText("con", "\nHere is some more text.");
-	gWin::addText("con", "\nHere is some more text.");
-	gWin::addText("con", "\nHere is some more text.");
-	gWin::addText("con", "\nHere is some more text.");
-	gWin::addText("con", "\nAnd here is some more text.");
+
+	gWin::addText("con", "1Here is some \\bbold\\b text.");
+	gWin::addText("con", "\n2Here is some more text.");
+	gWin::addText("con", "\n3Here is some more text.");
+
+	gWin::setFont("con", "mainFnt");
+
+	gWin::addText("con", "\n4Here is some more text.");
+	gWin::addText("con", "\n5Here is some more text.");
+	//gWin::addText("con", "\n6Here is some more text.");
+	//gWin::addText("con", "\n7Here is some more text.");
+	//gWin::addText("con", "\nAnd here is some more text");
+	//gWin::addText("con", "\n9");
+
+
+	liveLog << "\nAny text here?";
 
 	hexRendr2.setMap(map);
 	world.setMap(map);

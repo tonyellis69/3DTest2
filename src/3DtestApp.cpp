@@ -39,10 +39,10 @@ void C3DtestApp::onStart() {
 
 
 
-	renderer.fontManager.createFromFile("mainHeaderFnt", dataPath + "merri16.fnt");
-	renderer.fontManager.createFromFile("mainFnt", dataPath + "merri16L.fnt");
-	renderer.fontManager.createFromFile("smallHeaderFnt", dataPath + "merri12.fnt");
-	renderer.fontManager.createFromFile("smallFnt", dataPath + "merri12L.fnt");
+	fnt::loadFromFile(dataPath + "merri16.fnt", "mainHeaderFnt");
+	fnt::loadFromFile(dataPath + "merri16L.fnt", "mainFnt");
+	fnt::loadFromFile(dataPath + "merri12.fnt", "smallHeaderFnt");
+	fnt::loadFromFile(dataPath + "merri12L.fnt", "smallFnt");
 
 	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
 

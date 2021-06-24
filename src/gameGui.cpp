@@ -31,3 +31,7 @@ void gWin::clearText(const std::string& winName) {
 	windows[winName]->clearText();
 }
 
+void gWin::setFont(const std::string& winName, const std::string& fontName) {
+	windows[winName]->setFont(fontName);
+}
+
