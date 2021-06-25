@@ -24,7 +24,7 @@ CGUIrichTextPanel::CGUIrichTextPanel(int x, int y, int w, int h) : CGUIgamePanel
 	dragging = false;
 	draggable = false;
 
-	deliveryMode = noDelivery;
+	//deliveryMode = noDelivery;
 	clauseInterval = 0;
 	clauseDelay = 0.2f;
 	charInterval = 0;
@@ -42,26 +42,23 @@ void CGUIrichTextPanel::setRichtextInset(int newInset) {
 	needsUpdate = true;
 }
 
-void CGUIrichTextPanel::setFont(CFont * newFont) {
-	richText->setFont(newFont);
-}
 
-CFont * CGUIrichTextPanel::getFont() {
-	return richText->getFont();
-}
+//CFont * CGUIrichTextPanel::getFont() {
+//	return richText->getFont();
+//}
 
-void CGUIrichTextPanel::setTextColour(float r, float g, float b, float a) {
-	richText->setTextColour(r, g, b, a);
-}
-
-void CGUIrichTextPanel::setTextColour(UIcolour colour) {
-	richText->setTextColour(colour);
-}
+//void CGUIrichTextPanel::setTextColour(float r, float g, float b, float a) {
+//	richText->setTextColour(r, g, b, a);
+//}
+//
+//void CGUIrichTextPanel::setTextColour(UIcolour colour) {
+//	richText->setTextColour(colour);
+//}
 
 
-void CGUIrichTextPanel::setText(std::string newText) {
-	richText->setText(newText);
-}
+//void CGUIrichTextPanel::setText(std::string newText) {
+//	richText->setText(newText);
+//}
 
 
 
@@ -85,17 +82,17 @@ void CGUIrichTextPanel::refreshCurrentTextStyles(std::vector<TtextStyle>* styles
 	richText->refreshCurrentTextStyles(styles);
 }*/
 
-bool CGUIrichTextPanel::setTextStyle(std::string styleName) {
-	return richText->setTextStyle(styleName);
-}
+//bool CGUIrichTextPanel::setTextStyle(std::string styleName) {
+//	return richText->setTextStyle(styleName);
+//}
 
 void CGUIrichTextPanel::setDefaultTextStyle(std::string styleName) {
 	//richText->setDefaultTextStyle(styleName);
 }
 
-std::vector<unsigned int> CGUIrichTextPanel::purgeHotText(unsigned int id){
-	return richText->purgeHotText(id);
-}
+//std::vector<unsigned int> CGUIrichTextPanel::purgeHotText(unsigned int id){
+//	return richText->purgeHotText(id);
+//}
 
 void CGUIrichTextPanel::update(float dT) {
 	/*if (!deliveryBuffer.empty() && !richText->busy) {
@@ -191,47 +188,47 @@ void CGUIrichTextPanel::message(CGUIbase* sender, CMessage& msg) {
 
 }
 
-bool CGUIrichTextPanel::setTempText(bool onOff) {
-	return richText->setTempText(onOff);
-}
+//bool CGUIrichTextPanel::setTempText(bool onOff) {
+//	return richText->setTempText(onOff);
+//}
 
-void CGUIrichTextPanel::suspend(bool isOn) {
-	richText->suspend(isOn);
-}
+//void CGUIrichTextPanel::suspend(bool isOn) {
+//	richText->suspend(isOn);
+//}
+//
+//bool CGUIrichTextPanel::collapseTempText() {
+//	return richText->collapseTempText();
+//}
+//
+//bool CGUIrichTextPanel::solidifyTempText() {
+//	return richText->solidifyTempText();
+//}
 
-bool CGUIrichTextPanel::collapseTempText() {
-	return richText->collapseTempText();
-}
-
-bool CGUIrichTextPanel::solidifyTempText() {
-	return richText->solidifyTempText();
-}
-
-void CGUIrichTextPanel::unhotDuplicates() {
-	richText->unhotDuplicates();
-}
-
-void CGUIrichTextPanel::removeMarked() {
-	richText->removeMarked();
-}
-
-bool CGUIrichTextPanel::busy() {
-	return richText->isBusy();
-}
+//void CGUIrichTextPanel::unhotDuplicates() {
+//	richText->unhotDuplicates();
+//}
+//
+//void CGUIrichTextPanel::removeMarked() {
+//	richText->removeMarked();
+//}
+//
+//bool CGUIrichTextPanel::busy() {
+//	return richText->isBusy();
+//}
 
 /** Pass the given text on to the rich text control, either immediately or via a buffer,
 	depending on delivery style.*/
 void CGUIrichTextPanel::displayText(std::string text) {
 	
-	richText->appendMarkedUpText(text);
+	//richText->appendMarkedUpText(text);
 
-	return;
+	//return;
 
-	if (deliveryMode == noDelivery) {
-		richText->appendMarkedUpText(text); 
-		return;
-	}
-	deliveryBuffer += text;
+	//if (deliveryMode == noDelivery) {
+	//	richText->appendMarkedUpText(text); 
+	//	return;
+	//}
+	//deliveryBuffer += text;
 	//didn't get here
 }
 

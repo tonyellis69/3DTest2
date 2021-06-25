@@ -131,19 +131,17 @@ void CHexWorld::startGame() {
 	//auto end = std::chrono::high_resolution_clock::now();
 	//auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
 
-
+	gWin::setFont("con", "mainFnt");
 
 	gWin::addText("con", "1Here is some \\bbold\\b text.");
 	gWin::addText("con", "\n2Here is some more text.");
 	gWin::addText("con", "\n3Here is some more text.");
-
-	gWin::setFont("con", "mainFnt");
-
+	gWin::setColour("con", glm::vec4{ 1,1,0,1 });
 	gWin::addText("con", "\n4Here is some more text.");
 	gWin::addText("con", "\n5Here is some more text.");
-	//gWin::addText("con", "\n6Here is some more text.");
-	//gWin::addText("con", "\n7Here is some more text.");
-	//gWin::addText("con", "\nAnd here is some more text");
+	gWin::addText("con", "\n6Here is some more text.");
+	gWin::addText("con", "\n7Here is some more text.");
+	gWin::addText("con", "\nAnd here is some more text");
 	//gWin::addText("con", "\n9");
 
 

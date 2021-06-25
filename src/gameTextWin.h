@@ -10,9 +10,10 @@ class CGameTextWin : public CGameWin {
 public:
 	CGameTextWin();
 	void addText(const std::string& text);
-	void setTheme(const std::string& themeName);
-	void setStyle(const std::string& styleName);
+	//void setTheme(const std::string& themeName);
+	//void setStyle(const std::string& styleName);
 	void setFont(const std::string& fontName);
+	void setColour(glm::vec4& colour);
 	void clearText();
 	bool isEmpty();
 	void resizeToFit();

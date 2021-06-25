@@ -10,7 +10,7 @@ CGameTextWin::CGameTextWin() {
 	richText = new CGUIrichText(style::gameWinCtrBorder.x, style::gameWinCtrBorder.y,
 		500, 200);
 	richText->resizeMax = { 400, 500 };
-	richText->setTextTheme("gameTheme");
+//	richText->setTextTheme("gameTheme");
 	richText->setHotTextVM(pVM);
 	add(richText);
 }
@@ -18,17 +18,21 @@ CGameTextWin::CGameTextWin() {
 void CGameTextWin::addText(const std::string& text) {
 	richText->appendMarkedUpText(text);
 }
+//
+//void CGameTextWin::setTheme(const std::string& themeName) {
+//	richText->setTextTheme(themeName);
+//}
 
-void CGameTextWin::setTheme(const std::string& themeName) {
-	richText->setTextTheme(themeName);
-}
-
-void CGameTextWin::setStyle(const std::string& styleName) {
-	richText->setTextStyle(styleName);
-}
+//void CGameTextWin::setStyle(const std::string& styleName) {
+//	richText->setTextStyle(styleName);
+//}
 
 void CGameTextWin::setFont(const std::string& fontName) {
 	richText->setFont(fontName);
+}
+
+void CGameTextWin::setColour(glm::vec4& colour) {
+	richText->setColour(colour);
 }
 
 void CGameTextWin::clearText() {

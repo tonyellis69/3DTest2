@@ -13,7 +13,7 @@ void gWin::createWin(const std::string& winName, int x, int y, int w, int h) {
 	panel->setLocalPos(x, y);
 
 	panel->anchorRight = 10;
-	panel->setTheme("smallNormal");
+	//panel->setTheme("smallNormal");
 
 	pGUIroot->add(panel);
 	windows[winName] = panel;
@@ -33,5 +33,9 @@ void gWin::clearText(const std::string& winName) {
 
 void gWin::setFont(const std::string& winName, const std::string& fontName) {
 	windows[winName]->setFont(fontName);
+}
+
+void gWin::setColour(const std::string& winName, glm::vec4& colour) {
+	windows[winName]->setColour(colour);
 }
 

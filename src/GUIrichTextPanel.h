@@ -11,21 +11,21 @@ class CGUIrichTextPanel : public CGUIgamePanel {
 public:	
 	CGUIrichTextPanel(int x, int y, int w, int h);
 	void setRichtextInset(int newInset);
-	void setFont(CFont* newFont);
-	CFont* getFont();
-	void setTextColour(float r, float g, float b, float a);
-	void setTextColour(UIcolour colour);
-	void setText(std::string newText);
+
+	//CFont* getFont();
+	//void setTextColour(float r, float g, float b, float a);
+	//void setTextColour(UIcolour colour);
+	//void setText(std::string newText);
 	void clear();
 	void setResizeMode(TResizeMode mode);
 	void setShortestSpaceBreak(int lineWidth);
 	//void setTextStyles(std::vector<TtextStyle>* styles);
-	void setTextTheme(const std::string& themeName) {
-		richText->setTextTheme(themeName);
-	}
-	bool setTextStyle(std::string styleName);
+	//void setTextTheme(const std::string& themeName) {
+	//	richText->setTextTheme(themeName);
+	//}
+//	bool setTextStyle(std::string styleName);
 	void setDefaultTextStyle(std::string styleName);
-	std::vector<unsigned int> purgeHotText(unsigned int id);
+//	std::vector<unsigned int> purgeHotText(unsigned int id);
 	void update(float dT);
 
 	void appendMarkedUpText(std::string text);
@@ -42,15 +42,15 @@ public:
 
 	void message(CGUIbase* sender, CMessage & msg);
 
-	bool setTempText(bool onOff);
+	//bool setTempText(bool onOff);
 
-	void suspend(bool isOn);
-	bool collapseTempText();
-	bool solidifyTempText();
-	void unhotDuplicates();
-	void removeMarked();
+	//void suspend(bool isOn);
+	//bool collapseTempText();
+	//bool solidifyTempText();
+	//void unhotDuplicates();
+	//void removeMarked();
 
-	bool busy();
+	//bool busy();
 
 	void displayText(std::string text);
 
@@ -58,16 +58,16 @@ public:
 
 	void deliverByCharacter(float dT);
 
-	bool setLineFadeIn(bool onOff) {
-		if (richText->isBusy())
-			return false;
-		//richText->enableLineFadeIn = onOff;
-		return true;
-	}
+	//bool setLineFadeIn(bool onOff) {
+	//	if (richText->isBusy())
+	//		return false;
+	//	//richText->enableLineFadeIn = onOff;
+	//	return true;
+	//}
 
-	bool clearToBookMark() {
-		return richText->clearToBookMark();
-	}
+	//bool clearToBookMark() {
+	//	return richText->clearToBookMark();
+	//}
 
 	enum TStatus { initial, readyToPosition, displaying, 
 		readyToDelete};
@@ -78,20 +78,19 @@ public:
 
 
 
-	bool isDisplayFinished() {
-		return richText->isDisplayFinished();
-	}
+	//bool isDisplayFinished() {
+	//	return richText->isDisplayFinished();
+	//}
 
 	CGUIrichText* richText; ///<Rich text control.
 	int inset; ///<Inset for rich text control within panel.
 
-	CLog transcript;
 
 	glm::i32vec2 lastMousePos; ///<For dragging purposes
 	bool dragging; 
 	bool draggable;
 
-	TTextDelivery deliveryMode;
+	//TTextDelivery deliveryMode;
 	std::string deliveryBuffer;
 	float clauseInterval;
 	float clauseDelay;

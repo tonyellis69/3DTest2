@@ -31,8 +31,8 @@ void C3DtestApp::onStart() {
 	appMode = hexMode;// texGenMode;// terrainMode; 
 					  //textMode; //hexMode; //physicsMode;
 
-	if (appMode == hexMode)
-		logWindow->setTextColour(glm::vec4(1));
+	/*if (appMode == hexMode)
+		logWindow->setTextColour(glm::vec4(1));*/
 
 
 	dataPath = homeDir + "Data\\";
@@ -434,7 +434,7 @@ void C3DtestApp::onPopupText(CSendText& msg) {
 			defencePopWin->resize(style::defPopupW, style::defPopupH);
 			//defencePopWin->anchorBottom = style::mainWinCtrlBorder;
 			defencePopWin->setVisible(false);
-			defencePopWin->setTheme("smallNormal");
+			//defencePopWin->setTheme("smallNormal");
 			hexWorld.subscribe(defencePopWin);
 			GUIroot.add(defencePopWin);
 		}
@@ -450,7 +450,7 @@ void C3DtestApp::onPopupText(CSendText& msg) {
 			statusPopWin->resize(style::defPopupW, style::defPopupH);
 			statusPopWin->anchorBottom = style::mainWinCtrlBorder;
 			statusPopWin->setVisible(false);
-			statusPopWin->setTheme("smallNormal");
+			//statusPopWin->setTheme("smallNormal");
 			hexWorld.subscribe(statusPopWin);
 			GUIroot.add(statusPopWin);
 		}
