@@ -20,7 +20,7 @@ public:
 	void setMap(CHexArray* hexArray);
 	void removeEntities();
 	void update(float dT);
-
+	void removeDeletedEntities();
 
 
 private:

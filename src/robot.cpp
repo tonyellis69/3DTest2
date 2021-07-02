@@ -23,6 +23,9 @@ CRobot::CRobot() {
 
 	if (rnd::dice(3) == 1)
 		tmpCharger = true;
+
+	isRobot = true;
+	physics.invMass = 1.0f / 80.0f; //temp!
 }
 
 
@@ -60,6 +63,9 @@ void CRobot::update(float dT) {
 	case robotSleep: return;
 	case robotWander2 :
 		wander2();
+		return;
+	case robotWander3:
+		wander3();
 		return;
 	case robotCharge:
 		charge();
@@ -176,6 +182,10 @@ void CRobot::setState(TRobotState newState)
 	case robotWander2:
 		lineModel.setColourR(glm::vec4(0,1,0,1));
 		robotMoveSpeed = 3.0f;
+		break;
+	case robotWander3:
+		lineModel.setColourR(glm::vec4(0, 1, 0, 1));
+		//robotMoveSpeed = 3.0f;
 		break;
 	case robotLookFor:
 		lineModel.setColourR(glm::vec4(1, 1, 0, 1));
@@ -333,6 +343,17 @@ void CRobot::melee() {
 bool CRobot::hasLineOfSight(CEntity* target)
 {
 	TIntersections intersectedHexes = world.map->getIntersectedHexes(worldPos, target->worldPos);
+	for (auto& hex : intersectedHexes) {
+		if (world.map->getHexCube(hex.first).content != emptyHex)
+			return false;
+		//TO DO: can expand this to check for other robots blocking
+	}
+
+	return true;
+}
+
+bool CRobot::hasLineOfSight(const glm::vec3& p) {
+	TIntersections intersectedHexes = world.map->getIntersectedHexes(worldPos, p);
 	for (auto& hex : intersectedHexes) {
 		if (world.map->getHexCube(hex.first).content != emptyHex)
 			return false;
@@ -520,6 +541,42 @@ void CRobot::wander2() {
 	}
 }
 
+void CRobot::wander3() {
+	if (glm::distance(worldPos, destinationWS) < 0.1f || destinationWS == glm::vec3(0, 0, 0)) { //temp!
+		THexList ring = findRing(5, hexPosition);
+		CHex randHex;
+		int giveUp = 0;
+		do {
+			randHex = ring[rnd::dice(ring.size()) - 1];
+			//can we los randHex?
+			glm::vec3 hexWS = cubeToWorldSpace(randHex);
+			if (hasLineOfSight(hexWS) ) {
+				destinationWS = hexWS;
+				//world.map->setHighlight(randHex, 1.0f);
+				break;
+			}
+			giveUp++;
+
+		} while (giveUp < 10); //temp!!!!!!!!!!!
+
+	}
+
+	//move toward destination 
+	glm::vec3 moveVec = glm::normalize(destinationWS - worldPos);
+
+
+	float slowDist = 0.3f;
+	float dist = glm::distance(destinationWS, worldPos);
+	if (dist < slowDist) { //start slowing
+		float p = dist / slowDist;
+		physics.velocity = glm::mix(glm::vec3(0), physics.velocity, p);
+	}
+	physics.moveImpulse = moveVec * 500.0f;
+
+
+	rotation = glm::orientedAngle(glm::normalize(moveVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+}
+
 /** Charge right at the target entity until we reach it or lose it. */
 void CRobot::charge()  {
 	//ensure we're looking at the target:
@@ -596,6 +653,10 @@ void CRobot::lookAround() {
 	rotation += dTurn;
 	rotationSearched += dTurn;
 	buildWorldMatrix();
+}
+
+void CRobot::onMovedHex()
+{
 }
 
 

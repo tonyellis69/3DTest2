@@ -6,6 +6,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>	
 
+#include "gameState.h"
 
 CEntity::CEntity() {
 	worldMatrix = &lineModel.model.matrix;
@@ -84,6 +85,7 @@ void CEntity::updatePos(glm::vec3& dPos) {
 	buildWorldMatrix();
 	CHex newHexPosition = worldSpaceToHex(worldPos);
 	if (newHexPosition != hexPosition) {
+		world.map->movedTo(this, hexPosition, newHexPosition);
 		hexPosition = newHexPosition;
 		onMovedHex();
 	}

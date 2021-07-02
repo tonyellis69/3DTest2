@@ -8,20 +8,13 @@
 #include "gameHexArray.h"
 
 
-//#include "sprite.h"
-
-
-enum TTurnPhase { playerPhase, robotPhase, playerDeadPhase };
-
 
 /** A class encapsulating useful global state stuff everyone 
 	needs direct access to. */
 class CGameState : public CGameEventObserver  {
 public:
 
-	void setTurnPhase(TTurnPhase phase);
 	void setMap(CGameHexArray* map);
-	TTurnPhase getTurnPhase();
 	void onNotify(COnCursorNewHex& msg);
 	bool isBlocked(CHex& pos, CHex& dest);
 	void addSprite(std::shared_ptr<CEntity> sprite);
@@ -37,15 +30,10 @@ public:
 	CGameHexArray* map;
 
 
-
-	//std::vector<std::shared_ptr<CEntity>> sprites;
-
 	bool paused = false;
 
 private:
-	TTurnPhase turnPhase;
 
-//	std::vector<std::shared_ptr<CEntity>> addSpritesList;
 };
 
 extern CGameState world;

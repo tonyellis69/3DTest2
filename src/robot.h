@@ -13,7 +13,8 @@
 enum TRobotState {robotSleep, robotChase, robotWander, 
 	robotMelee, robotShoot, robotHunt, robotLightSleep,
 	robotEvasiveShoot, robotWander2, robotCharge, robotLookFor,
-	robotLookAround };
+	robotLookAround, robotWander3
+};
 
 /** A class describing basic robot characteristics and
 	behaviour. */
@@ -47,17 +48,22 @@ private:
 	void rotateAlong(const float& angle);
 	void melee();
 	bool hasLineOfSight(CEntity* target);
+	bool hasLineOfSight(const glm::vec3& p);
 	bool inFoV(CEntity* target);
 	void fireMissile(CEntity* target);
 	void strafe();
 	void wander2();
+	void wander3();
 	void charge();
 	void lookFor();
 	void lookAround();
 
+	void onMovedHex();
+
+
 	float dT;
 
-	TRobotState state = robotWander2;// robotLightSleep;
+	TRobotState state = robotWander3;// robotLightSleep;
 
 
 	float robotMoveSpeed = 3.0f;// 2.5f;
@@ -92,6 +98,8 @@ private:
 	float rotationSearched = 0;
 	CHex targetLastHeading;
 	THexDir targetLastDirection;
+
+	glm::vec3 destinationWS = { 0,0,0 };
 };
 
 

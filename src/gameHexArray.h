@@ -68,9 +68,9 @@ public:
 
 	CHex getSegmentFirstHex(glm::vec3& A, glm::vec3& B);
 
-	TIntersections getIntersectedHexes(glm::vec3& segA, glm::vec3& segB);
+	TIntersections getIntersectedHexes(const glm::vec3 & segA, const glm::vec3 & segB);
 
-	std::tuple<THexDir, glm::vec3> findSegmentExit(glm::vec3 A, glm::vec3 B, CHex& hex);
+	std::tuple<THexDir, glm::vec3> findSegmentExit(const glm::vec3 A, const glm::vec3 B, const CHex & hex);
 
 
 	void addEntity(TEntity entity, CHex& hex);
@@ -85,7 +85,7 @@ public:
 
 	TEntities entities; ///<The grand list of entities in the map.
 	
-
+	bool entityListDirty = false;
 	//CRobot* testBot;
 	//CRobot* testBot2;
 	//TO DO: temp!!
@@ -96,7 +96,7 @@ private:
 
 	std::unordered_multimap<CHex, CEntity*, hex_hash> entityMap;
 	
-	bool entityListDirty = false;
+
 
 };
 

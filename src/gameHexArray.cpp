@@ -349,7 +349,7 @@ CHex CGameHexArray::getSegmentFirstHex(glm::vec3& A, glm::vec3& B) {
 }
 
 /** Return all the hexes intersected by the segment A-B. */
-TIntersections CGameHexArray::getIntersectedHexes(glm::vec3& segA, glm::vec3& segB) {
+TIntersections CGameHexArray::getIntersectedHexes(const glm::vec3 & segA, const glm::vec3 & segB) {
 	TIntersections intersectedHexes;
 	CHex startHex = worldSpaceToHex(segA);
 	CHex endHex = worldSpaceToHex(segB);
@@ -379,7 +379,7 @@ TIntersections CGameHexArray::getIntersectedHexes(glm::vec3& segA, glm::vec3& se
 
 /** Return the direction of the neighbouring hex into which this segment exits, if any. 
 	Also return the point of intersection. */
-std::tuple<THexDir, glm::vec3> CGameHexArray::findSegmentExit(glm::vec3 A, glm::vec3 B, CHex& hex) {
+std::tuple<THexDir, glm::vec3> CGameHexArray::findSegmentExit(const glm::vec3 A, const glm::vec3 B, const CHex & hex) {
 	glm::vec3 segmentDir = B - A;
 	glm::vec3 hexCentre = cubeToWorldSpace(hex);
 	glm::vec3 intersection(0);

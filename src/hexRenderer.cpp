@@ -199,7 +199,7 @@ void CHexRenderer::drawNode2(TModelNode& node, glm::mat4& parentMatrix, CBuf2* b
 	lineShader->setShaderValue(hMVP, mvp);
 	lineShader->setShaderValue(hWinSize, camera.getView());
 
-	for (auto mesh : node.meshes) {
+	for (auto& mesh : node.meshes) {
 		lineShader->setShaderValue(hColour, mesh.colour);
 	
 		if (mesh.isLine) {//TO DO: ugh, try to avoid
@@ -211,7 +211,7 @@ void CHexRenderer::drawNode2(TModelNode& node, glm::mat4& parentMatrix, CBuf2* b
 
 	}
 
-	for (auto subNode : node.subNodes)
+	for (auto& subNode : node.subNodes)
 		drawNode2(subNode, node.matrix * parentMatrix, buf);
 
 }

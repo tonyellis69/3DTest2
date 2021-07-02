@@ -3,17 +3,11 @@
 
 CGameState world;
 
-void CGameState::setTurnPhase(TTurnPhase phase) {
-	turnPhase = phase;
-}
 
 void CGameState::setMap(CGameHexArray* map) {
 	this->map = map;
 }
 
-TTurnPhase CGameState::getTurnPhase() {
-	return turnPhase;
-}
 
 
 void CGameState::onNotify(COnCursorNewHex& msg) {
@@ -43,22 +37,8 @@ void CGameState::deleteEntity(CEntity& entity) {
 }
 
 void CGameState::update(float dT) {
-	//for (auto& it = sprites.begin(); it != sprites.end(); ) {
-	//	if (it->get()->deleteMe)
-	//		it = sprites.erase(it);
-	//	else
-	//		it++;
-	//}
-
-	//TO DO: look into tidying the above into something like the below
-
 
 	map->tidyEntityLists();
-
-	//for (auto& sprite = addSpritesList.begin(); sprite != addSpritesList.end(); sprite++) {
-	//	sprites.push_back(*sprite);
-	//}
-	//addSpritesList.clear();
 
 }
 

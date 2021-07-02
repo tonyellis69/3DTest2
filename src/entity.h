@@ -64,6 +64,7 @@ public:
 	CPhys physics;
 	
 	bool isItem = false; //temp cludge!
+	bool isRobot = false; //temp cludge!
 	bool deleteMe = false;
 
 

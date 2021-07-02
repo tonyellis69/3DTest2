@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include <glm/gtx/vector_angle.hpp> 
+
 #include "utils/log.h"
 
 //#include "hexItem.h"
@@ -15,6 +17,8 @@
 #include "messaging/msg2.h"
 
 #include "gameGui.h"
+
+
 
 
 CPlayerObject::CPlayerObject() {
@@ -213,6 +217,9 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 	case moveWest: physics.moveImpulse = { -1,0,0 }; break;
 	case moveNW: physics.moveImpulse = { -M_SQRT1_2, M_SQRT1_2, 0 }; break;
 	}
+
+	//turn to that direction
+	rotation = glm::orientedAngle(glm::normalize(physics.moveImpulse), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 
 	physics.moveImpulse *= accel;
 }

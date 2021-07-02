@@ -23,6 +23,8 @@
  
 #include "UI/fonts.h" //temp test
 
+#include "renderer/imRendr/imRendr.h"
+
 CHexWorld::CHexWorld() {
 	hexRendr2.init();
 	
@@ -177,9 +179,10 @@ void CHexWorld::startGame() {
 
 	physics.add(playerObj);
 
-	//entitiesToDraw.assign(map->entities.rbegin(),map->entities.rend());
+	for (auto& entity : map->entities)
+		if (entity->isRobot)
+			physics.add(entity.get());
 
-	world.setTurnPhase(playerPhase);
 
 	if (hexCursor == NULL)
 		createCursorObject();
@@ -197,13 +200,13 @@ void CHexWorld::startGame() {
 	beginNewTurn(); //NB!!! Repeats some of the stuff above
 
 
-	glm::vec3 A(-9.52627945, -9.50000000, 0.00000000);
-	glm::vec3 B(-9.52627945, -10.50000000, 0.00000000);
-	CHex hex(-9, 3, 6);
-	THexDir exitDir = hexNone; glm::vec3 intersection;
-	std::tie(exitDir, intersection) = map->findSegmentExit(A, B, hex);
-	if (exitDir == hexNone)
-		int b = 0;
+	//glm::vec3 A(-9.52627945, -9.50000000, 0.00000000);
+	//glm::vec3 B(-9.52627945, -10.50000000, 0.00000000);
+	//CHex hex(-9, 3, 6);
+	//THexDir exitDir = hexNone; glm::vec3 intersection;
+	//std::tie(exitDir, intersection) = map->findSegmentExit(A, B, hex);
+	//if (exitDir == hexNone)
+	//	int b = 0;
 }
 
 
@@ -304,6 +307,9 @@ void CHexWorld::draw() {
 
 	//hexRendr2.drawSightLine(playerObj->worldPos, mouseWorldPos);
 
+	//temp!!!!!!!!!!!!!!!!!!!!!!!!!!
+	imRendr::drawLine(playerObj->worldPos, glm::vec3(0));
+
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
@@ -326,19 +332,18 @@ void CHexWorld::update(float dT) {
 
 	for (auto& entity : map->entities) {
 		entity->update(dT);
+
 	}
 
 
 	renderer.entityNo = 0;
-	//for (auto& entity : world.sprites) {
-	//	entity->update(dT);
-	//	renderer.entityNo++;
-	//}
 
-
-	world.update(dT);
+	if (world.map->entityListDirty)
+		physics.removeDeletedEntities();
 
 	physics.update(dT);
+
+	world.update(dT);
 
 }
 
@@ -499,7 +504,7 @@ void CHexWorld::updateCameraPosition() {
 }
 
 void CHexWorld::beginNewTurn() {
-	world.setTurnPhase(playerPhase);
+
 	world.onscreenRobotAction = false;
 	//qps.beginNewTurn();
 	//playerObj->onTurnBegin();
@@ -515,7 +520,6 @@ void CHexWorld::beginNewTurn() {
 		CSendText msg(combatLog, "\n\nYOU HAVE WON");
 		send(msg);
 
-		world.setTurnPhase(playerDeadPhase);
 	}
 }
 

@@ -11,7 +11,7 @@ public:
 	glm::vec3 velocity = { 0,0,0 };
 	float invMass = 0;
 	float restitution = 0.0f; //bounce
-	float drag = 0.975f;
+	float drag = 0.00125f;
 	float maxVelocity = 4.0f;
 
 	float boundingRadius = 0;

@@ -20,11 +20,21 @@ void CHexPhysics::removeEntities() {
 
 void CHexPhysics::update(float dT) {
 	this->dT = dT;
+
 	broadphase();
 	integrateForces();
 	resolveContacts();
 	integrateVelocities();
 
+}
+
+void CHexPhysics::removeDeletedEntities() {
+	for (auto& it = entities.begin(); it != entities.end(); ) {
+		if ((*it)->deleteMe)
+			it = entities.erase(it);
+		else
+			it++;
+	}
 }
 
 /** Look for possible collisions between pairs of bodues. */
@@ -63,7 +73,7 @@ void CHexPhysics::integrateForces() {
 		ent->moveImpulse = { 0, 0, 0};
 
 		//drag
-		ent->velocity = glm::mix(ent->velocity, glm::vec3(0), 1.0f - std::pow(0.00125f, dT)); //larger dt, closer v gets to 0
+		ent->velocity = glm::mix(ent->velocity, glm::vec3(0), 1.0f - std::pow(ent->drag, dT)); //larger dt, closer v gets to 0
 		//larger number, slower falloff
 
 	}
