@@ -357,11 +357,9 @@ TIntersections CGameHexArray::getIntersectedHexes(const glm::vec3 & segA, const 
 	while (startHex != endHex) {
 		std::tie(exitDir, intersection) = findSegmentExit(segA, segB, startHex);
 		if (exitDir == hexNone) {
-			std::tie(exitDir, intersection) = findSegmentExit(segA, segB, startHex);
+			//std::tie(exitDir, intersection) = findSegmentExit(segA, segB, startHex);
 			break; //hopefully catch rare case where leading point on hex border.
-			//ultimately we must NEVER GET HERE because segment must exit startHex somewhere
-			//if problem persists, look into brute-forcing segments that pass 
-			//along the line between two hexes
+
 		}
 		CHex entryHex = getNeighbour(startHex, exitDir);
 		if (outsideArray(entryHex))

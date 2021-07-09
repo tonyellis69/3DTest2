@@ -32,9 +32,7 @@ CRobot::CRobot() {
 void CRobot::update(float dT) {
 	this->dT = dT;
 
-
-	if (meleeHitCooldown > 0)
-		meleeHitCooldown -= dT;
+	meleeHitCooldown +=dT;
 
 	if (missileCooldown > 0)
 		missileCooldown -= dT;
@@ -56,6 +54,8 @@ void CRobot::update(float dT) {
 		tmpPlayerInFov = false;
 
 
+	
+
 
 	//TO DO: maybe don't try any state updates while transitioning?
 	//Almost nothing can start while we're still ending travel to hex
@@ -66,7 +66,7 @@ void CRobot::update(float dT) {
 		return;
 	case robotWander3:
 		wander3();
-		return;
+		break;
 	case robotCharge:
 		charge();
 		return;
@@ -77,10 +77,11 @@ void CRobot::update(float dT) {
 		lookAround();
 		return;
 	case  robotLightSleep:
-		if (cubeDistance(hexPosition, world.player->hexPosition) <= 4) {
-			setState(robotHunt);
+		if (cubeDistance(hexPosition, world.player->hexPosition) <= 4
+			&& hasLineOfSight(world.player)) {
+			setState(robotCharge3,world.player);
 		}
-		return;
+		break;
 
 	case robotChase:
 		if ((glm::distance(worldPos, world.player->worldPos) < robotMeleeRange) && meleeHitCooldown <= 0) {
@@ -164,13 +165,21 @@ void CRobot::update(float dT) {
 			world.map->movingTo(this, hexPosition, moveDest);
 			transitioningToHex = true;
 		}
-
+	case robotCharge3:
+		charge3();
+		break;
+	case robotMelee3:
+		melee3();
+		return;
 	}
+
+	if (!reachedDestination)
+		approachDestination();
 }
 
 
 /** Switch to the given state, performing the necessary initialisation. */
-void CRobot::setState(TRobotState newState) 
+void CRobot::setState(TRobotState newState, CEntity* entity)
 {
 	switch (newState) {
 	case robotCharge:
@@ -226,6 +235,17 @@ void CRobot::setState(TRobotState newState)
 	case robotHunt:
 		targetEntity = world.player;
 		lineModel.setColourR(hostileColour);
+		break;
+	case robotCharge3:
+		targetEntity = entity;
+		reachedDestination = false;
+		break;
+	case robotMelee3:
+		targetEntity = entity;
+		meleeHitCooldown = 0.5f;
+		meleeLungeHome = worldPos;
+		lungeState = preLunge;
+		liveLog << "\nstart lunge";
 		break;
 	}
 
@@ -339,6 +359,51 @@ void CRobot::melee() {
 	buildWorldMatrix();
 }
 
+
+void CRobot::melee3() {
+	if (lungeState != returning &&
+			glm::distance(worldPos, targetEntity->worldPos) > meleeRange) {
+		setState(robotCharge3, targetEntity);
+		return;
+	}
+
+
+	if (meleeHitCooldown < 1.0f)
+		return;
+
+	if (lungeState == preLunge) {
+		destinationWS = targetEntity->worldPos;
+		lastDistance = glm::distance(worldPos, destinationWS);
+		lungeState = lunging;
+	}
+
+	if (lungeState == lunging) {
+		if (glm::distance(worldPos, destinationWS) > lastDistance) { //overshot
+			physics.velocity = { 0,0,0 };
+			destinationWS = meleeLungeHome;
+			lastDistance = FLT_MAX; // glm::distance(worldPos, destinationWS);
+			lungeState = returning;
+		}
+	}
+
+	if (lungeState == returning) {
+		if (glm::distance(worldPos, destinationWS) > lastDistance) { //overshot
+			physics.velocity = { 0,0,0 };
+			destinationWS = meleeLungeHome;
+			lungeState = preLunge;
+			meleeHitCooldown = -1;
+			return;
+		}
+	}
+
+	lastDistance = glm::distance(worldPos, destinationWS);
+
+	glm::vec3 moveVec = glm::normalize(destinationWS - worldPos);
+	physics.moveImpulse = moveVec * 9000.0f;
+
+
+}
+
 /** Return true if we can draw a line to the target without hitting anything. */
 bool CRobot::hasLineOfSight(CEntity* target)
 {
@@ -348,6 +413,8 @@ bool CRobot::hasLineOfSight(CEntity* target)
 			return false;
 		//TO DO: can expand this to check for other robots blocking
 	}
+
+	//TIntersections intersectedHexes2 = world.map->getIntersectedHexes(worldPos, target->worldPos);
 
 	return true;
 }
@@ -542,7 +609,7 @@ void CRobot::wander2() {
 }
 
 void CRobot::wander3() {
-	if (glm::distance(worldPos, destinationWS) < 0.1f || destinationWS == glm::vec3(0, 0, 0)) { //temp!
+	if (reachedDestination) {
 		THexList ring = findRing(5, hexPosition);
 		CHex randHex;
 		int giveUp = 0;
@@ -552,6 +619,8 @@ void CRobot::wander3() {
 			glm::vec3 hexWS = cubeToWorldSpace(randHex);
 			if (hasLineOfSight(hexWS) ) {
 				destinationWS = hexWS;
+				reachedDestination = false;
+				lastDestinationDist = FLT_MAX;
 				//world.map->setHighlight(randHex, 1.0f);
 				break;
 			}
@@ -561,20 +630,7 @@ void CRobot::wander3() {
 
 	}
 
-	//move toward destination 
-	glm::vec3 moveVec = glm::normalize(destinationWS - worldPos);
-
-
-	float slowDist = 0.3f;
-	float dist = glm::distance(destinationWS, worldPos);
-	if (dist < slowDist) { //start slowing
-		float p = dist / slowDist;
-		physics.velocity = glm::mix(glm::vec3(0), physics.velocity, p);
-	}
-	physics.moveImpulse = moveVec * 500.0f;
-
-
-	rotation = glm::orientedAngle(glm::normalize(moveVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+	speed = 1000.0f;
 }
 
 /** Charge right at the target entity until we reach it or lose it. */
@@ -614,7 +670,31 @@ void CRobot::charge()  {
 
 		world.map->movingTo(this, hexPosition, moveDest);
 		transitioningToHex = true;
+	}
+}
 
+
+void CRobot::charge3() {
+	if (glm::distance(worldPos, targetEntity->worldPos) < meleeRange) {
+		speed = 0;
+		reachedDestination = true;
+		setState(robotMelee3, targetEntity);
+		return;
+	}
+
+	//can still see target?
+	if (hasLineOfSight(targetEntity)) {
+		destinationWS = targetEntity->worldPos;
+		//glm::vec3 moveVec = glm::normalize(destinationWS - worldPos);
+		//rotation = glm::orientedAngle(glm::normalize(moveVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+		//physics.moveImpulse = moveVec * 1500.0f;
+		reachedDestination = false;
+		speed = 1500.0f;
+	}
+	else {
+		setState(robotLightSleep);
+		speed = 0;
+		reachedDestination = true;
 	}
 
 }
@@ -657,6 +737,41 @@ void CRobot::lookAround() {
 
 void CRobot::onMovedHex()
 {
+}
+
+/** Handle the approach to our destination point by slowing down,
+	catching overshoot, etc. */
+void CRobot::approachDestination() {
+	glm::vec3 moveVec = glm::normalize(destinationWS - worldPos);
+	physics.moveImpulse = moveVec * speed;
+	rotation = glm::orientedAngle(glm::normalize(moveVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+
+
+	float dist = glm::distance(worldPos, destinationWS);
+
+	if (dist < 0.05f) {
+		physics.velocity = { 0, 0, 0 };
+		reachedDestination = true;
+		return;
+	}
+
+
+
+
+	if (dist < destSlowdownRange) { //time to slow down
+
+		if (dist > lastDestinationDist) { //overshot!
+ 			physics.velocity = { 0, 0, 0 };
+			reachedDestination = true;
+			return;
+		}
+
+
+		float p = dist / destSlowdownRange;
+		physics.moveImpulse *=  p;
+	}
+
+	lastDestinationDist = dist;
 }
 
 

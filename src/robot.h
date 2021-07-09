@@ -13,8 +13,11 @@
 enum TRobotState {robotSleep, robotChase, robotWander, 
 	robotMelee, robotShoot, robotHunt, robotLightSleep,
 	robotEvasiveShoot, robotWander2, robotCharge, robotLookFor,
-	robotLookAround, robotWander3
+	robotLookAround, robotWander3, robotCharge3,
+	robotMelee3
 };
+
+enum TLungeState {preLunge, lunging, returning};
 
 /** A class describing basic robot characteristics and
 	behaviour. */
@@ -22,7 +25,7 @@ class CRobot : public CEntity {
 public:
 	CRobot();
 	void update(float dT);
-	void setState(TRobotState newState);
+	void setState(TRobotState newState, CEntity* entity = NULL);
 	TRobotState getState();
 	CHex getNextTravelHex(CHex& destination);
 	void draw();
@@ -47,6 +50,7 @@ private:
 	void approachDestHex();
 	void rotateAlong(const float& angle);
 	void melee();
+	void melee3();
 	bool hasLineOfSight(CEntity* target);
 	bool hasLineOfSight(const glm::vec3& p);
 	bool inFoV(CEntity* target);
@@ -55,15 +59,17 @@ private:
 	void wander2();
 	void wander3();
 	void charge();
+	void charge3();
 	void lookFor();
 	void lookAround();
 
 	void onMovedHex();
 
+	void approachDestination();
 
 	float dT;
 
-	TRobotState state = robotWander3;// robotLightSleep;
+	TRobotState state = robotLightSleep;// robotWander3;// robotLightSleep;
 
 
 	float robotMoveSpeed = 3.0f;// 2.5f;
@@ -79,7 +85,7 @@ private:
 	glm::vec3 lungeEndPos;
 
 	float missileCooldown = 0.0f;
-	CEntity* targetEntity;
+	CEntity* targetEntity = NULL;
 
 	float evadeTimer = 0.0f;
 	bool evadeShoot;
@@ -99,7 +105,18 @@ private:
 	CHex targetLastHeading;
 	THexDir targetLastDirection;
 
+	
+	glm::vec3 meleeLungeHome = { 0,0,0 };
+	float lastDistance = 0;
+	TLungeState lungeState;
+	float meleeRange = 1.0f;
+
 	glm::vec3 destinationWS = { 0,0,0 };
+	float destSlowdownRange = 0.4f;
+	float destSlowdownRate = 0.5f;
+	bool reachedDestination = true;
+	float lastDestinationDist = FLT_MAX;
+	float speed = 0.0f;
 };
 
 

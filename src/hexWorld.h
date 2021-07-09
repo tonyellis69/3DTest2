@@ -62,6 +62,7 @@ public:
 	void onKeyDown(int key, long mod);
 	void onMouseWheel(float delta, int key);
 	void onMouseMove(int x, int y, int key);
+	void calcMouseWorldPos();
 	void draw();
 	void setAspectRatio(glm::vec2& ratio);
 	void update(float dt);

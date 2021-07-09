@@ -73,8 +73,12 @@ void CHexPhysics::integrateForces() {
 		ent->moveImpulse = { 0, 0, 0};
 
 		//drag
-		ent->velocity = glm::mix(ent->velocity, glm::vec3(0), 1.0f - std::pow(ent->drag, dT)); //larger dt, closer v gets to 0
+		//ent->velocity = glm::mix(ent->velocity, glm::vec3(0), 1.0f - std::pow(ent->drag, dT)); //larger dt, closer v gets to 0
+		ent->velocity *= std::pow(ent->drag, dT);
 		//larger number, slower falloff
+
+		//if (entity->tmpId == 0)
+		//	sysLog << "\nphysics inc to velocity: " << a * dT << " final velocity " << ent->velocity;
 
 	}
 

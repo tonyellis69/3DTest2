@@ -27,6 +27,7 @@
 
 CHexWorld::CHexWorld() {
 	hexRendr2.init();
+	imRendr::setMatrix(&hexRendr2.camera.clipMatrix);
 	
 //	messageBus.setHandler<CDropItem>(this, &CHexWorld::onDropItem);
 	//messageBus.setHandler<CRemoveEntity>(this, &CHexWorld::onRemoveEntity);
@@ -200,13 +201,6 @@ void CHexWorld::startGame() {
 	beginNewTurn(); //NB!!! Repeats some of the stuff above
 
 
-	//glm::vec3 A(-9.52627945, -9.50000000, 0.00000000);
-	//glm::vec3 B(-9.52627945, -10.50000000, 0.00000000);
-	//CHex hex(-9, 3, 6);
-	//THexDir exitDir = hexNone; glm::vec3 intersection;
-	//std::tie(exitDir, intersection) = map->findSegmentExit(A, B, hex);
-	//if (exitDir == hexNone)
-	//	int b = 0;
 }
 
 
@@ -267,11 +261,14 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 
 	mousePos = { x,y };
 
-	auto [mouseHex, mouseWS ] = hexRendr2.pickHex(x, y);
+	calcMouseWorldPos();
+}
+
+void CHexWorld::calcMouseWorldPos() {
+	auto [mouseHex, mouseWS] = hexRendr2.pickHex(mousePos.x, mousePos.y);
 	mouseWorldPos = mouseWS;
 	glm::vec3 mouseVec = mouseWorldPos - playerObj->worldPos;
 	playerObj->setTargetAngle(glm::orientedAngle(glm::normalize(mouseVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1)));
-
 
 	if (mouseHex != hexCursor->hexPosition) {
 		CMouseExitHex msg;
@@ -279,17 +276,7 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 		notify(msg);
 		onNewMouseHex(mouseHex);
 	}
-
-	//std::stringstream coords;
-	//CHex test = worldSpaceToHex(glm::vec3(mouseWorldPos.x, mouseWorldPos.y, 0));
-	//coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
-	//coords << " wsMouse " << mouseWorldPos.x << " " << mouseWorldPos.y;
-	//coords << " new cube " << test.x << " " << test.y << " " << test.z;
-	//glm::i32vec2 off = cubeToOffset(mouseHex);
-	//coords << " my offset coords " << off.x << " " << off.y;
-	//hexPosLbl->setText(coords.str());
 }
-
 
 
 void CHexWorld::draw() {
@@ -308,7 +295,9 @@ void CHexWorld::draw() {
 	//hexRendr2.drawSightLine(playerObj->worldPos, mouseWorldPos);
 
 	//temp!!!!!!!!!!!!!!!!!!!!!!!!!!
-	imRendr::drawLine(playerObj->worldPos, glm::vec3(0));
+	imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 0.25f });
+
+	imRendr::drawLine(playerObj->worldPos, mouseWorldPos);
 
 }
 
@@ -330,6 +319,8 @@ void CHexWorld::update(float dT) {
 
 	updateCameraPosition();
 
+	physics.update(dT);
+
 	for (auto& entity : map->entities) {
 		entity->update(dT);
 
@@ -341,7 +332,7 @@ void CHexWorld::update(float dT) {
 	if (world.map->entityListDirty)
 		physics.removeDeletedEntities();
 
-	physics.update(dT);
+
 
 	world.update(dT);
 
@@ -501,6 +492,8 @@ void CHexWorld::updateCameraPosition() {
 		hexRendr2.followTarget(playerObj->worldPos);
 	else
 		hexRendr2.attemptScreenScroll(/*mainApp->getMousePos()*/mousePos, dT);
+
+	calcMouseWorldPos();
 }
 
 void CHexWorld::beginNewTurn() {

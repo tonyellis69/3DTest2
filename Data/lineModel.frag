@@ -21,6 +21,6 @@ void main() {
 	float line = 1- pow((lateralFade * narrowing),falloff); 
 	
 
-	outputColor.a = line;
+	outputColor.a *= line;
 
 }

@@ -67,7 +67,7 @@ public:
 	bool isRobot = false; //temp cludge!
 	bool deleteMe = false;
 
-
+	int tmpId;
 };
 
 using TEntity = std::shared_ptr<CEntity>;

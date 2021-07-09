@@ -67,6 +67,8 @@ public:
 	void setCameraPos(glm::vec3& pos);
 	void setCameraPitch(float pitch);
 
+	CCamera camera;
+
 	CShader* hexLineShader;
 	CShader* hexSolidShader;
 	CShader* lineShader;
@@ -137,7 +139,7 @@ private:
 	glm::vec4 floorplanSpaceColour;
 	glm::vec4 floorplanSolidColour;
 
-	CCamera camera;
+
 	float cameraPitch;
 	bool followCam;
 	glm::vec3 followCamVec; ///<Vector from target point on plane to camera

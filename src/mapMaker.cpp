@@ -29,6 +29,7 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 		//map->addEntity(robotM, CHex(-2,-4,6));
 		//robotM->setTigObj(pRobot);
 		//map->testBot = robotM.get();
+		robotM->tmpId = x;
 	}
 
 	for (int x = 0; x < 6; x++) {
