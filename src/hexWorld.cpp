@@ -43,6 +43,8 @@ CHexWorld::CHexWorld() {
 	hexPosLbl->setTextColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 
+
+
 	snd::setVolume(1);
 
 	//msgCB4(2.2f, "hurrah!");
@@ -65,6 +67,8 @@ CHexWorld::CHexWorld() {
 	msg::emit(msgId3, v);
 
 	gWin::createWin("con", 10, 10, 200, 300);
+
+	//imRendr::setFont("smallSysFont");
 }
 
 void CHexWorld::msgCB(int id) {
@@ -200,6 +204,8 @@ void CHexWorld::startGame() {
 
 	beginNewTurn(); //NB!!! Repeats some of the stuff above
 
+	drawTxtTest.setPosition(30, 30);
+	drawTxtTest.setText("Did I forget the text?");
 
 }
 
@@ -299,6 +305,8 @@ void CHexWorld::draw() {
 
 	imRendr::drawLine(playerObj->worldPos, mouseWorldPos);
 
+
+
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
@@ -331,7 +339,6 @@ void CHexWorld::update(float dT) {
 
 	if (world.map->entityListDirty)
 		physics.removeDeletedEntities();
-
 
 
 	world.update(dT);

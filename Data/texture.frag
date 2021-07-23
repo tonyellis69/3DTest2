@@ -7,10 +7,10 @@ out vec4 colour;
 uniform sampler2D mySampler;
 
 
-uniform vec2 tile;
+uniform vec2 tile = vec2(1,1);
 
 
-uniform vec2 offset;;
+uniform vec2 offset = vec2(0);;
 
 void main()
 {

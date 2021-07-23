@@ -9,7 +9,7 @@ uniform sampler2D fontTexture;
 
 uniform vec4 textColour;
 
-uniform float fadeInX; //Position along line at which fade is happening.
+uniform float fadeInX = 1.0f; //Position along line at which fade is happening.
 
 void main()
 {

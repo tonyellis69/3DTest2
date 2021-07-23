@@ -37,6 +37,8 @@
 
 #include "physics/hexPhysics.h"
 
+#include "renderer/drawText.h" // temp for testing
+
 enum TViewMode {gameView, devView};
 enum TMsgType {msgId,msgId2,msgId3};
   
@@ -74,6 +76,8 @@ public:
 	void toggleView();
 
 	CGUIlabel2* hexPosLbl;
+
+	CDrawText drawTxtTest; //temp!
 
 
 private:
