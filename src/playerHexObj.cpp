@@ -103,7 +103,7 @@ void CPlayerObject::tmpKeyCB(int key) {
 
 /** Player has pressed or released the fire button. */
 void CPlayerObject::onFireKey(bool pressed) {
-	if (!pressed)
+	if (!pressed || dead)
 		return;
 
 	//hard-coded default action: launch a missile!
@@ -122,20 +122,26 @@ void CPlayerObject::onFireKey(bool pressed) {
 void CPlayerObject::draw() {
 	//for (auto hex : viewField.visibleHexes)
 	//	hexRendr->highlightHex(hex);
-
+	if (dead)
+		return;
 	CEntity::draw();
 }
 
-//
-//void CPlayerObject::onGetPlayerPos(CGetPlayerPos& msg) {
-//	msg.position = hexPosition;
-//}
-//
+
 
 
 
 void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
 	liveLog << "\nPlayer hit!";
+
+	hp--;
+
+	if (hp < 1) {
+		world.map->removeEntity(this);
+		dead = true;
+		visible = false;
+		world.onPlayerDeath();
+	}
 }
 
 
@@ -206,6 +212,8 @@ void CPlayerObject::updateViewField() {
 
 /** Respond to player move instruction. */
 void CPlayerObject::moveCommand(TMoveDir commandDir) {
+	if (dead)
+		return;
 	const float accel = 3000;
 	switch (commandDir) {
 	case moveNorth:  physics.moveImpulse = { 0,1,0 }; break;
@@ -228,6 +236,11 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 void CPlayerObject::update(float dT) {
 	this->dT = dT;
 
+	if (!visible && visibilityCooldown < 3.0f) {
+		visibilityCooldown += dT;
+		if (visibilityCooldown > 3.0f)
+			visible = true;
+	}
 }
 
 void CPlayerObject::setTargetAngle(float angle) {

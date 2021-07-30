@@ -1,5 +1,6 @@
 #include "gameState.h"
 
+#include "robot.h"
 
 CGameState world;
 
@@ -44,4 +45,16 @@ void CGameState::update(float dT) {
 
 void CGameState::togglePause() {
 	paused = !paused;
+}
+
+/** Do necessary housekeeping for the death of the player. */
+void CGameState::onPlayerDeath() {
+	for (auto& entity : map->entities) {
+		if (entity->isRobot) {
+			((CRobot*)entity.get())->setState(robotWander3);
+
+
+		}
+
+	}
 }

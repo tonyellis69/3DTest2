@@ -1,13 +1,10 @@
 #pragma once
 #define _USE_MATH_DEFINES
 
-//#include "tigConst.h"
-
-//#include "gameMsg.h"
 
 #include "entity.h"
 
-//#include "viewField.h"
+
 
 enum TRobotState { robotLightSleep,	robotWander3, robotCharge3,
 	robotMelee3, robotCloseAndShoot
@@ -36,6 +33,7 @@ private:
 	void melee3();
 	bool hasLineOfSight(CEntity* target);
 	bool hasLineOfSight(const glm::vec3& p);
+	bool inFov(CEntity* target);
 	void fireMissile(CEntity* target);
 
 	void wander3();
@@ -47,9 +45,11 @@ private:
 	void approachDestination();
 	void track();
 
+	bool canSeePlayer();
+
 	float dT;
 
-	TRobotState state = robotLightSleep;// robotWander3;// 
+	TRobotState state = robotWander3;// robotLightSleep;// robotWander3;// 
 
 	float meleeHitCooldown = 0;
 	float missileCooldown = 0.0f;

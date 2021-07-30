@@ -47,6 +47,12 @@ public:
 
 	TMoveDir travelDir = moveNone;
 
+
+	bool visible = false;
+	bool dead = false;
+
+	int hp = 3;
+
 private:
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
 	//void approachDestHex();
@@ -64,4 +70,8 @@ private:
 	std::vector<CItem*> tmpFloorItems; //temp!
 	int itemSelected = -1; //temp!
 	bool inventoryOn = false;
+
+	float visibilityCooldown = 0;
+
+
 };

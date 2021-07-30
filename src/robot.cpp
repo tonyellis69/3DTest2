@@ -17,6 +17,7 @@
 const float rad360 = M_PI * 2;
 const float rad60 = M_PI / 3;
 const float rad45 = M_PI / 4;
+const float rad120 = rad360 / 3;
 
 CRobot::CRobot() {
 	isRobot = true;
@@ -76,6 +77,7 @@ void CRobot::setState(TRobotState newState, CEntity* entity)
 		break;
 	case robotCharge3:
 		targetEntity = entity;
+		lineModel.setColourR(glm::vec4(1, 0, 0, 1));
 		reachedDestination = false;
 		break;
 	case robotMelee3:
@@ -86,7 +88,8 @@ void CRobot::setState(TRobotState newState, CEntity* entity)
 		break;
 	case robotCloseAndShoot:
 		targetEntity = entity;
-		missileCooldown = 0.5f;
+		missileCooldown = -0.5f;
+		lineModel.setColourR(glm::vec4(1, 0, 0, 1));
 		stoppedToShoot = false;
 		reachedDestination = false;
 		break;
@@ -217,6 +220,17 @@ bool CRobot::hasLineOfSight(const glm::vec3& p) {
 	return true;
 }
 
+
+bool CRobot::inFov(CEntity* target) {
+	if (glm::distance(worldPos, target->worldPos) <= 12 && 
+		abs(orientationTo(target->worldPos)) < rad120 /*rad45*/) { //rad60
+		if (hasLineOfSight(target->worldPos))
+			return true;
+	}
+
+	return false;
+}
+
 ///** Return true if target within 90 degree field of view and not obscured by scenery.*/
 //// TO DO: optimisations include limiting view distance, *not* checking every damn frame, etc.
 //bool CRobot::inFoV(CEntity* target) {
@@ -239,6 +253,7 @@ void CRobot::fireMissile(CEntity* target) {
 
 	missile->setPosition(worldPos, targetAngle);
 	missile->setOwner(this);
+	missile->setSpeed(7.0f);
 	world.addSprite(missile);
 
 	snd::play("shoot");
@@ -246,6 +261,18 @@ void CRobot::fireMissile(CEntity* target) {
 
 
 void CRobot::wander3() {
+	/*if (cubeDistance(hexPosition, world.player->hexPosition) <= 4
+		&& hasLineOfSight(world.player)) {*/
+	if (canSeePlayer()) {
+		//setState(robotCharge3, world.player);
+		setState(robotCloseAndShoot, world.player);
+		tracking = trackNone;
+		return;
+	}
+
+
+
+
 	tracking = trackDestination;
 	if (reachedDestination) {
 		THexList ring = findRing(5, hexPosition);
@@ -382,6 +409,12 @@ void CRobot::track() {
 	else if (tracking == trackDestination) 
 		rotation = glm::orientedAngle(glm::normalize(destination - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 
+}
+
+
+bool CRobot::canSeePlayer() {
+	return world.player->visible &&  !world.player->dead && inFov(world.player);
+		//hasLineOfSight(world.player);
 }
 
 

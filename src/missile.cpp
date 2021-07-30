@@ -48,6 +48,10 @@ void CMissile::setOwner(CEntity* owner) {
 	this->owner = owner;
 }
 
+void CMissile::setSpeed(float speed) {
+	missileMoveSpeed = speed;
+}
+
 
 /** Move realtime in the current  direction. */
 void CMissile::approachDestHex() {
@@ -76,9 +80,9 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 		if (entity && entity != owner) {
 			auto [hit, intersection] = entity->collisionCheck(startingPos, leadingPoint);
 			if (hit) {
+				collisionPt = entity->worldPos;
 				entity->receiveDamage(*owner, 10);
 				collided = true;
-				collisionPt = entity->worldPos;
 				return true;
 			}
 		}

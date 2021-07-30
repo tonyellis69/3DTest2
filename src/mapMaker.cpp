@@ -22,7 +22,7 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 
 	map->updateBlocking();
 
-	for (int x = 0; x < 2; x++) {
+	for (int x = 0; x < 8; x++) {
 		auto robotM = std::make_shared<CRobot>();
 		robotM->setLineModel("robot");
 		map->addEntity(robotM, map->findRandomHex(true));

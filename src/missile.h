@@ -18,6 +18,7 @@ public:
 	void update(float dT);
 	void draw();
 	void setOwner(CEntity* owner);
+	void setSpeed(float speed);
 
 private:
 	void approachDestHex();

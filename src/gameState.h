@@ -22,10 +22,10 @@ public:
 	void deleteEntity(CEntity& entity);
 	void update(float dT);
 	void togglePause();
+	void onPlayerDeath();
 
 	CHex cursorPos;
 	THexList cursorPath;
-	bool onscreenRobotAction; ///<True if happened this turn.
 	CPlayerObject* player;
 	CGameHexArray* map;
 

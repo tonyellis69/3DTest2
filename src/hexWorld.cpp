@@ -164,13 +164,10 @@ void CHexWorld::startGame() {
 	//create new player object
 	playerObj = new CPlayerObject();
 	playerObj->setLineModel("player");
-	map->addEntity(TEntity(playerObj), map->findRandomHex(true));
+	//map->addEntity(TEntity(playerObj), map->findRandomHex(true));
+	map->addEntity(TEntity(playerObj), CHex(-6,9,-3));
 
-	//temp brute-force remove nearby robots
-	//for (auto& entity : map->entities) {
-	//	if (entity->entityType == entRobot && cubeDistance(entity->hexPosition, playerObj->hexPosition) < 8)
-	//		map->deleteEntity(*entity);
-	//}
+
 
 
 	world.player = playerObj;
@@ -193,8 +190,8 @@ void CHexWorld::startGame() {
 		createCursorObject();
 	//hexCursor->visibleToPlayer = true;
 
-	CSendText msg(combatLog, "", true);
-	send(msg);
+	//CSendText msg(combatLog, "", true);
+	//send(msg);
 
 	map->updateBlocking();
 
@@ -204,8 +201,6 @@ void CHexWorld::startGame() {
 
 	beginNewTurn(); //NB!!! Repeats some of the stuff above
 
-	drawTxtTest.setPosition(30, 30);
-	drawTxtTest.setText("Did I forget the text?");
 
 }
 
@@ -288,7 +283,7 @@ void CHexWorld::calcMouseWorldPos() {
 void CHexWorld::draw() {
 
 	hexRendr2.drawFloorPlan();
-	hexCursor->draw();
+
 
 	//for (auto entity : entitiesToDraw)
 	for (auto& entity : map->entities)
@@ -301,10 +296,13 @@ void CHexWorld::draw() {
 	//hexRendr2.drawSightLine(playerObj->worldPos, mouseWorldPos);
 
 	//temp!!!!!!!!!!!!!!!!!!!!!!!!!!
-	imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 0.25f });
+	if (!world.player->dead) {
+		imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 0.25f });
+		imRendr::drawLine(playerObj->worldPos, mouseWorldPos);
+		hexCursor->draw();
+	}
 
-	imRendr::drawLine(playerObj->worldPos, mouseWorldPos);
-
+	imRendr::drawText(600, 50, "HP: " + std::to_string(world.player->hp));
 
 
 }
@@ -495,7 +493,7 @@ void CHexWorld::onDiceRoll(CDiceRoll& msg) {
 
 
 void CHexWorld::updateCameraPosition() {
-	if (viewMode == gameView)
+	if (viewMode == gameView && !world.player->dead)
 		hexRendr2.followTarget(playerObj->worldPos);
 	else
 		hexRendr2.attemptScreenScroll(/*mainApp->getMousePos()*/mousePos, dT);
@@ -505,7 +503,7 @@ void CHexWorld::updateCameraPosition() {
 
 void CHexWorld::beginNewTurn() {
 
-	world.onscreenRobotAction = false;
+	//world.onscreenRobotAction = false;
 	//qps.beginNewTurn();
 	//playerObj->onTurnBegin();
 	map->updateBlocking();
@@ -516,11 +514,11 @@ void CHexWorld::beginNewTurn() {
 
 
 	///////////////////////////temp end stuff
-	if (playerObj->hexPosition == CHex(13,-4,-9)) {
-		CSendText msg(combatLog, "\n\nYOU HAVE WON");
-		send(msg);
+	//if (playerObj->hexPosition == CHex(13,-4,-9)) {
+	//	CSendText msg(combatLog, "\n\nYOU HAVE WON");
+	//	send(msg);
 
-	}
+	//}
 }
 
 
