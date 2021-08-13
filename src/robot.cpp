@@ -413,6 +413,7 @@ void CRobot::track() {
 
 
 bool CRobot::canSeePlayer() {
+
 	return world.player->visible &&  !world.player->dead && inFov(world.player);
 		//hasLineOfSight(world.player);
 }

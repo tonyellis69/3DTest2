@@ -12,7 +12,7 @@ namespace gWin {
 	void clearText(const std::string& winName);
 	void setFont(const std::string& winName, const std::string& fontName);
 	void setColour(const std::string& winName, glm::vec4& colour);
-
-
+	void hideWin(const std::string& winName);
+	void showWin(const std::string& winName);
 
 }

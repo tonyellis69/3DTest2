@@ -25,70 +25,28 @@
 
 #include "renderer/imRendr/imRendr.h"
 
+#include "GLFW/glfw3.h"
+
 CHexWorld::CHexWorld() {
 	hexRendr2.init();
 	imRendr::setMatrix(&hexRendr2.camera.clipMatrix);
 	
-//	messageBus.setHandler<CDropItem>(this, &CHexWorld::onDropItem);
-	//messageBus.setHandler<CRemoveEntity>(this, &CHexWorld::onRemoveEntity);
-	//messageBus.setHandler<CCreateGroupItem>(this, &CHexWorld::onCreateGroupItem);
-	messageBus.setHandler<CDiceRoll>(this, &CHexWorld::onDiceRoll);
-//	messageBus.setHandler<CPlayerNewHex>(this, &CHexWorld::onPlayerNewHex);
-//	messageBus.setHandler<CActorMovedHex>(this, &CHexWorld::onActorMovedHex);
-
-
 	subscribe(&world);
 
 	hexPosLbl = gui::addLabel("xxx", 10, 10);
 	hexPosLbl->setTextColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-
-
-
 	snd::setVolume(1);
 
-	//msgCB4(2.2f, "hurrah!");
 
-	//int msgId = 66;
-	//int msgId2 = 42;
-	//int msgId3 = 33;
-
-	msg::attach(msgId, this, &CHexWorld::msgCB3);
 	msg::attach(msgId2, this, &CHexWorld::msgCB4);
-	msg::attach(msgId3, this, &CHexWorld::msgCB2);
-
-	glm::vec3 v = { 1,2,3 };
-	msg::emit(msgId3, v);
 	msg::emit(msgId2, 4.2f, "hurrah!", 100);
-
 	msg::remove(msgId2, this);
 
-	msg::emit(msgId2, 4.2f, "hurrah!", 100);
-	msg::emit(msgId3, v);
-
 	gWin::createWin("con", 10, 10, 200, 300);
-
-	//imRendr::setFont("smallSysFont");
 }
 
-void CHexWorld::msgCB(int id) {
-	int x = id;
-	int b = 0;
 
-}
-
-void CHexWorld::msgCB2( glm::vec3& v) {
-	int x = 0;
-
-
-}
-
-void CHexWorld::msgCB3(float y) {
-	float test = y;
-	float b = 0;
-}
-
-//void CHexWorld::msgCB4(float y,  const std::string& str, int n) {
 void CHexWorld::msgCB4(float y, const char* str, int n) {
 	float test = y;
 	float b = 0;
@@ -108,17 +66,30 @@ void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
 
 /** Create a map using the data in the given Tig file. */
 void CHexWorld::makeMap(ITigObj* tigMap) {
-	do {
-		map = mapMaker.makeMap(tigMap);
-		if (!map->isValidPath(CHex(-13, 5, 8), CHex(13, -4, -9))) {
-			delete map;
-		}
-		else break;
-	} while (true);
 
-	map->setMessageHandlers();
+	//map = mapMaker.makeMap(tigMap);
+
+	map = new CGameHexArray();
+	map->init(22,22);
+
+	glm::i32vec2 tL(1);
+	glm::i32vec2 bR = { 21,21 };
+
+	for (int y = 0; y < 22; y++) {
+		for (int x = 0; x < 22; x++) {
+			if (x < tL.x || x >= bR.x || y < tL.y || y >= bR.y)
+				map->getHexOffset(x, y).content = 2;
+			else
+				map->getHexOffset(x, y).content = 1;
+			//hexArray->getHexOffset(x, y).fogged = 1.0f;
+			//map->setFog(x, y, 1.0f);
+		}
+	}
+
+	map->setMessageHandlers(); //TO DO: get rid of!
 
 	hexRendr2.setMap(map);
+	mapEdit.setMap(map);
 }
 
 void CHexWorld::deleteMap() {
@@ -130,13 +101,6 @@ void CHexWorld::deleteMap() {
 
 /** Required each time we restart. */
 void CHexWorld::startGame() {
-
-	//auto begin = std::chrono::high_resolution_clock::now();
-	//for (int x = 0; x < 100000; x++) {
-	//	worldSpaceToHex3(glm::vec3(x * 3.146f, x * -2.455, 0));
-	//}
-	//auto end = std::chrono::high_resolution_clock::now();
-	//auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
 
 	gWin::setFont("con", "mainFnt");
 
@@ -152,8 +116,6 @@ void CHexWorld::startGame() {
 	//gWin::addText("con", "\n9");
 
 
-	liveLog << "\nAny text here?";
-
 	hexRendr2.setMap(map);
 	world.setMap(map);
 	physics.removeEntities();
@@ -164,20 +126,11 @@ void CHexWorld::startGame() {
 	//create new player object
 	playerObj = new CPlayerObject();
 	playerObj->setLineModel("player");
-	//map->addEntity(TEntity(playerObj), map->findRandomHex(true));
 	map->addEntity(TEntity(playerObj), CHex(-6,9,-3));
-
-
-
 
 	world.player = playerObj;
 
-
-	//playerObj->setTigObj(vm->getObject("player"));
-
-	//subscribe(playerObj);
-	playerObj->updateViewField();
-	//alertEntitiesInPlayerFov();
+	playerObj->updateViewField(); //TO DO: causes errrors look into pron needs reinventing
 
 	physics.add(playerObj);
 
@@ -188,10 +141,6 @@ void CHexWorld::startGame() {
 
 	if (hexCursor == NULL)
 		createCursorObject();
-	//hexCursor->visibleToPlayer = true;
-
-	//CSendText msg(combatLog, "", true);
-	//send(msg);
 
 	map->updateBlocking();
 
@@ -213,9 +162,24 @@ void CHexWorld::moveCamera(glm::vec3& direction) {
 
 /** Called when a key is pressed. */
 void CHexWorld::onKeyDown(int key, long mod) {
+
+
+
+
 	//temp user interface stuff!
 
 	msg::emit(msg::tmpMsg, key); //temp!
+
+	if (editMode) { //editmode key operations
+		if (key == 'R') {
+			mapEdit.createRing();
+		}
+
+		if (key == GLFW_KEY_ENTER) {
+			mapEdit.addEdit();
+		}
+		return;
+	}
 
 
 
@@ -244,6 +208,15 @@ void CHexWorld::onKeyDown(int key, long mod) {
 }
 
 void CHexWorld::onMouseWheel(float delta, int key) {
+	if (editMode) {
+		if (!mapEdit.mouseWheel(delta,key))
+			hexRendr2.dollyCamera(delta);
+
+		return;
+	}
+
+
+
 	if (key == GLFW_KEY_LEFT_SHIFT) {
 		hexRendr2.pitchCamera(delta);
 	}
@@ -284,14 +257,15 @@ void CHexWorld::draw() {
 
 	hexRendr2.drawFloorPlan();
 
+	if (editMode)
+		return;
+
 
 	//for (auto entity : entitiesToDraw)
 	for (auto& entity : map->entities)
 			entity->draw();
 
 
-	//for (auto sprite : world.sprites)
-	//	sprite->draw();
 
 	//hexRendr2.drawSightLine(playerObj->worldPos, mouseWorldPos);
 
@@ -341,6 +315,11 @@ void CHexWorld::update(float dT) {
 
 	world.update(dT);
 
+	if (map->mapUpdated) {
+		hexRendr2.setMap(map); //temp to refresh map
+		map->mapUpdated = false;
+	}
+
 }
 
 
@@ -365,6 +344,27 @@ void CHexWorld::toggleView() {
 		setViewMode(devView);
 	else
 		setViewMode(gameView);
+}
+
+void CHexWorld::toggleEditMode() {
+	editMode = !editMode;
+	if (editMode) {
+		gWin::hideWin("con");
+	}
+	else {
+		gWin::showWin("con");
+	}
+	
+}
+
+void CHexWorld::onUndo() {
+	if (editMode)
+		mapEdit.onUndo();
+}
+
+void CHexWorld::onRedo() {
+	if (editMode)
+		mapEdit.onRedo();
 }
 
 
@@ -410,13 +410,20 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	COnCursorNewHex msg;
 	msg.newHex = mouseHex;
 	notify(msg);
+
+	if (editMode)
+		mapEdit.onNewMouseHex(mouseHex);
+
 }
 
 
 
 
 void CHexWorld::onFireKey(bool pressed) {
-	playerObj->onFireKey(pressed);
+	if (editMode)
+		mapEdit.addEdit();
+	else
+		playerObj->onFireKey(pressed);
 }
 
 
@@ -470,12 +477,12 @@ int CHexWorld::tigCall(int memberId) {
 
 
 /** Make psuedo random dice roll and return the result. */
-void CHexWorld::onDiceRoll(CDiceRoll& msg) {
-	std::uniform_int_distribution<int> d{ 1,msg.die };
-	msg.result =  d(randEngine);
-	if (msg.die2 != 0)
-		msg.result2 = d(randEngine);
-}
+//void CHexWorld::onDiceRoll(CDiceRoll& msg) {
+//	std::uniform_int_distribution<int> d{ 1,msg.die };
+//	msg.result =  d(randEngine);
+//	if (msg.die2 != 0)
+//		msg.result2 = d(randEngine);
+//}
 
 //void CHexWorld::onPlayerNewHex(CPlayerNewHex& msg) {
 //	//notify(msg);
@@ -493,7 +500,7 @@ void CHexWorld::onDiceRoll(CDiceRoll& msg) {
 
 
 void CHexWorld::updateCameraPosition() {
-	if (viewMode == gameView && !world.player->dead)
+	if (viewMode == gameView && !world.player->dead && !editMode)
 		hexRendr2.followTarget(playerObj->worldPos);
 	else
 		hexRendr2.attemptScreenScroll(/*mainApp->getMousePos()*/mousePos, dT);

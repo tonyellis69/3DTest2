@@ -65,6 +65,35 @@ void C3DtestApp::onStart() {
 /** Called every frame, provides a place for the user to check input where constant feedback is required. */
 void C3DtestApp::keyCheck() {
 	if (appMode == hexMode) {
+		if (hexWorld.editMode) { //edit-mode keystrokes:
+			if (keyNow('W')) {
+
+				hexWorld.moveCamera(glm::vec3{ 0, 1, 0 });
+			}
+			else if (keyNow('S')) {
+				hexWorld.moveCamera(glm::vec3{ 0, -1, 0 });
+			}
+			else if (keyNow('A')) {
+				hexWorld.moveCamera(glm::vec3{ -1,0,0 });
+			}
+			else if (keyNow('D')) {
+				hexWorld.moveCamera(glm::vec3{ 1,0,0 });
+			}
+
+
+
+			return;
+
+		}
+
+
+
+
+
+
+
+		//in-game key strokes:
+
 		if (keyNow(GLFW_KEY_LEFT_CONTROL)) {
 			if (keyNow('W')) {
 
@@ -129,6 +158,8 @@ void C3DtestApp::keyCheck() {
 /** Triggered *when* a key is pressed, not while it is held down. This is not 'whileKeyDown'. */
 void C3DtestApp::onKeyDown(int key, long mod) {
 	if (appMode == hexMode) {
+		if (key == GLFW_KEY_F1)
+			hexWorld.toggleEditMode();
 
 		if (key == 'W')
 			moveKeyDown |= upKey;
@@ -164,7 +195,7 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 		}
 
 
-		if (key == GLFW_KEY_ENTER)
+		if (key == GLFW_KEY_ENTER && !hexWorld.editMode)
 			hexWorld.enterKeyDown();
 
 		if (key == 'V') {
@@ -174,6 +205,13 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 		if (key == GLFW_KEY_SPACE) {
 			Paused = !Paused;
 			world.togglePause();
+		}
+
+		if (key == 'Z' && mod == GLFW_MOD_CONTROL) {
+			hexWorld.onUndo();
+		}
+		if (key == 'Y' && mod == GLFW_MOD_CONTROL) {
+			hexWorld.onRedo();
 		}
 
 		hexWorld.onKeyDown(key, mod);

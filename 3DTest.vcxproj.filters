@@ -16,6 +16,9 @@
     <Filter Include="Source Files\physics">
       <UniqueIdentifier>{21f896ac-7957-4119-a723-2fc7c0c87107}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\mapEdit">
+      <UniqueIdentifier>{d6a52ab1-7061-49b4-abf9-f091e66ca610}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp">
@@ -89,6 +92,12 @@
     </ClCompile>
     <ClCompile Include="src\entity.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mapEdit\mapEdit.cpp">
+      <Filter>Source Files\mapEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mapEdit\mapPatch.cpp">
+      <Filter>Source Files\mapEdit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +184,12 @@
     </ClInclude>
     <ClInclude Include="src\entity.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mapEdit\mapEdit.h">
+      <Filter>Source Files\mapEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mapEdit\mapPatch.h">
+      <Filter>Source Files\mapEdit</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

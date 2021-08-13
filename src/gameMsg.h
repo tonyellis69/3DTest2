@@ -53,15 +53,15 @@ public:
 	CTurnBegin() {}
 };
 
-class CDiceRoll : public CMsg {
-public:
-	CDiceRoll(int d, int d2=0) : die(d), die2(d2) {}
-
-	int die;
-	int die2;
-	int result;
-	int result2 = 0;
-};
+//class CDiceRoll : public CMsg {
+//public:
+//	CDiceRoll(int d, int d2=0) : die(d), die2(d2) {}
+//
+//	int die;
+//	int die2;
+//	int result;
+//	int result2 = 0;
+//};
 
 class CLineOfSight : public CMsg {
 public:

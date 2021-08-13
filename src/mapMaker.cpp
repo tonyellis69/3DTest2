@@ -17,18 +17,19 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 
 	CGameHexArray* map = createMap();
 
-	//add robots
-	ITigObj* pRobot = vm->getObject(tig::botA);;
 
 	map->updateBlocking();
 
-	for (int x = 0; x < 8; x++) {
+
+
+	/*
+	//add robots
+	ITigObj* pRobot = vm->getObject(tig::botA);;
+
+	for (int x = 0; x < 20; x++) {
 		auto robotM = std::make_shared<CRobot>();
 		robotM->setLineModel("robot");
 		map->addEntity(robotM, map->findRandomHex(true));
-		//map->addEntity(robotM, CHex(-2,-4,6));
-		//robotM->setTigObj(pRobot);
-		//map->testBot = robotM.get();
 		robotM->tmpId = x;
 	}
 
@@ -38,7 +39,6 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 		medkit->itemType = "medkit";
 		medkit->description = "Health replenishment in a pristine box.";
 		map->addEntity(medkit, map->findRandomHex(true));
-		//medkit->setTigObj(vm->getObject(tig::CItem) ); //scrap!!!
 	}
 
 
@@ -48,14 +48,10 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 		dummyItem->itemType = "dummyItem";
 		dummyItem->description = "Just a worthless placeholder, alas.";
 		map->addEntity(dummyItem, map->findRandomHex(true));
-		//dummyItem->setTigObj(vm->getObject(tig::CItem)); //scrap!!!
 	}
 
-
-
-	//add items & door
 	tempPopulateMap();
-
+	*/
 
 	return map;
 }

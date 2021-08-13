@@ -39,6 +39,8 @@
 
 #include "renderer/drawText.h" // temp for testing
 
+#include "mapEdit/mapEdit.h"
+
 enum TViewMode {gameView, devView};
 enum TMsgType {msgId,msgId2,msgId3};
   
@@ -48,10 +50,6 @@ class CHexWorld :  public CGameEventSubject,
 	public CMessenger, public CTigObjptr {
 public:
 	CHexWorld();
-	void msgCB(int id);
-	void msgCB2( glm::vec3& v);
-	void msgCB3(float y);
-	//void msgCB4(float y, const std::string& str, int n);
 	void msgCB4(float y, const char* str, int n);
 	void setVM(Ivm* pVM);
 	void addMesh(const std::string& name, const std::string& fileName);
@@ -68,17 +66,18 @@ public:
 	void draw();
 	void setAspectRatio(glm::vec2& ratio);
 	void update(float dt);
-
 	void onCtrlLMouse();
-
 	void enterKeyDown();
-
 	void toggleView();
+	void toggleEditMode();
+	void onUndo();
+	void onRedo();
 
 	CGUIlabel2* hexPosLbl;
 
 	CDrawText drawTxtTest; //temp!
 
+	bool editMode = false;
 
 private:
 
@@ -95,7 +94,7 @@ private:
 //	void onRemoveEntity(CRemoveEntity& msg);
 //	void onCreateGroupItem(CCreateGroupItem& msg);
 
-	void onDiceRoll(CDiceRoll& msg);
+	//void onDiceRoll(CDiceRoll& msg);
 
 	//void onPlayerNewHex(CPlayerNewHex& msg);
 
@@ -154,6 +153,8 @@ private:
 	TViewMode viewMode; ///<Camera mode, etc.
 
 	CHexPhysics physics;
+
+	CMapEdit mapEdit;
 
 };
 

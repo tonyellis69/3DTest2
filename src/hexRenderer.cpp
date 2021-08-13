@@ -102,15 +102,9 @@ void CHexRenderer::drawFloorPlan() {
 
 	}
 
-
-
-
-	
-
-
 	renderer.setShader(hexLineShader);
-	glUniform1i(hFogTexUniform, 0);
-
+	glUniform1i(hFogTexUniform, 1); //!!!!!0 to turn back on
+ 
 	renderer.setShader(visibilityShader);
 	glUniform1i(hEffectsTexUniformv, 0);
 
@@ -142,7 +136,7 @@ void CHexRenderer::drawPath(THexList* path, glm::vec4& pathStartColour, glm::vec
 	renderer.setShader(lineShaderBasic);
 	glm::mat4 mvp(1);
 	float inc = 1.0 / path->size();  float t = 0;
-	for (auto hex : *path) {
+	for (auto& hex : *path) {
 		glm::mat4 worldPos = glm::translate(glm::mat4(1), hexArray->getWorldPos(hex));
 		mvp = camera.clipMatrix * worldPos;
 		lineShaderBasic->setShaderValue(hMVPb, mvp);

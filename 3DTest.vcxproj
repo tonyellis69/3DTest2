@@ -133,6 +133,8 @@
     <ClCompile Include="src\hexWorld.cpp" />
     <ClCompile Include="src\localHotList.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\mapEdit\mapEdit.cpp" />
+    <ClCompile Include="src\mapEdit\mapPatch.cpp" />
     <ClCompile Include="src\mapMaker.cpp" />
     <ClCompile Include="src\missile.cpp" />
     <ClCompile Include="src\physics\hexPhysics.cpp" />
@@ -162,6 +164,8 @@
     <ClInclude Include="src\hexRenderer.h" />
     <ClInclude Include="src\hexWorld.h" />
     <ClInclude Include="src\localHotList.h" />
+    <ClInclude Include="src\mapEdit\mapEdit.h" />
+    <ClInclude Include="src\mapEdit\mapPatch.h" />
     <ClInclude Include="src\mapMaker.h" />
     <ClInclude Include="src\missile.h" />
     <ClInclude Include="src\physics\hexPhysics.h" />

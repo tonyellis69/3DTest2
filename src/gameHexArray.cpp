@@ -3,6 +3,7 @@
 #include <unordered_set>
 
 #include "utils/log.h"
+#include "utils/random.h"
 
 #include "intersect.h"
 
@@ -201,9 +202,11 @@ bool CGameHexArray::lineOfSight(CHex& start, CHex& end) {
 CHex CGameHexArray::findRandomHex(bool unblocked) {
 	CHex hex;
 	do {
-		CDiceRoll msg(width, height);
-		send(msg);
-		hex = indexToCube(msg.result, msg.result2);
+		//CDiceRoll msg(width, height);
+		//send(msg);
+		int w = rnd::dice(width);
+		int h = rnd::dice(height);
+		hex = indexToCube(w, h);
 		if (hex == CHex(0, -3, 3))
 			int b = 9;
 	} while (unblocked && getHexCube(hex).blocks != blocksNone);
@@ -305,12 +308,12 @@ void CGameHexArray::onFindViewField2(CCalcVisionField& msg) {
 /** Clear the fog-of-war wherever the given viewfield indicates a now-visible hex. 
 	Set visibility to zero where a hex has now become non-visible. */
 void CGameHexArray::updateVisibility(THexList& visibleHexes, THexList& unvisibledHexes) {
-	for (auto visibleHex : visibleHexes) {
+	for (auto& visibleHex : visibleHexes) {
 		setFog(visibleHex, 0);
 		setVisibility(visibleHex, 1.0f);
 	}
 
-	for (auto unvisibledHex : unvisibledHexes) {
+	for (auto& unvisibledHex : unvisibledHexes) {
 		setVisibility(unvisibledHex, 0.5f);
 	}
 }
@@ -350,6 +353,11 @@ CHex CGameHexArray::getSegmentFirstHex(glm::vec3& A, glm::vec3& B) {
 
 /** Return all the hexes intersected by the segment A-B. */
 TIntersections CGameHexArray::getIntersectedHexes(const glm::vec3 & segA, const glm::vec3 & segB) {
+
+	return ::getIntersectedHexes(segA, segB);
+
+	//TO DO: scrap below if this works
+
 	TIntersections intersectedHexes;
 	CHex startHex = worldSpaceToHex(segA);
 	CHex endHex = worldSpaceToHex(segB);

@@ -20,7 +20,7 @@
 using TMapIt = std::unordered_multimap<CHex, CEntity*>::iterator;
 using TRange = std::pair<TMapIt, TMapIt>;
 //using TIntersections = std::unordered_map<CHex, glm::vec3, hex_hash>;
-using TIntersections = std::vector<std::pair<CHex, glm::vec3>>;
+
 
 /** Extend the hexArray to check for game entities when
 	pathfinding. */
@@ -89,6 +89,8 @@ public:
 	//CRobot* testBot;
 	//CRobot* testBot2;
 	//TO DO: temp!!
+
+	bool mapUpdated = false;
 
 
 private:

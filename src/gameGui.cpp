@@ -39,3 +39,11 @@ void gWin::setColour(const std::string& winName, glm::vec4& colour) {
 	windows[winName]->setColour(colour);
 }
 
+void gWin::hideWin(const std::string& winName) {
+	windows[winName]->setVisible(false);
+}
+
+void gWin::showWin(const std::string& winName) {
+	windows[winName]->setVisible(true);
+}
+
