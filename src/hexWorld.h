@@ -58,7 +58,8 @@ public:
 	void startGame();
 	void moveCamera(glm::vec3& direction);
 
-	void onFireKey(bool released);
+	void onFireKey(bool released, int mods);
+	void onRightKey(bool released);
 	void onKeyDown(int key, long mod);
 	void onMouseWheel(float delta, int key);
 	void onMouseMove(int x, int y, int key);

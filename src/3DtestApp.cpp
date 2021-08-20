@@ -260,11 +260,18 @@ void C3DtestApp::onMouseButton(int button, int action, int mods) {
 	if (appMode == hexMode) {
 		if (button == GLFW_MOUSE_BUTTON_LEFT) {
 			if (action == GLFW_PRESS)
-				hexWorld.onFireKey(true);
+				hexWorld.onFireKey(true,mods);
 			else
-				hexWorld.onFireKey(false);
+				hexWorld.onFireKey(false,mods);
 		}
 
+
+		if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+			if (action == GLFW_PRESS)
+				hexWorld.onRightKey(true);
+			else
+				hexWorld.onRightKey(false);
+		}
 
 	}
 };

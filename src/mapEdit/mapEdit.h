@@ -12,7 +12,11 @@ public:
 	bool mouseWheel(float delta, int key);
 	void onNewMouseHex(CHex& mouseHex);
 	void createRing();
+	void createParagram();
+	void createRect();
 	void addEdit();
+	void onRightClick();
+	void onCtrlLClick();
 	void onUndo();
 	void onRedo();
 

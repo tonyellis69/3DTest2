@@ -70,13 +70,13 @@ void CHexWorld::makeMap(ITigObj* tigMap) {
 	//map = mapMaker.makeMap(tigMap);
 
 	map = new CGameHexArray();
-	map->init(22,22);
+	map->init(32,32);
 
 	glm::i32vec2 tL(1);
-	glm::i32vec2 bR = { 21,21 };
+	glm::i32vec2 bR = { 31,31 };
 
-	for (int y = 0; y < 22; y++) {
-		for (int x = 0; x < 22; x++) {
+	for (int y = 0; y < 32; y++) {
+		for (int x = 0; x < 32; x++) {
 			if (x < tL.x || x >= bR.x || y < tL.y || y >= bR.y)
 				map->getHexOffset(x, y).content = 2;
 			else
@@ -175,9 +175,15 @@ void CHexWorld::onKeyDown(int key, long mod) {
 			mapEdit.createRing();
 		}
 
-		if (key == GLFW_KEY_ENTER) {
-			mapEdit.addEdit();
+		if (key == 'P') {
+			mapEdit.createParagram();
 		}
+
+		if (key == 'C') {
+			mapEdit.createRect();
+		}
+
+
 		return;
 	}
 
@@ -419,11 +425,20 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 
 
 
-void CHexWorld::onFireKey(bool pressed) {
-	if (editMode)
-		mapEdit.addEdit();
+void CHexWorld::onFireKey(bool pressed, int mods) {
+	if (editMode && !pressed) {
+		if (mods == GLFW_MOD_CONTROL)
+			mapEdit.onCtrlLClick();
+		else
+			mapEdit.addEdit();
+	}
 	else
 		playerObj->onFireKey(pressed);
+}
+
+void CHexWorld::onRightKey(bool released) {
+	if (editMode)
+		mapEdit.onRightClick();
 }
 
 
