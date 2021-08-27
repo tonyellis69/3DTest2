@@ -9,6 +9,8 @@
 
 #include "explosion.h"
 
+#include "spawner.h"
+
 CMissile::CMissile() {
 	lineModel = hexRendr2.getLineModel("bolt");
 }
@@ -71,7 +73,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 	//first, collect any new unique hexes that we've intersected
 	CHex leadingPointHex = worldSpaceToHex(leadingPoint);
 	if (leadingPointHex != lastLeadingPointHex) { //we've moved at least one hex on
-		intersectedHexes = world.map->getIntersectedHexes(leadingPointLastHex, leadingPoint);
+		intersectedHexes = getIntersectedHexes(leadingPointLastHex, leadingPoint);
 	}
 
 	//Check if we've collided with a robot in one of those hexes
@@ -113,10 +115,6 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 }
 
 void CMissile::spawnExplosion() {
-	auto explosion = std::make_shared<CExplosion>(1.0f);
-
-	//explosion->setPosition(collisionPt);
-	explosion->worldPos = collisionPt;
-	world.addSprite(explosion);
+	spawn::explosion("explosion", collisionPt, 1.0f);
 }
 

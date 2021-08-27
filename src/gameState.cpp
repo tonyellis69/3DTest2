@@ -15,12 +15,6 @@ void CGameState::onNotify(COnCursorNewHex& msg) {
 	cursorPos = msg.newHex;
 }
 
-
-/** Returns true if an entity can't move to this adjacent hex.*/
-bool CGameState::isBlocked(CHex& pos, CHex& dest) {
-	return map->fromToBlocked(pos, dest);
-}
-
 void CGameState::addSprite(std::shared_ptr<CEntity> sprite) {
 	//addSpritesList.push_back(sprite);
 	map->entities.push_back(sprite);

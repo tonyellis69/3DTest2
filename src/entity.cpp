@@ -16,14 +16,17 @@ CEntity::CEntity() {
 
 /** Set position using hex cube coordinates. */
 void CEntity::setPosition(CHex& hex) {
-	hexPosition = hex;
+	setPosition(cubeToWorldSpace(hex));
+}
+//TO DO: phase out the old hex-based usage!
+
+void CEntity::setPosition(glm::vec3& worldPos) {
+	hexPosition = worldSpaceToHex(worldPos);
 	destination = hexPosition;
 
 	glm::i32vec2 axial = hexPosition.getAxial();
 
-	worldPos.x = hexWidth * axial.x + hexWidth / 2.0f * axial.y;
-	worldPos.y = -3.0f / 2.0f * axial.y;
-	worldPos.z = 0;
+	this->worldPos = worldPos;
 
 	buildWorldMatrix();
 }
@@ -85,7 +88,7 @@ void CEntity::updatePos(glm::vec3& dPos) {
 	buildWorldMatrix();
 	CHex newHexPosition = worldSpaceToHex(worldPos);
 	if (newHexPosition != hexPosition) {
-		world.map->movedTo(this, hexPosition, newHexPosition);
+		//world.map->movedTo(this, hexPosition, newHexPosition);
 		hexPosition = newHexPosition;
 		onMovedHex();
 	}

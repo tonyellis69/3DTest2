@@ -13,6 +13,8 @@
 
 #include "utils/random.h"
 
+#include "spawner.h"
+
 
 const float rad360 = M_PI * 2;
 const float rad60 = M_PI / 3;
@@ -20,6 +22,7 @@ const float rad45 = M_PI / 4;
 const float rad120 = rad360 / 3;
 
 CRobot::CRobot() {
+	lineModel = hexRendr2.getLineModel("robot");
 	isRobot = true;
 	physics.invMass = 1.0f / 80.0f; //temp!
 }
@@ -210,7 +213,7 @@ bool CRobot::hasLineOfSight(CEntity* target) {
 }
 
 bool CRobot::hasLineOfSight(const glm::vec3& p) {
-	TIntersections intersectedHexes = world.map->getIntersectedHexes(worldPos, p);
+	TIntersections intersectedHexes = getIntersectedHexes(worldPos, p);
 	for (auto& hex : intersectedHexes) {
 		if (world.map->getHexCube(hex.first).content != emptyHex)
 			return false;
@@ -246,15 +249,12 @@ bool CRobot::inFov(CEntity* target) {
 //}
 
 void CRobot::fireMissile(CEntity* target) {
-	auto missile = std::make_shared<CMissile>();
-
 	glm::vec3 targetVec = target->worldPos - worldPos;
 	float targetAngle = glm::orientedAngle(glm::normalize(targetVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 
-	missile->setPosition(worldPos, targetAngle);
+	auto missile = (CMissile*) spawn::missile("missile", worldPos, targetAngle);
 	missile->setOwner(this);
 	missile->setSpeed(7.0f);
-	world.addSprite(missile);
 
 	snd::play("shoot");
 }
@@ -389,7 +389,7 @@ void CRobot::approachDestination() {
 	if (dist < destSlowdownRange) { //time to slow down
 
 		if (dist > lastDestinationDist) { //overshot!
- 			physics.velocity = { 0, 0, 0 };
+			physics.velocity = { 0, 0, 0 };
 			reachedDestination = true;
 			return;
 		}

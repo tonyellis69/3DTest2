@@ -22,11 +22,6 @@ public:
 
 
 private:
-	void tmpaddBlocks();
-
-	glm::i32vec2 randomFreeHex();
-
-	glm::i32vec2 randomAdjacentHex(glm::i32vec2& hex);
 
 	bool randomBlockWalk(glm::i32vec2 hex, int numSteps, int depth);
 

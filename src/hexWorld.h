@@ -59,7 +59,7 @@ public:
 	void moveCamera(glm::vec3& direction);
 
 	void onFireKey(bool released, int mods);
-	void onRightKey(bool released);
+	void onRightKey(bool released, int mods);
 	void onKeyDown(int key, long mod);
 	void onMouseWheel(float delta, int key);
 	void onMouseMove(int x, int y, int key);
@@ -73,6 +73,7 @@ public:
 	void toggleEditMode();
 	void onUndo();
 	void onRedo();
+	void onSpawn(const std::string& name, TEntity entity);
 
 	CGUIlabel2* hexPosLbl;
 

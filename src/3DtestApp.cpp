@@ -268,9 +268,9 @@ void C3DtestApp::onMouseButton(int button, int action, int mods) {
 
 		if (button == GLFW_MOUSE_BUTTON_RIGHT) {
 			if (action == GLFW_PRESS)
-				hexWorld.onRightKey(true);
+				hexWorld.onRightKey(true, mods);
 			else
-				hexWorld.onRightKey(false);
+				hexWorld.onRightKey(false, mods);
 		}
 
 	}
@@ -463,6 +463,8 @@ bool C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 				keyState = GLFW_KEY_LEFT_SHIFT;
 			if (keyNow(GLFW_KEY_LEFT_CONTROL))
 				keyState = GLFW_KEY_LEFT_CONTROL;
+			if (keyNow(GLFW_KEY_LEFT_ALT))
+				keyState = GLFW_KEY_LEFT_ALT;
 			hexWorld.onMouseWheel(yoffset,keyState);
 			handled = true; //cheeky
 		}

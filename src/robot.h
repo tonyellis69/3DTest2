@@ -49,7 +49,7 @@ private:
 
 	float dT;
 
-	TRobotState state = robotWander3;// robotLightSleep;// robotWander3;// 
+	TRobotState state = robotWander3;// robotLightSleep;// robotLightSleep;// robotWander3;// 
 
 	float meleeHitCooldown = 0;
 	float missileCooldown = 0.0f;

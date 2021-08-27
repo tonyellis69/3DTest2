@@ -141,6 +141,7 @@
     <ClCompile Include="src\physics\phys.cpp" />
     <ClCompile Include="src\playerHexObj.cpp" />
     <ClCompile Include="src\robot.cpp" />
+    <ClCompile Include="src\spawner.cpp" />
     <ClCompile Include="src\viewField.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +174,7 @@
     <ClInclude Include="src\playerHexObj.h" />
     <ClInclude Include="src\powerUser.h" />
     <ClInclude Include="src\robot.h" />
+    <ClInclude Include="src\spawner.h" />
     <ClInclude Include="src\viewField.h" />
   </ItemGroup>
   <ItemGroup>

@@ -29,67 +29,12 @@ public:
 };
 
 
-
-
-class CGetTravelPath : public CMsg {
-public:
-	CGetTravelPath(CHex& A, CHex& B, bool fog = false) : start(A), end(B),
-	fogOn(fog) {}
-	CHex start;
-	CHex end;
-	bool fogOn;
-	THexList travelPath;
-};
-
-class CGetLineEnd : public CMsg {
-public:
-	CGetLineEnd(CHex& A, CHex& B) : start(A), end(B) {}
-	CHex start;
-	CHex end;
-};
-
 class CTurnBegin : public CMsg {
 public:
 	CTurnBegin() {}
 };
 
-//class CDiceRoll : public CMsg {
-//public:
-//	CDiceRoll(int d, int d2=0) : die(d), die2(d2) {}
-//
-//	int die;
-//	int die2;
-//	int result;
-//	int result2 = 0;
-//};
 
-class CLineOfSight : public CMsg {
-public:
-	CLineOfSight(CHex& s, CHex& e) : start(s), end(e) {}
-
-	CHex start;
-	CHex end;
-	bool result = false;
-};
-
-class CCalcVisionField : public CMsg {
-public:
-	CCalcVisionField(CHex& a, THexList& r, bool obv = false) :
-		apex(a), perimeterHexes(&r), obsessive(obv) {}
-
-	CHex apex;
-	THexList* perimeterHexes;
-	THexList visibleHexes;
-	bool obsessive;
-};
-
-class CRandomHex : public CMsg {
-public:
-	CRandomHex(bool u = false) : unblocked(u) {}
-
-	CHex hex;
-	bool unblocked;
-};
 
 class CEntity;
 class CActorMovedHex : public CMsg {

@@ -9,16 +9,21 @@
 class CMapEdit {
 public:
 	void setMap(CGameHexArray* map);
-	bool mouseWheel(float delta, int key);
+	bool resize(float delta, int key);
 	void onNewMouseHex(CHex& mouseHex);
 	void createRing();
 	void createParagram();
 	void createRect();
-	void addEdit();
+	void createTri();
+	void onLeftClick();
 	void onRightClick();
+	void onCtrlRClick();
 	void onCtrlLClick();
 	void onUndo();
 	void onRedo();
+	void save();
+	void load();
+	void addRobot(glm::vec3& mousePos);
 
 private:
 	void updateMap();
@@ -33,3 +38,5 @@ private:
 	CHex cursorHex;
 
 };
+
+#define GLFW_KEY_LEFT_ALT           342

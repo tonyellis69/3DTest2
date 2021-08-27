@@ -17,42 +17,6 @@ CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
 
 	CGameHexArray* map = createMap();
 
-
-	map->updateBlocking();
-
-
-
-	/*
-	//add robots
-	ITigObj* pRobot = vm->getObject(tig::botA);;
-
-	for (int x = 0; x < 20; x++) {
-		auto robotM = std::make_shared<CRobot>();
-		robotM->setLineModel("robot");
-		map->addEntity(robotM, map->findRandomHex(true));
-		robotM->tmpId = x;
-	}
-
-	for (int x = 0; x < 6; x++) {
-		auto medkit = std::make_shared<CItem>();
-		medkit->setLineModel("medkit");
-		medkit->itemType = "medkit";
-		medkit->description = "Health replenishment in a pristine box.";
-		map->addEntity(medkit, map->findRandomHex(true));
-	}
-
-
-	for (int x = 0; x < 6; x++) {
-		auto dummyItem = std::make_shared<CItem>();
-		dummyItem->setLineModel("dummyItem");
-		dummyItem->itemType = "dummyItem";
-		dummyItem->description = "Just a worthless placeholder, alas.";
-		map->addEntity(dummyItem, map->findRandomHex(true));
-	}
-
-	tempPopulateMap();
-	*/
-
 	return map;
 }
 
@@ -111,9 +75,6 @@ CGameHexArray* CMapMaker::createMap() {
 		}
 
 
-		tmpaddBlocks();
-		hexArray->updateBlocking();
-
 		tmpaddDesks();
 
 	//} while (!hexArray->isValidPath(CHex(-13, 5, 8), CHex(13, -4, -9)));
@@ -121,46 +82,6 @@ CGameHexArray* CMapMaker::createMap() {
 	return hexArray;
 }
 
-
-void CMapMaker::tmpaddBlocks() {
-	int numBlocks = 20;
-	int numSteps = 4;// 5;
-
-	for (int block = 0; block < numBlocks; ) {
-		glm::i32vec2 hex = randomFreeHex();
-		randomBlockWalk(hex, numSteps, 0);
-		block++;	
-		
-	}
-
-}
-
-
-glm::i32vec2 CMapMaker::randomFreeHex() {
-	glm::i32vec2 randHex;
-	do {
-		randHex = { randX(randEngine),randY(randEngine) };
-	} while (!hexArray->isEmpty(randHex));
-	return randHex;
-}
-
-glm::i32vec2 CMapMaker::randomAdjacentHex(glm::i32vec2& hex) {
-	CHex cubePos = hexArray->indexToCube(hex.x,hex.y);
-	std::vector<CHex> freeNeighbours;
-	for (int h = 0; h < 6; h++) {
-		THexDir dir = (THexDir)h;
-		CHex neighbour = getNeighbour(cubePos, dir);
-		if (hexArray->getHexCube(neighbour).content == 1)
-			freeNeighbours.push_back(neighbour);
-	}
-	if (freeNeighbours.empty())
-		return { -1,-1 };
-
-	std::uniform_int_distribution<> randNeighbour(0, freeNeighbours.size() - 1);
-	CHex neighbour = freeNeighbours[randNeighbour(randEngine)];
-
-	return hexArray->cubeToIndex(neighbour);
-}
 
 bool CMapMaker::randomBlockWalk(glm::i32vec2 hex, int numSteps, int depth) {
 	//pick a pretty random random free direction

@@ -1,12 +1,27 @@
 #include "mapPatch.h"
 
+
+#include <cmath>
+#include <glm/gtx/rotate_vector.hpp>
+
 #include "utils/log.h"
 
 constexpr auto TAN30 = 0.57735026918962576450914878050196;
+constexpr float rad60 = M_PI / 3.0f;
+constexpr float rad90 = M_PI / 2.0f;
 
 
 void CMapPatch::onNewMouseHex(CHex& hex) {
 	offset = hex;
+}
+
+void CMapPatch::plotLine(CHex& A, CHex& B) {
+	if (A.z == B.z)
+		plotHorizLine(A, B);
+	else if (A.x == B.x || A.y == B.y)
+		plotDiagLine(A, B);
+	else
+		plotVertLine(A, B);
 }
 
 /** Draws a more aesthetically pleasing line without redundant hexes at the ends. */
@@ -43,7 +58,7 @@ void CMapPatch::plotDiagLine(CHex& A, CHex& B) {
 	if (A == B)
 		return;
 	THexDir dir = relativeDir(A, B);
-	int hDist = abs(A.z) + abs(B.z);
+	int hDist = abs(A.z - B.z);
 	CHex hex = A;
 	for (int n = 0; n < hDist; n++ ) {
 		hexes[hex].content = solidHex;
@@ -51,21 +66,27 @@ void CMapPatch::plotDiagLine(CHex& A, CHex& B) {
 	}
 }
 
+void CMapPatch::rotation() {
+	dir = dir % 6;
+	if (dir != 0) {
+		matrix = glm::rotate(rad60 * dir, glm::vec3(0, 0, 1));
+		for (auto& vert : v)
+			vert = matrix * glm::vec4(vert, 1);
+	}
+
+}
+
 
 
 
 CRingPatch::CRingPatch() {
-	scale = { radius,radius,0 };
 	BB = { hexWidth, hexRowHeight };
+	v.resize(6);
 }
 
 void CRingPatch::create() {
-	v.resize(6);
-
-	matrix = glm::scale(glm::mat4(1), scale);
 
 	//calculate verts
-	//float nearX = BB.x - (BB.y / hexRowHeight) * halfHexWidth;
 	float nearX = BB.x - (TAN30 * BB.y);
 	v[0] = { nearX, BB.y,0 };
 	v[1] = { BB.x, 0,0 };
@@ -74,22 +95,19 @@ void CRingPatch::create() {
 	v[4] = { -BB.x, 0,0 };
 	v[5] = { -nearX, BB.y,0 };
 
-
-	//transform verts
-	for (int n = 0; n < 6; n++) {
-		v[n] = (matrix  * glm::vec4(v[n],1.0f) );
-	}
+	rotation();
 
 	hexes.clear();
-	plotDiagLine(worldSpaceToHex(v[0]), worldSpaceToHex(v[1]));
-	plotDiagLine(worldSpaceToHex(v[1]), worldSpaceToHex(v[2]));
-	plotHorizLine(worldSpaceToHex(v[2]), worldSpaceToHex(v[3]));
-	plotDiagLine(worldSpaceToHex(v[3]), worldSpaceToHex(v[4]));
-	plotDiagLine(worldSpaceToHex(v[4]), worldSpaceToHex(v[5]));
-	plotHorizLine(worldSpaceToHex(v[5]), worldSpaceToHex(v[0]));
+
+	plotLine(worldSpaceToHex(v[0]), worldSpaceToHex(v[1]));
+	plotLine(worldSpaceToHex(v[1]), worldSpaceToHex(v[2]));
+	plotLine(worldSpaceToHex(v[2]), worldSpaceToHex(v[3]));
+	plotLine(worldSpaceToHex(v[3]), worldSpaceToHex(v[4]));
+	plotLine(worldSpaceToHex(v[4]), worldSpaceToHex(v[5]));
+	plotLine(worldSpaceToHex(v[5]), worldSpaceToHex(v[0]));
 }
 
-void CRingPatch::mouseWheel(float delta, int key){
+void CRingPatch::resize(float delta, int key){
 	if (key == GLFW_KEY_LEFT_CONTROL) {
 		BB.x += delta * hexWidth;
 	}
@@ -108,32 +126,24 @@ void CRingPatch::mouseWheel(float delta, int key){
 
 /** Patch to create a parallelogram. */
 void CParagramPatch::create() {
-	v.resize(4);
-
-	matrix = glm::scale(glm::mat4(1), scale);
-
-
 	float nearX = (BB.y * 4/3);
 	float adj = (TAN30 * BB.y * 2) ;
-	nearX = BB.x - adj;// nearX;
+	nearX = BB.x - adj;
 	v[0] = { BB.x, BB.y,0 };
 	v[1] = { nearX, -BB.y,0 };
 	v[2] = {-BB.x, -BB.y,0 };
 	v[3] = { -nearX, BB.y,0 };
 
-	//transform verts
-	for (int n = 0; n < 4; n++) {
-		v[n] = (matrix * glm::vec4(v[n], 1.0f));
-	}
-
 	hexes.clear();
-	plotDiagLine(worldSpaceToHex(v[0]), worldSpaceToHex(v[1]));
-	plotHorizLine(worldSpaceToHex(v[1]), worldSpaceToHex(v[2]));
-	plotDiagLine(worldSpaceToHex(v[2]), worldSpaceToHex(v[3]));
-	plotHorizLine(worldSpaceToHex(v[3]), worldSpaceToHex(v[0]));
+	rotation();
+
+	plotLine(worldSpaceToHex(v[0]), worldSpaceToHex(v[1]));
+	plotLine(worldSpaceToHex(v[1]), worldSpaceToHex(v[2]));
+	plotLine(worldSpaceToHex(v[2]), worldSpaceToHex(v[3]));
+	plotLine(worldSpaceToHex(v[3]), worldSpaceToHex(v[0]));
 }
 
-void CParagramPatch::mouseWheel(float delta, int key) {
+void CParagramPatch::resize(float delta, int key) {
 	if (key == GLFW_KEY_LEFT_CONTROL) {
 		BB.x += delta * hexWidth;
 	}
@@ -146,39 +156,25 @@ void CParagramPatch::mouseWheel(float delta, int key) {
 		BB.y += delta * hexRowHeight ;
 	}
 
-
 	create();
 }
 
 void CRectPatch::create() {
-	v.resize(4);
-
-	if (glm::length(scale) == 0)
-		scale = { 1,1,0 };
-
-	matrix = glm::scale(glm::mat4(1), scale);
-
-
 	v[0] = { BB.x,BB.y,0 };
 	v[1] = { BB.x,-BB.y,0 };
 	v[2] = { -BB.x,-BB.y,0 };
 	v[3] = {-BB.x,BB.y,0 };
 
-
-	//transform verts
-	for (int n = 0; n < 4; n++) {
-		v[n] = (matrix * glm::vec4(v[n], 1.0f));
-	}
-
+	rotation();
 	hexes.clear();
-	plotVertLine(worldSpaceToHex(v[0]), worldSpaceToHex(v[1]));
-	plotHorizLine(worldSpaceToHex(v[1]), worldSpaceToHex(v[2]));
-	plotVertLine(worldSpaceToHex(v[3]), worldSpaceToHex(v[2]));
-	plotHorizLine(worldSpaceToHex(v[3]), worldSpaceToHex(v[0]));
+	plotLine(worldSpaceToHex(v[0]), worldSpaceToHex(v[1]));
+	plotLine(worldSpaceToHex(v[1]), worldSpaceToHex(v[2]));
+	plotLine(worldSpaceToHex(v[3]), worldSpaceToHex(v[2]));
+	plotLine(worldSpaceToHex(v[3]), worldSpaceToHex(v[0]));
 }
 
 
-void CRectPatch::mouseWheel(float delta, int key) {
+void CRectPatch::resize(float delta, int key) {
 	if (key == GLFW_KEY_LEFT_CONTROL) {
 		BB.x += delta * hexWidth;
 	}
@@ -193,6 +189,15 @@ void CRectPatch::mouseWheel(float delta, int key) {
 	create();
 }
 
+void CRectPatch::rotation() {
+	dir = dir % 6;
+	if (dir != 0) {
+		matrix = glm::rotate(rad90 * dir, glm::vec3(0, 0, 1));
+		for (auto& vert : v)
+			vert = matrix * glm::vec4(vert, 1);
+	}
+}
+
 CLinePatch::CLinePatch(CHex& startHex) {
 	this->startHex = startHex;
 	endHex = startHex;
@@ -201,16 +206,8 @@ CLinePatch::CLinePatch(CHex& startHex) {
 
 void CLinePatch::create() {
 
-	matrix = glm::scale(glm::mat4(1), scale);
-
-
 	v[0] = cubeToWorldSpace(startHex);
 	v[1] = cubeToWorldSpace(endHex);
-
-	//transform verts
-	//for (int n = 0; n < 2; n++) {
-	//	v[n] = (matrix * glm::vec4(v[n], 1.0f));
-	//}
 
 	hexes.clear();
 	hexes[startHex].content = solidHex;
@@ -226,4 +223,35 @@ void CLinePatch::create() {
 void CLinePatch::onNewMouseHex(CHex& hex) {
 	endHex = hex;
 	create();
+}
+
+void CTriPatch::create() {
+	v[0] = {0 ,BB.y,0 };
+	v[1] = { BB.x,-BB.y,0 };
+	v[2] = { -BB.x,-BB.y,0 };
+
+	rotation();
+
+	hexes.clear();
+	plotLine(worldSpaceToHex(v[0]), worldSpaceToHex(v[1]));
+	plotLine(worldSpaceToHex(v[1]), worldSpaceToHex(v[2]));
+	plotLine(worldSpaceToHex(v[2]), worldSpaceToHex(v[0]));
+}
+
+void CTriPatch::resize(float delta, int key) {
+
+	BB.x += delta * (hexWidth * 2);
+	BB.y += delta * (hexRowHeight * 2);
+	
+
+	create();
+}
+
+void CTriPatch::rotation() {
+	dir = dir % 6;
+	if (dir != 0) {
+		matrix = glm::rotate(float(M_PI) * dir, glm::vec3(0, 0, 1));
+		for (auto& vert : v)
+			vert = matrix * glm::vec4(vert, 1);
+	}
 }

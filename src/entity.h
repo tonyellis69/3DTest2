@@ -29,6 +29,7 @@ public:
 	virtual void update(float dT) {}
 
 	void setPosition(CHex& hex);
+	void setPosition(glm::vec3& worldPos);
 	virtual void setLineModel(const std::string& name);
 	void setHexDirection(THexDir direction);
 	virtual void draw();

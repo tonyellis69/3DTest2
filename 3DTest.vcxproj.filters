@@ -99,6 +99,9 @@
     <ClCompile Include="src\mapEdit\mapPatch.cpp">
       <Filter>Source Files\mapEdit</Filter>
     </ClCompile>
+    <ClCompile Include="src\spawner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -190,6 +193,9 @@
     </ClInclude>
     <ClInclude Include="src\mapEdit\mapPatch.h">
       <Filter>Source Files\mapEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\spawner.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

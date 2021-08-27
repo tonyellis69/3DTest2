@@ -1,7 +1,15 @@
-
 #include "mapEdit.h"
 
+
+#include <cassert>
+
 #include "hex/hex.h"
+
+#include "utils/files.h"
+
+#include "../robot.h"
+
+#include "../spawner.h"
 
 
 void CMapEdit::setMap(CGameHexArray* map) {
@@ -13,11 +21,13 @@ void CMapEdit::setMap(CGameHexArray* map) {
 
 }
 
-bool CMapEdit::mouseWheel(float delta, int key) {
+bool CMapEdit::resize(float delta, int key) {
 	if (currentPatch == nullptr)
 		return false;
-
-	currentPatch->mouseWheel(delta, key);
+	if (key == GLFW_KEY_LEFT_ALT)
+		currentPatch->rotate(delta);
+	else
+		currentPatch->resize(delta, key);
 	updateMap();
 
 	return true;
@@ -55,27 +65,36 @@ void CMapEdit::createRect() {
 	updateMap();
 }
 
-/** Permanently add the current patch to the map. */
-void CMapEdit::addEdit() {
-	if (currentPatch == nullptr) {
-		workingArray.getHexCube(cursorHex).content = solidHex;
-		updateMap();
-		return;
-	}
+void CMapEdit::createTri() {
+	currentPatch = std::make_shared<CTriPatch>();
+	currentPatch->create();
+	currentPatch->setOffset(cursorHex);
+
+	updateMap();
+}
 
 
+void CMapEdit::onLeftClick() {
 	if (lastPatch != nullptr) {
 		for (auto& hex : lastPatch->hexes) {
 			workingArray.getHexCube(CHex(hex.first) + lastPatch->offset) = hex.second;
 		}
-
+		lastPatch = nullptr;
 	}
 
-	lastPatch = currentPatch;
-	lastPatch->setOffset(cursorHex);
-
-	currentPatch = nullptr;
-	redoPatch = nullptr;
+	if (currentPatch == nullptr) {
+		int hexVal = workingArray.getHexCube(cursorHex).content;
+		if (hexVal == emptyHex)
+			workingArray.getHexCube(cursorHex).content = solidHex;
+		else
+			workingArray.getHexCube(cursorHex).content = emptyHex;
+	}
+	else {
+		lastPatch = currentPatch;
+		lastPatch->setOffset(cursorHex);
+		currentPatch = nullptr;
+		redoPatch = nullptr;
+	}
 
 	updateMap();
 }
@@ -85,6 +104,28 @@ void CMapEdit::onRightClick() {
 		currentPatch = nullptr;
 		updateMap();
 	}
+}
+
+void CMapEdit::onCtrlRClick() {
+	if (currentPatch != nullptr) {
+
+		//first, add previous patch if any
+		if (lastPatch != nullptr) {
+			for (auto& hex : lastPatch->hexes) {
+				workingArray.getHexCube(CHex(hex.first) + lastPatch->offset) = hex.second;
+			}
+		}
+
+		//then use current patch as an eraser
+		for (auto& hex : currentPatch->hexes) {
+			workingArray.getHexCube(CHex(hex.first) + currentPatch->offset).content = emptyHex;
+		}
+	}
+
+	currentPatch = nullptr;
+	lastPatch = nullptr;
+	pMap->setArray(workingArray);
+	pMap->mapUpdated = true;
 }
 
 void CMapEdit::onCtrlLClick() {
@@ -106,6 +147,38 @@ void CMapEdit::onRedo() {
 	lastPatch = redoPatch;
 	redoPatch = nullptr;
 	updateMap();
+}
+
+void CMapEdit::save() {
+	std::string filename = file::getDataPath() + "mapTest.map";
+	std::ofstream saveFile(filename);
+	updateMap();
+	pMap->save(saveFile);
+	saveFile.close();
+}
+
+void CMapEdit::load() {
+	std::string filename = file::getDataPath() + "mapTest.map";
+	std::ifstream loadFile(filename);
+	assert(loadFile.is_open());
+	pMap->load(loadFile);
+	loadFile.close();
+	setMap(pMap);
+	pMap->mapUpdated = true;
+}
+
+void CMapEdit::addRobot(glm::vec3& mousePos) {
+	for (auto it = pMap->entities.begin(); it != pMap->entities.end();) {
+		TEntity entity = *it;
+		if (entity->isRobot &&
+			glm::distance(entity->worldPos, mousePos) < 0.5f) {
+			pMap->entities.erase(it);
+			return;
+		}
+		it++;
+	}
+
+	spawn::robot("robot", mousePos);
 }
 
 void CMapEdit::updateMap() {

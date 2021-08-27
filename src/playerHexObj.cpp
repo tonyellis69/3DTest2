@@ -18,6 +18,7 @@
 
 #include "gameGui.h"
 
+#include "spawner.h"
 
 
 
@@ -107,13 +108,12 @@ void CPlayerObject::onFireKey(bool pressed) {
 		return;
 
 	//hard-coded default action: launch a missile!
-	auto missile = std::make_shared<CMissile>();
-	missile->setPosition(worldPos, targetAngle);
+	//auto missile = std::dynamic_pointer_cast<CMissile> (spawn::missile("missile", worldPos, targetAngle));
+	auto missile = spawn::missile("missile", worldPos, targetAngle);
 	missile->setOwner(this);
+	//missile->setSpeed(7.0f);
 
-	world.addSprite(missile);
-
-//	snd::play("shoot");
+	snd::play("shoot");
 }
 
 
@@ -160,12 +160,13 @@ void CPlayerObject::onMovedHex() {
 	itemSelected = -1;
 	inventoryOn = false;
 	
-	auto [first, last] = world.map->getEntitiesAt(hexPosition);
-	for (auto& it = first; it != last; it++) {
-		if (it->second->isItem) {
-			tmpFloorItems.push_back((CItem*)(it->second));
-		}
-	}
+	//auto [first, last] = world.map->getEntitiesAt(hexPosition);
+	//for (auto& it = first; it != last; it++) {
+	//	if (it->second->isItem) {
+	//		tmpFloorItems.push_back((CItem*)(it->second));
+	//	}
+	//}
+	//!!!!TO DO: will need replacement
 
 	if (!tmpFloorItems.empty()) {
 		auto menuChar = '1';
