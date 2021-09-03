@@ -15,9 +15,9 @@ class CMapMaker {
 public:
 
 	void attachVM(Ivm* pVM);
-	CGameHexArray* makeMap(ITigObj* mapObj);
+	CMap* makeMap(ITigObj* mapObj);
 	void attachMapObject(ITigObj* mapObj);
-	CGameHexArray* createMap();
+	CMap* createMap();
 
 
 
@@ -38,7 +38,7 @@ private:
 
 	ITigObj* mapObj; ///<The Tig template for the map we're creating.
 	Ivm* vm; ///<Interface to the Tig VM.
-	CGameHexArray* hexArray;
+	CMap* hexArray;
 
 
 	std::mt19937 randEngine;

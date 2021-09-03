@@ -11,10 +11,10 @@
 
 /** A class encapsulating useful global state stuff everyone 
 	needs direct access to. */
-class CGameState : public CGameEventObserver  {
+class CGameState   {
 public:
 
-	void setMap(CGameHexArray* map);
+	void setMap(CMap* map);
 	void onNotify(COnCursorNewHex& msg);
 	bool isBlocked(CHex& pos, CHex& dest);
 	void addSprite(std::shared_ptr<CEntity> sprite);
@@ -24,10 +24,11 @@ public:
 	void togglePause();
 	void onPlayerDeath();
 
-	CHex cursorPos;
+	//CHex cursorPos;
 	THexList cursorPath;
-	CPlayerObject* player;
-	CGameHexArray* map;
+	CPlayerObject* player = nullptr;
+	//std::shared_ptr< CPlayerObject> player;
+	CMap* map;
 
 
 	bool paused = false;
@@ -36,4 +37,4 @@ private:
 
 };
 
-extern CGameState world;
+extern CGameState game;

@@ -7,6 +7,7 @@
 CExplosion::CExplosion(float size) {
 	this->size = size;
 	timeOut = glm::mix(timeOut, 0.3f,1 - size / 10.0f);
+	entityType = entExplode;
 }
 
 void CExplosion::update(float dT) {
@@ -14,7 +15,7 @@ void CExplosion::update(float dT) {
 
 	if (lifeTime > timeOut) {
 		//world.destroySprite(*this);
-		world.deleteEntity(*this);
+		game.deleteEntity(*this);
 		//lifeTime = timeOut;
 
 	}

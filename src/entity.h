@@ -20,6 +20,8 @@ struct TFov { //describes a fov shape
 	THexList arc;
 };
 
+enum TEntityType {entNull = 0, entPlayer = 1, entMissile, entExplode, 
+	entMeleeBot, entShootBot};
 
 /** The base class for objects in the game world.*/
 class CEntity  {
@@ -69,6 +71,8 @@ public:
 	bool deleteMe = false;
 
 	int tmpId;
+
+	TEntityType entityType;
 };
 
 using TEntity = std::shared_ptr<CEntity>;

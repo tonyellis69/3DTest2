@@ -2,17 +2,17 @@
 
 #include "robot.h"
 
-CGameState world;
+CGameState game;
 
 
-void CGameState::setMap(CGameHexArray* map) {
+void CGameState::setMap(CMap* map) {
 	this->map = map;
 }
 
 
 
 void CGameState::onNotify(COnCursorNewHex& msg) {
-	cursorPos = msg.newHex;
+//	cursorPos = msg.newHex;
 }
 
 void CGameState::addSprite(std::shared_ptr<CEntity> sprite) {

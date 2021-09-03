@@ -36,7 +36,7 @@ CHexWorld::CHexWorld() {
 	hexRendr2.init();
 	imRendr::setMatrix(&hexRendr2.camera.clipMatrix);
 	
-	subscribe(&world);
+	//subscribe(&game);
 
 	hexPosLbl = gui::addLabel("xxx", 10, 10);
 	hexPosLbl->setTextColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -74,14 +74,14 @@ void CHexWorld::makeMap(ITigObj* tigMap) {
 
 	//map = mapMaker.makeMap(tigMap);
 
-	map = new CGameHexArray();
-	map->init(32,32);
+	map = new CMap();
+	map->init(72,32);
 
 	glm::i32vec2 tL(1);
-	glm::i32vec2 bR = { 31,31 };
+	glm::i32vec2 bR = { 71,31 };
 
 	for (int y = 0; y < 32; y++) {
-		for (int x = 0; x < 32; x++) {
+		for (int x = 0; x < 72; x++) {
 			if (x < tL.x || x >= bR.x || y < tL.y || y >= bR.y)
 				map->getHexOffset(x, y).content = 2;
 			else
@@ -91,7 +91,7 @@ void CHexWorld::makeMap(ITigObj* tigMap) {
 		}
 	}
 
-	hexRendr2.setMap(map);
+	hexRendr2.setMap(map->getHexArray());
 	mapEdit.setMap(map);
 }
 
@@ -117,28 +117,29 @@ void CHexWorld::startGame() {
 	//gWin::addText("con", "\n9");
 
 
-	hexRendr2.setMap(map);
-	world.setMap(map);
+	hexRendr2.setMap(map->getHexArray());
+	game.setMap(map);
 	physics.removeEntities();
 
-	physics.setMap(map);
+	physics.setMap(map->getHexArray());
 
 
 	//create new player object
-	playerObj = new CPlayerObject();
-	playerObj->setLineModel("player");
-	map->addEntity(TEntity(playerObj), CHex(-6,9,-3));
+	//playerObj = new CPlayerObject();
+	//playerObj->setLineModel("player");
+	//map->addEntity(TEntity(playerObj), CHex(-6,9,-3));
+	//world.player = playerObj;
 
-	world.player = playerObj;
+	//playerObj->updateViewField(); //TO DO: causes errrors look into pron needs reinventing
 
-	playerObj->updateViewField(); //TO DO: causes errrors look into pron needs reinventing
+	//physics.add(playerObj);
 
-	physics.add(playerObj);
+	spawn::player("player", cubeToWorldSpace(CHex(-6,9-3)));
 
 	if (hexCursor == NULL)
 		createCursorObject();
 
-	map->effectsNeedUpdate = true;
+	map->getHexArray()->effectsNeedUpdate = true;
 
 	setViewMode(gameView);
 
@@ -154,7 +155,7 @@ void CHexWorld::moveCamera(glm::vec3& direction) {
 	hexRendr2.moveCamera(vector);
 }
 
-/** Called when a key is pressed. */
+/** Called *when* a key is pressed. */
 void CHexWorld::onKeyDown(int key, long mod) {
 
 
@@ -187,6 +188,8 @@ void CHexWorld::onKeyDown(int key, long mod) {
 		if (key == 'L' && mod == GLFW_MOD_CONTROL)
 			mapEdit.load();
 
+		if (key == GLFW_KEY_LEFT_ALT)
+			mapEdit.onEntityMode(true);
 		return;
 	}
 
@@ -216,12 +219,22 @@ void CHexWorld::onKeyDown(int key, long mod) {
  
 }
 
+void CHexWorld::onKeyUp(int key, long mod) {
+	if (editMode)
+		mapEdit.onEntityMode(false);
+}
+
 void CHexWorld::onMouseWheel(float delta, int key) {
 	if (editMode) {
-		if (!mapEdit.resize(delta,key))
-			hexRendr2.dollyCamera(delta);
-
-		return;
+		if (key == GLFW_KEY_LEFT_ALT) {
+			mapEdit.altWheel(delta);
+			return;
+		}
+		if (!mapEdit.resize(delta, key)) {
+			hexRendr2.dollyCamera(delta * zoomScale);
+			adjustZoomScale(delta);
+			return;
+		}
 	}
 
 
@@ -230,8 +243,10 @@ void CHexWorld::onMouseWheel(float delta, int key) {
 		hexRendr2.pitchCamera(delta);
 	}
 	else {
-		if (key == GLFW_KEY_LEFT_CONTROL)
-			hexRendr2.dollyCamera(delta);
+		if (key == GLFW_KEY_LEFT_CONTROL) {
+			hexRendr2.dollyCamera(delta * zoomScale);
+			adjustZoomScale(delta);
+		}
 		else {
 			;
 		}
@@ -239,12 +254,16 @@ void CHexWorld::onMouseWheel(float delta, int key) {
 }
 
 void CHexWorld::onMouseMove(int x, int y, int key) {
-	if (world.paused)
+	if (game.paused)
 		return;
 
 	mousePos = { x,y };
 
 	calcMouseWorldPos();
+
+	
+	if (key == GLFW_MOUSE_BUTTON_LEFT && editMode)
+		mapEdit.onLeftDrag();
 }
 
 void CHexWorld::calcMouseWorldPos() {
@@ -272,20 +291,25 @@ void CHexWorld::draw() {
 	for (auto& entity : map->entities)
 			entity->draw();
 
-	if (editMode)
+	if (editMode) {
+		if (mapEdit.entityMode) {
+			imRendr::drawText(50, 40, mapEdit.currentEntStr);
+		}
+
 		return;
+	}
 
 
 	//hexRendr2.drawSightLine(playerObj->worldPos, mouseWorldPos);
 
 	//temp!!!!!!!!!!!!!!!!!!!!!!!!!!
-	if (!world.player->dead) {
+	if (!game.player->dead) {
 		imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 0.25f });
 		imRendr::drawLine(playerObj->worldPos, mouseWorldPos);
 		hexCursor->draw();
 	}
 
-	imRendr::drawText(600, 50, "HP: " + std::to_string(world.player->hp));
+	imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp));
 
 
 }
@@ -299,12 +323,12 @@ void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 /** Called every frame to get the hex world up to date.*/
 void CHexWorld::update(float dT) {
 
-	if (world.paused)
+	if (game.paused)
 		return;
 	this->dT = dT;
-	map->setFog(CHex(2, -7, 5), 1.0f);
+	map->getHexArray()->setFog(CHex(2, -7, 5), 1.0f);
 	//map->setFog(CHex(2, -8, 6), 1.0f);
-	map->setFog(CHex(3, -8, 5), 1.0f);
+	map->getHexArray()->setFog(CHex(3, -8, 5), 1.0f);
 
 	updateCameraPosition();
 
@@ -320,14 +344,14 @@ void CHexWorld::update(float dT) {
 
 	renderer.entityNo = 0;
 
-	if (world.map->entityListDirty)
+	if (game.map->entityListDirty)
 		physics.removeDeletedEntities();
 
 
-	world.update(dT);
+	game.update(dT);
 
 	if (map->mapUpdated) {
-		hexRendr2.setMap(map); //temp to refresh map
+		hexRendr2.setMap(map->getHexArray()); //temp to refresh map
 		map->mapUpdated = false;
 	}
 
@@ -380,9 +404,17 @@ void CHexWorld::onRedo() {
 
 
 void CHexWorld::onSpawn(const std::string& name, TEntity entity) {
-	if (name == "robot") {
+	if (name == "melee bot" || name == "shooter bot") {
 		physics.add(entity.get());
 	}
+
+	if (name == "player") {
+		game.player = (CPlayerObject*) entity.get();
+		physics.add(entity.get());
+		playerObj = (CPlayerObject*)entity.get();
+		game.player = playerObj;
+	}
+
 	map->entities.push_back(entity);
 
 }
@@ -411,11 +443,11 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
 	glm::i32vec2 offset = cubeToOffset(mouseHex);
 	coords << "  offset " << offset.x << ", " << offset.y;
-	glm::i32vec2 index = map->cubeToIndex(mouseHex);
+	glm::i32vec2 index = map->getHexArray()->cubeToIndex(mouseHex);
 	coords << " index " << index.x << " " << index.y;
 	glm::vec3 worldSpace = cubeToWorldSpace(mouseHex);
 	coords << " worldPos " << worldSpace.x << " " << worldSpace.y << " " << worldSpace.z;
-	coords << " " << map->getHexCube(mouseHex).content;
+	coords << " " << map->getHexArray()->getHexCube(mouseHex).content;
 	//glm::vec2 screenPos = hexRenderer.worldPosToScreen(worldSpace);
 	coords << " wsMouse " << mouseWorldPos.x << " " << mouseWorldPos.y;
 	coords << " scrnMouse " << mousePos.x << " " << mousePos.y;
@@ -445,7 +477,7 @@ void CHexWorld::onFireKey(bool stillPressed, int mods) {
 			if (mods == GLFW_MOD_CONTROL)
 				mapEdit.onCtrlLClick();
 			else if (mods == GLFW_MOD_ALT)
-				mapEdit.addRobot(mouseWorldPos);
+				mapEdit.addEntity(mouseWorldPos);
 			else
 				mapEdit.onLeftClick();
 		}
@@ -480,7 +512,7 @@ int CHexWorld::tigCall(int memberId) {
 
 
 void CHexWorld::updateCameraPosition() {
-	if (viewMode == gameView && !world.player->dead && !editMode)
+	if (viewMode == gameView && !game.player->dead && !editMode)
 		hexRendr2.followTarget(playerObj->worldPos);
 	else
 		hexRendr2.attemptScreenScroll(mousePos, dT);
@@ -489,9 +521,9 @@ void CHexWorld::updateCameraPosition() {
 }
 
 void CHexWorld::beginNewTurn() {
-	map->effectsNeedUpdate = true;
+	map->getHexArray()->effectsNeedUpdate = true;
 
-	cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition);
+//	cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition);
 
 }
 
@@ -510,6 +542,13 @@ void CHexWorld::setViewMode(TViewMode mode) {
 
 	}
 
+}
+
+void CHexWorld::adjustZoomScale(float delta)
+{
+	zoomAdjust += (delta > 0) ? -0.1f : 0.1f;
+	zoomAdjust = std::max(zoomAdjust, 0.0f);
+	zoomScale = 1.0f + (std::pow(zoomAdjust, 0.5f) * 10);
 }
 
 

@@ -11,17 +11,28 @@ using TMapIt = std::unordered_multimap<CHex, CEntity*>::iterator;
 using TRange = std::pair<TMapIt, TMapIt>;
 
 
-/** Extend the hexArray to check for game entities when
-	pathfinding. */
-class CGameHexArray : public CHexArray {
+
+class CMap  {
 public:
+	void init(int x, int y) {
+		hexArray.init(x, y);
+	}
 	CEntity* getEntityAt2(const CHex& hex);
 	THexList findVisibleHexes(CHex& apex, THexList& perimeterHexes, bool obsessive);
 	void updateVisibility(THexList& visibleHexes, THexList& unvisibleHexes);
 	void addEntity(TEntity entity, CHex& hex);
 	void addExistingEntity(CEntity* entity, CHex& hex);
 	void removeEntity(CEntity*  entity);
-
+	void removeEntity(TEntity entity);
+	CHexArray* getHexArray() {
+		return &hexArray;
+	}
+	void setHexArray(CHexArray* newArray) {
+		hexArray = *newArray;
+	}
+	CHexElement& getHexOffset(int x, int y) {
+		return hexArray.getHexOffset(x, y);
+	}
 	void deleteEntity(CEntity& entity);
 
 	void tidyEntityLists();
@@ -34,8 +45,9 @@ public:
 	bool entityListDirty = false;
 
 	bool mapUpdated = false;
-private:
 
+private:
+	CHexArray hexArray;
 };
 
 class CMapHeader {

@@ -105,5 +105,18 @@ public:
 	void rotation();
 };
 
+class CDeleteRect : public CRectPatch {
+public:
+	void create();
+	void setOffset(CHex& offset) {
+		this->offset = offset;
+	}
+	void drag(CHex& newPos);
+
+	bool released = false; ///<True after user stops dragging.
+	CHex TL = neighbourHex[hexNW];
+	CHex BR = neighbourHex[hexSE];
+};
+
 #define GLFW_KEY_LEFT_SHIFT         340
 #define GLFW_KEY_LEFT_CONTROL       341

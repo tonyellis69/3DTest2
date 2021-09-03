@@ -12,10 +12,10 @@ void CMapMaker::attachVM(Ivm* pVM) {
 
 }
 
-CGameHexArray* CMapMaker::makeMap(ITigObj* mapObj) {
+CMap* CMapMaker::makeMap(ITigObj* mapObj) {
 	this->mapObj = mapObj;
 
-	CGameHexArray* map = createMap();
+	CMap* map = createMap();
 
 	return map;
 }
@@ -26,7 +26,7 @@ void CMapMaker::attachMapObject(ITigObj* mapObj) {
 static unsigned int rando;
 /** Return a map on a hex array, built according to the specifications found in
 	the previously assigned Tig map object .*/
-CGameHexArray* CMapMaker::createMap() {
+CMap* CMapMaker::createMap() {
 
 	randEngine.seed(rando++);
 
@@ -48,34 +48,34 @@ CGameHexArray* CMapMaker::createMap() {
 	glm::i32vec2 margin(1);
 	glm::i32vec2 boundingBox = arraySize + margin * 2;
 
-	hexArray = new CGameHexArray();
+	hexArray = new CMap();
 
 	hexArray->init(boundingBox.x, boundingBox.y);
 
 
-	using param_t = std::uniform_int_distribution<>::param_type;
-	param_t x{ 0, hexArray->width - 1 };
-	randX.param(x); 
-	param_t y{ 0, hexArray->height - 1 };
-	randY.param(y);
+	//using param_t = std::uniform_int_distribution<>::param_type;
+	//param_t x{ 0, hexArray->width - 1 };
+	//randX.param(x); 
+	//param_t y{ 0, hexArray->height - 1 };
+	//randY.param(y);
 
-	glm::i32vec2 tL = margin;
-	glm::i32vec2 bR = boundingBox - margin;
-
-
-		for (int y = 0; y < boundingBox.y; y++) {
-			for (int x = 0; x < boundingBox.x; x++) {
-				if (x < tL.x || x >= bR.x || y < tL.y || y >= bR.y)
-					hexArray->getHexOffset(x, y).content = 2;
-				else
-					hexArray->getHexOffset(x, y).content = 1;
-				//hexArray->getHexOffset(x, y).fogged = 1.0f;
-				hexArray->setFog(x, y, 1.0f);
-			}
-		}
+	//glm::i32vec2 tL = margin;
+	//glm::i32vec2 bR = boundingBox - margin;
 
 
-		tmpaddDesks();
+	//	for (int y = 0; y < boundingBox.y; y++) {
+	//		for (int x = 0; x < boundingBox.x; x++) {
+	//			if (x < tL.x || x >= bR.x || y < tL.y || y >= bR.y)
+	//				hexArray->getHexOffset(x, y).content = 2;
+	//			else
+	//				hexArray->getHexOffset(x, y).content = 1;
+	//			//hexArray->getHexOffset(x, y).fogged = 1.0f;
+	//			hexArray->setFog(x, y, 1.0f);
+	//		}
+	//	}
+
+
+	//	tmpaddDesks();
 
 	//} while (!hexArray->isValidPath(CHex(-13, 5, 8), CHex(13, -4, -9)));
 
@@ -85,27 +85,27 @@ CGameHexArray* CMapMaker::createMap() {
 
 bool CMapMaker::randomBlockWalk(glm::i32vec2 hex, int numSteps, int depth) {
 	//pick a pretty random random free direction
-	CHex cubePos = hexArray->indexToCube(hex.x, hex.y);
-	THexDir walkDir = randomFreeDir(cubePos);
+	//CHex cubePos = hexArray->indexToCube(hex.x, hex.y);
+	//THexDir walkDir = randomFreeDir(cubePos);
 
-	static std::uniform_int_distribution<> recurse(1, 5);
-	for (int walk = 0; walk < numSteps;) {
-		if (recurse(randEngine) == 1 && depth > 0)
-			randomBlockWalk(hex, numSteps-1, depth-1);
-		else
-			hexArray->getHexOffset(hex.x, hex.y).content = 2;
+	//static std::uniform_int_distribution<> recurse(1, 5);
+	//for (int walk = 0; walk < numSteps;) {
+	//	if (recurse(randEngine) == 1 && depth > 0)
+	//		randomBlockWalk(hex, numSteps-1, depth-1);
+	//	else
+	//		hexArray->getHexOffset(hex.x, hex.y).content = 2;
 
-		//pick a weighted random free direction
-		//get the hex at that direction
-		
-		walkDir = semiRandomFreeDir(walkDir, cubePos);
-		if (walkDir == hexNone)
-			return true;
+	//	//pick a weighted random free direction
+	//	//get the hex at that direction
+	//	
+	//	walkDir = semiRandomFreeDir(walkDir, cubePos);
+	//	if (walkDir == hexNone)
+	//		return true;
 
-		hex = hexArray->cubeToIndex( getNeighbour(cubePos, walkDir) );
-		cubePos = hexArray->indexToCube(hex.x, hex.y);
-		walk++;
-	}
+	//	hex = hexArray->cubeToIndex( getNeighbour(cubePos, walkDir) );
+	//	cubePos = hexArray->indexToCube(hex.x, hex.y);
+	//	walk++;
+	//}
 	return true;
 }
 
@@ -114,8 +114,8 @@ THexDir CMapMaker::semiRandomFreeDir(THexDir lastDir, CHex& cubePos) {
 	std::uniform_int_distribution<> noVary(0, 1);
 
 	CHex neighbour = getNeighbour(cubePos, lastDir);
-	if (hexArray->getHexCube(neighbour).content == 1 && noVary(randEngine) == 1)
-		return lastDir;
+	//if (hexArray->getHexCube(neighbour).content == 1 && noVary(randEngine) == 1)
+		//return lastDir;
 
 	//no? pick random direction
 	return randomFreeDir(cubePos);
@@ -128,8 +128,8 @@ THexDir CMapMaker::randomFreeDir(CHex& cubePos) {
 	for (int h = 0; h < 6; h++) {
 		THexDir dir = (THexDir)h;
 		CHex neighbour = getNeighbour(cubePos, dir);
-		if (hexArray->getHexCube(neighbour).content == 1)
-			freeDirections.push_back(dir);
+	//	if (hexArray->getHexCube(neighbour).content == 1)
+		//	freeDirections.push_back(dir);
 	}
 	if (freeDirections.empty())
 		return hexNone;

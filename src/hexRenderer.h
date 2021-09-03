@@ -143,7 +143,7 @@ private:
 	float cameraPitch;
 	bool followCam;
 	glm::vec3 followCamVec; ///<Vector from target point on plane to camera
-	float screenScrollSpeed;
+	float screenScrollSpeed = 25.0f;
 
 	CHexArray* hexArray;
 

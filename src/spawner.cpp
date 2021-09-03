@@ -3,11 +3,27 @@
 #include "robot.h"
 #include "missile.h"
 
+CPlayerObject* CSpawn::player(const std::string& name, glm::vec3& pos) {
+	auto player = std::make_shared<CPlayerObject>();
+	player->setPosition(pos);
+
+	msg::emit(spwnMsg, name, player);
+	return player.get();
+}
+
 /** Create the given entity, and notify the registered callback-handler. */
 CRobot* CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	auto robot = std::make_shared<CRobot>();
-	//robot->setLineModel("robot");
 	robot->setPosition(pos);
+
+	if (name == "melee bot") {
+		robot->setState(robotLightSleep);
+		robot->entityType = entMeleeBot;
+	}
+	else if (name == "shooter bot") {
+		robot->setState(robotWander3);
+		robot->entityType = entShootBot;
+	}
 
 	msg::emit(spwnMsg, name, robot);
 	return robot.get();

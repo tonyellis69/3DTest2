@@ -120,25 +120,25 @@ void C3DtestApp::keyCheck() {
 
 			if (keyNow('A')) {
 				if (keyNow('W'))
-					world.player->moveCommand(moveNW);
+					game.player->moveCommand(moveNW);
 				else if (keyNow('S'))
-					world.player->moveCommand(moveSW);
+					game.player->moveCommand(moveSW);
 				else
-					world.player->moveCommand(moveWest);
+					game.player->moveCommand(moveWest);
 			}
 			else if (keyNow('D')) {
 				if (keyNow('W'))
-					world.player->moveCommand(moveNE);
+					game.player->moveCommand(moveNE);
 				else if (keyNow('S'))
-					world.player->moveCommand(moveSE);
+					game.player->moveCommand(moveSE);
 				else
-					world.player->moveCommand(moveEast);
+					game.player->moveCommand(moveEast);
 			}
 			else if (keyNow('W')) {
-				world.player->moveCommand(moveNorth);
+				game.player->moveCommand(moveNorth);
 			}
 			else if (keyNow('S')) {
-				world.player->moveCommand(moveSouth);
+				game.player->moveCommand(moveSouth);
 			}
 
 		}
@@ -170,29 +170,6 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 		else if (key == 'A')
 			moveKeyDown |= leftKey;
 
-		if (key == 'P') {
-			/*if (world.map->testBot->getState() == robotSleep) {
-				world.map->testBot->setState(robotWander);
-				world.map->testBot2->setState(robotWander);
-			}
-			else {
-				world.map->testBot->setState(robotSleep);
-				world.map->testBot2->setState(robotSleep);
-
-			}*/
-		}
-
-		if (key == 'O') {
-			/*if (world.map->testBot->getState() == robotSleep) {
-				world.map->testBot->setState(robotShoot);
-				world.map->testBot2->setState(robotShoot);
-			}
-			else {
-				world.map->testBot->setState(robotSleep);
-				world.map->testBot2->setState(robotSleep);
-
-			}*/
-		}
 
 
 		if (key == GLFW_KEY_ENTER && !hexWorld.editMode)
@@ -204,7 +181,7 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 
 		if (key == GLFW_KEY_SPACE) {
 			Paused = !Paused;
-			world.togglePause();
+			game.togglePause();
 		}
 
 		if (key == 'Z' && mod == GLFW_MOD_CONTROL) {
@@ -248,6 +225,9 @@ void C3DtestApp::onKeyUp(int key, long mod) {
 		
 		if (moveKeyDown != prev)
 			moveKeyChangeTimer = 0;
+
+		hexWorld.onKeyUp(key, mod);
+
 
 
 		//if (key == 'W' || key == 'S')

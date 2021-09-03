@@ -11,23 +11,26 @@
 
 #include "../spawner.h"
 
+#include "../gameState.h" //for player obj, not ideal
+#include "utils/log.h"
 
-void CMapEdit::setMap(CGameHexArray* map) {
+
+
+void CMapEdit::setMap(CMap* map) {
 	pMap = map;
 	currentPatch = nullptr;
 	lastPatch = nullptr;
 	redoPatch = nullptr;
-	workingArray = pMap->getArray();
+	deleteRect = nullptr;
+	workingArray = *pMap->getHexArray();
 
 }
 
+/** Currently called if the user mousewheels. */
 bool CMapEdit::resize(float delta, int key) {
 	if (currentPatch == nullptr)
 		return false;
-	if (key == GLFW_KEY_LEFT_ALT)
-		currentPatch->rotate(delta);
-	else
-		currentPatch->resize(delta, key);
+	currentPatch->resize(delta, key);
 	updateMap();
 
 	return true;
@@ -124,7 +127,7 @@ void CMapEdit::onCtrlRClick() {
 
 	currentPatch = nullptr;
 	lastPatch = nullptr;
-	pMap->setArray(workingArray);
+	pMap->setHexArray(&workingArray);
 	pMap->mapUpdated = true;
 }
 
@@ -167,18 +170,83 @@ void CMapEdit::load() {
 	pMap->mapUpdated = true;
 }
 
-void CMapEdit::addRobot(glm::vec3& mousePos) {
+void CMapEdit::altWheel(float delta) {
+	if (entityMode)
+		selectEntity(delta);
+	else {
+		if (currentPatch != nullptr) {
+			currentPatch->rotate(delta);
+			updateMap();
+		}
+	}
+}
+
+void CMapEdit::addEntity(glm::vec3& mousePos) {
 	for (auto it = pMap->entities.begin(); it != pMap->entities.end();) {
 		TEntity entity = *it;
-		if (entity->isRobot &&
-			glm::distance(entity->worldPos, mousePos) < 0.5f) {
-			pMap->entities.erase(it);
+		if (glm::distance(entity->worldPos, mousePos) < 0.5f) {
+			//pMap->entities.erase(it);
+			pMap->removeEntity(*it);
 			return;
 		}
 		it++;
 	}
 
-	spawn::robot("robot", mousePos);
+	switch (currentEntity) {
+	case editPlayer: {
+		if (game.player == nullptr)
+			spawn::player("player", mousePos); 
+		else {
+			game.player->setPosition(mousePos);
+		}
+		break;
+	}
+	case editMeleeBot: spawn::robot("melee bot", mousePos); break;
+	case editShooterBot: spawn::robot("shooter bot", mousePos); break;
+
+	}
+
+}
+
+/** Cycle through the entities to place. */
+void CMapEdit::selectEntity(float delta) {
+	currentEntity += (int)delta;
+	currentEntity = abs(currentEntity) % 4;
+	switch (currentEntity) {
+	case editNone: currentEntStr = "none"; break;
+	case editPlayer: currentEntStr = "player"; break;
+	case editMeleeBot: currentEntStr = "melee bot"; break;
+	case editShooterBot: currentEntStr = "shooter bot"; break;
+
+	}
+}
+
+void CMapEdit::onEntityMode(bool isOn) {
+	if (currentPatch == nullptr)
+		entityMode = isOn;
+}
+
+/** Currently used for box-delete. */
+void CMapEdit::onLeftDrag() {
+	if (currentPatch != nullptr)
+		return;
+
+	if (deleteRect == nullptr || deleteRect->released) {
+		deleteRect = std::make_shared<CDeleteRect>();
+		deleteRect->setOffset(cursorHex);
+		deleteRect->create();
+
+
+		updateMap();
+		return;
+	}
+
+	//otherwise resize existing rect
+	liveLog << "\ndragging, cursorHex " << cursorHex;
+	deleteRect->drag(cursorHex);
+	updateMap();
+
+
 }
 
 void CMapEdit::updateMap() {
@@ -198,6 +266,12 @@ void CMapEdit::updateMap() {
 		}
 	}
 
-	pMap->setArray(tempArray);
+	if (deleteRect != nullptr) {
+		for (auto& hex : deleteRect->hexes) {
+			tempArray.getHexCube(CHex(hex.first)  + deleteRect->offset) = hex.second;
+		}
+	}
+
+	pMap->setHexArray(&tempArray);
 	pMap->mapUpdated = true;
 }

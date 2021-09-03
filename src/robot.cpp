@@ -40,9 +40,9 @@ void CRobot::update(float dT) {
 		wander3();
 		break;
 	case  robotLightSleep:
-		if (cubeDistance(hexPosition, world.player->hexPosition) <= 4
-			&& hasLineOfSight(world.player)) {
-			setState(robotCharge3,world.player);
+		if (cubeDistance(hexPosition, game.player->hexPosition) <= 4
+			&& hasLineOfSight(game.player)) {
+			setState(robotCharge3,game.player);
 			//setState(robotCloseAndShoot, world.player);
 			tracking = trackNone;
 		}
@@ -151,7 +151,7 @@ std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& s
 void CRobot::receiveDamage(CEntity& attacker, int damage) {
 	//temp!!!!!!!!!!!!!!
 	liveLog << "Hit robot!";
-	world.deleteEntity(*this);
+	game.deleteEntity(*this);
 }
 
 
@@ -215,7 +215,7 @@ bool CRobot::hasLineOfSight(CEntity* target) {
 bool CRobot::hasLineOfSight(const glm::vec3& p) {
 	TIntersections intersectedHexes = getIntersectedHexes(worldPos, p);
 	for (auto& hex : intersectedHexes) {
-		if (world.map->getHexCube(hex.first).content != emptyHex)
+		if (game.map->getHexArray()->getHexCube(hex.first).content != emptyHex)
 			return false;
 		//TO DO: can expand this to check for other robots blocking
 	}
@@ -265,7 +265,7 @@ void CRobot::wander3() {
 		&& hasLineOfSight(world.player)) {*/
 	if (canSeePlayer()) {
 		//setState(robotCharge3, world.player);
-		setState(robotCloseAndShoot, world.player);
+		setState(robotCloseAndShoot, game.player);
 		tracking = trackNone;
 		return;
 	}
@@ -414,7 +414,7 @@ void CRobot::track() {
 
 bool CRobot::canSeePlayer() {
 
-	return world.player->visible &&  !world.player->dead && inFov(world.player);
+	return game.player->visible &&  !game.player->dead && inFov(game.player);
 		//hasLineOfSight(world.player);
 }
 

@@ -255,3 +255,28 @@ void CTriPatch::rotation() {
 			vert = matrix * glm::vec4(vert, 1);
 	}
 }
+
+
+
+void CDeleteRect::create() {
+	glm::vec3 wsBL = cubeToWorldSpace(BR);
+	v[0] = cubeToWorldSpace(TL); 
+	v[1] = glm::vec3(wsBL.x,v[0].y,0 );
+	v[2] = wsBL;
+	v[3] = glm::vec3(v[0].x, wsBL.y, 0);
+
+	rotation();
+	hexes.clear();
+	plotLine(worldSpaceToHex(v[0]), worldSpaceToHex(v[1]));
+	plotLine(worldSpaceToHex(v[1]), worldSpaceToHex(v[2]));
+	plotLine(worldSpaceToHex(v[2]), worldSpaceToHex(v[3]));
+	plotLine(worldSpaceToHex(v[3]), worldSpaceToHex(v[0]));
+}
+
+void CDeleteRect::drag(CHex& newPos) {
+	CHex localNewPos = newPos - offset;
+	if (localNewPos + neighbourHex[hexSE] !=  BR /* + neighbourHex[hexNW]*/) {
+		BR = localNewPos + neighbourHex[hexSE];
+		create();
+	}
+}

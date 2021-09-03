@@ -31,6 +31,8 @@ CPlayerObject::CPlayerObject() {
 
 	physics.invMass = 1.0f/80.0f; //temp!
 
+	setLineModel("player"); //temp?
+	entityType = entPlayer;
 }
 
 CPlayerObject::~CPlayerObject() {
@@ -57,7 +59,7 @@ void CPlayerObject::tmpKeyCB(int key) {
 		gWin::addText("con", "\nDropped!");
 		auto item = inventory[itemSelected];
 		inventory.erase(inventory.begin() + itemSelected);
-		world.map->addExistingEntity( item, hexPosition );
+		game.map->addExistingEntity( item, hexPosition );
 		itemSelected = -1;
 		return;
 	}
@@ -77,7 +79,7 @@ void CPlayerObject::tmpKeyCB(int key) {
 		auto item = tmpFloorItems[itemSelected];
 		inventory.push_back(item);
 
-		world.map->removeEntity(item);
+		game.map->removeEntity(item);
 	}
 
 	if (key == 'I') {
@@ -137,10 +139,10 @@ void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
 	hp--;
 
 	if (hp < 1) {
-		world.map->removeEntity(this);
+		game.map->removeEntity(this);
 		dead = true;
 		visible = false;
-		world.onPlayerDeath();
+		game.onPlayerDeath();
 	}
 }
 
@@ -188,7 +190,7 @@ void CPlayerObject::updateViewField() {
 	//CCalcVisionField calcFieldMsg(hexPosition, viewField.ringHexes, true);
 	//send(calcFieldMsg);
 
-	THexList visibleHexes = world.map->findVisibleHexes(hexPosition, viewField.ringHexes, true);
+	THexList visibleHexes = game.map->findVisibleHexes(hexPosition, viewField.ringHexes, true);
 
 	std::vector<CHex> unvisibledHexes;
 	for (auto hex : viewField.visibleHexes) {
@@ -204,10 +206,10 @@ void CPlayerObject::updateViewField() {
 	//CUpdateFog fogMsg(visibleHexes, unvisibledHexes);
 //	send(fogMsg);
 
-	world.map->updateVisibility(visibleHexes, unvisibledHexes);
+	game.map->updateVisibility(visibleHexes, unvisibledHexes);
 
 	//hexRendr->updateFogBuffer();
-	world.map->effectsNeedUpdate = true;
+	game.map->getHexArray()->effectsNeedUpdate = true;
 
 }
 

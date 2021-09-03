@@ -13,6 +13,7 @@
 
 CMissile::CMissile() {
 	lineModel = hexRendr2.getLineModel("bolt");
+	entityType = entMissile;
 }
 
 void CMissile::setPosition(glm::vec3& pos, float rotation) {
@@ -35,7 +36,7 @@ void CMissile::update(float dT) {
 	if (collided) {
 		spawnExplosion();
 		//world.destroySprite(*this);
-		world.deleteEntity(*this);
+		game.deleteEntity(*this);
 		return;
 	}
 	this->dT = dT;
@@ -78,7 +79,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 
 	//Check if we've collided with a robot in one of those hexes
 	for (auto& hex: intersectedHexes) {
-		CEntity* entity = world.map->getEntityAt2(hex.first);
+		CEntity* entity = game.map->getEntityAt2(hex.first);
 		if (entity && entity != owner) {
 			auto [hit, intersection] = entity->collisionCheck(startingPos, leadingPoint);
 			if (hit) {
@@ -93,7 +94,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 	//still here? Check if we've collided with scenery - but only if we've entered a new hex.
 	if (leadingPointHex != lastLeadingPointHex) {
 		for (auto& hex : intersectedHexes) {
-			if (world.map->getHexCube(hex.first).content == solidHex) {
+			if (game.map->getHexArray()->getHexCube(hex.first).content == solidHex) {
 				collided = true;
 				worldPos = hex.second - (moveVec * distToPoint);
 				collisionPt = hex.second;

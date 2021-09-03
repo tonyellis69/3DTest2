@@ -61,6 +61,7 @@ public:
 	void onFireKey(bool released, int mods);
 	void onRightKey(bool released, int mods);
 	void onKeyDown(int key, long mod);
+	void onKeyUp(int key, long mod);
 	void onMouseWheel(float delta, int key);
 	void onMouseMove(int x, int y, int key);
 	void calcMouseWorldPos();
@@ -116,8 +117,10 @@ private:
 
 	void setViewMode(TViewMode mode);
 
+	void adjustZoomScale(float delta);
 
-	CGameHexArray* map;
+
+	CMap* map;
 
 	//CHexRenderer* hexRenderer;
 
@@ -157,7 +160,8 @@ private:
 	CHexPhysics physics;
 
 	CMapEdit mapEdit;
-
+	float zoomScale = 1.0f;
+	float zoomAdjust = 0.0f;
 };
 
 

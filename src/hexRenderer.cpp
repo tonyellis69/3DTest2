@@ -37,7 +37,6 @@ void CHexRenderer::init()
 	//cameraPitch = 45;
 	//camera.pitch(cameraPitch);
 	followCam = false;
-	screenScrollSpeed = 20;// 15.0f;
 
 	floorplanLineColour = glm::vec4(0.3, 1, 0.3, 1);
 	floorplanSpaceColour = glm::vec4(0.6431, 0.7412, 0.9882, 0.03);
