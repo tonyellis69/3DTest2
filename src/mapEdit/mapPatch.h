@@ -105,6 +105,18 @@ public:
 	void rotation();
 };
 
+class CTrapPatch : public CMapPatch {
+public:
+	CTrapPatch() {
+		BB = { hexWidth + halfHexWidth,hexRowHeight };
+		v.resize(4);
+	}
+	void create();
+
+	void resize(float delta, int key);
+	void rotation();
+};
+
 class CDeleteRect : public CRectPatch {
 public:
 	void create();
@@ -112,6 +124,7 @@ public:
 		this->offset = offset;
 	}
 	void drag(CHex& newPos);
+	void findDelHexes();
 
 	bool released = false; ///<True after user stops dragging.
 	CHex TL = neighbourHex[hexNW];

@@ -26,21 +26,11 @@ void CMapPatch::plotLine(CHex& A, CHex& B) {
 
 /** Draws a more aesthetically pleasing line without redundant hexes at the ends. */
 void CMapPatch::plotVertLine(CHex& A, CHex& B) {
-	CHex top = A; CHex bot = B;
-	if (A.z > B.z) {
-		top = B; bot = A;
-	}
+	bool veerEast = (A.x > 0) ? true : false;
 
-	bool veerEast = (bot.x >= 0) ? true : false;
-	CHex hex = bot;
-	for (int z = bot.z; z > top.z; z--) {
-		if (veerEast)
-			hex = getNeighbour(hex, hexNE);
-		else
-			hex = getNeighbour(hex, hexNW);
-		veerEast = !veerEast;
+	THexList hexList = vertLine(A, B, veerEast);
+	for (auto& hex : hexList)
 		hexes[hex].content = solidHex;
-	}
 }
 
 
@@ -211,10 +201,7 @@ void CLinePatch::create() {
 
 	hexes.clear();
 	hexes[startHex].content = solidHex;
-	//TIntersections hexList = getIntersectedHexes(v[0],v[1]);
-	//for (auto& hex : hexList) {
-	//	hexes[hex.first].content = solidHex;
-	//}
+
 	THexList hexList = *hexLine(startHex, endHex);
 	for (auto& hex : hexList)
 		hexes[hex].content = solidHex;
@@ -258,6 +245,49 @@ void CTriPatch::rotation() {
 
 
 
+void CTrapPatch::create() {
+	float nearX;
+
+	float adj = (TAN30 * BB.y * 2);
+	nearX = BB.x - adj;
+
+
+	v[0] = { -nearX ,BB.y,0 };
+	v[1] = { nearX,BB.y,0 };
+	v[2] = { BB.x,-BB.y,0 };
+	v[3] = { -BB.x,-BB.y,0 };
+
+	rotation();
+
+	hexes.clear();
+	plotLine(worldSpaceToHex(v[0]), worldSpaceToHex(v[1]));
+	plotLine(worldSpaceToHex(v[1]), worldSpaceToHex(v[2]));
+	plotLine(worldSpaceToHex(v[2]), worldSpaceToHex(v[3]));
+	plotLine(worldSpaceToHex(v[3]), worldSpaceToHex(v[0]));
+}
+
+void CTrapPatch::resize(float delta, int key) {
+	if (key == GLFW_KEY_LEFT_CONTROL) {
+		BB.x += delta * hexWidth;
+	}
+	else if (key == GLFW_KEY_LEFT_SHIFT) {
+		BB.y += delta * hexRowHeight;
+	}
+	else {
+		BB.x += delta * (hexWidth + halfHexWidth);
+		BB.y += delta * (hexRowHeight);
+	}
+
+	create();
+}
+
+void CTrapPatch::rotation() {
+
+}
+
+
+
+
 void CDeleteRect::create() {
 	glm::vec3 wsBL = cubeToWorldSpace(BR);
 	v[0] = cubeToWorldSpace(TL); 
@@ -279,4 +309,26 @@ void CDeleteRect::drag(CHex& newPos) {
 		BR = localNewPos + neighbourHex[hexSE];
 		create();
 	}
+}
+
+void CDeleteRect::findDelHexes() {
+	glm::i32vec2 TLoff = cubeToOffset(TL);
+	glm::i32vec2 BRoff = cubeToOffset(BR);
+
+	int yDist = abs(BRoff.y - TLoff.y);
+	int xDist = abs(BRoff.x - TLoff.x);
+
+
+	hexes.clear();
+	for (int y = 0; y <= yDist; y++) {
+		for (int x = 0; x <= xDist; x++) {
+			//delHexes.push_back(offsetToCube(TLoff.x + x, TLoff.y + y));
+			hexes[offsetToCube(TLoff.x + x, TLoff.y + y)].content = solidHex;
+			//CHex topHex = offsetToCube(TLoff.x + x, TLoff.y);
+			//CHex botHex = offsetToCube(TLoff.x + x, BRoff.y+1);
+			//plotVertLine(topHex,botHex);
+		}
+	}
+
+
 }

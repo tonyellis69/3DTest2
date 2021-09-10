@@ -76,8 +76,27 @@ void CMapEdit::createTri() {
 	updateMap();
 }
 
+void CMapEdit::createTrap()
+{
+	currentPatch = std::make_shared<CTrapPatch>();
+	currentPatch->create();
+	currentPatch->setOffset(cursorHex);
 
-void CMapEdit::onLeftClick() {
+	updateMap();
+}
+
+
+void CMapEdit::onLeftClick(bool stillPressed, int key) {
+	if (deleteRect) {
+		if (!stillPressed) {
+			deleteRect->released = true;
+			updateMap();
+			return;
+		}
+	}
+
+
+
 	if (lastPatch != nullptr) {
 		for (auto& hex : lastPatch->hexes) {
 			workingArray.getHexCube(CHex(hex.first) + lastPatch->offset) = hex.second;
@@ -105,6 +124,13 @@ void CMapEdit::onLeftClick() {
 void CMapEdit::onRightClick() {
 	if (currentPatch) {
 		currentPatch = nullptr;
+		updateMap();
+	}
+	if (deleteRect) {
+		if (deleteRect->released)
+			deleteRect.reset();
+		else
+			deleteRect->released = true;
 		updateMap();
 	}
 }
@@ -181,11 +207,16 @@ void CMapEdit::altWheel(float delta) {
 	}
 }
 
+/** If user holds shape key and mousewheels. */
+void CMapEdit::shapeWheel(float delta) {
+	if (shapeMode)
+		selectShape(delta);
+}
+
 void CMapEdit::addEntity(glm::vec3& mousePos) {
 	for (auto it = pMap->entities.begin(); it != pMap->entities.end();) {
 		TEntity entity = *it;
 		if (glm::distance(entity->worldPos, mousePos) < 0.5f) {
-			//pMap->entities.erase(it);
 			pMap->removeEntity(*it);
 			return;
 		}
@@ -210,8 +241,8 @@ void CMapEdit::addEntity(glm::vec3& mousePos) {
 
 /** Cycle through the entities to place. */
 void CMapEdit::selectEntity(float delta) {
-	currentEntity += (int)delta;
-	currentEntity = abs(currentEntity) % 4;
+	currentEntity += (unsigned int)delta;
+	currentEntity = (currentEntity) % 4;
 	switch (currentEntity) {
 	case editNone: currentEntStr = "none"; break;
 	case editPlayer: currentEntStr = "player"; break;
@@ -221,13 +252,36 @@ void CMapEdit::selectEntity(float delta) {
 	}
 }
 
+void CMapEdit::selectShape(float delta) {
+	currentShape += (unsigned int)delta;
+	currentShape = (currentShape) % 6;
+	switch (currentShape) {
+	case editShapeNone: currentShapeStr = "none"; currentPatch.reset(); updateMap(); break;
+	case editShapeHex: currentShapeStr = "hex"; createRing();  break;
+	case editShapePara: currentShapeStr = "parallelogram"; createParagram();  break;
+	case editShapeRect: currentShapeStr = "rectangle"; createRect();  break;
+	case editShapeTri: currentShapeStr = "triangle"; createTri(); break;
+	case editShapeTrap: currentShapeStr = "trapezium"; createTrap();  break;
+
+	}
+}
+
 void CMapEdit::onEntityMode(bool isOn) {
-	if (currentPatch == nullptr)
+	if (currentPatch == nullptr) {
 		entityMode = isOn;
+		shapeMode = false;
+	}
+}
+
+void CMapEdit::onShapeMode(bool isOn) {
+	entityMode = false;
+	shapeMode = isOn;
+	if (isOn)
+		selectShape(0);
 }
 
 /** Currently used for box-delete. */
-void CMapEdit::onLeftDrag() {
+void CMapEdit::onRightDrag() {
 	if (currentPatch != nullptr)
 		return;
 
@@ -242,10 +296,22 @@ void CMapEdit::onLeftDrag() {
 	}
 
 	//otherwise resize existing rect
-	liveLog << "\ndragging, cursorHex " << cursorHex;
 	deleteRect->drag(cursorHex);
 	updateMap();
 
+
+}
+
+
+void CMapEdit::onDelKey() {
+	if (deleteRect) {
+		deleteRect->findDelHexes();
+		for (auto& hex : deleteRect->hexes) {
+			workingArray.getHexCube(CHex(hex.first) + deleteRect->offset).content = emptyHex;
+		}
+		deleteRect.reset();
+		updateMap();
+	}
 
 }
 

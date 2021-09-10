@@ -15,7 +15,8 @@ public:
 	void createParagram();
 	void createRect();
 	void createTri();
-	void onLeftClick();
+	void createTrap();
+	void onLeftClick(bool stillPressed, int key);
 	void onRightClick();
 	void onCtrlRClick();
 	void onCtrlLClick();
@@ -24,13 +25,19 @@ public:
 	void save();
 	void load();
 	void altWheel(float delta);
+	void shapeWheel(float delta);
 	void addEntity(glm::vec3& mousePos);
 	void selectEntity(float delta);
+	void selectShape(float delta);
 	void onEntityMode(bool isOn);
-	void onLeftDrag();
+	void onShapeMode(bool isOn);
+	void onRightDrag();
+	void onDelKey();
 
-	std::string currentEntStr = "none";
+	std::string currentEntStr = "none"; 
+	std::string currentShapeStr = "none";
 	bool entityMode = false;
+	bool shapeMode = false;
 
 private:
 	void updateMap();
@@ -45,12 +52,22 @@ private:
 
 	CHex cursorHex;
 
-	int currentEntity = 0;
+	unsigned int currentEntity = 0;
+	unsigned int currentShape = 0;
 };
 
 #define GLFW_KEY_LEFT_ALT           342
+
 
 const int editNone = 0;
 const int editPlayer = 1;
 const int editMeleeBot = 2;
 const int editShooterBot = 3;
+
+
+const int editShapeNone = 0;
+const int editShapeHex = 1;
+const int editShapePara = 2;
+const int editShapeRect = 3;
+const int editShapeTri = 4;
+const int editShapeTrap = 5;

@@ -118,6 +118,7 @@ private:
 	void setViewMode(TViewMode mode);
 
 	void adjustZoomScale(float delta);
+	void onMapDrag();
 
 
 	CMap* map;
@@ -142,6 +143,8 @@ private:
 
 
 	glm::i32vec2 mousePos;
+	glm::i32vec2 lastMousePos;
+
 
 	THexList cursorPath;
 
@@ -154,6 +157,9 @@ private:
 
 	bool lineOfSight = false;
 	glm::vec3 mouseWorldPos; ///<Mouse position on the worldspace XY plane
+	glm::vec3 lastMouseWorldPos;
+	bool mapDragging = false;
+	float cumulativeMapDrag = 0;///<Ensures we don't drag for tiny amounts
 	
 	TViewMode viewMode; ///<Camera mode, etc.
 

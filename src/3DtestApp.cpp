@@ -243,6 +243,10 @@ void C3DtestApp::onMouseButton(int button, int action, int mods) {
 				hexWorld.onFireKey(true,mods);
 			else
 				hexWorld.onFireKey(false,mods);
+
+			
+
+
 		}
 
 

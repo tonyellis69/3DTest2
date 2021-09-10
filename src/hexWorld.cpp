@@ -75,19 +75,11 @@ void CHexWorld::makeMap(ITigObj* tigMap) {
 	//map = mapMaker.makeMap(tigMap);
 
 	map = new CMap();
-	map->init(72,32);
+	map->init(100,40);
 
-	glm::i32vec2 tL(1);
-	glm::i32vec2 bR = { 71,31 };
-
-	for (int y = 0; y < 32; y++) {
-		for (int x = 0; x < 72; x++) {
-			if (x < tL.x || x >= bR.x || y < tL.y || y >= bR.y)
-				map->getHexOffset(x, y).content = 2;
-			else
-				map->getHexOffset(x, y).content = 1;
-			//hexArray->getHexOffset(x, y).fogged = 1.0f;
-			//map->setFog(x, y, 1.0f);
+	for (int y = 0; y < 40; y++) {
+		for (int x = 0; x < 100; x++) {
+			map->getHexOffset(x, y).content = emptyHex;
 		}
 	}
 
@@ -158,11 +150,7 @@ void CHexWorld::moveCamera(glm::vec3& direction) {
 /** Called *when* a key is pressed. */
 void CHexWorld::onKeyDown(int key, long mod) {
 
-
-
-
 	//temp user interface stuff!
-
 	msg::emit(msg::tmpMsg, key); //temp!
 
 	if (editMode) { //editmode key operations
@@ -179,7 +167,8 @@ void CHexWorld::onKeyDown(int key, long mod) {
 		}
 
 		if (key == 'T') {
-			mapEdit.createTri();
+			//mapEdit.createTri();
+			mapEdit.createTrap();
 		}
 
 		if (key == 'S' && mod == GLFW_MOD_CONTROL)
@@ -190,6 +179,12 @@ void CHexWorld::onKeyDown(int key, long mod) {
 
 		if (key == GLFW_KEY_LEFT_ALT)
 			mapEdit.onEntityMode(true);
+
+		if (key == 'Z')
+			mapEdit.onShapeMode(true);
+
+		if (key == GLFW_KEY_DELETE)
+			mapEdit.onDelKey();
 		return;
 	}
 
@@ -220,8 +215,10 @@ void CHexWorld::onKeyDown(int key, long mod) {
 }
 
 void CHexWorld::onKeyUp(int key, long mod) {
-	if (editMode)
+	if (editMode) {
 		mapEdit.onEntityMode(false);
+		mapEdit.onShapeMode(false);
+	}
 }
 
 void CHexWorld::onMouseWheel(float delta, int key) {
@@ -230,11 +227,15 @@ void CHexWorld::onMouseWheel(float delta, int key) {
 			mapEdit.altWheel(delta);
 			return;
 		}
+		if (mapEdit.shapeMode) {
+			mapEdit.shapeWheel(delta);
+			return;
+		}
 		if (!mapEdit.resize(delta, key)) {
 			hexRendr2.dollyCamera(delta * zoomScale);
 			adjustZoomScale(delta);
-			return;
 		}
+		return;
 	}
 
 
@@ -257,17 +258,26 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 	if (game.paused)
 		return;
 
+	mapDragging = false;
+	lastMousePos = mousePos;
 	mousePos = { x,y };
 
-	calcMouseWorldPos();
+	CHex lastMouseHex = hexCursor->hexPosition;
 
+	calcMouseWorldPos();
 	
-	if (key == GLFW_MOUSE_BUTTON_LEFT && editMode)
-		mapEdit.onLeftDrag();
+	if (key == GLFW_MOUSE_BUTTON_RIGHT && 
+		hexCursor->hexPosition != lastMouseHex &&  editMode)
+		mapEdit.onRightDrag();
+
+	if (key == GLFW_MOUSE_BUTTON_LEFT && editMode) {
+		onMapDrag();
+	}
 }
 
 void CHexWorld::calcMouseWorldPos() {
 	auto [mouseHex, mouseWS] = hexRendr2.pickHex(mousePos.x, mousePos.y);
+	lastMouseWorldPos = mouseWorldPos;
 	mouseWorldPos = mouseWS;
 	glm::vec3 mouseVec = mouseWorldPos - playerObj->worldPos;
 	playerObj->setTargetAngle(glm::orientedAngle(glm::normalize(mouseVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1)));
@@ -294,6 +304,9 @@ void CHexWorld::draw() {
 	if (editMode) {
 		if (mapEdit.entityMode) {
 			imRendr::drawText(50, 40, mapEdit.currentEntStr);
+		}
+		else if (mapEdit.shapeMode) {
+			imRendr::drawText(50, 40, mapEdit.currentShapeStr);
 		}
 
 		return;
@@ -478,8 +491,12 @@ void CHexWorld::onFireKey(bool stillPressed, int mods) {
 				mapEdit.onCtrlLClick();
 			else if (mods == GLFW_MOD_ALT)
 				mapEdit.addEntity(mouseWorldPos);
-			else
-				mapEdit.onLeftClick();
+			else if (!mapDragging)
+				mapEdit.onLeftClick(stillPressed, mods);
+		}
+		if (mapDragging && !stillPressed) {
+			mapDragging = false;
+			cumulativeMapDrag = 0;
 		}
 	}
 	else
@@ -514,8 +531,8 @@ int CHexWorld::tigCall(int memberId) {
 void CHexWorld::updateCameraPosition() {
 	if (viewMode == gameView && !game.player->dead && !editMode)
 		hexRendr2.followTarget(playerObj->worldPos);
-	else
-		hexRendr2.attemptScreenScroll(mousePos, dT);
+	//else
+		//hexRendr2.attemptScreenScroll(mousePos, dT);
 
 	calcMouseWorldPos();
 }
@@ -549,6 +566,18 @@ void CHexWorld::adjustZoomScale(float delta)
 	zoomAdjust += (delta > 0) ? -0.1f : 0.1f;
 	zoomAdjust = std::max(zoomAdjust, 0.0f);
 	zoomScale = 1.0f + (std::pow(zoomAdjust, 0.5f) * 10);
+}
+
+/** User dragging map around with mouse, ie, in edit mode.*/
+void CHexWorld::onMapDrag() {
+	glm::vec3 mouseVec = mouseWorldPos - lastMouseWorldPos;
+	//liveLog << "\n" << glm::length(mouseVec);
+	cumulativeMapDrag += glm::length(mouseVec);
+	if (cumulativeMapDrag < 0.5f)
+		return;
+	hexRendr2.moveCamera(-mouseVec);
+	//cumulativeMapDrag = 0;
+	mapDragging = true;
 }
 
 
