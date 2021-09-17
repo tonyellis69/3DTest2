@@ -11,9 +11,6 @@ void CGameState::setMap(CMap* map) {
 
 
 
-void CGameState::onNotify(COnCursorNewHex& msg) {
-//	cursorPos = msg.newHex;
-}
 
 void CGameState::addSprite(std::shared_ptr<CEntity> sprite) {
 	//addSpritesList.push_back(sprite);
@@ -29,6 +26,11 @@ void CGameState::destroySprite(CEntity& deadSprite) {
 
 void CGameState::deleteEntity(CEntity& entity) {
 	map->deleteEntity(entity);
+}
+
+void CGameState::killEntity(CEntity& entity) {
+	entity.live = false; 
+	map->entitiesToKill = true;
 }
 
 void CGameState::update(float dT) {

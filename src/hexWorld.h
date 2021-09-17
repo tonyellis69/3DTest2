@@ -78,6 +78,8 @@ public:
 
 	CGUIlabel2* hexPosLbl;
 
+	std::string lblText;
+
 	CDrawText drawTxtTest; //temp!
 
 	bool editMode = false;
@@ -86,53 +88,17 @@ private:
 
 	void createCursorObject();
 	void onNewMouseHex(CHex& mouseHex);
-
 	int tigCall(int memberId) ;
-
-	//CGameHexObj* getItemAt(CHex& position);
-
-	//void tempGetGroupItem(int itemNo);
-
-//	void onDropItem(CDropItem& msg);
-//	void onRemoveEntity(CRemoveEntity& msg);
-//	void onCreateGroupItem(CCreateGroupItem& msg);
-
-	//void onDiceRoll(CDiceRoll& msg);
-
-	//void onPlayerNewHex(CPlayerNewHex& msg);
-
-	//void onActorMovedHex(CActorMovedHex& msg);
-
-
-	//CGameHexObj* getPrimaryObjectAt(CHex& hex);
-
 	void updateCameraPosition();
-
-	void beginNewTurn();
-	
-
-	//void killEntity(CGameHexObj* entity);
-
-	//void alertEntitiesInPlayerFov();
-
 	void setViewMode(TViewMode mode);
-
 	void adjustZoomScale(float delta);
 	void onMapDrag();
 
-
 	CMap* map;
-
-	//CHexRenderer* hexRenderer;
-
 
 	CPlayerObject* playerObj = NULL;
 	CEntity* hexCursor = NULL;;
 	
-
-//	TEntities entitiesToDraw; ///<Quick bodge: same entities, diff order
-
-
 	float dT; ///<Interval since last app loop.
 
 	std::mt19937 randEngine;
@@ -141,19 +107,11 @@ private:
 
 	Ivm* vm; ///<Interface to the virtual machine/
 
-
 	glm::i32vec2 mousePos;
 	glm::i32vec2 lastMousePos;
 
 
 	THexList cursorPath;
-
-
-	
-
-	bool powerMode = false;
-
-	//CQPS qps; ///<Quantum power system.
 
 	bool lineOfSight = false;
 	glm::vec3 mouseWorldPos; ///<Mouse position on the worldspace XY plane

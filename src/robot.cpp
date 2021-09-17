@@ -1,5 +1,7 @@
 #include "robot.h"
 
+#include <cmath>
+
 #include "utils/log.h"
 
 #include "hexRenderer.h"
@@ -15,6 +17,7 @@
 
 #include "spawner.h"
 
+#include "renderer/imRendr/imRendr.h"
 
 const float rad360 = M_PI * 2;
 const float rad60 = M_PI / 3;
@@ -40,7 +43,8 @@ void CRobot::update(float dT) {
 		wander3();
 		break;
 	case  robotLightSleep:
-		if (cubeDistance(hexPosition, game.player->hexPosition) <= 4
+		//if (hexRendr2.isOnScreen(worldPos) 
+		if (glm::distance(worldPos, game.player->worldPos) < wakeRange
 			&& hasLineOfSight(game.player)) {
 			setState(robotCharge3,game.player);
 			//setState(robotCloseAndShoot, world.player);
@@ -61,7 +65,7 @@ void CRobot::update(float dT) {
 	if (!reachedDestination)
 		approachDestination();
 	
-	track();
+//	track();
 
 	}
 
@@ -106,31 +110,6 @@ TRobotState CRobot::getState() {
 }
 
 
-/** Return the next destination hex, if any, in this robot's ongoing journey. 
-	If the current path is blocked, try to find a way around it. */
-//CHex CRobot::getNextTravelHex(CHex& destination) {
-//	if (destination == CHex(-1))
-//		return destination;
-//
-//	if (travelPath.empty() || travelPath.back() != destination) {
-//		travelPath = world.map->aStarPath(hexPosition, destination);
-//		//!!!!check for blocking robots in the first hex and we can exit early
-//		if (travelPath.empty()) //no route to destination
-//			return CHex(-1);
-//	}
-//
-//	//is previously calculated next destination hex still free ?
-//	if (!world.map->isFree(travelPath.front())) {
-//		travelPath = world.map->aStarPath(hexPosition, destination, travelPath.front());
-//	}
-//
-//	if (travelPath.empty()) 
-//		return CHex(-1);
-//
-//	CHex hex = travelPath.front();
-//	travelPath.erase(travelPath.begin());
-//	return hex;
-//}
 
 void CRobot::draw() {
 	//if (!visibleToPlayer)
@@ -149,9 +128,11 @@ std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& s
 }
 
 void CRobot::receiveDamage(CEntity& attacker, int damage) {
-	//temp!!!!!!!!!!!!!!
-	liveLog << "Hit robot!";
-	game.deleteEntity(*this);
+	hp--;
+	if (hp == 0) {
+		game.killEntity(*this);
+		spawn::explosion("explosion", worldPos, 2.0f);
+	}
 }
 
 
@@ -264,8 +245,8 @@ void CRobot::wander3() {
 	/*if (cubeDistance(hexPosition, world.player->hexPosition) <= 4
 		&& hasLineOfSight(world.player)) {*/
 	if (canSeePlayer()) {
-		//setState(robotCharge3, world.player);
-		setState(robotCloseAndShoot, game.player);
+		//setState(robotCloseAndShoot, game.player);
+		setState(robotCharge3, game.player);
 		tracking = trackNone;
 		return;
 	}
@@ -317,7 +298,7 @@ void CRobot::charge3() {
 		chargeVec = glm::normalize(chargeVec) * dist;
 		destination = worldPos + chargeVec;
 		reachedDestination = false;
-		speed = 1500.0f;
+		speed = 3000.0f;
 	}
 	else {
 		tracking = trackDestination;
@@ -374,6 +355,11 @@ void CRobot::onMovedHex()
 /** Handle the approach to our destination point by slowing down,
 	catching overshoot, etc. */
 void CRobot::approachDestination() {
+	bool facingDest = turnTo(destination);
+	if (!facingDest)
+		return;
+
+
 	glm::vec3 moveVec = glm::normalize(destination - worldPos);
 	physics.moveImpulse = moveVec * speed;
 
@@ -399,6 +385,30 @@ void CRobot::approachDestination() {
 	}
 
 	lastDestinationDist = dist;
+}
+
+/** Continue turning toward p, if not facing it. */
+bool CRobot::turnTo(glm::vec3& p) {
+	float turnDist = orientationTo(p);
+
+	if (abs(turnDist) < 0.01f) //temp!!!!
+		return true;
+
+	float turnDir = (std::signbit(turnDist)) ? -1.0f : 1.0f;
+
+	if (lastTurnDir != 0 && lastTurnDir != turnDir) { //we overshot
+		rotation = glm::orientedAngle(glm::normalize(p - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+		lastTurnDir = 0;
+		return true;
+
+	}
+
+
+	float turnStep = turnDir* dT * 10.0f; //temp!
+	rotation += turnStep;
+
+	lastTurnDir = turnDir;
+	return false;
 }
 
 /** Rotate to stay looking at something. */

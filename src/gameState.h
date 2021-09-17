@@ -15,11 +15,11 @@ class CGameState   {
 public:
 
 	void setMap(CMap* map);
-	void onNotify(COnCursorNewHex& msg);
 	bool isBlocked(CHex& pos, CHex& dest);
 	void addSprite(std::shared_ptr<CEntity> sprite);
 	void destroySprite(CEntity& sprite);
 	void deleteEntity(CEntity& entity);
+	void killEntity(CEntity& entity);
 	void update(float dT);
 	void togglePause();
 	void onPlayerDeath();

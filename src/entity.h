@@ -48,7 +48,9 @@ public:
 	float orientationTo(glm::vec3& targetPos);
 	void updatePos(glm::vec3& dPos);
 
-	virtual void approachDestHex() {}; //temp! scrap this with per-hex movement
+	bool isOnScreen();
+
+	//virtual void approachDestHex() {}; //temp! scrap this with per-hex movement
 	
 	float dT;
 
@@ -69,6 +71,8 @@ public:
 	bool isItem = false; //temp cludge!
 	bool isRobot = false; //temp cludge!
 	bool deleteMe = false;
+
+	bool live = true; ///<Entities are ignored when false.
 
 	int tmpId;
 

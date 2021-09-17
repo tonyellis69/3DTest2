@@ -98,7 +98,7 @@ void CMap::removeEntity(CEntity* entity) {
 
 void CMap::removeEntity(TEntity entity) {
 	entity->deleteMe = true;
-	entityListDirty = true;
+	entitiesToDelete = true;
 }
 
 
@@ -107,12 +107,12 @@ void CMap::removeEntity(TEntity entity) {
 /** Tag an entity for immediate deletion from the map. */
 void CMap::deleteEntity(CEntity& entity) {
 	entity.deleteMe = true;
-	entityListDirty = true;
+	entitiesToDelete = true;
 }
 
 /** Remove any enities marked for deletion from the entity lists. */
 void CMap::tidyEntityLists() {
-	if (entityListDirty) {
+	if (entitiesToDelete) {
 		
 
 		for (auto& it = entities.begin(); it != entities.end(); ) {
@@ -122,7 +122,7 @@ void CMap::tidyEntityLists() {
 				it++;
 		}
 
-		entityListDirty = false;
+		entitiesToDelete = false;
 	}
 }
 

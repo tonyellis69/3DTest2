@@ -70,6 +70,8 @@ float CEntity::orientationTo(glm::vec3& targetPos) {
 	if (targetDir.y > 0)
 		targetAngle = 2 * M_PI - targetAngle;
 
+	//NB measuring angle clockwise
+
 
 	float PI_2 = 2 * M_PI;
 	//find shortest angle between this and our direction
@@ -92,6 +94,11 @@ void CEntity::updatePos(glm::vec3& dPos) {
 		hexPosition = newHexPosition;
 		onMovedHex();
 	}
+}
+
+/** True if entity on screen. */
+bool CEntity::isOnScreen() {
+	return hexRendr2.isOnScreen(worldPos);
 }
 
 

@@ -3,6 +3,8 @@
 #include "gameState.h"
 #include "hexRenderer.h"
 
+#include "utils/log.h"
+
 
 CExplosion::CExplosion(float size) {
 	this->size = size;
@@ -13,14 +15,21 @@ CExplosion::CExplosion(float size) {
 void CExplosion::update(float dT) {
 	lifeTime += dT;
 
-	if (lifeTime > timeOut) {
-		//world.destroySprite(*this);
-		game.deleteEntity(*this);
-		//lifeTime = timeOut;
+	if (collidee) {
+		worldPos = collidee->worldPos + relativePos;
+	}
 
+	if (lifeTime > timeOut) {
+		game.deleteEntity(*this);
 	}
 }
 
 void CExplosion::draw() {
 	hexRendr2.drawExplosion(worldPos, lifeTime, size, timeOut);
+}
+
+/** If we hit a moving target, this allows us to move with it. */
+void CExplosion::setCollidee(CEntity* collidee) {
+	this->collidee = collidee;
+	relativePos = worldPos - collidee->worldPos;
 }

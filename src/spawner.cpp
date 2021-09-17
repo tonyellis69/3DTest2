@@ -17,7 +17,7 @@ CRobot* CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	robot->setPosition(pos);
 
 	if (name == "melee bot") {
-		robot->setState(robotLightSleep);
+		robot->setState(robotWander3);
 		robot->entityType = entMeleeBot;
 	}
 	else if (name == "shooter bot") {

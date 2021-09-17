@@ -16,6 +16,8 @@ CHexRenderer hexRendr2;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/vector_angle.hpp> 
 
+#include "renderer/imRendr/imRendr.h"
+
 
 CHexRenderer::CHexRenderer() : hexModel(6) {
 
@@ -170,6 +172,17 @@ void CHexRenderer::setCameraPos(glm::vec3& pos) {
 void CHexRenderer::setCameraPitch(float pitch) {
 	cameraPitch = pitch;
 	camera.pitch(pitch);
+}
+
+bool CHexRenderer::isOnScreen(glm::vec3& pos) {	
+	glm::vec4 t =  camera.clipMatrix * glm::vec4(pos,1);
+	t.x /= t.w; 
+	t.y /= t.w;
+
+	if (t.x < abs(1.0f) && t.y < abs(1.0f))
+		return true;
+
+	return false;
 }
 
 //void CHexRenderer::drawNode(TModelNode& node, glm::mat4& parentMatrix, CBuf* buf) {
@@ -451,7 +464,7 @@ void CHexRenderer::setCameraAspectRatio(glm::vec2 ratio) {
 	camera.setAspectRatio(ratio.x, ratio.y);
 }
 
-/** Return the hex coordinates for the given screen positon. */
+/** Return the hex coordinates and worldspace pos for the given screen positon. */
 std::tuple <CHex, glm::vec3> CHexRenderer::pickHex(int screenX, int screenY) {
 	//convert to clip coordinates
 	glm::vec2 screenSize = camera.getView();

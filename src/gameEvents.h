@@ -6,7 +6,6 @@
 class CGameEventObserver : public CEventObserver {
 public:
 
-	virtual void onNotify(COnCursorNewHex& msg) {};
 	virtual void onNotify(CMouseExitHex& msg) {};
 	virtual void onNotify(CPlayerNewHex& msg) {};
 	virtual void onNotify(CActorMovedHex& msg) {};

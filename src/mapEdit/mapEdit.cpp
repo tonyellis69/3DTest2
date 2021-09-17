@@ -254,8 +254,8 @@ void CMapEdit::selectEntity(float delta) {
 
 void CMapEdit::selectShape(float delta) {
 	currentShape += (unsigned int)delta;
-	currentShape = (currentShape) % 6;
-	switch (currentShape) {
+	unsigned int choice = currentShape % 6;
+	switch (choice) {
 	case editShapeNone: currentShapeStr = "none"; currentPatch.reset(); updateMap(); break;
 	case editShapeHex: currentShapeStr = "hex"; createRing();  break;
 	case editShapePara: currentShapeStr = "parallelogram"; createParagram();  break;

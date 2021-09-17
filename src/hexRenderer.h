@@ -67,6 +67,8 @@ public:
 	void setCameraPos(glm::vec3& pos);
 	void setCameraPitch(float pitch);
 
+	bool isOnScreen(glm::vec3& pos);
+
 	CCamera camera;
 
 	CShader* hexLineShader;
@@ -106,6 +108,8 @@ private:
 	std::vector<glm::vec3> hexModel;
 
 	CLineModel* solidHex;
+
+	//glm::vec2 screenRect; ///<Screen dimensions in worldspace
 
 	
 	unsigned int hMVP;

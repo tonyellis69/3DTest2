@@ -37,6 +37,15 @@ void CHexPhysics::removeDeletedEntities() {
 	}
 }
 
+void CHexPhysics::removeDeadEntities() {
+	for (auto& it = entities.begin(); it != entities.end(); ) {
+		if ((*it)->live == false)
+			it = entities.erase(it);
+		else
+			it++;
+	}
+}
+
 /** Look for possible collisions between pairs of bodues. */
 void CHexPhysics::broadphase() {
 	bodyPairs.clear();

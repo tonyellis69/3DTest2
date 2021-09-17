@@ -43,6 +43,7 @@ private:
 	void onMovedHex();
 
 	void approachDestination();
+	bool turnTo(glm::vec3& p);
 	void track();
 
 	bool canSeePlayer();
@@ -50,6 +51,8 @@ private:
 	float dT;
 
 	TRobotState state = robotWander3;// robotLightSleep;// robotLightSleep;// robotWander3;// 
+
+	int hp = 3; 
 
 	float meleeHitCooldown = 0;
 	float missileCooldown = 0.0f;
@@ -60,6 +63,7 @@ private:
 	glm::vec4 shootingColour = { 1,1,0,1 };
 
 
+	float wakeRange = 8;
 	glm::vec3 meleeLungeHome = { 0,0,0 };
 	float lastDistance = 0;
 	TLungeState lungeState;
@@ -72,8 +76,10 @@ private:
 	float destSlowdownRate = 0.5f;
 	bool reachedDestination = true;
 	float lastDestinationDist = FLT_MAX;
-
 	float speed = 0.0f;
+
+	float lastTurnDir = 0;
+
 
 	bool stoppedToShoot = false;
 	float idealShootRange = 3;

@@ -42,7 +42,9 @@ public:
 
 	TEntities entities; ///<The grand list of entities in the map.
 	
-	bool entityListDirty = false;
+	bool entitiesToDelete = false;
+	bool entitiesToKill = false;
+
 
 	bool mapUpdated = false;
 

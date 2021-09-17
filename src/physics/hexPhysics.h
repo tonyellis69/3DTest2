@@ -21,6 +21,7 @@ public:
 	void removeEntities();
 	void update(float dT);
 	void removeDeletedEntities();
+	void removeDeadEntities();
 
 
 private:

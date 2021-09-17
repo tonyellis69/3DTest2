@@ -20,7 +20,8 @@
 
 #include "spawner.h"
 
-
+constexpr float sin30 = 0.5f;
+constexpr float sin60 = 0.86602540378443;
 
 CPlayerObject::CPlayerObject() {
 
@@ -220,16 +221,17 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 	const float accel = 3000;
 	switch (commandDir) {
 	case moveNorth:  physics.moveImpulse = { 0,1,0 }; break;
-	case moveNE: physics.moveImpulse = { M_SQRT1_2, M_SQRT1_2, 0 }; break;
+	case moveNE: physics.moveImpulse = { sin30, sin60, 0 }; break;
 	case moveEast: physics.moveImpulse = { 1,0,0 }; break;
-	case moveSE: physics.moveImpulse = { M_SQRT1_2, -M_SQRT1_2, 0 }; break;
+	case moveSE: physics.moveImpulse = { sin30, -sin60, 0 }; break;
 	case moveSouth: physics.moveImpulse = { 0,-1,0 }; break;
-	case moveSW: physics.moveImpulse = { -M_SQRT1_2, -M_SQRT1_2, 0 }; break;
+	case moveSW: physics.moveImpulse = { -sin30, -sin60, 0 }; break;
 	case moveWest: physics.moveImpulse = { -1,0,0 }; break;
-	case moveNW: physics.moveImpulse = { -M_SQRT1_2, M_SQRT1_2, 0 }; break;
+	case moveNW: physics.moveImpulse = { -sin30, sin60, 0 }; break;
 	}
 
 	//turn to that direction
+
 	rotation = glm::orientedAngle(glm::normalize(physics.moveImpulse), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 
 	physics.moveImpulse *= accel;

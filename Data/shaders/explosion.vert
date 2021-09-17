@@ -65,7 +65,7 @@ void main() {
 	float moveScale = mix(1.0f, 0.3f, 1 - size / 10.0f);
 	
 	float quadStart = 0.5f; 
-	if (size < 5)
+	if (size < 2)
 		quadStart = 1.0f;
 	
 	if (randShape.z < quadStart) { //it's a quad

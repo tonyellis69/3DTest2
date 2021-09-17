@@ -3,10 +3,7 @@
 #include "messaging/msg.h" 
 #include "hex/hex.h"
 
-class COnCursorNewHex : public CMsg {
-public:
-	CHex newHex;
-};
+
 
 class CMouseExitHex : public CMsg {
 public:

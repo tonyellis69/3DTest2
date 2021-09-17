@@ -84,6 +84,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 			auto [hit, intersection] = entity->collisionCheck(startingPos, leadingPoint);
 			if (hit) {
 				collisionPt = entity->worldPos;
+				collidee = entity;
 				entity->receiveDamage(*owner, 10);
 				collided = true;
 				return true;
@@ -116,6 +117,9 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 }
 
 void CMissile::spawnExplosion() {
-	spawn::explosion("explosion", collisionPt, 1.0f);
+	CExplosion* splode = spawn::explosion("explosion", collisionPt, 1.0f);
+	if (collidee)
+		splode->setCollidee(collidee);
 }
+
 

@@ -282,7 +282,12 @@ void CTrapPatch::resize(float delta, int key) {
 }
 
 void CTrapPatch::rotation() {
-
+	dir = dir % 6;
+	if (dir != 0) {
+		matrix = glm::rotate(float(M_PI) * dir, glm::vec3(0, 0, 1));
+		for (auto& vert : v)
+			vert = matrix * glm::vec4(vert, 1);
+	}
 }
 
 

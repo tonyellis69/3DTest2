@@ -38,6 +38,7 @@ private:
 	bool collided = false;
 
 	CEntity* owner;
+	CEntity* collidee = nullptr; ///<Entity collided with, if any.
 
 	glm::vec3 collisionPt;
 

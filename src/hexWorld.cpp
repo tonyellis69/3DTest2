@@ -116,17 +116,11 @@ void CHexWorld::startGame() {
 	physics.setMap(map->getHexArray());
 
 
-	//create new player object
-	//playerObj = new CPlayerObject();
-	//playerObj->setLineModel("player");
-	//map->addEntity(TEntity(playerObj), CHex(-6,9,-3));
-	//world.player = playerObj;
 
-	//playerObj->updateViewField(); //TO DO: causes errrors look into pron needs reinventing
 
-	//physics.add(playerObj);
+	//spawn::player("player", cubeToWorldSpace(CHex(-6,9-3)));
 
-	spawn::player("player", cubeToWorldSpace(CHex(-6,9-3)));
+	mapEdit.load();
 
 	if (hexCursor == NULL)
 		createCursorObject();
@@ -135,7 +129,7 @@ void CHexWorld::startGame() {
 
 	setViewMode(gameView);
 
-	beginNewTurn(); //NB!!! Repeats some of the stuff above
+	map->getHexArray()->effectsNeedUpdate = true; //old code! Replace
 
 
 }
@@ -174,8 +168,10 @@ void CHexWorld::onKeyDown(int key, long mod) {
 		if (key == 'S' && mod == GLFW_MOD_CONTROL)
 			mapEdit.save();
 
-		if (key == 'L' && mod == GLFW_MOD_CONTROL)
+		if (key == 'L' && mod == GLFW_MOD_CONTROL) {
+			physics.removeEntities();
 			mapEdit.load();
+		}
 
 		if (key == GLFW_KEY_LEFT_ALT)
 			mapEdit.onEntityMode(true);
@@ -285,21 +281,18 @@ void CHexWorld::calcMouseWorldPos() {
 	if (mouseHex != hexCursor->hexPosition) {
 		CMouseExitHex msg;
 		msg.leavingHex = hexCursor->hexPosition;
-		notify(msg);
 		onNewMouseHex(mouseHex);
 	}
 }
 
 
 void CHexWorld::draw() {
-
 	hexRendr2.drawFloorPlan();
 
-
-
-	//for (auto entity : entitiesToDraw)
-	for (auto& entity : map->entities)
+	for (auto& entity : map->entities) {
+		if (entity->live)
 			entity->draw();
+	}
 
 	if (editMode) {
 		if (mapEdit.entityMode) {
@@ -338,27 +331,30 @@ void CHexWorld::update(float dT) {
 
 	if (game.paused)
 		return;
+
 	this->dT = dT;
-	map->getHexArray()->setFog(CHex(2, -7, 5), 1.0f);
-	//map->setFog(CHex(2, -8, 6), 1.0f);
-	map->getHexArray()->setFog(CHex(3, -8, 5), 1.0f);
+
 
 	updateCameraPosition();
 
 	physics.update(dT);
 
 	if (!editMode)
-		//for (auto& entity : map->entities) {
 		for (int n = 0; n < map->entities.size(); n++) {
-			//entity->update(dT);
-			map->entities[n]->update(dT);
+			auto entity = map->entities[n];
+			if (entity->live)
+				map->entities[n]->update(dT);
 		}
 
 
-	renderer.entityNo = 0;
-
-	if (game.map->entityListDirty)
+	if (game.map->entitiesToDelete)
 		physics.removeDeletedEntities();
+
+	//TO DO: this should come to replace above
+	if (game.map->entitiesToKill) {
+		physics.removeDeadEntities();
+		game.map->entitiesToKill = false;
+	}
 
 
 	game.update(dT);
@@ -470,11 +466,7 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 
 	hexPosLbl->setText(coords.str());
 
-	//hexPosLbl->setText("longer!");
-
-	COnCursorNewHex msg;
-	msg.newHex = mouseHex;
-	notify(msg);
+	//lblText = coords.str();
 
 	if (editMode)
 		mapEdit.onNewMouseHex(mouseHex);
@@ -537,12 +529,6 @@ void CHexWorld::updateCameraPosition() {
 	calcMouseWorldPos();
 }
 
-void CHexWorld::beginNewTurn() {
-	map->getHexArray()->effectsNeedUpdate = true;
-
-//	cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition);
-
-}
 
 
 /** Whether we're in standard follow-cam mode or not, etc. */
