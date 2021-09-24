@@ -11,8 +11,12 @@ public:
 	void setCollidee(CEntity* collidee);
 
 	float lifeTime = 0;
-	float timeOut = 1.0f;
+	float timeOut = 2.0f;
 	float size;
+	int particleCount;
 	CEntity* collidee = nullptr; ///<Entity hit, if any.
 	glm::vec3 relativePos; ///<From collidee.
+
+	const float maxSize = 10;
+	float seed; 
 };

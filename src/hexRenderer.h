@@ -17,7 +17,14 @@
 
 #include "lineModel.h"
 
-
+struct TExplode {
+	glm::vec3 pos;
+	float lifeTime;
+	float size;
+	float timeOut;
+	int particleCount;
+	float seed;
+};
 
 
 /**	A class for drawing 3D hex-based graphics. */
@@ -58,7 +65,7 @@ public:
 
 	void drawSightLine(glm::vec3& posA, glm::vec3& posB);
 
-	void drawExplosion( glm::vec3& pos, float& lifeTime, float& size, float& timeOut);
+	void drawExplosion(TExplode& e);
 
 	void drawLineModel(CLineModel& lineModel);
 
@@ -77,7 +84,7 @@ public:
 	CShader* visibilityShader;
 	CShader* explosionShader;
 
-
+	const int numExplosionParticles = 200;
 	
 private:
 	void tmpCreateHexagonModel();
@@ -138,6 +145,7 @@ private:
 	unsigned int hLifeTime;
 	unsigned int hSize;
 	unsigned int hTimeOut;
+	unsigned int hSeed;
 
 	glm::vec4 floorplanLineColour;
 	glm::vec4 floorplanSpaceColour;

@@ -102,6 +102,9 @@
     <ClCompile Include="src\spawner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\roboState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -195,6 +198,9 @@
       <Filter>Source Files\mapEdit</Filter>
     </ClInclude>
     <ClInclude Include="src\spawner.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\roboState.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

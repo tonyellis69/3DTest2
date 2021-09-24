@@ -20,6 +20,7 @@
 #include "renderer/imRendr/imRendr.h"
 
 const float rad360 = M_PI * 2;
+const float rad90 = M_PI / 2;
 const float rad60 = M_PI / 3;
 const float rad45 = M_PI / 4;
 const float rad120 = rad360 / 3;
@@ -40,7 +41,8 @@ void CRobot::update(float dT) {
 
 	switch (state) {
 	case robotWander3:
-		wander3();
+		//wander3();
+
 		break;
 	case  robotLightSleep:
 		//if (hexRendr2.isOnScreen(worldPos) 
@@ -62,7 +64,15 @@ void CRobot::update(float dT) {
 		break;
 	}
 
-	if (!reachedDestination)
+	if (currentState) {
+		auto newState = currentState->update(dT);
+		if (newState)
+			currentState = newState;
+	}
+	return;
+
+	finishedTurn = approachTurn();
+	if (!reachedDestination && finishedTurn)
 		approachDestination();
 	
 //	track();
@@ -75,8 +85,8 @@ void CRobot::setState(TRobotState newState, CEntity* entity)
 {
 	switch (newState) {
 	case robotWander3:
-		lineModel.setColourR(glm::vec4(0, 1, 0, 1));
-		//robotMoveSpeed = 3.0f;
+		currentState = std::make_shared<CRoboWander>(this);
+		lineModel.setColourR(glm::vec4(0, 1, 0, 1)); //move inside!
 		break;
 	case robotLightSleep:
 		reachedDestination = true;
@@ -131,7 +141,7 @@ void CRobot::receiveDamage(CEntity& attacker, int damage) {
 	hp--;
 	if (hp == 0) {
 		game.killEntity(*this);
-		spawn::explosion("explosion", worldPos, 2.0f);
+		spawn::explosion("explosion", worldPos, 1.5f);
 	}
 }
 
@@ -242,6 +252,9 @@ void CRobot::fireMissile(CEntity* target) {
 
 
 void CRobot::wander3() {
+	return;
+
+
 	/*if (cubeDistance(hexPosition, world.player->hexPosition) <= 4
 		&& hasLineOfSight(world.player)) {*/
 	if (canSeePlayer()) {
@@ -251,11 +264,59 @@ void CRobot::wander3() {
 		return;
 	}
 
+	//if (reachedDestination) {
+	//	if (!glancing) {
+	//		glancing = true;
+	//		glancePeriod = 0;
+	//		oldRotation = rotation;
+	//	}
+
+	//	if (glancing) {
+	//		glancePeriod += dT * 2.0f;
+	//		if (glancePeriod > ( rad360 * 1.0f) ) {
+	//			glancing = false;
+	//		}
+	//		else {
+	//			float glanceRot = sin(glancePeriod);
+	//			rotation = oldRotation + (glanceRot * rad90);
+	//			return;
+	//		}
+	//	}
+	//}
+
+
+
+	if (reachedDestination) {
+		if (!glancing) {
+			glancing = true;
+			oldRotation = rotation;
+			//pick two bracketing angles
+			glanceA = rotation + rad90;
+			glanceB = rotation - rad90;
+			turnDestination = glanceA;
+
+
+
+		}
+
+		if (glancing) {
+			glancePeriod += dT * 2.0f;
+			if (glancePeriod > ( rad360 * 1.0f) ) {
+				glancing = false;
+			}
+			else {
+				float glanceRot = sin(glancePeriod);
+				rotation = oldRotation + (glanceRot * rad90);
+				return;
+			}
+		}
+	}
 
 
 
 	tracking = trackDestination;
-	if (reachedDestination) {
+	if (reachedDestination && !glancing) {
+
 		THexList ring = findRing(5, hexPosition);
 		CHex randHex;
 		int giveUp = 0;
@@ -266,6 +327,8 @@ void CRobot::wander3() {
 			if (hasLineOfSight(hexWS) ) {
 				destination = hexWS;
 				reachedDestination = false;
+				//finishedTurn = false;
+				turnDestination = glm::orientedAngle(glm::normalize(hexWS - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 				lastDestinationDist = FLT_MAX;
 				//world.map->setHighlight(randHex, 1.0f);
 				break;
@@ -355,9 +418,9 @@ void CRobot::onMovedHex()
 /** Handle the approach to our destination point by slowing down,
 	catching overshoot, etc. */
 void CRobot::approachDestination() {
-	bool facingDest = turnTo(destination);
-	if (!facingDest)
-		return;
+	//bool facingDest = turnTo(destination);
+	//if (!facingDest)
+	//	return;
 
 
 	glm::vec3 moveVec = glm::normalize(destination - worldPos);
@@ -387,6 +450,37 @@ void CRobot::approachDestination() {
 	lastDestinationDist = dist;
 }
 
+
+bool CRobot::approachTurn() {
+	float PI_2 = 2 * M_PI;
+	//find shortest angle between dest angle and our direction
+	float turnDist = fmod(PI_2 + turnDestination - rotation, PI_2);
+
+	//put in range [-pi - pi] to give angle a direction, ie, clockwise/anti
+	if (turnDist > M_PI)
+		turnDist = -(PI_2 - turnDist);
+
+	if (abs(turnDist) < 0.01f) {//temp!!!!
+		return true;
+	}
+
+	float turnDir = (std::signbit(turnDist)) ? -1.0f : 1.0f;
+
+	if (lastTurnDir != 0 && lastTurnDir != turnDir) { //we overshot
+		//rotation = glm::orientedAngle(glm::normalize(p - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+		rotation = turnDestination;
+		lastTurnDir = 0;
+		return true;
+
+	}
+
+	float turnStep = turnDir * dT * 5.0f; //temp!
+	rotation += turnStep;
+
+	lastTurnDir = turnDir;
+	return false;
+}
+
 /** Continue turning toward p, if not facing it. */
 bool CRobot::turnTo(glm::vec3& p) {
 	float turnDist = orientationTo(p);
@@ -404,7 +498,7 @@ bool CRobot::turnTo(glm::vec3& p) {
 	}
 
 
-	float turnStep = turnDir* dT * 10.0f; //temp!
+	float turnStep = turnDir* dT * 5.0f; //temp!
 	rotation += turnStep;
 
 	lastTurnDir = turnDir;

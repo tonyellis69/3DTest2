@@ -6,6 +6,7 @@ uniform vec3 pos;
 uniform mat4 mvpMatrix;
 uniform float lifeTime;
 uniform float size;
+uniform float seed;
 
 out quad {
 	vec4 a;
@@ -21,6 +22,7 @@ float baseSpeed = 1.0f;
 float speedVariance = 8.0f;
 float rotationVariance = 3.0f;
 float baseRotationSpeed = 5.0f;
+float maxSize = 10; //<Of explosions
 
 #define PI 3.1415926538
 #define halfPI 1.5707963269
@@ -51,7 +53,7 @@ mat4 rotationZ( in float angle ) {
 
 
 void main() {
-	float r1 = rand(pos.xy); //always the same for this position
+	float r1 = seed; //rand(pos.xy); //always the same for this position
 	vec3 randMove = hash3(vec2(r1,gl_VertexID)); //different for each particle
 	vec3 randShape = hash3(vec2(gl_VertexID,r1));
 	
@@ -61,11 +63,14 @@ void main() {
 	float speed;
 	float rotation;
 	
-	float scale = mix(1.0f, 0.3f, 1 - size / 10.0f);
-	float moveScale = mix(1.0f, 0.3f, 1 - size / 10.0f);
+	float unitSize = (size - 1.0f) / (maxSize - 1.0f);
+	float scale = mix( 0.35f, 1.0f, unitSize);
+	float powSize = pow(unitSize,2.0f);
+	float moveScale = mix(0.25f, 1.0f, powSize); //makes size 5 moveScale = 0.4f. Linear would be 0.6f which spreads too fast
+
 	
 	float quadStart = 0.5f; 
-	if (size < 2)
+	if (size <= 1)
 		quadStart = 1.0f;
 	
 	if (randShape.z < quadStart) { //it's a quad
@@ -82,7 +87,8 @@ void main() {
 	}
 	else { //it's a line
 		w = 0.01f;
-		h = 0.75f * scale;
+		//h = 0.75f * scale; //created big lines
+		h = 0.2f * scale;
 		
 		rotation = atan(dirVec.x,dirVec.y) ;
 		speed = (baseSpeed  * 4 * moveScale) + (speedVariance * randMove.z * moveScale );

@@ -52,8 +52,9 @@ void CHexRenderer::init()
 	std::vector<unsigned int> index = { 0,1,2,3 };
 	unitLineBuf.storeVerts(lineVerts, index, 3);
 
-	std::vector<glm::vec3> dummyVerts(90, glm::vec3(0));
-	std::vector<unsigned int> dummyIndex(90);
+
+	std::vector<glm::vec3> dummyVerts(numExplosionParticles, glm::vec3(0));
+	std::vector<unsigned int> dummyIndex(numExplosionParticles);
 	std::iota(std::begin(dummyIndex), std::end(dummyIndex), 0); // Fill with 0, 1, ..., 99.
 	explosionBuf.storeVerts(dummyVerts, dummyIndex, 1);
 }
@@ -290,15 +291,16 @@ void CHexRenderer::drawSightLine(glm::vec3& posA, glm::vec3& posB) {
 	renderer.drawLineStripAdjBuf(unitLineBuf, 0, 4);
 }
 
-void CHexRenderer::drawExplosion( glm::vec3& pos, float& lifeTime, float& size, float& timeOut) {
+void CHexRenderer::drawExplosion(TExplode& e) {
 	renderer.setShader(explosionShader);
 	glm::mat4 mvp = camera.clipMatrix;
 	explosionShader->setShaderValue(hExpMVP, mvp);
-	explosionShader->setShaderValue(hPos, pos);
-	explosionShader->setShaderValue(hLifeTime, lifeTime);
-	explosionShader->setShaderValue(hSize, size);
-	explosionShader->setShaderValue(hTimeOut, timeOut);
-	renderer.drawPointsBuf(explosionBuf, 0, explosionBuf.numElements);
+	explosionShader->setShaderValue(hPos,e.pos);
+	explosionShader->setShaderValue(hLifeTime, e.lifeTime);
+	explosionShader->setShaderValue(hSize, e.size);
+	explosionShader->setShaderValue(hTimeOut, e.timeOut);
+	explosionShader->setShaderValue(hSeed, e.seed);
+	renderer.drawPointsBuf(explosionBuf, 0, e.particleCount);
 }
 
 
@@ -458,6 +460,7 @@ void CHexRenderer::createExplosionShader() {
 	hLifeTime = explosionShader->getUniformHandle("lifeTime");
 	hSize = explosionShader->getUniformHandle("size");
 	hTimeOut = explosionShader->getUniformHandle("timeOut");
+	hSeed = explosionShader->getUniformHandle("seed");
 }
 
 void CHexRenderer::setCameraAspectRatio(glm::vec2 ratio) {
