@@ -16,7 +16,7 @@ CDoor::CDoor() {
 
 
 void CDoor::setLineModel(const std::string& name) {
-	CEntity::setLineModel(name);
+	CEntity::setBoundingRadius();
 	doorNode = lineModel.getNode("Door");
 }
 

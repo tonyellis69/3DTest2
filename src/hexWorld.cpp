@@ -66,7 +66,13 @@ void CHexWorld::setVM(Ivm* pVM) {
 
 /**	Load a multipart mesh for storage under the given name. */
 void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
-	hexRendr2.loadMesh(name, fileName);
+	CImporter importer;
+	importer.loadFile(fileName);
+	spawn::meshBufs[name] = importer.getSingleMesh().exportToBuffer();
+
+	spawn::modelBufs[name] = importer.getMeshNodes();
+	spawn::modelBufs[name].name = name;
+	
 }
 
 /** Create a map using the data in the given Tig file. */
@@ -433,7 +439,10 @@ void CHexWorld::onSpawn(const std::string& name, TEntity entity) {
 
 void CHexWorld::createCursorObject() {
 	hexCursor = new CEntity();
-	hexCursor->setLineModel("cursor");
+	hexCursor->setBoundingRadius();
+	hexCursor->lineModel.buffer2 = &spawn::meshBufs["cursor"];
+	hexCursor->lineModel.model = spawn::modelBufs["cursor"];
+	hexCursor->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
 	hexCursor->setPosition(CHex(0, 0, 0));
 }
 
@@ -521,7 +530,7 @@ int CHexWorld::tigCall(int memberId) {
 
 
 void CHexWorld::updateCameraPosition() {
-	if (viewMode == gameView && !game.player->dead && !editMode)
+	if (viewMode == gameView && !editMode && !game.player->dead )
 		hexRendr2.followTarget(playerObj->worldPos);
 	//else
 		//hexRendr2.attemptScreenScroll(mousePos, dT);

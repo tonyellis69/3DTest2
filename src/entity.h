@@ -32,7 +32,7 @@ public:
 
 	void setPosition(CHex& hex);
 	void setPosition(glm::vec3& worldPos);
-	virtual void setLineModel(const std::string& name);
+	virtual void setBoundingRadius();
 	void setHexDirection(THexDir direction);
 	virtual void draw();
 	THexDir getDirection() {
@@ -45,6 +45,7 @@ public:
 	virtual std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB) {
 		return std::tuple<bool, glm::vec3>();
 	}
+	std::tuple<float, glm::vec3> collisionCheck(CEntity* e2);
 	float orientationTo(glm::vec3& targetPos);
 	void updatePos(glm::vec3& dPos);
 

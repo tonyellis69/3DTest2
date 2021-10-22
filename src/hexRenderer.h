@@ -40,8 +40,6 @@ public:
 	void moveCamera(glm::vec3& move);
 	void setCameraAspectRatio(glm::vec2 ratio);
 	std::tuple <CHex, glm::vec3> pickHex(int screenX, int screenY);
-	void loadMesh(const std::string& name, const std::string& fileName);
-	CLineModel getLineModel(const std::string& name);
 	void setCursorPath(CHex& playerPos, CHex& cursorPos);
 	void setCursorPath(THexList& path);
 	THexList& getCursorPath() { return cursorPath; }
@@ -98,8 +96,9 @@ private:
 
 	void createExplosionShader();
 
-
-	void drawNode2(TModelNode& node, glm::mat4& parentMatrix, CBuf2* buf);
+	//TO DO: scrap this, but currently it's used in highLightHex
+	void drawModel(TModelData& node, glm::mat4& parentMatrix, CBuf2* buf, glm::vec4& colour);
+	void drawModel2(TModelData& node, glm::mat4& parentMatrix, CLineModel& lineModel);
 	
 	void createFogBuffer(int w, int h);
 
@@ -159,10 +158,7 @@ private:
 
 	CHexArray* hexArray;
 
-	std::list<CBuf2> modelBuffers;
-	//std::list<CBuf> modelBuffers2;
-
-	std::map<std::string, CLineModel> lineModels;
+	//std::map<std::string, CLineModel> lineModels;
 
 
 	THexList cursorPath;

@@ -63,7 +63,7 @@ THexList CMap::findVisibleHexes(CHex& apex, THexList& perimeterHexes, bool obses
 	Set visibility to zero where a hex has now become non-visible. */
 void CMap::updateVisibility(THexList& visibleHexes, THexList& unvisibledHexes) {
 	for (auto& visibleHex : visibleHexes) {
-		hexArray.setFog(visibleHex, 0);
+		//hexArray.setFog(visibleHex, 0);
 		hexArray.setVisibility(visibleHex, 1.0f);
 	}
 

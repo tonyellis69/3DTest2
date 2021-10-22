@@ -31,8 +31,7 @@ void CEntity::setPosition(glm::vec3& worldPos) {
 	buildWorldMatrix();
 }
 
-void CEntity::setLineModel(const std::string& name) {
-	lineModel = hexRendr2.getLineModel(name);
+void CEntity::setBoundingRadius() {
 	physics.boundingRadius = glm::length(lineModel.model.extents.furthestVert);
 }
 
@@ -58,6 +57,23 @@ void CEntity::buildWorldMatrix() {
 	//NB: we use a CW system for angles
 }
 
+
+std::tuple<float, glm::vec3> CEntity::collisionCheck(CEntity* e2) {
+	//get bounding-sphere radii
+	float radius1 = lineModel.getRadius();
+	float radius2 = e2->lineModel.getRadius();
+	
+	//check for overlap
+	float entDist = glm::distance(worldPos, e2->worldPos);
+	if (entDist > radius1 + radius2)
+		return { 0, {0,0,0} };
+	else {
+		float collisionDist = entDist - radius2;
+		glm::vec3 collisionNormal = glm::normalize(e2->worldPos - worldPos);
+		return { collisionDist, collisionNormal};
+	}
+
+}
 
 /** Return shortest angle of rotation between the way we're facing and the given point. */
 float CEntity::orientationTo(glm::vec3& targetPos) {

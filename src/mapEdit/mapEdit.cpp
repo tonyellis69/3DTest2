@@ -218,6 +218,8 @@ void CMapEdit::addEntity(glm::vec3& mousePos) {
 		TEntity entity = *it;
 		if (glm::distance(entity->worldPos, mousePos) < 0.5f) {
 			pMap->removeEntity(*it);
+			if (game.player == (*it).get())
+				game.player = nullptr;
 			return;
 		}
 		it++;

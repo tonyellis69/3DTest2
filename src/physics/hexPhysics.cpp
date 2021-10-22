@@ -46,19 +46,24 @@ void CHexPhysics::removeDeadEntities() {
 	}
 }
 
-/** Look for possible collisions between pairs of bodues. */
+/** Look for possible collisions between scenery and pairs of bodies. */
 void CHexPhysics::broadphase() {
 	bodyPairs.clear();
-	for (auto& entity : entities) {
+	//std::vector<CHex> openHexes;
+	//openHexes.reserve(6);
+
+	for (unsigned int e1=0; e1<entities.size(); e1++) {
+		auto entity = entities[e1];
+		//openHexes.clear();
+		std::vector<CHex> openHexes;
+
+		//scenery collisions
 		glm::vec3 hexPos = cubeToWorldSpace(entity->hexPosition);
 		glm::vec3 relativePos = entity->worldPos - hexPos;
-
 		for (int dir = 0; dir < 6 ; dir++) {
 			CHex neighbour = getNeighbour(entity->hexPosition, THexDir(dir));
 			if (hexArray->getHexCube(neighbour).content == solidHex) {
 				CBodyPairKey key(entity, &tmpMapObj, dir);
-				//TO DO: if key already exists for this pair, bail out (for now)
-
 				auto [penetration,normal] = findSceneryCollision(entity,hexPos,dir);
 				if (penetration > 0) {				
 					CBodyPair bodyPair(entity, &tmpMapObj, penetration, normal);
@@ -68,7 +73,29 @@ void CHexPhysics::broadphase() {
 					bodyPairs.erase(key);
 				}
 			}
+			else {
+				openHexes.push_back(neighbour);
+			}
+
 		}
+
+		//entity-entity collisions
+		for (unsigned int e2 = e1 + 1; e2 < entities.size(); e2++) {
+			auto entity2 = entities[e2];
+			if (entity->hexPosition == entity2->hexPosition ||
+				std::count(openHexes.begin(), openHexes.end(), entity2->hexPosition)) {
+				CBodyPairKey key(entity, entity2);
+				auto [penetration2, normal2] = entity->collisionCheck(entity2);
+				if (penetration2 > 0) {
+					CBodyPair bodyPair(entity, entity2, penetration2, normal2);
+					bodyPairs[key] = bodyPair;
+				}
+				else {
+					bodyPairs.erase(key);
+				}
+			}
+		}
+
 	}
 
 }

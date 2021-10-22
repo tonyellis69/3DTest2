@@ -383,7 +383,8 @@ void C3DtestApp::initHexWorld() {
 
 	hexWorld.addMesh("test", dataPath + "models\\test.obj");
 	hexWorld.addMesh("cursor", dataPath + "models\\cursor.dae");
-	hexWorld.addMesh("player", dataPath + "models\\player.obj");
+	//hexWorld.addMesh("player", dataPath + "models\\player.obj");
+	hexWorld.addMesh("player", dataPath + "models\\basePlayer.dae");
 
 	hexWorld.addMesh("dummyItem", dataPath + "models\\dummyItem.dae");
 	hexWorld.addMesh("medkit", dataPath + "models\\medkit.dae");

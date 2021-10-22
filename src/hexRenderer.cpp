@@ -45,7 +45,8 @@ void CHexRenderer::init()
 	floorplanSpaceColour = glm::vec4(0, 0, 0, 1);
 	floorplanSolidColour = glm::vec4(0, 0.65f, 0, 1);
 	floorplanSolidColour = glm::vec4(0, 0.47f, 0.16f, 1);
-	solidHex = &lineModels["solidHex"];
+	//solidHex = &lineModels["solidHex"];
+	//TO DO: scrap solidHex, find a more streamlined way to do whatever it does
 
 
 	std::vector<glm::vec3> lineVerts = { {-0.1,0,0}, {0,0,0}, {1,0,0}, {1.1,0,0} };
@@ -151,8 +152,9 @@ void CHexRenderer::drawPath(THexList* path, glm::vec4& pathStartColour, glm::vec
 
 
 void CHexRenderer::drawLineModel(CLineModel& lineModel) {
-	TModelNode& node = lineModel.model;
-	drawNode2(node, glm::mat4(1), lineModel.buffer2);
+	TModelData& node = lineModel.model;
+	//drawModel(node, glm::mat4(1), lineModel.buffer2,lineModel.colour);
+	drawModel2(lineModel.model, glm::mat4(1), lineModel);
 }
 
 /** Point the camera in the given direction. Eg, top-down. */
@@ -200,14 +202,14 @@ bool CHexRenderer::isOnScreen(glm::vec3& pos) {
 //
 //}
 
-void CHexRenderer::drawNode2(TModelNode& node, glm::mat4& parentMatrix, CBuf2* buf) {
+void CHexRenderer::drawModel(TModelData& node, glm::mat4& parentMatrix, CBuf2* buf, glm::vec4& colour) {
 	renderer.setShader(lineShader);
 	glm::mat4 mvp = camera.clipMatrix * node.matrix * parentMatrix;
 	lineShader->setShaderValue(hMVP, mvp);
 	lineShader->setShaderValue(hWinSize, camera.getView());
 
 	for (auto& mesh : node.meshes) {
-		lineShader->setShaderValue(hColour, mesh.colour);
+		lineShader->setShaderValue(hColour, colour);
 	
 		if (mesh.isLine) {//TO DO: ugh, try to avoid
 			renderer.drawLineStripAdjBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
@@ -218,8 +220,31 @@ void CHexRenderer::drawNode2(TModelNode& node, glm::mat4& parentMatrix, CBuf2* b
 
 	}
 
-	for (auto& subNode : node.subNodes)
-		drawNode2(subNode, node.matrix * parentMatrix, buf);
+	for (auto& subNode : node.subModels)
+		drawModel(subNode, node.matrix * parentMatrix, buf, colour);
+
+}
+
+void CHexRenderer::drawModel2(TModelData& node, glm::mat4& parentMatrix, CLineModel& lineModel) {
+	renderer.setShader(lineShader);
+	glm::mat4 mvp = camera.clipMatrix * node.matrix * parentMatrix;
+	lineShader->setShaderValue(hMVP, mvp);
+	lineShader->setShaderValue(hWinSize, camera.getView());
+
+	
+		for (auto& mesh : node.meshes) {
+			lineShader->setShaderValue(hColour, lineModel.colour);
+
+			if (mesh.isLine) {//TO DO: ugh, try to avoid
+				renderer.drawLineStripAdjBuf(*lineModel.buffer2, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
+			}
+			else
+				renderer.drawTrisBuf(*lineModel.buffer2, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
+		}
+	
+
+	for (auto& subNode : node.subModels)
+		drawModel2(subNode, node.matrix * parentMatrix, lineModel);
 
 }
 
@@ -487,46 +512,9 @@ std::tuple <CHex, glm::vec3> CHexRenderer::pickHex(int screenX, int screenY) {
 
 	CHex hexPos = worldSpaceToHex(p);
 
-	//liveLog << "\n" << hexPos.x << " " << hexPos.y << " " << hexPos.z;
-
-
 	return { hexPos, p };
 }
 
-void CHexRenderer::loadMesh(const std::string& name, const std::string& fileName) {
-	importer.loadFile(fileName);
-	
-	//store vert buffer
-
-	//CBuf meshBuf;
-	//modelBuffers2.push_back(meshBuf);
-
-	CBuf2 meshBuf2;
-	modelBuffers.push_back(meshBuf2);
-
-	//importer.getSingleMesh().exportToBuffer(modelBuffers2.back());
-	importer.getSingleMesh().exportToBuffer(modelBuffers.back());
-
-	//store model
-	TModelNode& model = importer.getMeshNodes();
-	model.name = name;
-	//lineModels[name] = { model,&modelBuffers2.back(),&modelBuffers.back() };
-
-	CLineModel lineModel;
-	lineModel.model = model;
-	//lineModel.buffer = &modelBuffers2.back();
-	lineModel.buffer2 = &modelBuffers.back();
-	lineModel.setColourR(floorplanLineColour); //////temp!!!!!!!!!!!
-
-	lineModels[name] = lineModel;
-
-	
-}
-
-
-CLineModel CHexRenderer::getLineModel(const std::string& name) {
-	return lineModels[name];
-}
 
 /** Fill the structure used for drawing the path between player and cursor. */
 void CHexRenderer::setCursorPath(CHex& playerPos, CHex& cursorPos) {
@@ -630,20 +618,22 @@ glm::i32vec2 CHexRenderer::worldPosToScreen(glm::vec3& worldPos) {
 }
 
 /** Highlight this hex. */
+//TO DO: find a more elegant way to this and any other hex effect - 
+//probably shouldn't involve a lineModel at all.
 void CHexRenderer::highlightHex(CHex& hex) {
 	glDisable(GL_DEPTH_TEST);
 	//draw coloured filled hex
-	TModelNode& node = solidHex->model;
+	TModelData& node = solidHex->model;
 	glm::mat4 worldM = glm::translate(glm::mat4(1), hexArray->getWorldPos(hex));
-	node.meshes[0].colour = glm::vec4(0, 0, 0.8f, 1); 
-	drawNode2(node, worldM, solidHex->buffer2);
+	//node.meshes[0].colour = glm::vec4(0, 0, 0.8f, 1); 
+	drawModel(node, worldM, solidHex->buffer2, glm::vec4(0, 0, 0.8f, 1));
 
 
 	//draw smaller background colour hex
 	glm::mat4 scaleM = glm::scale(glm::mat4(1), glm::vec3(0.9f));
 	worldM = worldM * scaleM;
-	node.meshes[0].colour =  floorplanSpaceColour;
-	drawNode2(node, worldM, solidHex->buffer2);
+	//node.meshes[0].colour =  floorplanSpaceColour;
+	drawModel(node, worldM, solidHex->buffer2, floorplanSpaceColour);
 
 	glEnable(GL_DEPTH_TEST);
 }

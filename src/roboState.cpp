@@ -6,6 +6,7 @@
 #include "robot.h"
 
 #include "utils/random.h"
+#include "gameState.h"
 
 #include "utils/log.h"
 
@@ -18,6 +19,8 @@ const float rad120 = rad360 / 3;
 
 CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 	speed = 1000.0f;
+	bot->lineModel.setColourR(glm::vec4(0, 1, 0, 1));
+	
 	THexList ring;
 	CHex randHex;
 	int dist = 5;
@@ -41,9 +44,14 @@ CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 
 	} while (dist > 0);
 
+
 }
 
 std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
+	if (bot->canSeePlayer())
+		///return std::make_shared<CCharge>(bot, game.player);
+		return std::make_shared<CCloseAndShoot>(bot, game.player);
+
 	this->dT = dT;
 
 	bool facingDest = turnTo(destination);
@@ -51,29 +59,14 @@ std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
 		return nullptr;
 
 	//proceed to actual movement
-	glm::vec3 moveVec = glm::normalize(destination - bot->worldPos);
-	bot->physics.moveImpulse = moveVec * speed;
-
 	float dist = glm::distance(bot->worldPos, destination);
 
 	if (dist < 0.05f) {
 		bot->physics.velocity = { 0, 0, 0 };
-		return std::make_shared<CGlanceAround>(bot); //temp!
+		return std::make_shared<CGlanceAround>(bot); 
 	}
 
-	if (dist < destSlowdownRange) { //time to slow down
-
-		if (dist > lastDestinationDist) { //overshot!
-			bot->physics.velocity = { 0, 0, 0 };
-			return std::make_shared<CGlanceAround>(bot); //temp!
-		}
-
-		float p = dist / destSlowdownRange;
-		bot->physics.moveImpulse *= p;
-	}
-
-	lastDestinationDist = dist;
-
+	bot->setImpulse(destination, speed);
 	return nullptr;
 }
 
@@ -103,31 +96,41 @@ bool CRoboWander::turnTo(glm::vec3& p) {
 }
 
 
+
 CGlanceAround::CGlanceAround(CRobot* bot) : CRoboState(bot) {
 	float leftLimit = fmod(rad360 + bot->rotation - rad90, rad360);
 	float rightLimit = fmod(rad360+ bot->rotation + rad90, rad360);
 	cumulativeRotation = 0;
 	totalRotation = 0;
 
-	glances = { leftLimit,bot->rotation,rightLimit,bot->rotation };
-			//,leftLimit,bot->rotation,rightLimit,bot->rotation };
+	float shortPause = 0.25f;
+	float longPause = 0.5f;
+	float currentFocus = bot->rotation;
+
+	glances = { {currentFocus, shortPause}, {leftLimit, shortPause}, {currentFocus,0}, {rightLimit, shortPause},
+		{currentFocus, longPause} };
 }
 
 std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
-	if (glances.empty()) {
-		pause += dT;
-		if (pause < 0.5f)
-			return nullptr;
+	if (bot->canSeePlayer())
+		//return std::make_shared<CCharge>(bot,game.player);
+		return std::make_shared<CCloseAndShoot>(bot, game.player);
 
+	if (pause > 0) {
+		pause -= dT;
+		return nullptr;
+	}
+
+	if (glances.empty()) {
 		return std::make_shared<CRoboWander>(bot);
 	}
 
-	float dest = glances.front();
+	TGlance dest = glances.front();
 
 	//find shortest angle between dest angle and our direction
 	float turnDist; 
 	if (totalRotation == 0) {
-		turnDist = fmod(rad360 + dest - bot->rotation, rad360);
+		turnDist = fmod(rad360 + dest.angle - bot->rotation, rad360);
 		//put in range [-pi - pi] to give angle a direction, ie, clockwise/anti
 		if (turnDist > M_PI)
 			turnDist = -(rad360 - turnDist);
@@ -140,15 +143,164 @@ std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
 	float frameTurn = dT * glanceSpeed * turnDir;
 	cumulativeRotation += abs(frameTurn);
 	if (cumulativeRotation > totalRotation) { //overshot
-		bot->rotation = dest;
+		bot->rotation = dest.angle;
 		totalRotation = 0;
 		cumulativeRotation = 0;
+		pause = dest.pause;
 		glances.erase(glances.begin());
+
+
+
 	}
 	else {
 		bot->rotation += frameTurn;
 		//bot->rotation = fmod(rad360 + bot->rotation, rad360); //needed??
 	}
 
+	return nullptr;
+}
+
+
+CCharge::CCharge(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
+	this->targetEntity = targetEntity;
+
+	bot->lineModel.setColourR(glm::vec4(1, 0, 0, 1));
+}
+
+std::shared_ptr<CRoboState> CCharge::update(float dT) {
+	
+	if (bot->canSeePlayer()) { //keep destination up to date
+		destination = targetEntity->worldPos;
+		targetInSight = true;
+	}
+	else
+		targetInSight = false;
+	
+	//reached destination?
+	if (glm::distance(bot->worldPos, destination) < meleeRange ) {
+		bot->physics.moveImpulse = { 0,0,0 };
+		if (targetInSight)
+			return std::make_shared<CMelee>(bot,targetEntity); 
+		else {
+			bot->lineModel.setColourR(glm::vec4(0, 1, 0, 1));
+			return std::make_shared<CRoboWander>(bot);
+		}
+	}
+
+	//otherwise charge at target
+	bot->setImpulse(destination, chargeSpeed);
+
+	//ensure facing destination
+	bot->rotation = glm::orientedAngle(glm::normalize(destination - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+
+	return nullptr;
+}
+
+
+CMelee::CMelee(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
+	this->targetEntity = targetEntity; 
+	lungeVec = glm::normalize(targetEntity->worldPos - bot->worldPos);
+	timer = 0;
+	startPos = bot->worldPos;
+}
+
+std::shared_ptr<CRoboState> CMelee::update(float dT) {
+	float targetDist = glm::distance(bot->worldPos, targetEntity->worldPos);
+	if (targetDist > meleeRange && timer < 0)
+		return std::make_shared<CRoboWander>(bot);
+
+	timer += dT;
+	if (timer < 0)
+		return nullptr;
+
+	if (timer < lungeEnd) {
+		float step = targetDist /(lungeEnd - timer) ;
+		step *= dT;
+		bot->worldPos += lungeVec * step;
+		return nullptr;
+	}
+
+	if (timer < returnEnd) {
+		float dist = glm::distance(startPos, bot->worldPos);
+		float step = dist / (returnEnd - timer) ;
+		step *= dT;
+		bot->worldPos += -lungeVec * step;
+		return nullptr;
+	}
+
+	timer = -1.0f;
+	bot->worldPos = startPos;
+
+	return nullptr;
+}
+
+
+CCloseAndShoot::CCloseAndShoot(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
+	this->targetEntity = targetEntity;
+	bot->lineModel.setColourR(glm::vec4(1, 0, 0, 1));
+}
+
+std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
+	missileCooldown += dT;
+
+	//can we see the target?
+	if (bot->hasLineOfSight(targetEntity)) {
+		lastSighting = targetEntity->worldPos;
+		//ensure facing destination
+		bot->rotation = glm::orientedAngle(glm::normalize(targetEntity->worldPos - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+
+		if (missileCooldown > 1.0f) {
+			bot->fireMissile(targetEntity);
+			missileCooldown = 0;
+		}
+
+		//should we get closer?
+		float targetDist = glm::distance(bot->worldPos, targetEntity->worldPos);
+
+		if (targetDist > idealShootRange && !stoppedToShoot) {
+			bot->setImpulse(targetEntity->worldPos, 1500);
+		}
+		else {
+			stoppedToShoot = true;
+		}
+
+		if (stoppedToShoot && targetDist > escapeRange) {
+			bot->setImpulse(targetEntity->worldPos, 1500);
+		}
+	}
+	else { //lost sight of target
+		return std::make_shared<CGoTo>(bot, lastSighting);
+	}
+
+
+	return nullptr;
+}
+
+
+CGoTo::CGoTo(CRobot* bot, glm::vec3& dest) : CRoboState(bot) {
+	destination = dest;
+}
+
+std::shared_ptr<CRoboState> CGoTo::update(float dT) {
+	bot->setImpulse(destination, speed);
+
+	//ensure facing destination
+	bot->rotation = glm::orientedAngle(glm::normalize(destination - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+
+	float dist = glm::distance(bot->worldPos, destination);
+	if (dist < 0.05f) {
+		bot->physics.velocity = { 0, 0, 0 };
+		return std::make_shared<CGlanceAround>(bot);
+	}
+
+	return nullptr;
+}
+
+CDoNothing::CDoNothing(CRobot* bot) : CRoboState(bot)
+{
+}
+
+std::shared_ptr<CRoboState> CDoNothing::update(float dT)
+{
 	return nullptr;
 }

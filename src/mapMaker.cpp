@@ -153,7 +153,7 @@ void CMapMaker::tmpaddDesks() {
 TEntity CMapMaker::tmpCreateDesk() {
 	auto desk = std::make_shared<CEntity>();
 	//desk->setMap(&hexArray);
-	desk->setLineModel("desk");
+	desk->setBoundingRadius();
 	//desk->setTigObj(vm->getObject(tig::desk));
 	hexArray->entities.push_back(desk);
 	return desk;

@@ -32,7 +32,7 @@ CPlayerObject::CPlayerObject() {
 
 	physics.invMass = 1.0f/80.0f; //temp!
 
-	setLineModel("player"); //temp?
+	setBoundingRadius(); //temp?
 	entityType = entPlayer;
 }
 

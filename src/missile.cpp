@@ -12,7 +12,7 @@
 #include "spawner.h"
 
 CMissile::CMissile() {
-	lineModel = hexRendr2.getLineModel("bolt");
+	//lineModel = hexRendr2.getLineModel("bolt");
 	entityType = entMissile;
 }
 
@@ -80,7 +80,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 	//Check if we've collided with a robot in one of those hexes
 	for (auto& hex: intersectedHexes) {
 		CEntity* entity = game.map->getEntityAt2(hex.first);
-		if (entity && entity != owner) {
+		if (entity && entity != owner && entity->live) {
 			auto [hit, intersection] = entity->collisionCheck(startingPos, leadingPoint);
 			if (hit) {
 				collisionPt = entity->worldPos;
