@@ -21,15 +21,24 @@
 
 const float rad360 = M_PI * 2;
 const float rad90 = M_PI / 2;
+const float rad80 = 1.39626;
+const float rad70 = 1.22173;
 const float rad60 = M_PI / 3;
+const float rad50 = 0.872665;
 const float rad45 = M_PI / 4;
+const float rad40 = 0.698132;
 const float rad120 = rad360 / 3;
 
 CRobot::CRobot() {
-	//lineModel = hexRendr2.getLineModel("robot");
-	setBoundingRadius();
+
 	isRobot = true;
 	physics.invMass = 1.0f / 80.0f; //temp!
+}
+
+void CRobot::setModel(TModelData& model) {
+	lineModel.model = model;
+	upperBody = lineModel.getNode("body");
+	setBoundingRadius();
 }
 
 
@@ -42,6 +51,9 @@ void CRobot::update(float dT) {
 			currentState = newState;
 	}
 
+	if (trackingState)
+		trackTarget();
+	buildWorldMatrix();
 }
 
 
@@ -59,6 +71,33 @@ void CRobot::setState(TRobotState newState, CEntity* entity)
 
 }
 
+void CRobot::setRotation(float angle) {
+	if (upperBodyLocked) {
+		float diff = upperBodyRotation - rotation;
+		upperBodyRotation = angle + diff;
+		upperBodyRotation = fmod(upperBodyRotation + rad360, rad360);
+	}
+	rotation = angle;
+}
+
+void CRobot::rotate(float angle) {
+	rotation += angle;
+	rotation = fmod(rotation + rad360, rad360);
+	if (upperBodyLocked) {
+		upperBodyRotation += angle;
+		upperBodyRotation = fmod(upperBodyRotation + rad360, rad360);
+	}
+}
+
+void CRobot::setUpperRotation(float angle) {
+	upperBodyRotation = angle;
+}
+
+void CRobot::rotateUpper(float angle) {
+	upperBodyRotation += angle;
+	upperBodyRotation = fmod(upperBodyRotation + rad360, rad360);
+}
+
 void CRobot::draw() {
 	//if (!visibleToPlayer)
 	//	return;
@@ -74,6 +113,35 @@ std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& s
 		return { true, glm::vec3() };
 	return { false, glm::vec3()};
 }
+
+void CRobot::buildWorldMatrix() {
+	lineModel.model.matrix = glm::translate(glm::mat4(1), worldPos);
+	lineModel.model.matrix = glm::rotate(lineModel.model.matrix, rotation, glm::vec3(0, 0, -1));
+	//NB: we use a CW system for angles
+
+	upperBody->matrix = glm::translate(glm::mat4(1), worldPos);
+	upperBody->matrix = glm::rotate(upperBody->matrix, upperBodyRotation, glm::vec3(0, 0, -1));
+
+}
+
+void CRobot::startTracking(CEntity* target) {
+	trackingState = trackEntity;
+	trackingEntity = target;
+	upperBodyLocked = false;
+}
+
+void CRobot::startTracking(glm::vec3& pos) {
+	trackingState = trackPos;
+	trackingPos = pos;
+	upperBodyLocked = false;
+}
+
+void CRobot::stopTracking() {
+	trackingState = trackEnding;
+	upperBodyLocked = true;
+}
+
+
 
 void CRobot::receiveDamage(CEntity& attacker, int damage) {
 	hp--;
@@ -96,11 +164,11 @@ void CRobot::setImpulse(glm::vec3& dest, float maxSpeed) {
 
 
 /** Return true if we can draw a line to the target without hitting anything. */
-bool CRobot::hasLineOfSight(CEntity* target) {
-	return hasLineOfSight(target->worldPos);
+bool CRobot::clearLineTo(CEntity* target) {
+	return clearLineTo(target->worldPos);
 }
 
-bool CRobot::hasLineOfSight(const glm::vec3& p) {
+bool CRobot::clearLineTo(const glm::vec3& p) {
 	TIntersections intersectedHexes = getIntersectedHexes(worldPos, p);
 	for (auto& hex : intersectedHexes) {
 		if (game.map->getHexArray()->getHexCube(hex.first).content != emptyHex)
@@ -113,12 +181,18 @@ bool CRobot::hasLineOfSight(const glm::vec3& p) {
 
 
 bool CRobot::inFov(CEntity* target) {
-	if (glm::distance(worldPos, target->worldPos) <= 12 && 
-		abs(orientationTo(target->worldPos)) < rad120 /*rad45*/) { //rad60
-		if (hasLineOfSight(target->worldPos))
-			return true;
-	}
+	glm::vec3 targetDir = target->worldPos - worldPos;
+	targetDir = glm::normalize(targetDir);
 
+	//find upper body rotation as a vector
+	glm::vec3 rotVec = { cos(upperBodyRotation), -sin(upperBodyRotation),0 };
+	if ((glm::dot(rotVec, targetDir)) < cos(rad40))
+		return false;
+
+	if ( glm::distance(worldPos, target->worldPos) <= 12 && 
+		clearLineTo(target->worldPos) )
+			return true;
+	
 	return false;
 }
 
@@ -138,9 +212,6 @@ void CRobot::onMovedHex()
 {
 }
 
-
-
-
 /** Continue turning toward p, if not facing it. */
 bool CRobot::turnTo(glm::vec3& p) {
 	float turnDist = orientationTo(p);
@@ -151,24 +222,57 @@ bool CRobot::turnTo(glm::vec3& p) {
 	float turnDir = (std::signbit(turnDist)) ? -1.0f : 1.0f;
 
 	if (lastTurnDir != 0 && lastTurnDir != turnDir) { //we overshot
-		rotation = glm::orientedAngle(glm::normalize(p - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+		float targetAngle = glm::orientedAngle(glm::normalize(p - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+		setRotation(targetAngle);
 		lastTurnDir = 0;
 		return true;
+
 	}
 
-	float turnStep = turnDir* dT * 5.0f; //temp!
-	rotation += turnStep;
+
+	float turnStep = turnDir * dT * 5.0f; //temp!
+	//bot->rotation += turnStep;
+	rotate(turnStep);
 
 	lastTurnDir = turnDir;
 	return false;
 }
 
+/** Rotate upper body to track a target, if any. */
+void CRobot::trackTarget() {
+	float targetAngle;
+	switch (trackingState) {
+	case trackEntity: 
+		targetAngle = glm::orientedAngle(glm::normalize(trackingEntity->worldPos - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+		setUpperRotation(targetAngle);
+		break;
+	case trackPos:
+		targetAngle = glm::orientedAngle(glm::normalize(trackingPos - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+		setUpperRotation(targetAngle);
+		break;
+	case trackEnding:
+		float dist = fmod(rad360 + rotation - upperBodyRotation, rad360);
+		float turnStep = dT * upperTurnSpeed;
+		if (turnStep < dist) {
+			//put in range [-pi - pi] to give turn a direction, ie, clockwise/anti
+			if (dist > M_PI)
+				turnStep = -turnStep;
+			rotateUpper(turnStep);
+		}
+		else {
+			setUpperRotation(rotation);
+			trackingState = trackNone;
+		}
+
+	}
+
+}
 
 
 bool CRobot::canSeePlayer() {
 
 	return game.player->visible &&  !game.player->dead && inFov(game.player);
-		//hasLineOfSight(world.player);
+		//clearLineTo(world.player);
 }
 
 

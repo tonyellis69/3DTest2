@@ -8,11 +8,18 @@
 
 #include "gameState.h"
 
+const float rad360 = M_PI * 2;
+
+
 CEntity::CEntity() {
-	worldMatrix = &lineModel.model.matrix;
-	//TO DO: ugh fix. Maybe with components
+
 }
 
+
+void CEntity::setModel(TModelData& model) {
+	lineModel.model = model;
+	setBoundingRadius();
+}
 
 /** Set position using hex cube coordinates. */
 void CEntity::setPosition(CHex& hex) {
@@ -38,8 +45,19 @@ void CEntity::setBoundingRadius() {
 /** Set the rotation and facing direction of this object. */
 void CEntity::setHexDirection(THexDir direction) {
 	facing = direction;
-	rotation = dirToAngle(direction);
+	setRotation(dirToAngle(direction));
 	buildWorldMatrix();
+}
+
+/** Set our rotation to this absolute. */
+void CEntity::setRotation(float angle) {
+	rotation = angle;
+}
+
+/** Rotated by the given amount.*/
+void CEntity::rotate(float angle) {
+	rotation += angle;
+	rotation = fmod(rotation + rad360, rad360);
 }
 
 
@@ -52,11 +70,22 @@ void CEntity::draw(){
 
 /** Construct this object's world matrix from its known position and rotation.*/
 void CEntity::buildWorldMatrix() {
-	*worldMatrix = glm::translate(glm::mat4(1), worldPos);
-	*worldMatrix = glm::rotate(*worldMatrix, rotation, glm::vec3(0, 0, -1));
+	lineModel.model.matrix = glm::translate(glm::mat4(1), worldPos);
+	lineModel.model.matrix = glm::rotate(lineModel.model.matrix, rotation, glm::vec3(0, 0, -1));
 	//NB: we use a CW system for angles
+
+	//updateMatrices(lineModel.model);
+
+	for (auto& childModel : lineModel.model.subModels)
+		updateMatrices(childModel);
 }
 
+void CEntity::updateMatrices(TModelData& model) {
+	model.matrix = glm::translate(glm::mat4(1), worldPos);
+
+	for (auto& childModel : model.subModels)
+		updateMatrices(childModel);
+}
 
 std::tuple<float, glm::vec3> CEntity::collisionCheck(CEntity* e2) {
 	//get bounding-sphere radii
@@ -103,7 +132,7 @@ float CEntity::orientationTo(glm::vec3& targetPos) {
 /** Modify worldspace position by the given vector. */
 void CEntity::updatePos(glm::vec3& dPos) {
 	worldPos += dPos;
-	buildWorldMatrix();
+//	buildWorldMatrix();
 	CHex newHexPosition = worldSpaceToHex(worldPos);
 	if (newHexPosition != hexPosition) {
 		//world.map->movedTo(this, hexPosition, newHexPosition);

@@ -63,7 +63,7 @@ CExplosion* CSpawn::explosion(const std::string& name, glm::vec3& pos, float sca
 
 void CSpawn::setEntityLineModel(CEntity* entity, const std::string& modelName) {
 	entity->lineModel.buffer2 = &meshBufs[modelName];
-	entity->lineModel.model = modelBufs[modelName];
+	entity->setModel(modelBufs[modelName]);
 }
 
 

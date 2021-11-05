@@ -154,6 +154,7 @@ void CHexRenderer::drawPath(THexList* path, glm::vec4& pathStartColour, glm::vec
 void CHexRenderer::drawLineModel(CLineModel& lineModel) {
 	TModelData& node = lineModel.model;
 	//drawModel(node, glm::mat4(1), lineModel.buffer2,lineModel.colour);
+
 	drawModel2(lineModel.model, glm::mat4(1), lineModel);
 }
 
@@ -227,10 +228,9 @@ void CHexRenderer::drawModel(TModelData& node, glm::mat4& parentMatrix, CBuf2* b
 
 void CHexRenderer::drawModel2(TModelData& node, glm::mat4& parentMatrix, CLineModel& lineModel) {
 	renderer.setShader(lineShader);
-	glm::mat4 mvp = camera.clipMatrix * node.matrix * parentMatrix;
+	glm::mat4 mvp = camera.clipMatrix * node.matrix;// *parentMatrix;
 	lineShader->setShaderValue(hMVP, mvp);
 	lineShader->setShaderValue(hWinSize, camera.getView());
-
 	
 		for (auto& mesh : node.meshes) {
 			lineShader->setShaderValue(hColour, lineModel.colour);

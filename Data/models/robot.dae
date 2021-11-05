@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <asset>
+    <contributor>
+      <author>Blender User</author>
+      <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
+    </contributor>
+    <created>2021-10-27T12:40:07</created>
+    <modified>2021-10-27T12:40:07</modified>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_images/>
+  <library_geometries>
+    <geometry id="Circle_006-mesh" name="Circle.006">
+      <mesh>
+        <source id="Circle_006-mesh-positions">
+          <float_array id="Circle_006-mesh-positions-array" count="36">0.09749996 0.375 0 -0.1274999 0.375 0 -0.1274999 -0.375 0 0.09749996 -0.375 0 0.218566 0.1060661 0 0.006433904 0.106066 0 0.006433904 -0.106066 0 0.218566 -0.106066 0 0.09749996 0.15 0 0.09749996 -0.15 0 -0.02249997 -0.15 0 -0.02249997 0.1499999 0</float_array>
+          <technique_common>
+            <accessor source="#Circle_006-mesh-positions-array" count="12" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Circle_006-mesh-normals">
+          <float_array id="Circle_006-mesh-normals-array" count="0"/>
+          <technique_common>
+            <accessor source="#Circle_006-mesh-normals-array" count="0" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Circle_006-mesh-vertices">
+          <input semantic="POSITION" source="#Circle_006-mesh-positions"/>
+        </vertices>
+        <lines count="12">
+          <input semantic="VERTEX" source="#Circle_006-mesh-vertices" offset="0"/>
+          <p>0 1 1 2 2 3 4 5 5 6 6 7 7 4 8 0 10 11 3 9 9 10 11 8</p>
+        </lines>
+      </mesh>
+    </geometry>
+    <geometry id="Circle_004-mesh" name="Circle.004">
+      <mesh>
+        <source id="Circle_004-mesh-positions">
+          <float_array id="Circle_004-mesh-positions-array" count="9">0.4 0 0 -0.105 0.1818653 0 -0.105 -0.1818653 0</float_array>
+          <technique_common>
+            <accessor source="#Circle_004-mesh-positions-array" count="3" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Circle_004-mesh-normals">
+          <float_array id="Circle_004-mesh-normals-array" count="0"/>
+          <technique_common>
+            <accessor source="#Circle_004-mesh-normals-array" count="0" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Circle_004-mesh-vertices">
+          <input semantic="POSITION" source="#Circle_004-mesh-positions"/>
+        </vertices>
+        <lines count="3">
+          <input semantic="VERTEX" source="#Circle_004-mesh-vertices" offset="0"/>
+          <p>0 1 1 2 2 0</p>
+        </lines>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="robot_base" name="robot_base" type="NODE">
+        <matrix sid="transform">1 0 0 -0.09999996 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#Circle_004-mesh" name="robot_base"/>
+        <node id="body" name="body" type="NODE">
+          <matrix sid="transform">1 0 0 0.09999996 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+          <instance_geometry url="#Circle_006-mesh" name="body"/>
+        </node>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

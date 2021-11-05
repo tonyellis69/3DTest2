@@ -12,7 +12,6 @@
 #include "spawner.h"
 
 CMissile::CMissile() {
-	//lineModel = hexRendr2.getLineModel("bolt");
 	entityType = entMissile;
 }
 
@@ -20,12 +19,12 @@ void CMissile::setPosition(glm::vec3& pos, float rotation) {
 	//CSprite::setPosition(pos, rotation);
 
 	worldPos = pos;
-	this->rotation = rotation;
+	this->setRotation(rotation);
 	buildWorldMatrix();
 
 
 
-	dirVec =  glm::normalize( *worldMatrix * glm::vec4(1, 0, 0,0) );
+	dirVec =  glm::normalize( lineModel.model.matrix * glm::vec4(1, 0, 0,0) );
 	leadingPoint = worldPos + dirVec * distToPoint;
 	leadingPointLastHex = leadingPoint;
 	lastLeadingPointHex = worldSpaceToHex(pos);

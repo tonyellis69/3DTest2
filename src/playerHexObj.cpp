@@ -32,12 +32,27 @@ CPlayerObject::CPlayerObject() {
 
 	physics.invMass = 1.0f/80.0f; //temp!
 
-	setBoundingRadius(); //temp?
+	//setBoundingRadius(); //temp?
 	entityType = entPlayer;
 }
 
 CPlayerObject::~CPlayerObject() {
 
+}
+
+void CPlayerObject::setModel(TModelData& model) {
+	lineModel.model = model;
+	upperBody = lineModel.getNode("body");
+	setBoundingRadius();
+}
+
+void CPlayerObject::buildWorldMatrix() {
+	lineModel.model.matrix = glm::translate(glm::mat4(1), worldPos);
+	lineModel.model.matrix = glm::rotate(lineModel.model.matrix, rotation, glm::vec3(0, 0, -1));
+	//NB: we use a CW system for angles
+
+	upperBody->matrix = glm::translate(glm::mat4(1), worldPos);
+	upperBody->matrix = glm::rotate(upperBody->matrix, upperBodyRotation, glm::vec3(0, 0, -1));
 }
 
 /** Temporary keystroke catcher. */
@@ -111,10 +126,9 @@ void CPlayerObject::onFireKey(bool pressed) {
 		return;
 
 	//hard-coded default action: launch a missile!
-	//auto missile = std::dynamic_pointer_cast<CMissile> (spawn::missile("missile", worldPos, targetAngle));
+	float targetAngle = getUpperBodyRotation();
 	auto missile = spawn::missile("missile", worldPos, targetAngle);
 	missile->setOwner(this);
-	//missile->setSpeed(7.0f);
 
 	snd::play("shoot");
 }
@@ -232,7 +246,8 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 
 	//turn to that direction
 
-	rotation = glm::orientedAngle(glm::normalize(physics.moveImpulse), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+	float angle = glm::orientedAngle(glm::normalize(physics.moveImpulse), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+	setRotation(angle);
 
 	physics.moveImpulse *= accel;
 }
@@ -246,12 +261,24 @@ void CPlayerObject::update(float dT) {
 		if (visibilityCooldown > 3.0f)
 			visible = true;
 	}
+
+	//trackMouse();
+	buildWorldMatrix();
 }
 
 void CPlayerObject::setTargetAngle(float angle) {
-	targetAngle = angle;
+	//targetAngle = angle;
+
 }
 
+void CPlayerObject::setUpperBodyRotation(float angle) {
+	upperBodyRotation = angle;
+
+}
+
+float CPlayerObject::getUpperBodyRotation() {
+	return upperBodyRotation;
+}
 
 /** Check if the given segment intersects us. */
 std::tuple<bool, glm::vec3> CPlayerObject::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
@@ -260,7 +287,6 @@ std::tuple<bool, glm::vec3> CPlayerObject::collisionCheck(glm::vec3& segA, glm::
 
 	return { false, glm::vec3() };
 }
-
 
 
 

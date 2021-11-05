@@ -20,6 +20,8 @@ class CPlayerObject : /*public CHexActor ,*/ public CEntity, public CGameEventSu
 public:
 	CPlayerObject();
 	~CPlayerObject();
+	void setModel(TModelData& model);
+	void buildWorldMatrix();
 	void tmpKeyCB(int key);
 	void onFireKey(bool pressed);
 	void draw();
@@ -36,7 +38,9 @@ public:
 	void update(float dT);
 
 	void setTargetAngle(float angle);
-	float getTargetAngle() { return targetAngle;  }
+	void setUpperBodyRotation(float n);
+	float getUpperBodyRotation();
+	//float getTargetAngle() { return targetAngle;  }
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
 	
@@ -55,16 +59,15 @@ public:
 
 private:
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
-	//void approachDestHex();
+//	void trackMouse();
+
 
 
 	float dT;
 
 	float playerMoveSpeed = 5.0f;
 
-	//bool northSouthKeyReleased = true;
-
-	float targetAngle;
+	//float targetAngle;
 
 	std::vector<CItem*> inventory;
 	std::vector<CItem*> tmpFloorItems; //temp!
@@ -73,5 +76,6 @@ private:
 
 	float visibilityCooldown = 0;
 
-
+	TModelData* upperBody;
+	float upperBodyRotation = 0;
 };

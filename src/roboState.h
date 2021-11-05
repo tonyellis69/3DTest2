@@ -32,8 +32,6 @@ public:
 	float lastDestinationDist = FLT_MAX;
 	float destSlowdownRange = 0.6f;
 	float destSlowdownRate = 0.5f;
-
-	float lastTurnDir = 0;
 };
 
 struct TGlance {

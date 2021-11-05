@@ -31,7 +31,7 @@ CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 			randHex = ring[rnd::dice(ring.size()) - 1];
 			//can we los randHex?
 			glm::vec3 hexWS = cubeToWorldSpace(randHex);
-			if (bot->hasLineOfSight(hexWS)) {
+			if (bot->clearLineTo(hexWS)) {
 				destination = hexWS;
 				turnDestination = glm::orientedAngle(glm::normalize(hexWS - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 				lastDestinationDist = FLT_MAX;
@@ -49,12 +49,12 @@ CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 
 std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
 	if (bot->canSeePlayer())
-		///return std::make_shared<CCharge>(bot, game.player);
+		//return std::make_shared<CCharge>(bot, game.player);
 		return std::make_shared<CCloseAndShoot>(bot, game.player);
 
 	this->dT = dT;
 
-	bool facingDest = turnTo(destination);
+	bool facingDest = bot->turnTo(destination);
 	if (!facingDest)
 		return nullptr;
 
@@ -71,50 +71,30 @@ std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
 }
 
 
-/** Continue turning toward p, if not facing it. */
-bool CRoboWander::turnTo(glm::vec3& p) {
-	float turnDist = bot->orientationTo(p);
-
-	if (abs(turnDist) < 0.01f) //temp!!!!
-		return true;
-
-	float turnDir = (std::signbit(turnDist)) ? -1.0f : 1.0f;
-
-	if (lastTurnDir != 0 && lastTurnDir != turnDir) { //we overshot
-		bot->rotation = glm::orientedAngle(glm::normalize(p - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
-		lastTurnDir = 0;
-		return true;
-
-	}
-
-
-	float turnStep = turnDir * dT * 5.0f; //temp!
-	bot->rotation += turnStep;
-
-	lastTurnDir = turnDir;
-	return false;
-}
-
 
 
 CGlanceAround::CGlanceAround(CRobot* bot) : CRoboState(bot) {
-	float leftLimit = fmod(rad360 + bot->rotation - rad90, rad360);
-	float rightLimit = fmod(rad360+ bot->rotation + rad90, rad360);
+	float leftLimit = fmod(rad360 + bot->upperBodyRotation - rad90, rad360);
+	float rightLimit = fmod(rad360+ bot->upperBodyRotation + rad90, rad360);
 	cumulativeRotation = 0;
 	totalRotation = 0;
 
 	float shortPause = 0.25f;
 	float longPause = 0.5f;
-	float currentFocus = bot->rotation;
+	float currentFocus = bot->upperBodyRotation;
+
+	bot->upperBodyLocked = false;
 
 	glances = { {currentFocus, shortPause}, {leftLimit, shortPause}, {currentFocus,0}, {rightLimit, shortPause},
 		{currentFocus, longPause} };
 }
 
 std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
-	if (bot->canSeePlayer())
+	if (bot->canSeePlayer()) {
 		//return std::make_shared<CCharge>(bot,game.player);
+		bot->upperBodyLocked = true;
 		return std::make_shared<CCloseAndShoot>(bot, game.player);
+	}
 
 	if (pause > 0) {
 		pause -= dT;
@@ -122,6 +102,7 @@ std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
 	}
 
 	if (glances.empty()) {
+		bot->upperBodyLocked = true;
 		return std::make_shared<CRoboWander>(bot);
 	}
 
@@ -130,7 +111,7 @@ std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
 	//find shortest angle between dest angle and our direction
 	float turnDist; 
 	if (totalRotation == 0) {
-		turnDist = fmod(rad360 + dest.angle - bot->rotation, rad360);
+		turnDist = fmod(rad360 + dest.angle - bot->upperBodyRotation, rad360);
 		//put in range [-pi - pi] to give angle a direction, ie, clockwise/anti
 		if (turnDist > M_PI)
 			turnDist = -(rad360 - turnDist);
@@ -143,7 +124,7 @@ std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
 	float frameTurn = dT * glanceSpeed * turnDir;
 	cumulativeRotation += abs(frameTurn);
 	if (cumulativeRotation > totalRotation) { //overshot
-		bot->rotation = dest.angle;
+		bot->upperBodyRotation = dest.angle;
 		totalRotation = 0;
 		cumulativeRotation = 0;
 		pause = dest.pause;
@@ -153,7 +134,7 @@ std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
 
 	}
 	else {
-		bot->rotation += frameTurn;
+		bot->upperBodyRotation += frameTurn;
 		//bot->rotation = fmod(rad360 + bot->rotation, rad360); //needed??
 	}
 
@@ -191,8 +172,8 @@ std::shared_ptr<CRoboState> CCharge::update(float dT) {
 	bot->setImpulse(destination, chargeSpeed);
 
 	//ensure facing destination
-	bot->rotation = glm::orientedAngle(glm::normalize(destination - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
-
+	float destAngle = glm::orientedAngle(glm::normalize(destination - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+	bot->setRotation(destAngle);
 	return nullptr;
 }
 
@@ -238,16 +219,28 @@ std::shared_ptr<CRoboState> CMelee::update(float dT) {
 CCloseAndShoot::CCloseAndShoot(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
 	this->targetEntity = targetEntity;
 	bot->lineModel.setColourR(glm::vec4(1, 0, 0, 1));
+	bot->startTracking(targetEntity);
 }
 
 std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 	missileCooldown += dT;
 
 	//can we see the target?
-	if (bot->hasLineOfSight(targetEntity)) {
+	if (bot->clearLineTo(targetEntity)) {
 		lastSighting = targetEntity->worldPos;
+		
+		
 		//ensure facing destination
-		bot->rotation = glm::orientedAngle(glm::normalize(targetEntity->worldPos - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+		//float destAngle = glm::orientedAngle(glm::normalize(targetEntity->worldPos - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+		//bot->setRotation(destAngle);
+
+
+		bool facingDest = bot->turnTo(targetEntity->worldPos);
+		if (!facingDest)
+			return nullptr;
+
+
+
 
 		if (missileCooldown > 1.0f) {
 			bot->fireMissile(targetEntity);
@@ -269,6 +262,7 @@ std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 		}
 	}
 	else { //lost sight of target
+		bot->stopTracking(); //!!!Temp! should track lastsighting instead
 		return std::make_shared<CGoTo>(bot, lastSighting);
 	}
 
@@ -279,17 +273,20 @@ std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 
 CGoTo::CGoTo(CRobot* bot, glm::vec3& dest) : CRoboState(bot) {
 	destination = dest;
+	bot->startTracking(dest);
 }
 
 std::shared_ptr<CRoboState> CGoTo::update(float dT) {
 	bot->setImpulse(destination, speed);
 
 	//ensure facing destination
-	bot->rotation = glm::orientedAngle(glm::normalize(destination - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+	float destAngle = glm::orientedAngle(glm::normalize(destination - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+	bot->setRotation(destAngle);
 
 	float dist = glm::distance(bot->worldPos, destination);
 	if (dist < 0.05f) {
 		bot->physics.velocity = { 0, 0, 0 };
+		bot->stopTracking();
 		return std::make_shared<CGlanceAround>(bot);
 	}
 

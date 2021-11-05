@@ -29,16 +29,20 @@ public:
 	CEntity();
 	virtual ~CEntity() {}
 	virtual void update(float dT) {}
-
+	virtual void setModel(TModelData& model);
 	void setPosition(CHex& hex);
 	void setPosition(glm::vec3& worldPos);
 	virtual void setBoundingRadius();
 	void setHexDirection(THexDir direction);
+	virtual void setRotation(float angle);
+	virtual void rotate(float angle);
 	virtual void draw();
 	THexDir getDirection() {
 		return facing;
 	}
-	void buildWorldMatrix();
+	virtual void buildWorldMatrix();
+
+	virtual void updateMatrices(TModelData& model);
 
 	virtual void receiveDamage(CEntity& attacker, int damage) {};
 	virtual void onMovedHex() {};
@@ -59,9 +63,7 @@ public:
 
 	CHex hexPosition; ///<Position on a hex grid in cube coordinates.
 	THexDir facing = hexEast; ///<Direction entity is facing.
-	float rotation = 0.0f; ///<Angle of object's z-rotation in world space.
 	glm::vec3 worldPos = { 0,0,0 }; ///<Position in world space.
-	glm::mat4* worldMatrix; ///<Position and orientation in the 3D universe.
 
 	THexList travelPath; ///<Route for movement.
 	CHex destination; ///<The hex we're travelling to.
@@ -78,6 +80,10 @@ public:
 	int tmpId;
 
 	TEntityType entityType;
+
+protected:
+	float rotation = 0.0f; ///<Angle of object's z-rotation in world space.
+
 };
 
 using TEntity = std::shared_ptr<CEntity>;
