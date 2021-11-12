@@ -155,7 +155,7 @@ void CHexRenderer::drawLineModel(CLineModel& lineModel) {
 	TModelData& node = lineModel.model;
 	//drawModel(node, glm::mat4(1), lineModel.buffer2,lineModel.colour);
 
-	drawModel2(lineModel.model, glm::mat4(1), lineModel);
+	drawModel2(lineModel.model, lineModel);
 }
 
 /** Point the camera in the given direction. Eg, top-down. */
@@ -226,9 +226,9 @@ void CHexRenderer::drawModel(TModelData& node, glm::mat4& parentMatrix, CBuf2* b
 
 }
 
-void CHexRenderer::drawModel2(TModelData& node, glm::mat4& parentMatrix, CLineModel& lineModel) {
+void CHexRenderer::drawModel2(TModelData& node, CLineModel& lineModel) {
 	renderer.setShader(lineShader);
-	glm::mat4 mvp = camera.clipMatrix * node.matrix;// *parentMatrix;
+	glm::mat4 mvp = camera.clipMatrix * node.matrix;
 	lineShader->setShaderValue(hMVP, mvp);
 	lineShader->setShaderValue(hWinSize, camera.getView());
 	
@@ -244,7 +244,7 @@ void CHexRenderer::drawModel2(TModelData& node, glm::mat4& parentMatrix, CLineMo
 	
 
 	for (auto& subNode : node.subModels)
-		drawModel2(subNode, node.matrix * parentMatrix, lineModel);
+		drawModel2(subNode, lineModel);
 
 }
 

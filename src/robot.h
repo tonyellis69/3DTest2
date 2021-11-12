@@ -59,6 +59,8 @@ private:
 	float upperTurnSpeed = 5.0f;
 	
 	TModelData* upperBody;
+	TModelData* base;
+	TModelData* treads;
 
 	TrackingState trackingState = trackNone; ///<What, if anything, we're keeping upper body pointing at.
 	CEntity* trackingEntity = nullptr;

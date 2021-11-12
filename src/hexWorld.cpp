@@ -282,7 +282,8 @@ void CHexWorld::calcMouseWorldPos() {
 	lastMouseWorldPos = mouseWorldPos;
 	mouseWorldPos = mouseWS;
 	glm::vec3 mouseVec = mouseWorldPos - playerObj->worldPos;
-	playerObj->setUpperBodyRotation(glm::orientedAngle(glm::normalize(mouseVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1)));
+	//playerObj->setUpperBodyRotation(glm::orientedAngle(glm::normalize(mouseVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1)));
+	playerObj->setMouseDir(glm::normalize(mouseVec));
 
 	if (mouseHex != hexCursor->hexPosition) {
 		CMouseExitHex msg;

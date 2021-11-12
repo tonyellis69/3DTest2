@@ -38,8 +38,13 @@ public:
 	void update(float dT);
 
 	void setTargetAngle(float angle);
+	void setRotation(glm::vec3& vec);
+	glm::vec3 getRotation();
 	void setUpperBodyRotation(float n);
+	void setUpperBodyRotation(glm::vec3& vec);
 	float getUpperBodyRotation();
+	glm::vec3 getUpperBodyRotationVec();
+	void setMouseDir(glm::vec3& mouseVec);
 	//float getTargetAngle() { return targetAngle;  }
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
@@ -59,7 +64,8 @@ public:
 
 private:
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
-//	void trackMouse();
+	void startTurnCycle();
+	void updateWalkCycle();
 
 
 
@@ -78,4 +84,18 @@ private:
 
 	TModelData* upperBody;
 	float upperBodyRotation = 0;
+
+	TModelData* leftFoot;
+	TModelData* rightFoot;
+
+	glm::vec3 mouseVec; ///<Relative direction of mousepointer.
+
+	TMoveDir moveDir = moveNone; ///<Move direction ordered by player.
+	TMoveDir oldMoveDir = moveNone;
+	bool walkingBackwards = false;
+	float walkCycle = 0; ///<Tracks walking animation.
+	float footExtension = 0;
+	float maxFootExtension = 0.25f; 
+	float turningCycle = 0;
+
 };

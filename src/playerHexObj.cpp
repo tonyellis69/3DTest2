@@ -20,6 +20,8 @@
 
 #include "spawner.h"
 
+#include "renderer/imRendr/imRendr.h"
+
 constexpr float sin30 = 0.5f;
 constexpr float sin60 = 0.86602540378443;
 
@@ -43,16 +45,27 @@ CPlayerObject::~CPlayerObject() {
 void CPlayerObject::setModel(TModelData& model) {
 	lineModel.model = model;
 	upperBody = lineModel.getNode("body");
+	leftFoot = lineModel.getNode("footL");
+	rightFoot = lineModel.getNode("footR");
 	setBoundingRadius();
 }
 
 void CPlayerObject::buildWorldMatrix() {
-	lineModel.model.matrix = glm::translate(glm::mat4(1), worldPos);
-	lineModel.model.matrix = glm::rotate(lineModel.model.matrix, rotation, glm::vec3(0, 0, -1));
-	//NB: we use a CW system for angles
+	glm::mat4 worldM = glm::translate(glm::mat4(1), worldPos);
 
-	upperBody->matrix = glm::translate(glm::mat4(1), worldPos);
-	upperBody->matrix = glm::rotate(upperBody->matrix, upperBodyRotation, glm::vec3(0, 0, -1));
+	upperBody->matrix = worldM;
+	upperBody->matrix = glm::rotate(worldM, upperBodyRotation, glm::vec3(0, 0, -1));
+
+
+	worldM = glm::rotate(worldM, rotation, glm::vec3(0, 0, -1));
+
+	//leftFoot->matrix = worldM;
+	//rightFoot->matrix = worldM;
+
+	rightFoot->matrix = glm::translate(worldM, glm::vec3(footExtension, 0, 0));;
+	leftFoot->matrix = glm::translate(worldM, glm::vec3(-footExtension,0,0));
+
+
 }
 
 /** Temporary keystroke catcher. */
@@ -232,6 +245,8 @@ void CPlayerObject::updateViewField() {
 void CPlayerObject::moveCommand(TMoveDir commandDir) {
 	if (dead)
 		return;
+
+
 	const float accel = 3000;
 	switch (commandDir) {
 	case moveNorth:  physics.moveImpulse = { 0,1,0 }; break;
@@ -244,12 +259,26 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 	case moveNW: physics.moveImpulse = { -sin30, sin60, 0 }; break;
 	}
 
-	//turn to that direction
 
-	float angle = glm::orientedAngle(glm::normalize(physics.moveImpulse), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
-	setRotation(angle);
+	moveDir = commandDir;
+
+
+	//turn to that direction
+	walkingBackwards = false;
+	glm::vec3 upperRotation = getUpperBodyRotationVec();
+	if (glm::dot(physics.moveImpulse, upperRotation) >= 0) {
+		setRotation(physics.moveImpulse);
+	}
+	else {
+		setRotation(-physics.moveImpulse);
+		walkingBackwards = true;
+	}
 
 	physics.moveImpulse *= accel;
+
+
+	//if (moveDir != oldMoveDir)
+	//	startTurnCycle();
 }
 
 
@@ -262,8 +291,15 @@ void CPlayerObject::update(float dT) {
 			visible = true;
 	}
 
-	//trackMouse();
+	//kludge to stop sharply
+	if (moveDir == moveNone)
+		physics.velocity *= 45.0f *dT;
+
+	updateWalkCycle();
+
 	buildWorldMatrix();
+	oldMoveDir = moveDir;
+	moveDir = moveNone;
 }
 
 void CPlayerObject::setTargetAngle(float angle) {
@@ -271,13 +307,54 @@ void CPlayerObject::setTargetAngle(float angle) {
 
 }
 
+void CPlayerObject::setRotation(glm::vec3& vec) {
+	rotation = glm::orientedAngle(vec, glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+
+}
+
+glm::vec3 CPlayerObject::getRotation() {
+	return { cos(rotation), -sin(rotation),0 };
+}
+
 void CPlayerObject::setUpperBodyRotation(float angle) {
 	upperBodyRotation = angle;
 
 }
 
+void CPlayerObject::setUpperBodyRotation(glm::vec3& vec) {
+	upperBodyRotation = glm::orientedAngle(vec, glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+}
+
 float CPlayerObject::getUpperBodyRotation() {
 	return upperBodyRotation;
+}
+
+glm::vec3 CPlayerObject::getUpperBodyRotationVec() {
+	return  { cos(upperBodyRotation), -sin(upperBodyRotation),0 };
+}
+
+void CPlayerObject::setMouseDir(glm::vec3& mouseVec) {
+	this->mouseVec = mouseVec;
+	setUpperBodyRotation(mouseVec);
+
+	if (moveDir != moveNone)
+		return;
+
+	float nearestDot = -FLT_MAX; glm::vec3 sectorNormal;
+	for (int face = 0; face < 6; face++) {
+		float dot = glm::dot(mouseVec, moveVector3D[face]);
+		if (dot > nearestDot) {
+			sectorNormal = moveVector3D[face];
+			nearestDot = dot;
+		}
+	}
+
+	sectorNormal = glm::normalize(sectorNormal);
+
+	if (glm::dot(sectorNormal,getRotation()) < 0.9f)
+		startTurnCycle();
+
+	setRotation(sectorNormal);
 }
 
 /** Check if the given segment intersects us. */
@@ -286,6 +363,52 @@ std::tuple<bool, glm::vec3> CPlayerObject::collisionCheck(glm::vec3& segA, glm::
 		return { true, glm::vec3() };
 
 	return { false, glm::vec3() };
+}
+
+void CPlayerObject::startTurnCycle() {
+	turningCycle = 0.125f;
+}
+
+/** Calculate where we are in the walk cycle. */
+void CPlayerObject::updateWalkCycle() {
+	float walkMax = 1.5f;
+
+	if (turningCycle > 0) {
+		turningCycle -= dT;
+		walkCycle += dT * 2;
+	}
+	else {
+		float moveDist = glm::distance(worldPos, oldWorldPos);
+		walkCycle += moveDist;
+	}
+
+	walkCycle =  fmod(walkCycle, walkMax); //loop after travelling walkMax
+
+	float f = walkCycle / walkMax; // 0 - 1
+	f = abs(0.5f - f) * 2; //1 - 0 - 1 oscillation. 
+	f = (f - 0.5f) * 2; //-1 to 1 oscillation
+
+	footExtension = f * maxFootExtension;
+
+	return;
+
+
+
+
+	//float taper;
+
+	//if (turningCycle > 0) {
+	//	turningCycle -= dT;
+	//	taper = 1.0f;
+	//}
+	//else
+	//	taper= glm::smoothstep(0.0f, 2.0f, glm::length(physics.velocity));
+
+	//walkCycle += dT * 10.0f * taper;
+	//walkCycle = fmod(walkCycle, 2*M_PI); 
+
+	//footExtension = sin(walkCycle) * maxFootExtension;
+
 }
 
 

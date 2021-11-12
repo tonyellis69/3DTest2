@@ -37,7 +37,9 @@ CRobot::CRobot() {
 
 void CRobot::setModel(TModelData& model) {
 	lineModel.model = model;
-	upperBody = lineModel.getNode("body");
+	upperBody = lineModel.getNode("robody");
+	base = lineModel.getNode("robase");
+	treads = lineModel.getNode("treads");
 	setBoundingRadius();
 }
 
@@ -115,13 +117,17 @@ std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& s
 }
 
 void CRobot::buildWorldMatrix() {
-	lineModel.model.matrix = glm::translate(glm::mat4(1), worldPos);
-	lineModel.model.matrix = glm::rotate(lineModel.model.matrix, rotation, glm::vec3(0, 0, -1));
-	//NB: we use a CW system for angles
+	glm::mat4 worldM = glm::translate(glm::mat4(1), worldPos);
 
-	upperBody->matrix = glm::translate(glm::mat4(1), worldPos);
-	upperBody->matrix = glm::rotate(upperBody->matrix, upperBodyRotation, glm::vec3(0, 0, -1));
+	upperBody->matrix = worldM;
+	upperBody->matrix = glm::rotate(worldM, upperBodyRotation, glm::vec3(0, 0, -1));
 
+	worldM = glm::rotate(worldM, rotation, glm::vec3(0, 0, -1));
+
+	base->matrix = worldM;
+
+	treads->matrix = worldM;
+	
 }
 
 void CRobot::startTracking(CEntity* target) {

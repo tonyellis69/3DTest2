@@ -98,7 +98,7 @@ private:
 
 	//TO DO: scrap this, but currently it's used in highLightHex
 	void drawModel(TModelData& node, glm::mat4& parentMatrix, CBuf2* buf, glm::vec4& colour);
-	void drawModel2(TModelData& node, glm::mat4& parentMatrix, CLineModel& lineModel);
+	void drawModel2(TModelData& node, CLineModel& lineModel);
 	
 	void createFogBuffer(int w, int h);
 

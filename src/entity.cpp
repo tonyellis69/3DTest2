@@ -131,6 +131,7 @@ float CEntity::orientationTo(glm::vec3& targetPos) {
 
 /** Modify worldspace position by the given vector. */
 void CEntity::updatePos(glm::vec3& dPos) {
+	oldWorldPos = worldPos;
 	worldPos += dPos;
 //	buildWorldMatrix();
 	CHex newHexPosition = worldSpaceToHex(worldPos);

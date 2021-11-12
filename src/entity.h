@@ -64,6 +64,7 @@ public:
 	CHex hexPosition; ///<Position on a hex grid in cube coordinates.
 	THexDir facing = hexEast; ///<Direction entity is facing.
 	glm::vec3 worldPos = { 0,0,0 }; ///<Position in world space.
+	glm::vec3 oldWorldPos = { 0,0,0 };
 
 	THexList travelPath; ///<Route for movement.
 	CHex destination; ///<The hex we're travelling to.
