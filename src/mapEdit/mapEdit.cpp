@@ -23,7 +23,7 @@ void CMapEdit::setMap(CMap* map) {
 	redoPatch = nullptr;
 	deleteRect = nullptr;
 	workingArray = *pMap->getHexArray();
-
+	spawn::pMap = map;
 }
 
 /** Currently called if the user mousewheels. */
@@ -236,6 +236,7 @@ void CMapEdit::addEntity(glm::vec3& mousePos) {
 	}
 	case editMeleeBot: spawn::robot("melee bot", mousePos); break;
 	case editShooterBot: spawn::robot("shooter bot", mousePos); break;
+	case editGun: spawn::gun("gun", mousePos); break;
 
 	}
 
@@ -244,13 +245,13 @@ void CMapEdit::addEntity(glm::vec3& mousePos) {
 /** Cycle through the entities to place. */
 void CMapEdit::selectEntity(float delta) {
 	currentEntity += (unsigned int)delta;
-	currentEntity = (currentEntity) % 4;
+	currentEntity = (currentEntity) % 5;
 	switch (currentEntity) {
 	case editNone: currentEntStr = "none"; break;
 	case editPlayer: currentEntStr = "player"; break;
 	case editMeleeBot: currentEntStr = "melee bot"; break;
 	case editShooterBot: currentEntStr = "shooter bot"; break;
-
+	case editGun: currentEntStr = "gun"; break;
 	}
 }
 

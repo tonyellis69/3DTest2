@@ -14,27 +14,28 @@
 #include "buf2.h"
 #include "renderer/mesh.h"
 
-#include "messaging/msg2.h"
 
-const int spwnMsg = 1000;
+#include "gameHexArray.h"
+
 
 /** A class to tidy away the creation of entities. */
 class CSpawn {
 public:
-	static CPlayerObject* player(const std::string& name, glm::vec3& pos);
-	static CRobot* robot(const std::string& name, glm::vec3& pos);
-	static CMissile* missile(const std::string& name, glm::vec3& pos, float angle);
-	static CExplosion* explosion(const std::string& name, glm::vec3& pos, float scale);
+	static TEntity player(const std::string& name, glm::vec3& pos);
+	static TEntity robot(const std::string& name, glm::vec3& pos);
+	static TEntity missile(const std::string& name, glm::vec3& pos, float angle);
+	static TEntity explosion(const std::string& name, glm::vec3& pos, float scale);
+	static TEntity gun(const std::string& name, glm::vec3& pos = glm::vec3( 0,0,0 ));
+	static TEntity armour(const std::string& name);
 
-	template<typename Obj, typename memberFunc >
-	static void setCallback(Obj* obj, void (memberFunc::* fn)(const std::string&, TEntity)) {
-		msg::attach(spwnMsg, obj, fn);
-	}
 
 	static void setEntityLineModel(CEntity* entity, const std::string& modelName);
 
 	static std::unordered_map< std::string, CBuf2> meshBufs;
 	static std::unordered_map< std::string, TModelData> modelBufs;
+
+	static CMap* pMap; ///<The map we're spawning to.
+
 };
 
 using spawn = CSpawn;

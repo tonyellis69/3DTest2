@@ -119,7 +119,6 @@
     <ClCompile Include="src\3DtestApp.cpp" />
     <ClCompile Include="src\gameGui.cpp" />
     <ClCompile Include="src\entity.cpp" />
-    <ClCompile Include="src\item.cpp" />
     <ClCompile Include="src\door.cpp" />
     <ClCompile Include="src\explosion.cpp" />
     <ClCompile Include="src\gameHexArray.cpp" />
@@ -131,6 +130,9 @@
     <ClCompile Include="src\GUIrichTextPanel.cpp" />
     <ClCompile Include="src\hexRenderer.cpp" />
     <ClCompile Include="src\hexWorld.cpp" />
+    <ClCompile Include="src\items\armour.cpp" />
+    <ClCompile Include="src\items\gun.cpp" />
+    <ClCompile Include="src\items\item.cpp" />
     <ClCompile Include="src\localHotList.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mapEdit\mapEdit.cpp" />
@@ -150,7 +152,6 @@
     <ClInclude Include="src\3DtestApp.h" />
     <ClInclude Include="src\gameGui.h" />
     <ClInclude Include="src\entity.h" />
-    <ClInclude Include="src\item.h" />
     <ClInclude Include="src\door.h" />
     <ClInclude Include="src\explosion.h" />
     <ClInclude Include="src\gameEvents.h" />
@@ -165,6 +166,9 @@
     <ClInclude Include="src\hexMsg.h" />
     <ClInclude Include="src\hexRenderer.h" />
     <ClInclude Include="src\hexWorld.h" />
+    <ClInclude Include="src\items\armour.h" />
+    <ClInclude Include="src\items\gun.h" />
+    <ClInclude Include="src\items\item.h" />
     <ClInclude Include="src\localHotList.h" />
     <ClInclude Include="src\mapEdit\mapEdit.h" />
     <ClInclude Include="src\mapEdit\mapPatch.h" />

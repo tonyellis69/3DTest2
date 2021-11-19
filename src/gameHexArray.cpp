@@ -79,6 +79,12 @@ void CMap::addEntity(TEntity entity, CHex& hex) {
 	entities.push_back(entity);
 }
 
+/** Basic add-to-world without specifying a location. For items in
+	posession of another entity, not yet in play, etc.*/
+void CMap::addEntity(TEntity entity) {
+	entities.push_back(entity);
+}
+
 void CMap::addExistingEntity(CEntity* entity, CHex& hex)
 {
 	entity->setPosition(hex);
@@ -174,7 +180,10 @@ void CMap::load(std::istream& in) {
 		case entPlayer: spawn::player("player", pos); break;
 		case entMeleeBot: spawn::robot("melee bot", pos); break;
 		case entShootBot: spawn::robot("shooter bot", pos); break;
+		case entGun: spawn::gun("gun", pos); break;
 		}
+
+
 
 	}
 }

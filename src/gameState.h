@@ -31,7 +31,7 @@ public:
 	CMap* map;
 
 
-	bool paused = false;
+	bool paused = true;
 
 private:
 

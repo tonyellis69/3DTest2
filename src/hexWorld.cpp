@@ -30,8 +30,7 @@
 #include "spawner.h"
 
 CHexWorld::CHexWorld() {
-
-	spawn::setCallback(this, &CHexWorld::onSpawn);
+	game.paused = true;
 
 	hexRendr2.init();
 	imRendr::setMatrix(&hexRendr2.camera.clipMatrix);
@@ -127,6 +126,7 @@ void CHexWorld::startGame() {
 	//spawn::player("player", cubeToWorldSpace(CHex(-6,9-3)));
 
 	mapEdit.load();
+	prepMapEntities();
 
 	if (hexCursor == NULL)
 		createCursorObject();
@@ -137,7 +137,7 @@ void CHexWorld::startGame() {
 
 	map->getHexArray()->effectsNeedUpdate = true; //old code! Replace
 
-
+	game.paused = false;
 }
 
 
@@ -404,6 +404,7 @@ void CHexWorld::toggleEditMode() {
 	}
 	else {
 		gWin::showWin("con");
+		prepMapEntities();
 	}
 	
 }
@@ -419,19 +420,23 @@ void CHexWorld::onRedo() {
 }
 
 
-void CHexWorld::onSpawn(const std::string& name, TEntity entity) {
-	if (name == "melee bot" || name == "shooter bot") {
-		physics.add(entity.get());
-	}
+/** Plug the map's entities into physics and whatever else they need
+	to be connected to. */
+void CHexWorld::prepMapEntities() {
+	physics.removeEntities();
 
-	if (name == "player") {
-		game.player = (CPlayerObject*) entity.get();
-		physics.add(entity.get());
-		playerObj = (CPlayerObject*)entity.get();
-		game.player = playerObj;
-	}
+	for (auto& entity : map->entities) {
+		if (entity->isRobot)
+			physics.add(entity.get());
 
-	map->entities.push_back(entity);
+		if (entity->entityType == entPlayer) {
+			game.player = (CPlayerObject*)entity.get();
+			playerObj = (CPlayerObject*)entity.get();
+			physics.add(entity.get());
+		}
+
+
+	}
 
 }
 

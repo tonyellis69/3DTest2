@@ -76,6 +76,8 @@ public:
 	void onRedo();
 	void onSpawn(const std::string& name, TEntity entity);
 
+	void prepMapEntities();
+
 	CGUIlabel2* hexPosLbl;
 
 	std::string lblText;

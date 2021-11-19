@@ -62,7 +62,7 @@ std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
 	float dist = glm::distance(bot->worldPos, destination);
 
 	if (dist < 0.05f) {
-		bot->physics.velocity = { 0, 0, 0 };
+		bot->stopMoving();
 		return std::make_shared<CGlanceAround>(bot); 
 	}
 
@@ -159,7 +159,7 @@ std::shared_ptr<CRoboState> CCharge::update(float dT) {
 	
 	//reached destination?
 	if (glm::distance(bot->worldPos, destination) < meleeRange ) {
-		bot->physics.moveImpulse = { 0,0,0 };
+		bot->stopMoving();
 		if (targetInSight)
 			return std::make_shared<CMelee>(bot,targetEntity); 
 		else {
@@ -255,6 +255,7 @@ std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 		}
 		else {
 			stoppedToShoot = true;
+			bot->stopMoving();
 		}
 
 		if (stoppedToShoot && targetDist > escapeRange) {
@@ -285,7 +286,7 @@ std::shared_ptr<CRoboState> CGoTo::update(float dT) {
 
 	float dist = glm::distance(bot->worldPos, destination);
 	if (dist < 0.05f) {
-		bot->physics.velocity = { 0, 0, 0 };
+		bot->stopMoving();
 		bot->stopTracking();
 		return std::make_shared<CGlanceAround>(bot);
 	}

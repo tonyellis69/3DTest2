@@ -7,7 +7,9 @@
 #include "gameEvents.h"
 #include "hexMsg.h"
 #include "viewField.h"
-#include "item.h"
+
+#include "items/gun.h"
+#include "items/armour.h"
 
 enum TMoveDir {
 	moveNone, moveEast, moveWest, moveNE, moveSE,
@@ -45,7 +47,8 @@ public:
 	float getUpperBodyRotation();
 	glm::vec3 getUpperBodyRotationVec();
 	void setMouseDir(glm::vec3& mouseVec);
-	//float getTargetAngle() { return targetAngle;  }
+	void setGun(CGun* gun);
+	void setArmour(CArmour* armour);
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
 	
@@ -60,7 +63,10 @@ public:
 	bool visible = false;
 	bool dead = false;
 
-	int hp = 3;
+	int hp = 10;
+
+	CGun* gun; ///<Currently equipped gun.
+	CArmour* armour; ///<Currently worn armour;
 
 private:
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
@@ -75,8 +81,8 @@ private:
 
 	//float targetAngle;
 
-	std::vector<CItem*> inventory;
-	std::vector<CItem*> tmpFloorItems; //temp!
+	//std::vector<CItem*> inventory;
+	//std::vector<CItem*> tmpFloorItems; //temp!
 	int itemSelected = -1; //temp!
 	bool inventoryOn = false;
 

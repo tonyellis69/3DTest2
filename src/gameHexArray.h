@@ -21,6 +21,7 @@ public:
 	THexList findVisibleHexes(CHex& apex, THexList& perimeterHexes, bool obsessive);
 	void updateVisibility(THexList& visibleHexes, THexList& unvisibleHexes);
 	void addEntity(TEntity entity, CHex& hex);
+	void addEntity(TEntity entity);
 	void addExistingEntity(CEntity* entity, CHex& hex);
 	void removeEntity(CEntity*  entity);
 	void removeEntity(TEntity entity);

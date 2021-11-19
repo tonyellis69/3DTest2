@@ -36,6 +36,7 @@ CPlayerObject::CPlayerObject() {
 
 	//setBoundingRadius(); //temp?
 	entityType = entPlayer;
+
 }
 
 CPlayerObject::~CPlayerObject() {
@@ -56,11 +57,12 @@ void CPlayerObject::buildWorldMatrix() {
 	upperBody->matrix = worldM;
 	upperBody->matrix = glm::rotate(worldM, upperBodyRotation, glm::vec3(0, 0, -1));
 
+	lineModel.model.matrix = upperBody->matrix;
+	//FIXME! Temp kludge to ensure collision check works
+	//maybe solve by giving every model a collision subModel to check against.
+
 
 	worldM = glm::rotate(worldM, rotation, glm::vec3(0, 0, -1));
-
-	//leftFoot->matrix = worldM;
-	//rightFoot->matrix = worldM;
 
 	rightFoot->matrix = glm::translate(worldM, glm::vec3(footExtension, 0, 0));;
 	leftFoot->matrix = glm::translate(worldM, glm::vec3(-footExtension,0,0));
@@ -71,65 +73,6 @@ void CPlayerObject::buildWorldMatrix() {
 /** Temporary keystroke catcher. */
 void CPlayerObject::tmpKeyCB(int key) {
 
-	if (key >= '1' && key <= '5' && inventoryOn) {
-		itemSelected = key - '1';
-		auto item = inventory[itemSelected];
-		std::string desc = "\n\n" + item->itemType + "\nU) use or (L) leave?";
-		gWin::addText("con", desc);
-		return;
-	}
-
-	if (key == 'U' && inventoryOn) {
-		gWin::addText("con", "\nUsed!");
-		return;
-	}
-
-	if (key == 'L' && inventoryOn) {
-		gWin::addText("con", "\nDropped!");
-		auto item = inventory[itemSelected];
-		inventory.erase(inventory.begin() + itemSelected);
-		game.map->addExistingEntity( item, hexPosition );
-		itemSelected = -1;
-		return;
-	}
-
-
-
-	if (key >= '1' && key <= '5' && !tmpFloorItems.empty()) {
-		itemSelected = key - '1';
-		auto item = tmpFloorItems[itemSelected];
-		std::string desc = "\n\n" + item->itemType + "\n";
-		desc += item->description;
-		desc += "\n\nT) Take?";
-		gWin::addText("con",desc);
-	}
-
-	if (key == 'T' && itemSelected != -1) {
-		auto item = tmpFloorItems[itemSelected];
-		inventory.push_back(item);
-
-		game.map->removeEntity(item);
-	}
-
-	if (key == 'I') {
-		gWin::addText("con", "\nInventory:\n");
-		if (inventory.empty()) {
-			gWin::addText("con", "Nothing!");
-			return;
-		}
-
-		std::string invTxt;
-		auto itemNo = '1';
-		for (auto& item : inventory) {
-			invTxt = itemNo;
-			invTxt += ") " + item->itemType + "\n";
-			itemNo++;
-			gWin::addText("con", invTxt);
-		}
-		inventoryOn = true;
-
-
-	}
 
 }
 
@@ -138,12 +81,9 @@ void CPlayerObject::onFireKey(bool pressed) {
 	if (!pressed || dead)
 		return;
 
-	//hard-coded default action: launch a missile!
-	float targetAngle = getUpperBodyRotation();
-	auto missile = spawn::missile("missile", worldPos, targetAngle);
-	missile->setOwner(this);
+	gun->fire(getUpperBodyRotation());
 
-	snd::play("shoot");
+
 }
 
 
@@ -164,7 +104,9 @@ void CPlayerObject::draw() {
 void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
 	liveLog << "\nPlayer hit!";
 
-	hp--;
+	int finalDamage = armour->reduceDamage(damage);
+
+	hp -= finalDamage;
 
 	if (hp < 1) {
 		game.map->removeEntity(this);
@@ -186,28 +128,11 @@ void CPlayerObject::onMovedHex() {
 	updateViewField();
 
 	gWin::clearText("con");
-	tmpFloorItems.clear();
+	//tmpFloorItems.clear();
 	itemSelected = -1;
 	inventoryOn = false;
 	
-	//auto [first, last] = world.map->getEntitiesAt(hexPosition);
-	//for (auto& it = first; it != last; it++) {
-	//	if (it->second->isItem) {
-	//		tmpFloorItems.push_back((CItem*)(it->second));
-	//	}
-	//}
-	//!!!!TO DO: will need replacement
 
-	if (!tmpFloorItems.empty()) {
-		auto menuChar = '1';
-		std::string stuff = "You can see:";
-		for (auto& item : tmpFloorItems) {
-			stuff += "\n"; stuff += menuChar;
-			stuff += ") A " + item->itemType;
-			menuChar++;
-		}
-		gWin::addText("con", stuff);
-	}
 
 }
 
@@ -355,6 +280,16 @@ void CPlayerObject::setMouseDir(glm::vec3& mouseVec) {
 		startTurnCycle();
 
 	setRotation(sectorNormal);
+}
+
+void CPlayerObject::setGun(CGun* gun) {
+	this->gun = gun;
+	gun->setParent(this);
+}
+
+void CPlayerObject::setArmour(CArmour* armour) {
+	this->armour = armour;
+	armour->setParent(this);
 }
 
 /** Check if the given segment intersects us. */

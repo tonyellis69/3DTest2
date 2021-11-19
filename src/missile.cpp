@@ -84,7 +84,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 			if (hit) {
 				collisionPt = entity->worldPos;
 				collidee = entity;
-				entity->receiveDamage(*owner, 10);
+				entity->receiveDamage(*owner, 5);
 				collided = true;
 				return true;
 			}
@@ -116,7 +116,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 }
 
 void CMissile::spawnExplosion() {
-	CExplosion* splode = spawn::explosion("explosion", collisionPt, 1);
+	CExplosion* splode = (CExplosion *) spawn::explosion("explosion", collisionPt, 1).get();
 	if (collidee)
 		splode->setCollidee(collidee);
 }

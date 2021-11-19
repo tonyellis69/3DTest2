@@ -63,6 +63,7 @@ const int editNone = 0;
 const int editPlayer = 1;
 const int editMeleeBot = 2;
 const int editShooterBot = 3;
+const int editGun = 4;
 
 
 const int editShapeNone = 0;

@@ -55,6 +55,9 @@ void CRobot::update(float dT) {
 
 	if (trackingState)
 		trackTarget();
+
+	updateTreadCycle();
+
 	buildWorldMatrix();
 }
 
@@ -126,8 +129,11 @@ void CRobot::buildWorldMatrix() {
 
 	base->matrix = worldM;
 
-	treads->matrix = worldM;
-	
+	lineModel.model.matrix = upperBody->matrix;
+	//FIXME! Temp kludge to ensure collision check works
+	//maybe solve by giving every model a collision subModel to check against.
+
+	treads->matrix = glm::translate(worldM, glm::vec3(-treadTranslate, 0, 0));
 }
 
 void CRobot::startTracking(CEntity* target) {
@@ -166,6 +172,7 @@ void CRobot::setImpulse(glm::vec3& dest, float maxSpeed) {
 	float rampedSpeed = maxSpeed * (distance / proportionalSlowingDist);
 	float clippedSpeed = std::min(rampedSpeed, maxSpeed);
 	physics.moveImpulse = (clippedSpeed / distance) * targetOffset;
+	moving = true;
 }
 
 
@@ -206,7 +213,7 @@ void CRobot::fireMissile(CEntity* target) {
 	glm::vec3 targetVec = target->worldPos - worldPos;
 	float targetAngle = glm::orientedAngle(glm::normalize(targetVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 
-	auto missile = (CMissile*) spawn::missile("missile", worldPos, targetAngle);
+	auto missile = (CMissile*) spawn::missile("missile", worldPos, targetAngle).get();
 	missile->setOwner(this);
 	missile->setSpeed(7.0f);
 
@@ -244,6 +251,11 @@ bool CRobot::turnTo(glm::vec3& p) {
 	return false;
 }
 
+void CRobot::stopMoving() {
+	moving = false;
+	physics.moveImpulse = { 0,0,0 };
+}
+
 /** Rotate upper body to track a target, if any. */
 void CRobot::trackTarget() {
 	float targetAngle;
@@ -272,6 +284,23 @@ void CRobot::trackTarget() {
 
 	}
 
+}
+
+void CRobot::updateTreadCycle() {
+	if (!moving)
+		return;
+
+	float treadLoop = 0.3f;
+
+	float velocityMod = 1.0f; //glm::length(physics.velocity) / 1.7f; //1.7f = usual max
+	//scaling by velocity doesn't seem to have a visible effect. Shelf for now.
+
+	treadCycle += dT * velocityMod;
+	treadCycle = fmod(treadCycle, treadLoop); //loop after travelling treadLoop
+	float f = treadCycle / treadLoop; // 0 - 1
+
+	float treadGap = 0.1f;
+	treadTranslate = f * treadGap;
 }
 
 

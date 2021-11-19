@@ -39,6 +39,7 @@ public:
 	bool clearLineTo(CEntity* target);
 	void fireMissile(CEntity* target);
 	bool turnTo(glm::vec3& p);
+	void stopMoving();
 
 	float upperBodyRotation = 0;
 	bool upperBodyLocked = true; ///<If true, rotate upper body with base.
@@ -48,6 +49,8 @@ private:
 	void onMovedHex();
 
 	void trackTarget();
+
+	void updateTreadCycle();
 
 	float dT;
 	int hp = 3; 
@@ -65,6 +68,10 @@ private:
 	TrackingState trackingState = trackNone; ///<What, if anything, we're keeping upper body pointing at.
 	CEntity* trackingEntity = nullptr;
 	glm::vec3 trackingPos;
+
+	float treadCycle = 0; ///<Where we are in the tread animation.
+	bool moving = false; ///<True if we're motoring somewhere.
+	float treadTranslate = 0; ///<Movement for tread animation.
 };
 
 

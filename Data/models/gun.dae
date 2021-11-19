@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <asset>
+    <contributor>
+      <author>Blender User</author>
+      <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
+    </contributor>
+    <created>2021-11-19T16:24:56</created>
+    <modified>2021-11-19T16:24:56</modified>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_images/>
+  <library_geometries>
+    <geometry id="Plane_001-mesh" name="Plane.001">
+      <mesh>
+        <source id="Plane_001-mesh-positions">
+          <float_array id="Plane_001-mesh-positions-array" count="45">-0.09992533 0.01032084 0 -0.09615737 0.04316753 0 -0.06421172 0.04595255 0 -0.06129932 0.05582433 0 -0.06483066 0.001785993 0 -0.0998581 -0.05549597 0 -0.05902272 -0.05569517 0 -0.02599579 -0.007334351 0 0.03968405 -0.007334351 0 0.05147939 0.003772854 0 0.05147939 0.003772854 0 0.08696365 0.003772854 0 0.09518826 0.03589046 0 0.04749357 0.04836446 0 4.35673e-5 0.05423456 0</float_array>
+          <technique_common>
+            <accessor source="#Plane_001-mesh-positions-array" count="15" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Plane_001-mesh-normals">
+          <float_array id="Plane_001-mesh-normals-array" count="3">0 0 -1</float_array>
+          <technique_common>
+            <accessor source="#Plane_001-mesh-normals-array" count="1" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Plane_001-mesh-vertices">
+          <input semantic="POSITION" source="#Plane_001-mesh-positions"/>
+        </vertices>
+        <lines count="2">
+          <input semantic="VERTEX" source="#Plane_001-mesh-vertices" offset="0"/>
+          <p>10 9 11 10</p>
+        </lines>
+        <triangles count="12">
+          <input semantic="VERTEX" source="#Plane_001-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Plane_001-mesh-normals" offset="1"/>
+          <p>2 0 3 0 14 0 9 0 8 0 13 0 12 0 9 0 13 0 6 0 5 0 4 0 14 0 7 0 2 0 11 0 9 0 12 0 0 0 2 0 4 0 0 0 1 0 2 0 7 0 4 0 2 0 7 0 6 0 4 0 8 0 14 0 13 0 14 0 8 0 7 0</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="gunIcon_001" name="gunIcon_001" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#Plane_001-mesh" name="gunIcon_001"/>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

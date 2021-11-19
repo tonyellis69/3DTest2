@@ -21,7 +21,7 @@ struct TFov { //describes a fov shape
 };
 
 enum TEntityType {entNull = 0, entPlayer = 1, entMissile, entExplode, 
-	entMeleeBot, entShootBot};
+	entMeleeBot, entShootBot, entGun};
 
 /** The base class for objects in the game world.*/
 class CEntity  {
@@ -74,6 +74,7 @@ public:
 	
 	bool isItem = false; //temp cludge!
 	bool isRobot = false; //temp cludge!
+
 	bool deleteMe = false;
 
 	bool live = true; ///<Entities are ignored when false.

@@ -3,7 +3,7 @@
 //#include "hexItem.h"
 #include "door.h"
 #include "robot.h"
-#include "item.h"
+//#include "item.h"
 
 #include "tigExport.h"
 
