@@ -5,20 +5,16 @@
 
 #include "items/gun.h"
 
-std::unordered_map< std::string, CBuf2> CSpawn::meshBufs;
-std::unordered_map< std::string, TModelData> CSpawn::modelBufs;
+std::unordered_map<std::string, CModel> CSpawn::models;
 
 CMap* CSpawn::pMap;
 
 
 TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 	auto player = std::make_shared<CPlayerObject>();
-	setEntityLineModel(player.get(), name);
+	player->setModel(models[name]);
 	player->setPosition(pos);
-
-	player->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
-
-//	player->setGun( (CGun*) gun("guntype1").get());
+	player->setGun( (CGun*) gun("guntype1").get());
 	player->setArmour((CArmour*)armour("basicArmour").get());
 
 	pMap->addEntity(player);
@@ -28,7 +24,7 @@ TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 /** Create the given entity, and notify the registered callback-handler. */
 TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	auto robot = std::make_shared<CRobot>();
-	setEntityLineModel(robot.get(), "robot");
+	robot->setModel(models["robot"]);
 	robot->setPosition(pos);
 
 	if (name == "melee bot") {
@@ -39,9 +35,7 @@ TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 		robot->setState(robotWander3);
 		robot->entityType = entShootBot;
 	}
-
-
-	robot->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
+	//robot->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
 
 	pMap->addEntity(robot);
 	return robot;
@@ -49,10 +43,10 @@ TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 
 TEntity CSpawn::missile(const std::string& name, glm::vec3& pos, float angle) {
 	auto missile = std::make_shared<CMissile>();
-	setEntityLineModel(missile.get(), "bolt");
+	missile->setModel(models["bolt"]);
 	missile->setPosition(pos, angle);
 
-	missile->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
+	//missile->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
 
 	pMap->addEntity(missile);
 	return missile;
@@ -69,9 +63,9 @@ TEntity CSpawn::explosion(const std::string& name, glm::vec3& pos, float scale) 
 
 TEntity CSpawn::gun(const std::string& name, glm::vec3& pos ) {
 	auto gun = std::make_shared<CGun>();
-	gun->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
 
-	setEntityLineModel(gun.get(), "gun");
+	gun->setModel(models["gun"]);
+	gun->model.meshes[0].colour = glm::vec4(0, 1, 1.0, 0.45f);
 	if (pos != glm::vec3(0,0,0) )
 		gun->setPosition(pos);
 
@@ -87,12 +81,6 @@ TEntity CSpawn::armour(const std::string& name) {
 
 	pMap->addEntity(armour);
 	return armour;
-}
-
-
-void CSpawn::setEntityLineModel(CEntity* entity, const std::string& modelName) {
-	entity->lineModel.buffer2 = &meshBufs[modelName];
-	entity->setModel(modelBufs[modelName]);
 }
 
 

@@ -13,7 +13,7 @@
 
 #include "buf2.h"
 #include "renderer/mesh.h"
-
+#include "model.h"
 
 #include "gameHexArray.h"
 
@@ -29,13 +29,11 @@ public:
 	static TEntity armour(const std::string& name);
 
 
-	static void setEntityLineModel(CEntity* entity, const std::string& modelName);
 
-	static std::unordered_map< std::string, CBuf2> meshBufs;
-	static std::unordered_map< std::string, TModelData> modelBufs;
+	static std::unordered_map<std::string, CModel> models;
 
 	static CMap* pMap; ///<The map we're spawning to.
 
 };
-
+	
 using spawn = CSpawn;

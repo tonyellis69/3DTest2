@@ -18,8 +18,6 @@
 #include "messaging/msg2.h" //for test
 
 #include "gameGui.h"
-
-#include "tigExport.h"
  
 #include "UI/fonts.h" //temp test
 
@@ -48,6 +46,7 @@ CHexWorld::CHexWorld() {
 	msg::remove(msgId2, this);
 
 	gWin::createWin("con", 10, 10, 200, 300);
+	gWin::setFont("con", "mainFnt");
 }
 
 
@@ -59,19 +58,15 @@ void CHexWorld::msgCB4(float y, const char* str, int n) {
 void CHexWorld::setVM(Ivm* pVM) {
 	vm = pVM;
 	mapMaker.attachVM(pVM);
-	setTigObj(vm->getObject(tig::IHexWorld)); 
+	//setTigObj(vm->getObject(tig::IHexWorld)); 
 	CGameTextWin::pVM = pVM;
 }
 
 /**	Load a multipart mesh for storage under the given name. */
 void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
 	CImporter importer;
-	importer.loadFile(fileName);
-	spawn::meshBufs[name] = importer.getSingleMesh().exportToBuffer();
-
-	spawn::modelBufs[name] = importer.getMeshNodes();
-	spawn::modelBufs[name].name = name;
-	
+	importer.loadFile(fileName);	
+	spawn::models[name] = importer.getModel();
 }
 
 /** Create a map using the data in the given Tig file. */
@@ -100,18 +95,17 @@ void CHexWorld::deleteMap() {
 /** Required each time we restart. */
 void CHexWorld::startGame() {
 
-	gWin::setFont("con", "mainFnt");
 
-	gWin::addText("con", "1Here is some \\bbold\\b text.");
-	gWin::addText("con", "\n2Here is some more text.");
-	gWin::addText("con", "\n3Here is some more text.");
-	gWin::setColour("con", glm::vec4{ 1,1,0,1 });
-	gWin::addText("con", "\n4Here is some more text.");
-	gWin::addText("con", "\n5Here is some more text.");
-	gWin::addText("con", "\n6Here is some more text.");
-	gWin::addText("con", "\n7Here is some more text.");
-	gWin::addText("con", "\nAnd here is some more text");
-	//gWin::addText("con", "\n9");
+	//gWin::addText("con", "1Here is some \\bbold\\b text.");
+	//gWin::addText("con", "\n2Here is some more text.");
+	//gWin::addText("con", "\n3Here is some more text.");
+	//gWin::setColour("con", glm::vec4{ 1,1,0,1 });
+	//gWin::addText("con", "\n4Here is some more text.");
+	//gWin::addText("con", "\n5Here is some more text.");
+	//gWin::addText("con", "\n6Here is some more text.");
+	//gWin::addText("con", "\n7Here is some more text.");
+	//gWin::addText("con", "\nAnd here is some more text");
+
 
 
 	hexRendr2.setMap(map->getHexArray());
@@ -446,9 +440,10 @@ void CHexWorld::prepMapEntities() {
 void CHexWorld::createCursorObject() {
 	hexCursor = new CEntity();
 	hexCursor->setBoundingRadius();
-	hexCursor->lineModel.buffer2 = &spawn::meshBufs["cursor"];
-	hexCursor->lineModel.model = spawn::modelBufs["cursor"];
-	hexCursor->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
+	//hexCursor->lineModel.buffer2 = &spawn::meshBufs["cursor"];
+	//hexCursor->lineModel.model = spawn::modelBufs["cursor"];
+	//hexCursor->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
+	hexCursor->setModel(spawn::models["cursor"]);
 	hexCursor->setPosition(CHex(0, 0, 0));
 }
 
@@ -522,15 +517,15 @@ void CHexWorld::onRightKey(bool released, int mods) {
 
 /** Handle an 'external function call' from Tig. */
 int CHexWorld::tigCall(int memberId) {
-	std::string strParam;
-	switch (memberId) {
-	case tig::msgFn : 
-		strParam = vm->getParamStr(0);
-		liveLog << strParam; break;
-	case tig::popupWin :
-		strParam = vm->getParamStr(0);
-		;// mothballing this, use messaging popupMsg(strParam); break;
-	}
+	//std::string strParam;
+	//switch (memberId) {
+	//case tig::msgFn : 
+	//	strParam = vm->getParamStr(0);
+	//	liveLog << strParam; break;
+	//case tig::popupWin :
+	//	strParam = vm->getParamStr(0);
+	//	;// mothballing this, use messaging popupMsg(strParam); break;
+	//}
 	return 1;
 }
 

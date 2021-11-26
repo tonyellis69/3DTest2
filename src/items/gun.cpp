@@ -14,6 +14,14 @@ void CGun::fire(float firingAngle) {
 	gunType->fire(firingAngle);
 }
 
+void CGun::draw() {
+	//hexRendr2.drawLineModel(model.meshes[0]);
+
+	hexRendr2.drawSolidModel(model.meshes[0]);
+	hexRendr2.drawSolidModel(model.meshes[1]);
+	hexRendr2.drawLineModel(model.meshes[2]);
+}
+
 
 
 

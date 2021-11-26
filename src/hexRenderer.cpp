@@ -33,6 +33,7 @@ void CHexRenderer::init()
 	createHexShader();
 	createVisibilityShader();
 	createExplosionShader();
+	createFilledShader();
 
 	camera.setNearFar(0.1f, 1000.0f);
 	camera.setPos(glm::vec3(0, -0, 12));
@@ -151,11 +152,30 @@ void CHexRenderer::drawPath(THexList* path, glm::vec4& pathStartColour, glm::vec
 }
 
 
-void CHexRenderer::drawLineModel(CLineModel& lineModel) {
-	TModelData& node = lineModel.model;
-	//drawModel(node, glm::mat4(1), lineModel.buffer2,lineModel.colour);
 
-	drawModel2(lineModel.model, lineModel);
+
+void CHexRenderer::drawLineModel(TModelMesh& model) {
+	renderer.setShader(lineShader);
+	glm::mat4 mvp = camera.clipMatrix * model.matrix;
+	lineShader->setShaderValue(hMVP, mvp);
+	lineShader->setShaderValue(hWinSize, camera.getView());
+
+	lineShader->setShaderValue(hColour, model.colour);
+	
+	renderer.drawLineStripAdjBuf(*model.buf, (void*)(model.mesh.indexStart * sizeof(unsigned short)), model.mesh.indexSize);
+
+
+}
+
+void CHexRenderer::drawSolidModel(TModelMesh& model) {
+	renderer.setShader(filledShader);
+	glm::mat4 mvp = camera.clipMatrix * model.matrix;
+	filledShader->setShaderValue(hFillMVP, mvp);
+	filledShader->setShaderValue(hFillColour, model.colour);
+
+	auto& mesh = model.mesh;
+	renderer.drawTrisBuf(*model.buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
+
 }
 
 /** Point the camera in the given direction. Eg, top-down. */
@@ -226,27 +246,7 @@ void CHexRenderer::drawModel(TModelData& node, glm::mat4& parentMatrix, CBuf2* b
 
 }
 
-void CHexRenderer::drawModel2(TModelData& node, CLineModel& lineModel) {
-	renderer.setShader(lineShader);
-	glm::mat4 mvp = camera.clipMatrix * node.matrix;
-	lineShader->setShaderValue(hMVP, mvp);
-	lineShader->setShaderValue(hWinSize, camera.getView());
-	
-		for (auto& mesh : node.meshes) {
-			lineShader->setShaderValue(hColour, lineModel.colour);
 
-			if (mesh.isLine) {//TO DO: ugh, try to avoid
-				renderer.drawLineStripAdjBuf(*lineModel.buffer2, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
-			}
-			else
-				renderer.drawTrisBuf(*lineModel.buffer2, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
-		}
-	
-
-	for (auto& subNode : node.subModels)
-		drawModel2(subNode, lineModel);
-
-}
 
 /** Create a buffer for holding every hex's fog-of-war status. (And 
 	maybe other things. */
@@ -488,6 +488,12 @@ void CHexRenderer::createExplosionShader() {
 	hSeed = explosionShader->getUniformHandle("seed");
 }
 
+void CHexRenderer::createFilledShader() {
+	filledShader = renderer.createShader("shaders\\filled");
+	hFillMVP = filledShader->getUniformHandle("mvpMatrix");
+	hFillColour = filledShader->getUniformHandle("colour");
+}
+
 void CHexRenderer::setCameraAspectRatio(glm::vec2 ratio) {
 	camera.setAspectRatio(ratio.x, ratio.y);
 }
@@ -621,19 +627,19 @@ glm::i32vec2 CHexRenderer::worldPosToScreen(glm::vec3& worldPos) {
 //TO DO: find a more elegant way to this and any other hex effect - 
 //probably shouldn't involve a lineModel at all.
 void CHexRenderer::highlightHex(CHex& hex) {
-	glDisable(GL_DEPTH_TEST);
-	//draw coloured filled hex
-	TModelData& node = solidHex->model;
-	glm::mat4 worldM = glm::translate(glm::mat4(1), hexArray->getWorldPos(hex));
-	//node.meshes[0].colour = glm::vec4(0, 0, 0.8f, 1); 
-	drawModel(node, worldM, solidHex->buffer2, glm::vec4(0, 0, 0.8f, 1));
-
-
-	//draw smaller background colour hex
-	glm::mat4 scaleM = glm::scale(glm::mat4(1), glm::vec3(0.9f));
-	worldM = worldM * scaleM;
-	//node.meshes[0].colour =  floorplanSpaceColour;
-	drawModel(node, worldM, solidHex->buffer2, floorplanSpaceColour);
-
-	glEnable(GL_DEPTH_TEST);
+//	glDisable(GL_DEPTH_TEST);
+//	//draw coloured filled hex
+//	TModelData& node = solidHex->model;
+//	glm::mat4 worldM = glm::translate(glm::mat4(1), hexArray->getWorldPos(hex));
+//	//node.meshes[0].colour = glm::vec4(0, 0, 0.8f, 1); 
+//	drawModel(node, worldM, solidHex->buffer2, glm::vec4(0, 0, 0.8f, 1));
+//
+//
+//	//draw smaller background colour hex
+//	glm::mat4 scaleM = glm::scale(glm::mat4(1), glm::vec3(0.9f));
+//	worldM = worldM * scaleM;
+//	//node.meshes[0].colour =  floorplanSpaceColour;
+//	drawModel(node, worldM, solidHex->buffer2, floorplanSpaceColour);
+//
+//	glEnable(GL_DEPTH_TEST);
 }

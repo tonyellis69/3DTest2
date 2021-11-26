@@ -20,7 +20,7 @@
 
 #include "spawner.h"
 
-#include "renderer/imRendr/imRendr.h"
+#include "..\3Dtest\src\hexRenderer.h"
 
 constexpr float sin30 = 0.5f;
 constexpr float sin60 = 0.86602540378443;
@@ -43,11 +43,14 @@ CPlayerObject::~CPlayerObject() {
 
 }
 
-void CPlayerObject::setModel(TModelData& model) {
-	lineModel.model = model;
-	upperBody = lineModel.getNode("body");
-	leftFoot = lineModel.getNode("footL");
-	rightFoot = lineModel.getNode("footR");
+
+
+void CPlayerObject::setModel(CModel& model) {
+	this->model = model;
+	upperBody = model.getMesh("body");
+	leftFoot = model.getMesh("footL");
+	rightFoot = model.getMesh("footR");
+
 	setBoundingRadius();
 }
 
@@ -57,7 +60,8 @@ void CPlayerObject::buildWorldMatrix() {
 	upperBody->matrix = worldM;
 	upperBody->matrix = glm::rotate(worldM, upperBodyRotation, glm::vec3(0, 0, -1));
 
-	lineModel.model.matrix = upperBody->matrix;
+	//lineModel.model.matrix = upperBody->matrix;
+	model.tmpMatrix = upperBody->matrix;
 	//FIXME! Temp kludge to ensure collision check works
 	//maybe solve by giving every model a collision subModel to check against.
 
@@ -72,18 +76,27 @@ void CPlayerObject::buildWorldMatrix() {
 
 /** Temporary keystroke catcher. */
 void CPlayerObject::tmpKeyCB(int key) {
+	if (key == 'F') {
+		//temp drop gun procedure:
+		if (gun == nullptr)
+			return;
 
+		float dropDist = 0.75f;
+		glm::vec3 dropPoint = worldPos + (getUpperBodyRotationVec() * dropDist);
+		gun->setPosition(dropPoint);
+		gun = nullptr;
+
+	}
+	
 
 }
 
 /** Player has pressed or released the fire button. */
 void CPlayerObject::onFireKey(bool pressed) {
-	if (!pressed || dead)
+	if (!pressed || dead || gun == nullptr)
 		return;
 
 	gun->fire(getUpperBodyRotation());
-
-
 }
 
 
@@ -94,7 +107,10 @@ void CPlayerObject::draw() {
 	//	hexRendr->highlightHex(hex);
 	if (dead)
 		return;
-	CEntity::draw();
+	//CEntity::draw();
+	hexRendr2.drawLineModel(*leftFoot);
+	hexRendr2.drawLineModel(*rightFoot);
+	hexRendr2.drawLineModel(*upperBody);
 }
 
 
@@ -127,7 +143,7 @@ void CPlayerObject::onMovedHex() {
 
 	updateViewField();
 
-	gWin::clearText("con");
+	//gWin::clearText("con");
 	//tmpFloorItems.clear();
 	itemSelected = -1;
 	inventoryOn = false;
@@ -225,6 +241,8 @@ void CPlayerObject::update(float dT) {
 	buildWorldMatrix();
 	oldMoveDir = moveDir;
 	moveDir = moveNone;
+
+	nearItemUpdate();
 }
 
 void CPlayerObject::setTargetAngle(float angle) {
@@ -294,7 +312,7 @@ void CPlayerObject::setArmour(CArmour* armour) {
 
 /** Check if the given segment intersects us. */
 std::tuple<bool, glm::vec3> CPlayerObject::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
-	if (lineModel.BBcollision(segA, segB))
+	if (model.BBcollision(segA, segB))
 		return { true, glm::vec3() };
 
 	return { false, glm::vec3() };
@@ -326,23 +344,38 @@ void CPlayerObject::updateWalkCycle() {
 	footExtension = f * maxFootExtension;
 
 	return;
+}
+
+/** Report any nearby items to the UI. */
+void CPlayerObject::nearItemUpdate() {
+	float nearDist = 2.0f;
+	bool nearItemsChanged = false;
+
+	for (auto item = nearItems.begin(); item != nearItems.end();) {
+		if (glm::distance(worldPos, (*item)->worldPos) > nearDist) {
+			item = nearItems.erase(item);
+			nearItemsChanged = true;
+		}
+		else
+			item++;
+	}
 
 
+	for (auto& entity : game.map->entities) {
+		if (entity->isItem && glm::distance(worldPos, entity->worldPos) < nearDist) {
+			if (std::find(nearItems.begin(),nearItems.end(),entity) == nearItems.end()) {
+				nearItems.push_back(entity);
+				nearItemsChanged = true;
+			}
+		}
+	}
 
-
-	//float taper;
-
-	//if (turningCycle > 0) {
-	//	turningCycle -= dT;
-	//	taper = 1.0f;
-	//}
-	//else
-	//	taper= glm::smoothstep(0.0f, 2.0f, glm::length(physics.velocity));
-
-	//walkCycle += dT * 10.0f * taper;
-	//walkCycle = fmod(walkCycle, 2*M_PI); 
-
-	//footExtension = sin(walkCycle) * maxFootExtension;
+	if (nearItemsChanged) {
+		gWin::clearText("con");
+		for (auto& item : nearItems) {
+			gWin::addText("con", "\nGun!");
+		}
+	}
 
 }
 

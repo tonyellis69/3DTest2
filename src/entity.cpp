@@ -16,8 +16,9 @@ CEntity::CEntity() {
 }
 
 
-void CEntity::setModel(TModelData& model) {
-	lineModel.model = model;
+
+void CEntity::setModel(CModel& model) {
+	this->model = model;
 	setBoundingRadius();
 }
 
@@ -39,7 +40,7 @@ void CEntity::setPosition(glm::vec3& worldPos) {
 }
 
 void CEntity::setBoundingRadius() {
-	physics.boundingRadius = glm::length(lineModel.model.extents.furthestVert);
+	physics.boundingRadius = glm::length(model.extents.furthestVert);
 }
 
 /** Set the rotation and facing direction of this object. */
@@ -64,20 +65,19 @@ void CEntity::rotate(float angle) {
 void CEntity::draw(){
 	if (hexPosition == CHex(-1))
 		return;
-	hexRendr2.drawLineModel(lineModel);
+	hexRendr2.drawLineModel(model.meshes[0]);
 }
 
 
 /** Construct this object's world matrix from its known position and rotation.*/
 void CEntity::buildWorldMatrix() {
-	lineModel.model.matrix = glm::translate(glm::mat4(1), worldPos);
-	lineModel.model.matrix = glm::rotate(lineModel.model.matrix, rotation, glm::vec3(0, 0, -1));
+	model.tmpMatrix = glm::translate(glm::mat4(1), worldPos);
+	model.tmpMatrix = glm::rotate(model.tmpMatrix, rotation, glm::vec3(0, 0, -1));
+	
 	//NB: we use a CW system for angles
-
-	//updateMatrices(lineModel.model);
-
-	for (auto& childModel : lineModel.model.subModels)
-		updateMatrices(childModel);
+	for (auto& mesh : model.meshes)
+		mesh.matrix = model.tmpMatrix;
+	//Kludgy, but we will usually want to move all meshes.
 }
 
 void CEntity::updateMatrices(TModelData& model) {
@@ -89,8 +89,8 @@ void CEntity::updateMatrices(TModelData& model) {
 
 std::tuple<float, glm::vec3> CEntity::collisionCheck(CEntity* e2) {
 	//get bounding-sphere radii
-	float radius1 = lineModel.getRadius();
-	float radius2 = e2->lineModel.getRadius();
+	float radius1 = model.getRadius();
+	float radius2 = e2->model.getRadius();
 	
 	//check for overlap
 	float entDist = glm::distance(worldPos, e2->worldPos);

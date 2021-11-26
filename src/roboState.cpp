@@ -19,7 +19,7 @@ const float rad120 = rad360 / 3;
 
 CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 	speed = 1000.0f;
-	bot->lineModel.setColourR(glm::vec4(0, 1, 0, 1));
+	//bot->lineModel.setColourR(glm::vec4(0, 1, 0, 1));
 	
 	THexList ring;
 	CHex randHex;
@@ -145,7 +145,7 @@ std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
 CCharge::CCharge(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
 	this->targetEntity = targetEntity;
 
-	bot->lineModel.setColourR(glm::vec4(1, 0, 0, 1));
+	//bot->lineModel.setColourR(glm::vec4(1, 0, 0, 1));
 }
 
 std::shared_ptr<CRoboState> CCharge::update(float dT) {
@@ -163,7 +163,7 @@ std::shared_ptr<CRoboState> CCharge::update(float dT) {
 		if (targetInSight)
 			return std::make_shared<CMelee>(bot,targetEntity); 
 		else {
-			bot->lineModel.setColourR(glm::vec4(0, 1, 0, 1));
+			//bot->lineModel.setColourR(glm::vec4(0, 1, 0, 1));
 			return std::make_shared<CRoboWander>(bot);
 		}
 	}
@@ -218,7 +218,7 @@ std::shared_ptr<CRoboState> CMelee::update(float dT) {
 
 CCloseAndShoot::CCloseAndShoot(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
 	this->targetEntity = targetEntity;
-	bot->lineModel.setColourR(glm::vec4(1, 0, 0, 1));
+	//bot->lineModel.setColourR(glm::vec4(1, 0, 0, 1));
 	bot->startTracking(targetEntity);
 }
 

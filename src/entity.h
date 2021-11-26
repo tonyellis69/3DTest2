@@ -5,9 +5,10 @@
 #include <glm/glm.hpp>
 
 #include "hex/hex.h"
-#include "lineModel.h"
+//#include "lineModel.h"
 #include "physics/phys.h"
 
+#include "model.h"
 
 /// <summary>
 /// ////////////
@@ -29,7 +30,7 @@ public:
 	CEntity();
 	virtual ~CEntity() {}
 	virtual void update(float dT) {}
-	virtual void setModel(TModelData& model);
+	virtual void setModel(CModel& model);
 	void setPosition(CHex& hex);
 	void setPosition(glm::vec3& worldPos);
 	virtual void setBoundingRadius();
@@ -59,9 +60,10 @@ public:
 	
 	float dT;
 
-	CLineModel lineModel;
+	//CLineModel lineModel;
+	CModel model;
 
-	CHex hexPosition; ///<Position on a hex grid in cube coordinates.
+	CHex hexPosition = CHex(-1); ///<Position on a hex grid in cube coordinates.
 	THexDir facing = hexEast; ///<Direction entity is facing.
 	glm::vec3 worldPos = { 0,0,0 }; ///<Position in world space.
 	glm::vec3 oldWorldPos = { 0,0,0 };

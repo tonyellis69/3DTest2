@@ -5,85 +5,87 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
     </contributor>
-    <created>2021-11-12T13:03:15</created>
-    <modified>2021-11-12T13:03:15</modified>
+    <created>2021-11-26T11:50:44</created>
+    <modified>2021-11-26T11:50:44</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_images/>
   <library_geometries>
-    <geometry id="Circle_006-mesh" name="Circle.006">
+    <geometry id="Plane-mesh" name="Plane">
       <mesh>
-        <source id="Circle_006-mesh-positions">
-          <float_array id="Circle_006-mesh-positions-array" count="36">0.09749996 0.375 0 -0.1274999 0.375 0 -0.1274999 -0.375 0 0.09749996 -0.375 0 0.218566 0.1060661 0 0.006433904 0.106066 0 0.006433904 -0.106066 0 0.218566 -0.106066 0 0.09749996 0.15 0 0.09749996 -0.15 0 -0.02249997 -0.15 0 -0.02249997 0.1499999 0</float_array>
+        <source id="Plane-mesh-positions">
+          <float_array id="Plane-mesh-positions-array" count="18">0 0.3000001 0 -0.2598077 0.15 0 -0.2598077 -0.15 0 0 -0.3000001 0 0.2598077 -0.15 0 0.2598077 0.15 0</float_array>
           <technique_common>
-            <accessor source="#Circle_006-mesh-positions-array" count="12" stride="3">
+            <accessor source="#Plane-mesh-positions-array" count="6" stride="3">
               <param name="X" type="float"/>
               <param name="Y" type="float"/>
               <param name="Z" type="float"/>
             </accessor>
           </technique_common>
         </source>
-        <source id="Circle_006-mesh-normals">
-          <float_array id="Circle_006-mesh-normals-array" count="0"/>
+        <source id="Plane-mesh-normals">
+          <float_array id="Plane-mesh-normals-array" count="3">0 0 1</float_array>
           <technique_common>
-            <accessor source="#Circle_006-mesh-normals-array" count="0" stride="3">
+            <accessor source="#Plane-mesh-normals-array" count="1" stride="3">
               <param name="X" type="float"/>
               <param name="Y" type="float"/>
               <param name="Z" type="float"/>
             </accessor>
           </technique_common>
         </source>
-        <vertices id="Circle_006-mesh-vertices">
-          <input semantic="POSITION" source="#Circle_006-mesh-positions"/>
+        <vertices id="Plane-mesh-vertices">
+          <input semantic="POSITION" source="#Plane-mesh-positions"/>
         </vertices>
-        <lines count="12">
-          <input semantic="VERTEX" source="#Circle_006-mesh-vertices" offset="0"/>
-          <p>0 1 1 2 2 3 4 5 5 6 6 7 7 4 8 0 10 11 3 9 9 10 11 8</p>
-        </lines>
+        <triangles count="4">
+          <input semantic="VERTEX" source="#Plane-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Plane-mesh-normals" offset="1"/>
+          <p>5 0 0 0 2 0 0 0 1 0 2 0 2 0 3 0 4 0 4 0 5 0 2 0</p>
+        </triangles>
       </mesh>
     </geometry>
-    <geometry id="Circle_004-mesh" name="Circle.004">
+    <geometry id="Plane_001-mesh" name="Plane.001">
       <mesh>
-        <source id="Circle_004-mesh-positions">
-          <float_array id="Circle_004-mesh-positions-array" count="42">-0.1 -0.15 0 -0.25 -0.3001821 0 -0.3 0.1 0 -0.25 -0.15 0 -0.1 0.15 0 0.4499999 -0.15 0 0.4499999 0.3 0 -0.25 0.3 0 -0.25 0.15 0 0.4499999 0.15 0 0.4499999 0.3 0 0.4499999 -0.3001821 0 0.3 0.15 0 0.3 -0.15 0</float_array>
+        <source id="Plane_001-mesh-positions">
+          <float_array id="Plane_001-mesh-positions-array" count="60">-0.1998507 0.02064174 0 -0.1923148 0.08633512 0 -0.1284235 0.09190511 0 -0.1225987 0.1116487 0 -0.1296613 0.003571987 0 -0.1997162 -0.110992 0 -0.1180455 -0.1113903 0 0.07936811 1.10652e-4 0 0.1029588 0.007545769 0 0.1739273 0.007545769 0 0.1903765 0.07178097 0 0.09498721 0.09672898 0 8.71345e-5 0.1084692 0 -0.08101481 -0.04888141 0 0.008379638 -0.04881101 0 0.03283786 1.10652e-4 0 -0.006186723 -0.03267735 0 -0.05361509 1.10652e-4 0 -0.07232981 -0.03258085 0 0.009631752 5.98533e-5 0</float_array>
           <technique_common>
-            <accessor source="#Circle_004-mesh-positions-array" count="14" stride="3">
+            <accessor source="#Plane_001-mesh-positions-array" count="20" stride="3">
               <param name="X" type="float"/>
               <param name="Y" type="float"/>
               <param name="Z" type="float"/>
             </accessor>
           </technique_common>
         </source>
-        <source id="Circle_004-mesh-normals">
-          <float_array id="Circle_004-mesh-normals-array" count="0"/>
+        <source id="Plane_001-mesh-normals">
+          <float_array id="Plane_001-mesh-normals-array" count="33">0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1 0 0 1</float_array>
           <technique_common>
-            <accessor source="#Circle_004-mesh-normals-array" count="0" stride="3">
+            <accessor source="#Plane_001-mesh-normals-array" count="11" stride="3">
               <param name="X" type="float"/>
               <param name="Y" type="float"/>
               <param name="Z" type="float"/>
             </accessor>
           </technique_common>
         </source>
-        <vertices id="Circle_004-mesh-vertices">
-          <input semantic="POSITION" source="#Circle_004-mesh-positions"/>
+        <vertices id="Plane_001-mesh-vertices">
+          <input semantic="POSITION" source="#Plane_001-mesh-positions"/>
         </vertices>
-        <lines count="12">
-          <input semantic="VERTEX" source="#Circle_004-mesh-vertices" offset="0"/>
-          <p>11 1 5 11 3 1 12 4 4 0 5 3 7 6 8 7 9 8 10 9 0 13 13 12</p>
-        </lines>
+        <triangles count="20">
+          <input semantic="VERTEX" source="#Plane_001-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Plane_001-mesh-normals" offset="1"/>
+          <p>2 0 4 0 17 0 14 1 18 1 13 1 0 2 2 2 1 2 2 2 12 2 3 2 12 2 15 2 11 2 11 2 8 2 10 2 15 2 7 2 11 2 10 2 8 2 9 2 8 2 11 2 7 2 15 3 12 3 19 3 19 4 12 4 17 4 17 5 4 5 18 5 4 2 2 2 0 2 2 6 17 6 12 6 5 2 6 2 4 2 4 7 13 7 18 7 16 8 14 8 19 8 19 9 14 9 15 9 13 2 4 2 6 2 16 10 18 10 14 10</p>
+        </triangles>
       </mesh>
     </geometry>
   </library_geometries>
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
-      <node id="robody" name="robody" type="NODE">
+      <node id="gunIcon_solid_001" name="gunIcon_solid_001" type="NODE">
         <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
-        <instance_geometry url="#Circle_006-mesh" name="robody"/>
+        <instance_geometry url="#Plane-mesh" name="gunIcon_solid_001"/>
       </node>
-      <node id="robase" name="robase" type="NODE">
-        <matrix sid="transform">1 0 0 -0.09999996 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
-        <instance_geometry url="#Circle_004-mesh" name="robase"/>
+      <node id="gunIcon_solid" name="gunIcon_solid" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#Plane_001-mesh" name="gunIcon_solid"/>
       </node>
     </visual_scene>
   </library_visual_scenes>

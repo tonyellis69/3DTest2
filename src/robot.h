@@ -17,7 +17,7 @@ enum TLungeState { preLunge, lunging, returning };
 class CRobot : public CEntity {
 public:
 	CRobot();
-	void setModel(TModelData& model);
+	void setModel(CModel& model);
 	void update(float dT);
 	void setState(TRobotState newState, CEntity* entity = NULL);
 	void setRotation(float angle);
@@ -61,9 +61,9 @@ private:
 	float lastTurnDir = 0;
 	float upperTurnSpeed = 5.0f;
 	
-	TModelData* upperBody;
-	TModelData* base;
-	TModelData* treads;
+	TModelMesh* upperBody;
+	TModelMesh* base;
+	TModelMesh* treads;
 
 	TrackingState trackingState = trackNone; ///<What, if anything, we're keeping upper body pointing at.
 	CEntity* trackingEntity = nullptr;

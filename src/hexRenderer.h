@@ -15,7 +15,7 @@
 #include "hex/hex.h"
 
 
-#include "lineModel.h"
+//#include "lineModel.h"
 
 struct TExplode {
 	glm::vec3 pos;
@@ -65,7 +65,8 @@ public:
 
 	void drawExplosion(TExplode& e);
 
-	void drawLineModel(CLineModel& lineModel);
+	void drawLineModel(TModelMesh& mesh);
+	void drawSolidModel(TModelMesh& model);
 
 	void pointCamera(glm::vec3& dir);
 	void setCameraHeight(float z);
@@ -81,6 +82,7 @@ public:
 	CShader* lineShader;
 	CShader* visibilityShader;
 	CShader* explosionShader;
+	CShader* filledShader;
 
 	const int numExplosionParticles = 200;
 	
@@ -95,10 +97,11 @@ private:
 	void createVisibilityShader();
 
 	void createExplosionShader();
+	void createFilledShader();
 
 	//TO DO: scrap this, but currently it's used in highLightHex
 	void drawModel(TModelData& node, glm::mat4& parentMatrix, CBuf2* buf, glm::vec4& colour);
-	void drawModel2(TModelData& node, CLineModel& lineModel);
+
 	
 	void createFogBuffer(int w, int h);
 
@@ -113,7 +116,7 @@ private:
 	CBuf2 solidHexBuf;
 	std::vector<glm::vec3> hexModel;
 
-	CLineModel* solidHex;
+	CModel* solidHex;
 
 	//glm::vec2 screenRect; ///<Screen dimensions in worldspace
 
@@ -145,6 +148,9 @@ private:
 	unsigned int hSize;
 	unsigned int hTimeOut;
 	unsigned int hSeed;
+
+	unsigned int hFillMVP;
+	unsigned int hFillColour;
 
 	glm::vec4 floorplanLineColour;
 	glm::vec4 floorplanSpaceColour;

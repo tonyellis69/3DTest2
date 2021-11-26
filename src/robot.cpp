@@ -35,11 +35,13 @@ CRobot::CRobot() {
 	physics.invMass = 1.0f / 80.0f; //temp!
 }
 
-void CRobot::setModel(TModelData& model) {
-	lineModel.model = model;
-	upperBody = lineModel.getNode("robody");
-	base = lineModel.getNode("robase");
-	treads = lineModel.getNode("treads");
+
+
+void CRobot::setModel(CModel& model) {
+	this->model = model;
+	upperBody = this->model.getMesh("robody");
+	base = this->model.getMesh("robase");
+	treads = this->model.getMesh("treads");
 	setBoundingRadius();
 }
 
@@ -68,7 +70,7 @@ void CRobot::setState(TRobotState newState, CEntity* entity)
 	switch (newState) {
 	case robotWander3:
 		currentState = std::make_shared<CRoboWander>(this);
-		lineModel.setColourR(glm::vec4(0, 1, 0, 1)); //move inside!
+		//lineModel.setColourR(glm::vec4(0, 1, 0, 1)); //move inside!
 		break;
 	case robotDoNothing:
 		currentState = std::make_shared<CDoNothing>(this);
@@ -108,13 +110,16 @@ void CRobot::draw() {
 	//	return;
 	//for (auto hex : viewField.visibleHexes)
 	//	hexRendr2.highlightHex(hex);
-	CEntity::draw();
+	//CEntity::draw();
+	hexRendr2.drawLineModel(*upperBody);
+	hexRendr2.drawLineModel(*base);
+	hexRendr2.drawLineModel(*treads);
 }
 
 
 /** Check if the given segment intersects this robot. */
 std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
-	if (lineModel.BBcollision(segA, segB))
+	if (model.BBcollision(segA, segB))
 		return { true, glm::vec3() };
 	return { false, glm::vec3()};
 }
@@ -129,7 +134,7 @@ void CRobot::buildWorldMatrix() {
 
 	base->matrix = worldM;
 
-	lineModel.model.matrix = upperBody->matrix;
+	model.tmpMatrix = upperBody->matrix;
 	//FIXME! Temp kludge to ensure collision check works
 	//maybe solve by giving every model a collision subModel to check against.
 

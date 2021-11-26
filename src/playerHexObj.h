@@ -22,7 +22,7 @@ class CPlayerObject : /*public CHexActor ,*/ public CEntity, public CGameEventSu
 public:
 	CPlayerObject();
 	~CPlayerObject();
-	void setModel(TModelData& model);
+	void setModel(CModel& model);
 	void buildWorldMatrix();
 	void tmpKeyCB(int key);
 	void onFireKey(bool pressed);
@@ -72,6 +72,7 @@ private:
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
 	void startTurnCycle();
 	void updateWalkCycle();
+	void nearItemUpdate();
 
 
 
@@ -88,11 +89,11 @@ private:
 
 	float visibilityCooldown = 0;
 
-	TModelData* upperBody;
+	TModelMesh* upperBody;
 	float upperBodyRotation = 0;
 
-	TModelData* leftFoot;
-	TModelData* rightFoot;
+	TModelMesh* leftFoot;
+	TModelMesh* rightFoot;
 
 	glm::vec3 mouseVec; ///<Relative direction of mousepointer.
 
@@ -104,4 +105,5 @@ private:
 	float maxFootExtension = 0.25f; 
 	float turningCycle = 0;
 
+	std::vector<TEntity> nearItems; ///<Nearby items to report
 };
