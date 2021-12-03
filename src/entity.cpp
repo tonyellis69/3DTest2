@@ -1,5 +1,7 @@
 #include "entity.h"
 
+#include <string>
+
 #include "utils\log.h"
 
 #include "..\3Dtest\src\hexRenderer.h"
@@ -10,9 +12,11 @@
 
 const float rad360 = M_PI * 2;
 
+unsigned int CEntity::nextId = 0;
 
 CEntity::CEntity() {
 
+	id = nextId++;
 }
 
 
@@ -145,6 +149,16 @@ void CEntity::updatePos(glm::vec3& dPos) {
 /** True if entity on screen. */
 bool CEntity::isOnScreen() {
 	return hexRendr2.isOnScreen(worldPos);
+}
+
+
+std::string CEntity::getShortDesc() {
+	//TO DO: placeholder! Short description may not always = name
+
+	std::string hotDesc = "\\h{ item " + std::to_string(id) + "}"
+		+ name + "\\h";
+	
+	return hotDesc;
 }
 
 

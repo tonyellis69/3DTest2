@@ -5,13 +5,46 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
     </contributor>
-    <created>2021-11-26T11:56:51</created>
-    <modified>2021-11-26T11:56:51</modified>
+    <created>2021-11-30T18:27:12</created>
+    <modified>2021-11-30T18:27:12</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_images/>
   <library_geometries>
+    <geometry id="solid-mesh" name="solid">
+      <mesh>
+        <source id="solid-mesh-positions">
+          <float_array id="solid-mesh-positions-array" count="18">0 1 0 -0.8660255 0.5 0 -0.8660254 -0.5000001 0 0 -1 0 0.8660255 -0.4999999 0 0.8660255 0.4999999 0</float_array>
+          <technique_common>
+            <accessor source="#solid-mesh-positions-array" count="6" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="solid-mesh-normals">
+          <float_array id="solid-mesh-normals-array" count="3">0 0 1</float_array>
+          <technique_common>
+            <accessor source="#solid-mesh-normals-array" count="1" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="solid-mesh-vertices">
+          <input semantic="POSITION" source="#solid-mesh-positions"/>
+        </vertices>
+        <polylist count="1">
+          <input semantic="VERTEX" source="#solid-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#solid-mesh-normals" offset="1"/>
+          <vcount>6 </vcount>
+          <p>1 0 2 0 3 0 4 0 5 0 0 0</p>
+        </polylist>
+      </mesh>
+    </geometry>
     <geometry id="Plane-mesh" name="Plane">
       <mesh>
         <source id="Plane-mesh-positions">
@@ -110,17 +143,21 @@
   </library_geometries>
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
-      <node id="gunIcon_solid_001" name="gunIcon_solid_001" type="NODE">
-        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
-        <instance_geometry url="#Plane-mesh" name="gunIcon_solid_001"/>
+      <node id="Hex" name="Hex" type="NODE">
+        <matrix sid="transform">2 0 0 0 0 2 0 0 0 0 2 0 0 0 0 1</matrix>
+        <instance_geometry url="#solid-mesh" name="Hex"/>
       </node>
-      <node id="gunIcon_solid" name="gunIcon_solid" type="NODE">
+      <node id="gunIcon_hex_solid_001" name="gunIcon_hex_solid_001" type="NODE">
         <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
-        <instance_geometry url="#Plane_001-mesh" name="gunIcon_solid"/>
+        <instance_geometry url="#Plane-mesh" name="gunIcon_hex_solid_001"/>
       </node>
-      <node id="gunIcon_line" name="gunIcon_line" type="NODE">
+      <node id="gunIcon_symbol_solid_002" name="gunIcon_symbol_solid_002" type="NODE">
         <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
-        <instance_geometry url="#Plane_002-mesh" name="gunIcon_line"/>
+        <instance_geometry url="#Plane_001-mesh" name="gunIcon_symbol_solid_002"/>
+      </node>
+      <node id="gunIcon_hex_line_003" name="gunIcon_hex_line_003" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#Plane_002-mesh" name="gunIcon_hex_line_003"/>
       </node>
     </visual_scene>
   </library_visual_scenes>

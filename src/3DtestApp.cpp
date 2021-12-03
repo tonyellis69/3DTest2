@@ -403,7 +403,7 @@ void C3DtestApp::initHexWorld() {
 
 	hexWorld.addMesh("gun", dataPath + "models\\gun.dae");
 
-
+	hexWorld.addMesh("armour", dataPath + "models\\armour.dae");
 
 	//... more models
 

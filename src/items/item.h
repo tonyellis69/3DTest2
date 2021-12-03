@@ -9,7 +9,14 @@ public:
 	CItem() { isItem = true; }; //TO DO: temp! Find better way!
 	void setParent(CEntity* parent);
 
-	CEntity* parent; ///<Enity wielding, carrying, etc, this item
+	void setModel(CModel& model);
+
+	void draw();
+
+	virtual void drop() {};
+	virtual void take(CEntity* taker);
+
+	CEntity* parent = nullptr; ///<Enity wielding, carrying, etc, this item
 
 
 };

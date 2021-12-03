@@ -25,8 +25,8 @@ public:
 	static TEntity robot(const std::string& name, glm::vec3& pos);
 	static TEntity missile(const std::string& name, glm::vec3& pos, float angle);
 	static TEntity explosion(const std::string& name, glm::vec3& pos, float scale);
-	static TEntity gun(const std::string& name, glm::vec3& pos = glm::vec3( 0,0,0 ));
-	static TEntity armour(const std::string& name);
+	static CEntity* gun(const std::string& name, glm::vec3& pos = glm::vec3( 0,0,0 ));
+	static CEntity* armour(const std::string& name, glm::vec3& pos = glm::vec3(0, 0, 0));
 
 
 

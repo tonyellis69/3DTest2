@@ -3,7 +3,7 @@
 #include "..\spawner.h"
 #include "sound/sound.h"
 
-#include "..\3Dtest\src\hexRenderer.h"
+
 #include <glm/gtc/matrix_transform.hpp>	
 
 CGun::CGun() {
@@ -14,13 +14,23 @@ void CGun::fire(float firingAngle) {
 	gunType->fire(firingAngle);
 }
 
-void CGun::draw() {
-	//hexRendr2.drawLineModel(model.meshes[0]);
-
-	hexRendr2.drawSolidModel(model.meshes[0]);
-	hexRendr2.drawSolidModel(model.meshes[1]);
-	hexRendr2.drawLineModel(model.meshes[2]);
+void CGun::drop() {
+	CPlayerObject* player = (CPlayerObject*) parent;
+	if (player->gun == this)
+		player->gun = nullptr;
+	parent = nullptr;
 }
+
+std::string CGun::getShortDesc() {
+	if (parent) {
+		CPlayerObject* player = (CPlayerObject*)parent;
+		if (player->gun == this)
+			return CItem::getShortDesc() + " (equipped)";
+	}
+	return CItem::getShortDesc();
+}
+
+
 
 
 

@@ -14,8 +14,14 @@ TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 	auto player = std::make_shared<CPlayerObject>();
 	player->setModel(models[name]);
 	player->setPosition(pos);
-	player->setGun( (CGun*) gun("guntype1").get());
-	player->setArmour((CArmour*)armour("basicArmour").get());
+	CEntity* equippedGun = gun("guntype1");
+	player->setGun(equippedGun);
+	player->addToInventory(equippedGun);
+
+	CEntity* equippedArmour = armour("basicArmour");
+	player->setArmour(equippedArmour);
+	player->addToInventory(equippedArmour);
+	player->name = "player";
 
 	pMap->addEntity(player);
 	return player;
@@ -36,6 +42,7 @@ TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 		robot->entityType = entShootBot;
 	}
 	//robot->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
+	robot->name = "robot";
 
 	pMap->addEntity(robot);
 	return robot;
@@ -61,7 +68,7 @@ TEntity CSpawn::explosion(const std::string& name, glm::vec3& pos, float scale) 
 }
 
 
-TEntity CSpawn::gun(const std::string& name, glm::vec3& pos ) {
+CEntity* CSpawn::gun(const std::string& name, glm::vec3& pos ) {
 	auto gun = std::make_shared<CGun>();
 
 	gun->setModel(models["gun"]);
@@ -70,17 +77,25 @@ TEntity CSpawn::gun(const std::string& name, glm::vec3& pos ) {
 		gun->setPosition(pos);
 
 	gun->gunType = std::make_shared<CSmallGun>(gun.get());
+	gun->name = "gun";
 
 	pMap->addEntity(gun);
-	return gun;
+	return gun.get();
 }
 
-TEntity CSpawn::armour(const std::string& name) {
+CEntity* CSpawn::armour(const std::string& name, glm::vec3& pos) {
 	auto armour = std::make_shared<CArmour>();
+
+	armour->setModel(models["armour"]);
+	armour->model.meshes[0].colour = glm::vec4(1, 0, 1.0, 0.45f);
+	if (pos != glm::vec3(0, 0, 0))
+		armour->setPosition(pos);
+
 	armour->armourType = std::make_shared<CBasicArmour>(armour.get());
+	armour->name = "armour";
 
 	pMap->addEntity(armour);
-	return armour;
+	return armour.get();
 }
 
 

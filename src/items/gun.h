@@ -10,8 +10,8 @@ class CGun : public CItem {
 public:
 	CGun();
 	void fire(float firingAngle);
-	void draw();
-
+	void drop();
+	std::string getShortDesc();
 
 	std::shared_ptr<CGunType> gunType = nullptr; 
 

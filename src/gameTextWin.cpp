@@ -27,8 +27,8 @@ void CGameTextWin::addText(const std::string& text) {
 //	richText->setTextStyle(styleName);
 //}
 
-void CGameTextWin::setFont(const std::string& fontName) {
-	richText->setFont(fontName);
+void CGameTextWin::setDefaultFont(const std::string& fontName) {
+	richText->setDefaultFont(fontName);
 }
 
 void CGameTextWin::setColour(glm::vec4& colour) {

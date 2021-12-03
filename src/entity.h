@@ -55,8 +55,8 @@ public:
 	void updatePos(glm::vec3& dPos);
 
 	bool isOnScreen();
-
-	//virtual void approachDestHex() {}; //temp! scrap this with per-hex movement
+	
+	virtual std::string getShortDesc();
 	
 	float dT;
 
@@ -85,9 +85,14 @@ public:
 
 	TEntityType entityType;
 
+	std::string name;
+	unsigned int id; 
+
 protected:
 	float rotation = 0.0f; ///<Angle of object's z-rotation in world space.
 
+private:
+	static unsigned int nextId;
 };
 
 using TEntity = std::shared_ptr<CEntity>;

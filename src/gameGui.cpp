@@ -31,8 +31,8 @@ void gWin::clearText(const std::string& winName) {
 	windows[winName]->clearText();
 }
 
-void gWin::setFont(const std::string& winName, const std::string& fontName) {
-	windows[winName]->setFont(fontName);
+void gWin::setDefaultFont(const std::string& winName, const std::string& fontName) {
+	windows[winName]->setDefaultFont(fontName);
 }
 
 void gWin::setColour(const std::string& winName, glm::vec4& colour) {

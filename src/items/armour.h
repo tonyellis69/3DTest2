@@ -10,6 +10,8 @@ class CArmourType;
 class CArmour : public CItem {
 public:
 	int reduceDamage(int damage);
+	void drop();
+	std::string getShortDesc();
 
 	std::shared_ptr<CArmourType> armourType = nullptr;
 

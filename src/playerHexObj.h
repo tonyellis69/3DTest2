@@ -25,6 +25,9 @@ public:
 	void setModel(CModel& model);
 	void buildWorldMatrix();
 	void tmpKeyCB(int key);
+	void tmpDrop();
+	void tmpTake();
+	void updateInventory();
 	void onFireKey(bool pressed);
 	void draw();
 
@@ -47,8 +50,9 @@ public:
 	float getUpperBodyRotation();
 	glm::vec3 getUpperBodyRotationVec();
 	void setMouseDir(glm::vec3& mouseVec);
-	void setGun(CGun* gun);
-	void setArmour(CArmour* armour);
+	void addToInventory(CEntity* item);
+	void setGun(CEntity* gun);
+	void setArmour(CEntity* armour);
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
 	
@@ -67,6 +71,7 @@ public:
 
 	CGun* gun; ///<Currently equipped gun.
 	CArmour* armour; ///<Currently worn armour;
+	std::vector<CItem*> inventory; ///<Carried items.
 
 private:
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
@@ -106,4 +111,6 @@ private:
 	float turningCycle = 0;
 
 	std::vector<TEntity> nearItems; ///<Nearby items to report
+
+
 };

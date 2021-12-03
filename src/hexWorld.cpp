@@ -46,7 +46,10 @@ CHexWorld::CHexWorld() {
 	msg::remove(msgId2, this);
 
 	gWin::createWin("con", 10, 10, 200, 300);
-	gWin::setFont("con", "mainFnt");
+	gWin::setDefaultFont("con", "mainFnt");
+
+	gWin::createWin("inv", 10, 340, 200, 300);
+	gWin::setDefaultFont("inv", "mainFnt");
 }
 
 
@@ -96,15 +99,15 @@ void CHexWorld::deleteMap() {
 void CHexWorld::startGame() {
 
 
-	//gWin::addText("con", "1Here is some \\bbold\\b text.");
-	//gWin::addText("con", "\n2Here is some more text.");
-	//gWin::addText("con", "\n3Here is some more text.");
-	//gWin::setColour("con", glm::vec4{ 1,1,0,1 });
-	//gWin::addText("con", "\n4Here is some more text.");
-	//gWin::addText("con", "\n5Here is some more text.");
-	//gWin::addText("con", "\n6Here is some more text.");
-	//gWin::addText("con", "\n7Here is some more text.");
-	//gWin::addText("con", "\nAnd here is some more text");
+	gWin::addText("con", "1Here is some \\bbold\\b text.");
+	gWin::addText("con", "\n2Here is some more text.");
+	gWin::addText("con", "\n3Here is some more text.");
+	gWin::setColour("con", glm::vec4{ 1,1,0,1 });
+	gWin::addText("con", "\n4Here is some more text.");
+	gWin::addText("con", "\n5Here is some more text.");
+	gWin::addText("con", "\n6Here is some more text.");
+	gWin::addText("con", "\n7Here is some more text.");
+	gWin::addText("con", "\nAnd here is some more text");
 
 
 
@@ -130,6 +133,8 @@ void CHexWorld::startGame() {
 	setViewMode(gameView);
 
 	map->getHexArray()->effectsNeedUpdate = true; //old code! Replace
+
+	playerObj->updateInventory();
 
 	game.paused = false;
 }

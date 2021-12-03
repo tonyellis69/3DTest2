@@ -77,18 +77,51 @@ void CPlayerObject::buildWorldMatrix() {
 /** Temporary keystroke catcher. */
 void CPlayerObject::tmpKeyCB(int key) {
 	if (key == 'F') {
-		//temp drop gun procedure:
-		if (gun == nullptr)
-			return;
-
-		float dropDist = 0.75f;
-		glm::vec3 dropPoint = worldPos + (getUpperBodyRotationVec() * dropDist);
-		gun->setPosition(dropPoint);
-		gun = nullptr;
-
+		tmpDrop();
 	}
-	
+	if (key == 'T')
+		tmpTake();
+}
 
+void CPlayerObject::tmpDrop() {
+	//temp drop gun procedure:
+	if (inventory.empty())
+		return;
+
+	auto dropItem = inventory.front();
+	inventory.erase(inventory.begin());
+
+	float dropDist = 0.75f;
+	glm::vec3 dropPoint = worldPos + (getUpperBodyRotationVec() * dropDist);
+	dropItem->setPosition(dropPoint);
+	dropItem->drop();
+
+	updateInventory();
+}
+
+void CPlayerObject::tmpTake() {
+	if (nearItems.empty())
+		return;
+
+	CItem* taken = (CItem*) nearItems.front().get();
+	nearItems.erase(nearItems.begin());
+	
+	gWin::clearText("con");
+	for (auto& item : nearItems) {
+		gWin::addText("con", item->name + "\n");
+	}
+
+	taken->take(this);
+
+	updateInventory();
+}
+
+void CPlayerObject::updateInventory() {
+	gWin::clearText("inv");
+	for (auto& item : inventory) {
+		gWin::addText("inv", item->getShortDesc());
+		gWin::addText("inv", "\n");
+	}
 }
 
 /** Player has pressed or released the fire button. */
@@ -300,14 +333,20 @@ void CPlayerObject::setMouseDir(glm::vec3& mouseVec) {
 	setRotation(sectorNormal);
 }
 
-void CPlayerObject::setGun(CGun* gun) {
-	this->gun = gun;
-	gun->setParent(this);
+void CPlayerObject::addToInventory(CEntity* item) {
+	CItem* takenEnt = (CItem*)item;
+	inventory.push_back(takenEnt);
+	takenEnt->parent = this;
 }
 
-void CPlayerObject::setArmour(CArmour* armour) {
-	this->armour = armour;
-	armour->setParent(this);
+void CPlayerObject::setGun(CEntity* gun) {
+	this->gun = (CGun*) gun;
+	this->gun->setParent(this);
+}
+
+void CPlayerObject::setArmour(CEntity* armour) {
+	this->armour = (CArmour*) armour;
+	this->armour->setParent(this);
 }
 
 /** Check if the given segment intersects us. */
@@ -348,7 +387,7 @@ void CPlayerObject::updateWalkCycle() {
 
 /** Report any nearby items to the UI. */
 void CPlayerObject::nearItemUpdate() {
-	float nearDist = 2.0f;
+	float nearDist = 1.0f;
 	bool nearItemsChanged = false;
 
 	for (auto item = nearItems.begin(); item != nearItems.end();) {
@@ -362,7 +401,8 @@ void CPlayerObject::nearItemUpdate() {
 
 
 	for (auto& entity : game.map->entities) {
-		if (entity->isItem && glm::distance(worldPos, entity->worldPos) < nearDist) {
+		if (entity->isItem && ((CItem*)entity.get())->parent == nullptr
+			&& glm::distance(worldPos, entity->worldPos) < nearDist) {
 			if (std::find(nearItems.begin(),nearItems.end(),entity) == nearItems.end()) {
 				nearItems.push_back(entity);
 				nearItemsChanged = true;
@@ -373,7 +413,7 @@ void CPlayerObject::nearItemUpdate() {
 	if (nearItemsChanged) {
 		gWin::clearText("con");
 		for (auto& item : nearItems) {
-			gWin::addText("con", "\nGun!");
+			gWin::addText("con", item->getShortDesc() + "\n");
 		}
 	}
 
