@@ -16,7 +16,12 @@ public:
 	virtual void drop() {};
 	virtual void take(CEntity* taker);
 
-	CEntity* parent = nullptr; ///<Enity wielding, carrying, etc, this item
+	void onMouseover(const std::string& parentWin);
 
+	void loseItemMenu();
+	void timeOutItemMenu();
+
+	CEntity* parent = nullptr; ///<Enity wielding, carrying, etc, this item
+	bool itemMenuOpen = false;
 
 };

@@ -25,12 +25,26 @@ public:
 
 	void onNotify(CMouseExitHex& msg);
 
+	bool OnMouseMove(const int mouseX, const int mouseY, int key);
+
+	void setHotTextMouseoverHandler(std::function<void(const std::string&)> handler) {
+		richText->setHotTextMouseoverHandler(handler);
+	}
+
+	void setHotTextClickHandler(std::function<void(const std::string&)> handler) {
+		richText->setHotTextClickHandler(handler);
+	}
+
+	void update(float dT);
 
 
-
-	inline static Ivm* pVM; ///<Virtual machine to send hot text calls to.
+	float timeOut = 0;
+	
 
 private:
 	CGUIrichText* richText = NULL;
 	glm::i32vec2 totalBorderSize; ///<Total space taken up by border furniture.
+
+
+
 };

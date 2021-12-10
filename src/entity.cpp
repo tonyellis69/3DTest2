@@ -12,10 +12,11 @@
 
 const float rad360 = M_PI * 2;
 
-unsigned int CEntity::nextId = 0;
+unsigned int CEntity::nextId = 1;
 
 CEntity::CEntity() {
-
+	if (id == 0)
+		id++;
 	id = nextId++;
 }
 

@@ -5,6 +5,8 @@
 
 #include "..\playerHexObj.h"
 
+#include "..\gameGui.h"
+
 void CItem::setParent(CEntity* parent) {
 	this->parent = parent;
 }
@@ -32,5 +34,35 @@ void CItem::take(CEntity* taker) {
 	CPlayerObject* takerEnt = (CPlayerObject*) taker;
 	takerEnt->addToInventory(this);
 
+}
+
+
+void CItem::onMouseover(const std::string& parentWin) {
+	//open item menu window
+	if (parentWin == "inv" && !itemMenuOpen) {
+		gWin::putLeftOf("itemMenu", "inv");
+		gWin::alignWithMouse("itemMenu");
+		itemMenuOpen = true;
+	}
+		
+	gWin::clearText("itemMenu");
+	std::string txt =  name + ":\n\\h{drop}Drop\\h\n\\h{examine}Examine\\h";
+	gWin::addText("itemMenu", txt);
+	
+	gWin::showWin("itemMenu");
+	
+
+	//write options
+
+}
+
+void CItem::loseItemMenu() {
+	itemMenuOpen = false;
+	gWin::hideWin("itemMenu");
+}
+
+void CItem::timeOutItemMenu() {
+	itemMenuOpen = false;
+	gWin::timeOut("itemMenu",0.5f);
 }
 

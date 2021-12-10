@@ -50,7 +50,6 @@ class CHexWorld :  public CGameEventSubject,
 	public CMessenger, public CTigObjptr {
 public:
 	CHexWorld();
-	void msgCB4(float y, const char* str, int n);
 	void setVM(Ivm* pVM);
 	void addMesh(const std::string& name, const std::string& fileName);
 	void makeMap(ITigObj* tigMap);
@@ -74,9 +73,12 @@ public:
 	void toggleEditMode();
 	void onUndo();
 	void onRedo();
-	void onSpawn(const std::string& name, TEntity entity);
+
 
 	void prepMapEntities();
+
+	void onNearbyItemMouseover(const std::string& msg);
+	void onInventoryItemMouseover(const std::string& msg);
 
 	CGUIlabel2* hexPosLbl;
 
@@ -128,6 +130,8 @@ private:
 	CMapEdit mapEdit;
 	float zoomScale = 1.0f;
 	float zoomAdjust = 0.0f;
+
+	int highlitInvItem = 0;
 };
 
 

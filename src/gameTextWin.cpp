@@ -11,21 +11,14 @@ CGameTextWin::CGameTextWin() {
 		500, 200);
 	richText->resizeMax = { 400, 500 };
 //	richText->setTextTheme("gameTheme");
-	richText->setHotTextVM(pVM);
+//	richText->setHotTextVM(pVM);
 	add(richText);
 }
 
 void CGameTextWin::addText(const std::string& text) {
 	richText->appendMarkedUpText(text);
 }
-//
-//void CGameTextWin::setTheme(const std::string& themeName) {
-//	richText->setTextTheme(themeName);
-//}
 
-//void CGameTextWin::setStyle(const std::string& styleName) {
-//	richText->setTextStyle(styleName);
-//}
 
 void CGameTextWin::setDefaultFont(const std::string& fontName) {
 	richText->setDefaultFont(fontName);
@@ -92,6 +85,25 @@ void CGameTextWin::positionOffset() {
 void CGameTextWin::onNotify(CMouseExitHex& msg) {
 	setVisible(false);
 
+}
+
+bool CGameTextWin::OnMouseMove(const  int mouseX, const  int mouseY, int key) {
+
+	return true;
+}
+
+
+
+void CGameTextWin::update(float dT) {
+	if (isMouseOver())
+		return;
+
+	if (timeOut > 0) {
+		timeOut -= dT;
+
+		if (timeOut < 0)
+			setVisible(false);
+	}
 }
 
 

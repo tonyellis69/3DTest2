@@ -188,4 +188,12 @@ void CMap::load(std::istream& in) {
 	}
 }
 
+CEntity* CMap::getEntity(int idNo) {
+	for (auto& entity : entities) {
+		if (entity->id == idNo)
+			return entity.get();
+	}
+	return nullptr;
+}
+
 

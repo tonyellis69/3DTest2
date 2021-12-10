@@ -41,6 +41,9 @@ public:
 	void save(std::ostream& out);
 	void load(std::istream& in);
 
+	CEntity* getEntity(int idNo);
+
+
 	TEntities entities; ///<The grand list of entities in the map.
 	
 	bool entitiesToDelete = false;

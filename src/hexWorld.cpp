@@ -40,29 +40,28 @@ CHexWorld::CHexWorld() {
 
 	snd::setVolume(1);
 
-
-	msg::attach(msgId2, this, &CHexWorld::msgCB4);
-	msg::emit(msgId2, 4.2f, "hurrah!", 100);
-	msg::remove(msgId2, this);
-
 	gWin::createWin("con", 10, 10, 200, 300);
 	gWin::setDefaultFont("con", "mainFnt");
 
 	gWin::createWin("inv", 10, 340, 200, 300);
 	gWin::setDefaultFont("inv", "mainFnt");
+	gWin::setHotTextMouseoverHandler("con", [this](const std::string& msg) {
+		(onNearbyItemMouseover)(msg); });
+	gWin::setHotTextMouseoverHandler("inv", [this](const std::string& msg) {
+		(onInventoryItemMouseover)(msg); });
+
+
+	gWin::createWin("itemMenu", 10, 10, 200, 100);
+	gWin::setDefaultFont("itemMenu", "mainFnt");
+	gWin::hideWin("itemMenu");
 }
 
 
-void CHexWorld::msgCB4(float y, const char* str, int n) {
-	float test = y;
-	float b = 0;
-}
 
 void CHexWorld::setVM(Ivm* pVM) {
 	vm = pVM;
 	mapMaker.attachVM(pVM);
-	//setTigObj(vm->getObject(tig::IHexWorld)); 
-	CGameTextWin::pVM = pVM;
+
 }
 
 /**	Load a multipart mesh for storage under the given name. */
@@ -370,6 +369,8 @@ void CHexWorld::update(float dT) {
 		map->mapUpdated = false;
 	}
 
+	gWin::update(dT);
+
 }
 
 
@@ -437,6 +438,33 @@ void CHexWorld::prepMapEntities() {
 
 	}
 
+}
+
+void CHexWorld::onNearbyItemMouseover(const std::string& msg) {
+	int b = 0;
+}
+
+void CHexWorld::onInventoryItemMouseover(const std::string& msg) {
+	if (msg == "mouseOff") {
+		if (highlitInvItem) {
+			CItem* prevItem = (CItem*)map->getEntity(highlitInvItem);
+			prevItem->timeOutItemMenu();
+		}
+		return;
+	}
+
+
+
+	int entityNo = std::stoi(msg.substr(msg.find_first_of("0123456789")).c_str());
+
+	if (entityNo != highlitInvItem && highlitInvItem != 0) {
+		CItem* prevItem = (CItem*)map->getEntity(highlitInvItem);
+		prevItem->loseItemMenu();
+	}
+
+	CItem* item = (CItem*)map->getEntity(entityNo);
+	highlitInvItem = entityNo;
+	item->onMouseover("inv");
 }
 
 

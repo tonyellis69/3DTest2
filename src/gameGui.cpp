@@ -19,6 +19,11 @@ void gWin::createWin(const std::string& winName, int x, int y, int w, int h) {
 	windows[winName] = panel;
 }
 
+void gWin::update(float dT) {
+	for (auto& win : windows)
+		win.second->update(dT);
+}
+
 
 void gWin::addText(const std::string& winName, const std::string& text) {
 	windows[winName]->addText(text);
@@ -45,5 +50,44 @@ void gWin::hideWin(const std::string& winName) {
 
 void gWin::showWin(const std::string& winName) {
 	windows[winName]->setVisible(true);
+	windows[winName]->timeOut = 0;
+}
+
+void gWin::setHotTextMouseoverHandler(const std::string& winName, std::function<void(const std::string&)> handler) {
+	windows[winName]->setHotTextMouseoverHandler(handler);
+}
+
+void gWin::setHotTextClickHandler(const std::string& winName, std::function<void(const std::string&)> handler) {
+	windows[winName]->setHotTextClickHandler(handler);
+}
+
+void gWin::alignWithMouse(const std::string& winName) {
+	//find mouse y pos
+	glm::i32vec2 mousePos = pGUIroot->getLocalMousePos();
+
+	CGameTextWin* thisWin = windows[winName];
+	glm::i32vec2 winSize = thisWin->getSize();
+	thisWin->setPosY(mousePos.y - (winSize.y /2));
+}
+
+void gWin::putLeftOf(const std::string& winName, const std::string& parentWin) {
+	//find left edge of parent
+	glm::i32vec2 pos = windows[parentWin]->getLocalPos();
+	CGameTextWin* thisWin = windows[winName];
+	glm::i32vec2 size = thisWin->getSize();
+
+	//position back from that
+	thisWin->anchorLeft = NONE;
+	thisWin->setPosX(pos.x - size.x - 10);
+	
+
+}
+
+void gWin::timeOut(const std::string& winName, float time) {
+	windows[winName]->timeOut = time;
+}
+
+void gWin::hideOnMouseOff(const std::string& winName) {
+
 }
 
