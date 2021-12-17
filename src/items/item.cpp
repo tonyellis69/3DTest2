@@ -36,8 +36,22 @@ void CItem::take(CEntity* taker) {
 
 }
 
+void CItem::examine() {
+	std::string desc = name + ":\nDescription text";
+	gWin::clearText("exam");
+	gWin::addText("exam", desc);
+	gWin::centreOnMouse("exam");
+	gWin::showWin("exam");
+}
+
 
 void CItem::onMouseover(const std::string& parentWin) {
+	//open item menu
+
+
+
+
+
 	//open item menu window
 	if (parentWin == "inv" && !itemMenuOpen) {
 		gWin::putLeftOf("itemMenu", "inv");
@@ -64,5 +78,10 @@ void CItem::loseItemMenu() {
 void CItem::timeOutItemMenu() {
 	itemMenuOpen = false;
 	gWin::timeOut("itemMenu",0.5f);
+}
+
+std::string CItem::getMenuTextInv() {
+	return 	name + ":\n\\h{drop}Drop\\h\n\\h{examine}Examine\\h";
+
 }
 

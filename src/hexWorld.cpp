@@ -27,6 +27,10 @@
 
 #include "spawner.h"
 
+#include "windows/inventoryWin.h"
+#include "windows/itemMenu.h"
+#include "windows/examWin.h"
+
 CHexWorld::CHexWorld() {
 	game.paused = true;
 
@@ -45,15 +49,17 @@ CHexWorld::CHexWorld() {
 
 	gWin::createWin("inv", 10, 340, 200, 300);
 	gWin::setDefaultFont("inv", "mainFnt");
-	gWin::setHotTextMouseoverHandler("con", [this](const std::string& msg) {
-		(onNearbyItemMouseover)(msg); });
-	gWin::setHotTextMouseoverHandler("inv", [this](const std::string& msg) {
-		(onInventoryItemMouseover)(msg); });
-
+	gWin::setPlugin("inv", std::make_shared<CInventoryWin>());
 
 	gWin::createWin("itemMenu", 10, 10, 200, 100);
 	gWin::setDefaultFont("itemMenu", "mainFnt");
+	gWin::setPlugin("itemMenu", std::make_shared<CItemMenu>());
 	gWin::hideWin("itemMenu");
+
+	gWin::createWin("exam", 10, 10, 250, 200);
+	gWin::setDefaultFont("exam", "mainFnt");
+	gWin::setPlugin("exam", std::make_shared<CExamWin>());
+	gWin::hideWin("exam");
 }
 
 
@@ -211,6 +217,10 @@ void CHexWorld::onKeyDown(int key, long mod) {
 		lineOfSight = !lineOfSight;
 
 	}
+
+	if (key == GLFW_KEY_LEFT_CONTROL) {
+		game.toggleUImode(true);
+	}
  
 }
 
@@ -218,6 +228,11 @@ void CHexWorld::onKeyUp(int key, long mod) {
 	if (editMode) {
 		mapEdit.onEntityMode(false);
 		mapEdit.onShapeMode(false);
+	}
+	else {
+		if (key == GLFW_KEY_LEFT_CONTROL) {
+			game.toggleUImode(false);
+		}
 	}
 }
 
@@ -534,7 +549,7 @@ void CHexWorld::onFireKey(bool stillPressed, int mods) {
 			cumulativeMapDrag = 0;
 		}
 	}
-	else
+	else if (!game.uiMode)
 		playerObj->onFireKey(stillPressed);
 }
 

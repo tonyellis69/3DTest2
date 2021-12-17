@@ -15,11 +15,14 @@ public:
 
 	virtual void drop() {};
 	virtual void take(CEntity* taker);
+	void examine();
 
 	void onMouseover(const std::string& parentWin);
 
 	void loseItemMenu();
 	void timeOutItemMenu();
+
+	std::string getMenuTextInv();
 
 	CEntity* parent = nullptr; ///<Enity wielding, carrying, etc, this item
 	bool itemMenuOpen = false;

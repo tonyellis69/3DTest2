@@ -22,6 +22,9 @@
     <Filter Include="Source Files\items">
       <UniqueIdentifier>{49c8eb77-e621-4f7b-b8f2-4f10bad43365}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\windows">
+      <UniqueIdentifier>{0c2c63e5-c7b6-404f-8d3c-d6c06b44e4d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp">
@@ -113,6 +116,18 @@
     </ClCompile>
     <ClCompile Include="src\items\armour.cpp">
       <Filter>Source Files\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\smartWin.cpp">
+      <Filter>Source Files\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\inventoryWin.cpp">
+      <Filter>Source Files\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\itemMenu.cpp">
+      <Filter>Source Files\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\examWin.cpp">
+      <Filter>Source Files\windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +232,18 @@
     </ClInclude>
     <ClInclude Include="src\items\armour.h">
       <Filter>Source Files\items</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\smartWin.h">
+      <Filter>Source Files\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\inventoryWin.h">
+      <Filter>Source Files\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\itemMenu.h">
+      <Filter>Source Files\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\examWin.h">
+      <Filter>Source Files\windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

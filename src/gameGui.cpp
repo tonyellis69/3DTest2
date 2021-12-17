@@ -12,8 +12,7 @@ void gWin::createWin(const std::string& winName, int x, int y, int w, int h) {
 	panel->resize(w, h);
 	panel->setLocalPos(x, y);
 
-	panel->anchorRight = 10;
-	//panel->setTheme("smallNormal");
+	panel->anchorRight = 10; //TO DO should probably scrap this!
 
 	pGUIroot->add(panel);
 	windows[winName] = panel;
@@ -53,13 +52,13 @@ void gWin::showWin(const std::string& winName) {
 	windows[winName]->timeOut = 0;
 }
 
-void gWin::setHotTextMouseoverHandler(const std::string& winName, std::function<void(const std::string&)> handler) {
-	windows[winName]->setHotTextMouseoverHandler(handler);
-}
-
-void gWin::setHotTextClickHandler(const std::string& winName, std::function<void(const std::string&)> handler) {
-	windows[winName]->setHotTextClickHandler(handler);
-}
+//void gWin::setHotTextMouseoverHandler(const std::string& winName, std::function<void(const std::string&)> handler) {
+//	windows[winName]->setHotTextMouseoverHandler(handler);
+//}
+//
+//void gWin::setHotTextClickHandler(const std::string& winName, std::function<void(const std::string&)> handler) {
+//	windows[winName]->setHotTextClickHandler(handler);
+//}
 
 void gWin::alignWithMouse(const std::string& winName) {
 	//find mouse y pos
@@ -68,6 +67,16 @@ void gWin::alignWithMouse(const std::string& winName) {
 	CGameTextWin* thisWin = windows[winName];
 	glm::i32vec2 winSize = thisWin->getSize();
 	thisWin->setPosY(mousePos.y - (winSize.y /2));
+}
+
+void gWin::centreOnMouse(const std::string& winName) {
+	glm::i32vec2 mousePos = pGUIroot->getLocalMousePos();
+
+	CGameTextWin* thisWin = windows[winName];
+	glm::i32vec2 winSizeHalf = thisWin->getSize()/2;
+
+	thisWin->anchorRight = NONE;
+	thisWin->setLocalPos(mousePos - winSizeHalf);
 }
 
 void gWin::putLeftOf(const std::string& winName, const std::string& parentWin) {
@@ -89,5 +98,13 @@ void gWin::timeOut(const std::string& winName, float time) {
 
 void gWin::hideOnMouseOff(const std::string& winName) {
 
+}
+
+void gWin::setPlugin(const std::string& winName, TWinPlugin plugin) {
+	windows[winName]->setPlugin(plugin);
+}
+
+void gWin::msg(const std::string& winName, const std::string& msg) {
+	windows[winName]->msg(msg);
 }
 

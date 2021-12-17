@@ -23,6 +23,7 @@ public:
 	void update(float dT);
 	void togglePause();
 	void onPlayerDeath();
+	void toggleUImode(bool onOff);
 
 	//CHex cursorPos;
 	THexList cursorPath;
@@ -32,6 +33,7 @@ public:
 
 
 	bool paused = true;
+	bool uiMode = false;
 
 private:
 

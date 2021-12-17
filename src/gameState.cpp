@@ -54,3 +54,7 @@ void CGameState::onPlayerDeath() {
 
 	}
 }
+
+void CGameState::toggleUImode(bool onOff) {
+	uiMode = onOff;
+}

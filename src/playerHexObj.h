@@ -26,6 +26,7 @@ public:
 	void buildWorldMatrix();
 	void tmpKeyCB(int key);
 	void tmpDrop();
+	void dropItem(int entityNo);
 	void tmpTake();
 	void updateInventory();
 	void onFireKey(bool pressed);

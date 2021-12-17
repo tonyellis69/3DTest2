@@ -99,6 +99,23 @@ void CPlayerObject::tmpDrop() {
 	updateInventory();
 }
 
+void CPlayerObject::dropItem(int entityNo) {
+	CItem* item = (CItem*)game.map->getEntity(entityNo);
+
+	auto it = std::find(inventory.begin(), inventory.end(), item);
+	inventory.erase(it);
+
+	float dropDist = 0.75f;
+	glm::vec3 dropPoint = worldPos + (getUpperBodyRotationVec() * dropDist);
+	item->setPosition(dropPoint);
+	item->drop();
+
+	updateInventory();
+
+}
+
+
+
 void CPlayerObject::tmpTake() {
 	if (nearItems.empty())
 		return;

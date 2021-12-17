@@ -146,6 +146,10 @@
     <ClCompile Include="src\robot.cpp" />
     <ClCompile Include="src\spawner.cpp" />
     <ClCompile Include="src\viewField.cpp" />
+    <ClCompile Include="src\windows\examWin.cpp" />
+    <ClCompile Include="src\windows\inventoryWin.cpp" />
+    <ClCompile Include="src\windows\itemMenu.cpp" />
+    <ClCompile Include="src\windows\smartWin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\TC\Debug\tigConst.h" />
@@ -182,6 +186,10 @@
     <ClInclude Include="src\robot.h" />
     <ClInclude Include="src\spawner.h" />
     <ClInclude Include="src\viewField.h" />
+    <ClInclude Include="src\windows\examWin.h" />
+    <ClInclude Include="src\windows\inventoryWin.h" />
+    <ClInclude Include="src\windows\itemMenu.h" />
+    <ClInclude Include="src\windows\smartWin.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3DEngine\3DEngine\3DEngine.vcxproj">

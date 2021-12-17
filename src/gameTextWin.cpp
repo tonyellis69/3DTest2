@@ -10,8 +10,12 @@ CGameTextWin::CGameTextWin() {
 	richText = new CGUIrichText(style::gameWinCtrBorder.x, style::gameWinCtrBorder.y,
 		500, 200);
 	richText->resizeMax = { 400, 500 };
-//	richText->setTextTheme("gameTheme");
-//	richText->setHotTextVM(pVM);
+
+	richText->setHotTextMouseoverHandler([this](const std::string& msg) {
+		(onRichTextMouseover)(msg); });
+	richText->setHotTextClickHandler([this](const std::string& msg) {
+		(onRichTextClick)(msg); });
+
 	add(richText);
 }
 
@@ -46,6 +50,11 @@ void CGameTextWin::message(CGUIbase* sender, CMessage& msg) {
 	if (msg.Msg == uiMsgChildResize) {
 		glm::i32vec2 newSize = richText->getSize() + totalBorderSize;
 		resize(newSize.x, newSize.y);
+
+	}
+	if (msg.Msg == uiMsgMouseOff) {
+		if (smartPlugin)
+			smartPlugin->onMouseOff();
 
 	}
 }
@@ -92,18 +101,36 @@ bool CGameTextWin::OnMouseMove(const  int mouseX, const  int mouseY, int key) {
 	return true;
 }
 
+bool CGameTextWin::onMouseOff(const int mouseX, const int mouseY, int key)
+{
+	/*if (smartPlugin)
+		smartPlugin->onMouseOff();*/
+	return true;
+}
+
 
 
 void CGameTextWin::update(float dT) {
-	if (isMouseOver())
-		return;
-
-	if (timeOut > 0) {
-		timeOut -= dT;
-
-		if (timeOut < 0)
-			setVisible(false);
-	}
+	if (smartPlugin)
+		smartPlugin->update(dT);
 }
+
+void CGameTextWin::msg(const std::string& msg) {
+	if (smartPlugin)
+		smartPlugin->onMsg(msg);
+}
+
+void CGameTextWin::onRichTextMouseover(const std::string& msg) {
+	if (smartPlugin)
+		smartPlugin->onRichTextMouseOver(msg);
+}
+
+void CGameTextWin::onRichTextClick(const std::string& msg) {
+	if (smartPlugin)
+		smartPlugin->onRichTextClick(msg);
+
+}
+
+
 
 
