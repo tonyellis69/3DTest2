@@ -7,80 +7,80 @@
 
 #include "tigExport.h"
 
-void CMapMaker::attachVM(Ivm* pVM) {
-	vm = pVM;
+//void CMapMaker::attachVM(Ivm* pVM) {
+//	vm = pVM;
+//
+//}
 
-}
+//CMap* CMapMaker::makeMap(ITigObj* mapObj) {
+//	this->mapObj = mapObj;
+//
+//	CMap* map = createMap();
+//
+//	return map;
+//}
 
-CMap* CMapMaker::makeMap(ITigObj* mapObj) {
-	this->mapObj = mapObj;
-
-	CMap* map = createMap();
-
-	return map;
-}
-
-void CMapMaker::attachMapObject(ITigObj* mapObj) {
-	this->mapObj = mapObj;
-}
+//void CMapMaker::attachMapObject(ITigObj* mapObj) {
+//	this->mapObj = mapObj;
+//}
 static unsigned int rando;
 /** Return a map on a hex array, built according to the specifications found in
 	the previously assigned Tig map object .*/
-CMap* CMapMaker::createMap() {
-
-	randEngine.seed(rando++);
-
-
-	int mapSize = mapObj->tigMemberInt("size");
-
-	glm::i32vec2 arraySize;
-	if (mapSize == vm->getConst("largeMap")) {
-		arraySize = { 30,30 };
-	}
-	else if (mapSize == vm->getConst("mediumMap")) {
-		arraySize = { 20,20 };
-	}
-	else if (mapSize == vm->getConst("smallMap")) {
-		arraySize = { 10,10 };
-	}
-
-
-	glm::i32vec2 margin(1);
-	glm::i32vec2 boundingBox = arraySize + margin * 2;
-
-	hexArray = new CMap();
-
-	hexArray->init(boundingBox.x, boundingBox.y);
-
-
-	//using param_t = std::uniform_int_distribution<>::param_type;
-	//param_t x{ 0, hexArray->width - 1 };
-	//randX.param(x); 
-	//param_t y{ 0, hexArray->height - 1 };
-	//randY.param(y);
-
-	//glm::i32vec2 tL = margin;
-	//glm::i32vec2 bR = boundingBox - margin;
-
-
-	//	for (int y = 0; y < boundingBox.y; y++) {
-	//		for (int x = 0; x < boundingBox.x; x++) {
-	//			if (x < tL.x || x >= bR.x || y < tL.y || y >= bR.y)
-	//				hexArray->getHexOffset(x, y).content = 2;
-	//			else
-	//				hexArray->getHexOffset(x, y).content = 1;
-	//			//hexArray->getHexOffset(x, y).fogged = 1.0f;
-	//			hexArray->setFog(x, y, 1.0f);
-	//		}
-	//	}
-
-
-	//	tmpaddDesks();
-
-	//} while (!hexArray->isValidPath(CHex(-13, 5, 8), CHex(13, -4, -9)));
-
-	return hexArray;
-}
+//CMap* CMapMaker::createMap() {
+//
+//	randEngine.seed(rando++);
+//
+//
+//	int mapSize = mapObj->tigMemberInt("size");
+//
+//	glm::i32vec2 arraySize;
+//	if (mapSize == vm->getConst("largeMap")) {
+//		arraySize = { 30,30 };
+//	}
+//	else if (mapSize == vm->getConst("mediumMap")) {
+//		arraySize = { 20,20 };
+//	}
+//	else if (mapSize == vm->getConst("smallMap")) {
+//		arraySize = { 10,10 };
+//	}
+//
+//
+//	glm::i32vec2 margin(1);
+//	glm::i32vec2 boundingBox = arraySize + margin * 2;
+//
+//	hexArray = new CMap();
+//
+//	hexArray->init(boundingBox.x, boundingBox.y);
+//
+//
+//	//using param_t = std::uniform_int_distribution<>::param_type;
+//	//param_t x{ 0, hexArray->width - 1 };
+//	//randX.param(x); 
+//	//param_t y{ 0, hexArray->height - 1 };
+//	//randY.param(y);
+//
+//	//glm::i32vec2 tL = margin;
+//	//glm::i32vec2 bR = boundingBox - margin;
+//
+//
+//	//	for (int y = 0; y < boundingBox.y; y++) {
+//	//		for (int x = 0; x < boundingBox.x; x++) {
+//	//			if (x < tL.x || x >= bR.x || y < tL.y || y >= bR.y)
+//	//				hexArray->getHexOffset(x, y).content = 2;
+//	//			else
+//	//				hexArray->getHexOffset(x, y).content = 1;
+//	//			//hexArray->getHexOffset(x, y).fogged = 1.0f;
+//	//			hexArray->setFog(x, y, 1.0f);
+//	//		}
+//	//	}
+//
+//
+//	//	tmpaddDesks();
+//
+//	//} while (!hexArray->isValidPath(CHex(-13, 5, 8), CHex(13, -4, -9)));
+//
+//	return hexArray;
+//}
 
 
 bool CMapMaker::randomBlockWalk(glm::i32vec2 hex, int numSteps, int depth) {

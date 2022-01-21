@@ -2,7 +2,6 @@
 
 #include <random>
 
-#include "Ivm.h"
 
 #include "gameHexArray.h"
 
@@ -29,7 +28,7 @@
 
 #include "gameTextWin.h"
 
-#include "hexMsg.h"
+//#include "hexMsg.h"
 
 //#include "qps.h"
 
@@ -41,18 +40,23 @@
 
 #include "mapEdit/mapEdit.h"
 
+#include "listen/listen.h"
+
 enum TViewMode {gameView, devView};
 enum TMsgType {msgId,msgId2,msgId3};
   
 
 /** A class encapsulating the hex-based representation of the world. */
-class CHexWorld :  public CGameEventSubject,
-	public CMessenger, public CTigObjptr {
+class CHexWorld //: // public CGameEventSubject,
+{ //public CMessenger { //, public CTigObjptr {
 public:
 	CHexWorld();
-	void setVM(Ivm* pVM);
+	void onEvent(CEvent& e) {
+	
+
+	}
 	void addMesh(const std::string& name, const std::string& fileName);
-	void makeMap(ITigObj* tigMap);
+	void makeMap();
 	void deleteMap();
 	void startGame();
 	void moveCamera(glm::vec3& direction);
@@ -88,6 +92,8 @@ public:
 
 	bool editMode = false;
 
+	CListener listTmp;
+
 private:
 
 	void createCursorObject();
@@ -109,7 +115,6 @@ private:
 
 	CMapMaker mapMaker;
 
-	Ivm* vm; ///<Interface to the virtual machine/
 
 	glm::i32vec2 mousePos;
 	glm::i32vec2 lastMousePos;

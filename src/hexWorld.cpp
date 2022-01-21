@@ -31,6 +31,8 @@
 #include "windows/itemMenu.h"
 #include "windows/examWin.h"
 
+int listenId = -1;
+
 CHexWorld::CHexWorld() {
 	game.paused = true;
 
@@ -51,7 +53,7 @@ CHexWorld::CHexWorld() {
 	gWin::setDefaultFont("inv", "mainFnt");
 	gWin::setPlugin("inv", std::make_shared<CInventoryWin>());
 
-	gWin::createWin("itemMenu", 10, 10, 200, 100);
+	gWin::createWin("itemMenu", 10, 10, 200, 200);
 	gWin::setDefaultFont("itemMenu", "mainFnt");
 	gWin::setPlugin("itemMenu", std::make_shared<CItemMenu>());
 	gWin::hideWin("itemMenu");
@@ -60,15 +62,11 @@ CHexWorld::CHexWorld() {
 	gWin::setDefaultFont("exam", "mainFnt");
 	gWin::setPlugin("exam", std::make_shared<CExamWin>());
 	gWin::hideWin("exam");
+
+
 }
 
 
-
-void CHexWorld::setVM(Ivm* pVM) {
-	vm = pVM;
-	mapMaker.attachVM(pVM);
-
-}
 
 /**	Load a multipart mesh for storage under the given name. */
 void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
@@ -78,7 +76,7 @@ void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
 }
 
 /** Create a map using the data in the given Tig file. */
-void CHexWorld::makeMap(ITigObj* tigMap) {
+void CHexWorld::makeMap() {
 
 	//map = mapMaker.makeMap(tigMap);
 
@@ -142,6 +140,7 @@ void CHexWorld::startGame() {
 	playerObj->updateInventory();
 
 	game.paused = false;
+
 }
 
 
@@ -401,7 +400,7 @@ void CHexWorld::enterKeyDown() {
 	deleteMap();
 	//entitiesToDraw.clear();
 
-	makeMap(vm->getObject("testRoom"));
+	makeMap();
 	startGame();
 }
 

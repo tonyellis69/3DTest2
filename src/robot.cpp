@@ -19,13 +19,13 @@
 
 #include "renderer/imRendr/imRendr.h"
 
-const float rad360 = M_PI * 2;
-const float rad90 = M_PI / 2;
+const float rad360 = float(M_PI) * 2.0f;
+const float rad90 = float(M_PI) / 2;
 const float rad80 = 1.39626;
 const float rad70 = 1.22173;
-const float rad60 = M_PI / 3;
+const float rad60 = float(M_PI) / 3;
 const float rad50 = 0.872665;
-const float rad45 = M_PI / 4;
+const float rad45 = float(M_PI) / 4;
 const float rad40 = 0.698132;
 const float rad120 = rad360 / 3;
 

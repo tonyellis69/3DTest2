@@ -2,8 +2,8 @@
 
 #include <random>
 
-#include "ITigObj.h"
-#include "Ivm.h"
+//#include "ITigObj.h"
+//#include "Ivm.h"
 
 #include "gameHexArray.h"
 
@@ -14,10 +14,10 @@
 class CMapMaker {
 public:
 
-	void attachVM(Ivm* pVM);
-	CMap* makeMap(ITigObj* mapObj);
-	void attachMapObject(ITigObj* mapObj);
-	CMap* createMap();
+	//void attachVM(Ivm* pVM);
+	//CMap* makeMap(ITigObj* mapObj);
+	//void attachMapObject(ITigObj* mapObj);
+	//CMap* createMap();
 
 
 
@@ -36,8 +36,8 @@ private:
 	void tempPopulateMap();
 
 
-	ITigObj* mapObj; ///<The Tig template for the map we're creating.
-	Ivm* vm; ///<Interface to the Tig VM.
+	//ITigObj* mapObj; ///<The Tig template for the map we're creating.
+	//Ivm* vm; ///<Interface to the Tig VM.
 	CMap* hexArray;
 
 

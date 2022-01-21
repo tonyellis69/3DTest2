@@ -133,7 +133,6 @@
     <ClCompile Include="src\items\armour.cpp" />
     <ClCompile Include="src\items\gun.cpp" />
     <ClCompile Include="src\items\item.cpp" />
-    <ClCompile Include="src\localHotList.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mapEdit\mapEdit.cpp" />
     <ClCompile Include="src\mapEdit\mapPatch.cpp" />
@@ -173,7 +172,6 @@
     <ClInclude Include="src\items\armour.h" />
     <ClInclude Include="src\items\gun.h" />
     <ClInclude Include="src\items\item.h" />
-    <ClInclude Include="src\localHotList.h" />
     <ClInclude Include="src\mapEdit\mapEdit.h" />
     <ClInclude Include="src\mapEdit\mapPatch.h" />
     <ClInclude Include="src\mapMaker.h" />

@@ -5,34 +5,42 @@
 #include "../gameTextWin.h"
 
 
-void CInventoryWin::onRichTextMouseOver(const std::string& mouseOn) {
-	if (  mouseOn == "" && currentItem != "" ) {
+void CInventoryWin::onRichTextMouseOver(const std::string& mousedItem) {
+	return;
+
+	if (  mousedItem == "" && currentItem != "" ) {
 		gWin::msg("itemMenu", "timeout");
 		currentItem = "";
 		return;
 	}
 
-	if (mouseOn == "") {
+	if (mousedItem == "") {
 		currentItem = "";
 		return;
 	}
 
-	currentItem = mouseOn;
+	currentItem = mousedItem;
 
 	//open itemMenu for this item
-	gWin::msg("itemMenu","inv " + mouseOn);
+	gWin::msg("itemMenu","inv " + mousedItem);
 }
 
-void CInventoryWin::onMouseOff() {
-	gWin::msg("itemMenu", "timeout");
+
+
+void CInventoryWin::onEvent(CEvent& e) {
+	if (e.type == eHotTextHover) {
+		if (std::get<std::string>(e.data).size() == 0)
+			gWin::msg("itemMenu", "timeout");
+		else
+			gWin::msg("itemMenu", "inv " + std::get<std::string>(e.data) );
+
+	}
+	else if (e.type == eMouseOff && e.id == pWin->richText->uniqueID) {
+		gWin::msg("itemMenu", "timeout");
+	}
 }
 
 void CInventoryWin::update(float dT) {
-	//if (!currentItem.empty() && !pWin->isMouseOver()) {
+	//if (pWin->isMouseOver() == false)
 	//	gWin::msg("itemMenu", "timeout");
-	//	currentItem = "";
-	//}
-
-	if (pWin->isMouseOver() == false)
-		gWin::msg("itemMenu", "timeout");
 }

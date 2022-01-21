@@ -9,9 +9,11 @@ class CArmourType;
 
 class CArmour : public CItem {
 public:
+	CArmour();
 	int reduceDamage(int damage);
 	void drop();
 	std::string getShortDesc();
+	std::string getMenuTextInv();
 
 	std::shared_ptr<CArmourType> armourType = nullptr;
 

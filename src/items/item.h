@@ -22,9 +22,10 @@ public:
 	void loseItemMenu();
 	void timeOutItemMenu();
 
-	std::string getMenuTextInv();
+	virtual std::string getMenuTextInv();
 
 	CEntity* parent = nullptr; ///<Enity wielding, carrying, etc, this item
 	bool itemMenuOpen = false;
 
+	bool equippable = false;
 };

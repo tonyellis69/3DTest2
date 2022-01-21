@@ -13,6 +13,8 @@ public:
 	void drop();
 	std::string getShortDesc();
 
+	std::string getMenuTextInv();
+
 	std::shared_ptr<CGunType> gunType = nullptr; 
 
 

@@ -109,7 +109,7 @@ void CPlayerObject::dropItem(int entityNo) {
 	glm::vec3 dropPoint = worldPos + (getUpperBodyRotationVec() * dropDist);
 	item->setPosition(dropPoint);
 	item->drop();
-
+	item->parent = nullptr;
 	updateInventory();
 
 }

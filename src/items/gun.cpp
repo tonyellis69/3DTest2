@@ -8,6 +8,7 @@
 
 CGun::CGun() {
 	entityType = entGun;
+	equippable = true;
 }
 
 void CGun::fire(float firingAngle) {
@@ -30,6 +31,18 @@ std::string CGun::getShortDesc() {
 	return CItem::getShortDesc();
 }
 
+
+std::string CGun::getMenuTextInv() {
+	std::string menu = CItem::getMenuTextInv();
+
+	if (parent) {
+		CPlayerObject* player = (CPlayerObject*)parent;
+		if (player->gun != this) {
+			menu += "\n\\h{equip}Equip\\h";
+		}
+	}
+	return menu;
+}
 
 
 

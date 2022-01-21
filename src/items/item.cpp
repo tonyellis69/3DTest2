@@ -81,7 +81,6 @@ void CItem::timeOutItemMenu() {
 }
 
 std::string CItem::getMenuTextInv() {
-	return 	name + ":\n\\h{drop}Drop\\h\n\\h{examine}Examine\\h";
-
+	return name + ":\n\\h{drop}Drop\\h\n\\h{examine}Examine\\h";
 }
 

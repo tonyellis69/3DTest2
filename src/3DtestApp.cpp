@@ -44,7 +44,7 @@ void C3DtestApp::onStart() {
 	fnt::loadFromFile(dataPath + "merri12.fnt", "smallHeaderFnt");
 	fnt::loadFromFile(dataPath + "merri12L.fnt", "smallFnt");
 
-	vm.loadProgFile(dataPath + "..\\..\\TC\\Debug\\output.tig");
+
 
 	if (appMode == hexMode) {
 		initHexWorld();
@@ -53,8 +53,8 @@ void C3DtestApp::onStart() {
 	}
 
 
-	messageBus.setHandler<CSendText>(this, &C3DtestApp::onPopupText); 
-	messageBus.setHandler<CSysMsg>(this, &C3DtestApp::onSysMessage);
+	//messageBus.setHandler<CSendText>(this, &C3DtestApp::onPopupText); 
+	//messageBus.setHandler<CSysMsg>(this, &C3DtestApp::onSysMessage);
 
 	return;
 }
@@ -195,17 +195,7 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 		return;
 	}
 
-	if (key == 'R' && mod == GLFW_MOD_CONTROL) {
-		if (appMode == textMode) {
-			vm.reset();
-			vm.reloadProgFile();
-			//worldUI.reset();
-			return;
-		}
 
-
-
-	}
 
 
 }
@@ -287,8 +277,6 @@ void C3DtestApp::draw() {
 /** Called every frame. Mainly tells other entities to update. */
 void C3DtestApp::Update() {
 
-	vmUpdate();
-
 	if (appMode == hexMode)
 		hexWorld.update(float(dT));
 
@@ -298,34 +286,6 @@ void C3DtestApp::Update() {
 void C3DtestApp::GUImsg(int ctrlId, TGUImessage& msg) {
 	if (msg.msg == uiMsgHotTextClick)
 		liveLog << "\nHot text " << msg.value << " clicked!";
-}
-
-
-
-/** Handle messages from the virtual machine. */
-void C3DtestApp::vmMessage(TvmAppMsg msg) {
-	if (msg.type == appFlush) {
-		;// worldUI.flushMessageQueue();
-		return;
-	}
-
-	;// worldUI.queueMsg(msg);
-}
-
-/** Carry out any processing demanded by the virtual machine. */
-void C3DtestApp::vmUpdate() {
-
-	/*if (vm.getStatus() == vmAwaitChoice && !shownChoice) {
-		showChoice();
-		//getChoice(vm);
-	} */
-	if (vm.getStatus() == vmAwaitString) {
-		//getString(vm);
-	}
-	if (vm.getStatus() == vmExecuting) {
-		vm.execute();
-	}
-
 }
 
 
@@ -379,8 +339,6 @@ void C3DtestApp::addGameWindow(CGUIbase* gameWin) {
 
 /** Get the hexWorld ready for use. */
 void C3DtestApp::initHexWorld() {
-	hexWorld.setVM(&vm);
-
 	hexWorld.addMesh("test", dataPath + "models\\test.obj");
 	hexWorld.addMesh("cursor", dataPath + "models\\cursor.dae");
 
@@ -409,8 +367,8 @@ void C3DtestApp::initHexWorld() {
 
 
 
-	ITigObj* tigMapTemplate = vm.getObject("testRoom");
-	hexWorld.makeMap(tigMapTemplate);
+	//ITigObj* tigMapTemplate = vm.getObject("testRoom");
+	hexWorld.makeMap();
 	hexWorld.startGame();
 }
 
@@ -459,56 +417,56 @@ bool C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	}
 	return handled;
 }
-
-void C3DtestApp::onPopupText(CSendText& msg) {
-	if (msg.popupType == defencePopup) {
-		if (defencePopWin == NULL) {
-			defencePopWin = new CGameTextWin();
-			defencePopWin->setLocalPos(100,style::mainWinCtrlBorder);
-		//	defencePopWin->hFormat = hCentre;
-			defencePopWin->resize(style::defPopupW, style::defPopupH);
-			//defencePopWin->anchorBottom = style::mainWinCtrlBorder;
-			defencePopWin->setVisible(false);
-			//defencePopWin->setTheme("smallNormal");
-			hexWorld.subscribe(defencePopWin);
-			GUIroot.add(defencePopWin);
-		}
-		defencePopWin->clearText();
-		defencePopWin->addText(msg.text);
-		defencePopWin->setVisible(true);
-	}
-	else if (msg.popupType == statusPopup) {
-		if (statusPopWin == NULL) {
-			statusPopWin = new CGameTextWin();
-			statusPopWin->setLocalPos(100, style::mainWinCtrlBorder + 20);
-			//statusPopWin->hFormat = hCentre;
-			statusPopWin->resize(style::defPopupW, style::defPopupH);
-			statusPopWin->anchorBottom = style::mainWinCtrlBorder;
-			statusPopWin->setVisible(false);
-			//statusPopWin->setTheme("smallNormal");
-			hexWorld.subscribe(statusPopWin);
-			GUIroot.add(statusPopWin);
-		}
-		statusPopWin->clearText();
-		statusPopWin->addText(msg.text);
-		statusPopWin->setVisible(true);
-	}
-	//else if (msg.popupType == powerQ) {
-	//	/*powerQueueWin->clearText();
-	//	powerQueueWin->addText(msg.text);*/
-	//}
-	//else if (msg.popupType == combatLog) {
-	//	if (msg.clear)
-	//		combatLogWin->clearText();
-	//	else
-	//		combatLogWin->addText(msg.text);
-	//}
-}
+//
+//void C3DtestApp::onPopupText(CSendText& msg) {
+//	if (msg.popupType == defencePopup) {
+//		if (defencePopWin == NULL) {
+//			defencePopWin = new CGameTextWin();
+//			defencePopWin->setLocalPos(100,style::mainWinCtrlBorder);
+//		//	defencePopWin->hFormat = hCentre;
+//			defencePopWin->resize(style::defPopupW, style::defPopupH);
+//			//defencePopWin->anchorBottom = style::mainWinCtrlBorder;
+//			defencePopWin->setVisible(false);
+//			//defencePopWin->setTheme("smallNormal");
+//			hexWorld.subscribe(defencePopWin);
+//			GUIroot.add(defencePopWin);
+//		}
+//		defencePopWin->clearText();
+//		defencePopWin->addText(msg.text);
+//		defencePopWin->setVisible(true);
+//	}
+//	else if (msg.popupType == statusPopup) {
+//		if (statusPopWin == NULL) {
+//			statusPopWin = new CGameTextWin();
+//			statusPopWin->setLocalPos(100, style::mainWinCtrlBorder + 20);
+//			//statusPopWin->hFormat = hCentre;
+//			statusPopWin->resize(style::defPopupW, style::defPopupH);
+//			statusPopWin->anchorBottom = style::mainWinCtrlBorder;
+//			statusPopWin->setVisible(false);
+//			//statusPopWin->setTheme("smallNormal");
+//			hexWorld.subscribe(statusPopWin);
+//			GUIroot.add(statusPopWin);
+//		}
+//		statusPopWin->clearText();
+//		statusPopWin->addText(msg.text);
+//		statusPopWin->setVisible(true);
+//	}
+//	//else if (msg.popupType == powerQ) {
+//	//	/*powerQueueWin->clearText();
+//	//	powerQueueWin->addText(msg.text);*/
+//	//}
+//	//else if (msg.popupType == combatLog) {
+//	//	if (msg.clear)
+//	//		combatLogWin->clearText();
+//	//	else
+//	//		combatLogWin->addText(msg.text);
+//	//}
+//}
 
 /** Handle generic system messages .*/
-void C3DtestApp::onSysMessage(CSysMsg& msg) {
-	;// powerQueueWin->setVisible(msg.isOn);
-}
+//void C3DtestApp::onSysMessage(CSysMsg& msg) {
+//	;// powerQueueWin->setVisible(msg.isOn);
+//}
 
 
 

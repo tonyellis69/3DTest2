@@ -2,6 +2,10 @@
 
 #include "..\playerHexObj.h"
 
+CArmour::CArmour() {
+	equippable = true;
+}
+
 int CArmour::reduceDamage(int damage) {
 
 	return armourType->reduceDamage(damage);
@@ -24,8 +28,20 @@ std::string CArmour::getShortDesc() {
 	return CItem::getShortDesc();
 }
 
+std::string CArmour::getMenuTextInv() {
+	std::string menu = CItem::getMenuTextInv();
 
-//!!!!! Different armpout types here.
+	if (parent) {
+		CPlayerObject* player = (CPlayerObject*)parent;
+		if (player->armour != this) {
+			menu += "\n\\h{equip}Equip\\h";
+		}
+	}
+	return menu;
+}
+
+
+//!!!!! Different armout types here.
 
 
 int CBasicArmour::reduceDamage(int damage) {

@@ -53,7 +53,6 @@ public:
 	float timeOut = 0;
 	TWinPlugin smartPlugin = nullptr;
 
-private:
 	CGUIrichText* richText = NULL;
 	glm::i32vec2 totalBorderSize; ///<Total space taken up by border furniture.
 

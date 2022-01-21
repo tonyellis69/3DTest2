@@ -8,7 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-#include "..\VMtest\src\vm.h"
+//#include "..\VMtest\src\vm.h"
 //#include "UI\GUIimage.h"
 
 //#include "UI\GUIrichText.h"
@@ -32,8 +32,8 @@ public:
 	C3DtestApp();
 	bool OnMouseWheelMsg(float xoffset, float yoffset);
 
-	void onPopupText(CSendText& msg);
-	void onSysMessage(CSysMsg& msg);
+	//void onPopupText(CSendText& msg);
+	//void onSysMessage(CSysMsg& msg);
 
 	~C3DtestApp();
 	void onStart();
@@ -49,9 +49,7 @@ public:
 
 	void GUImsg(int ctrlId, TGUImessage& msg);
 
-
-	void vmMessage(TvmAppMsg msg);
-	void vmUpdate();
+;
 	void HandleUImsg(CGUIbase& Control, CMessage& Message);
 
 
