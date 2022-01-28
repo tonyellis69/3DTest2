@@ -9,6 +9,7 @@ std::map<std::string, CGameTextWin*> windows;
 
 void gWin::createWin(const std::string& winName, int x, int y, int w, int h) {
 	CGameTextWin* panel = new CGameTextWin();
+	panel->name = winName;
 	panel->resize(w, h);
 	panel->setLocalPos(x, y);
 
@@ -104,7 +105,5 @@ void gWin::setPlugin(const std::string& winName, TWinPlugin plugin) {
 	windows[winName]->setPlugin(plugin);
 }
 
-void gWin::msg(const std::string& winName, const std::string& msg) {
-	windows[winName]->msg(msg);
-}
+
 

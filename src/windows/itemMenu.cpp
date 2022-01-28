@@ -5,13 +5,78 @@
 #include "../gameTextWin.h"
 #include "../gameGui.h"
 
+#include "UI/gui2.h"
+
+#include "utils/log.h"
+
+void CItemMenu::onEvent(CEvent& e) {
+	if (e.type == eHotTextHover && gui.mouseIn("inv") ) {
+		if (e.hotTxt->empty()) 
+			startTimeout();
+		else
+			showItemChoices(*e.hotTxt);
+	}
+	else if (e.type == eMouseOff  && gui.mouseNotIn("itemMenu")
+		 && gui.mouseNotIn("itemMenu") ) {
+		startTimeout();
+		liveLog << " start timeout ";
+	}
+	//else if (e.type == eMouseMove && gui.mouseIn("itemMenu")) {
+	//	timer = 0;
+	//	liveLog << " stop timeout ";
+	//}
+}
+
+void CItemMenu::startTimeout() {
+	if (timer <= 0 && pWin->visible)
+		timer = 0.5f;
+}
+
+void CItemMenu::showItemChoices(const std::string& hotTxt) {
+	int entityNo = std::stoi(hotTxt.substr(hotTxt.find_first_of("0123456789")).c_str());
+
+	CItem* item = (CItem*)game.map->getEntity(entityNo);
+
+	//gWin::putLeftOf("itemMenu", "inv");
+	positionLeftOf(gui.findControl("inv"));
+
+	//get this item's menu text
+	std::string menuTxt;
+	menuTxt = item->getMenuTextInv();
+
+	//display it
+	pWin->clearText();
+	pWin->addText(menuTxt);
+
+	gWin::alignWithMouse("itemMenu");
+	pWin->setVisible(true);
+	timer = 0;
+}
+
+
+void CItemMenu::positionLeftOf(CguiBase* spawner) {
+	//find left edge of parent
+	glm::i32vec2 pos = spawner->getLocalPos();
+	glm::i32vec2 size = pWin->getSize();
+
+	//position back from that
+	pWin->anchorLeft = NONE;
+	pWin->setPosX(pos.x - size.x - 10);
+}
+
 void CItemMenu::update(float dT) {
-	if (pWin->visible == false)
+	if (pWin->visible == false )
 		return;
 
-	if (timer > 0 && !pWin->isMouseOver()) {
+	//if (pWin->isMouseOver() && timer > 0) {
+	//	timer = 0;
+	//	liveLog << " stop timeout ";
+	//	return;
+	//}
+
+	if (timer > 0 ) { 
 		timer -= dT;
-		if (timer < 0) {
+		if (timer < 0 && gui.mouseNotIn("itemMenu") ) {
 			pWin->setVisible(false);
 			currentEntityNo = 0;
 		}
@@ -32,44 +97,3 @@ void CItemMenu::onRichTextClick(const std::string& msg) {
 	pWin->setVisible(false);
 }
 
-void CItemMenu::onMsg(const std::string& msg) {
-	if (msg == "timeout") {
-		if (timer <= 0) 
-			timer = 0.5f;
-		return;
-	}
-
-	timer = 0;
-
-	int entityNo = getEntityNo(msg);
-
-	if (entityNo == currentEntityNo) {
-		return;
-	}
-
-	currentEntityNo = entityNo;
-	CItem* item = (CItem * )game.map->getEntity(entityNo);
-	std::string src = msg.substr(0, msg.find(" ")).c_str();
-
-	//position next to source window
-	gWin::putLeftOf("itemMenu", "inv");
-
-	//get this item's menu text
-	std::string menuTxt;
-	if (src == "inv") {
-		menuTxt = item->getMenuTextInv();
-
-	}
-	//else
-	//	menuTxt = item->getMenuTextNear();
-
-
-	//display it
-	pWin->clearText();
-	pWin->addText(menuTxt);
-
-	gWin::alignWithMouse("itemMenu");
-	pWin->setVisible(true);
-
-
-}

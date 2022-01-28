@@ -126,7 +126,6 @@
     <ClCompile Include="src\gameTextWin.cpp" />
     <ClCompile Include="src\gameWin.cpp" />
     <ClCompile Include="src\GUIgamePanel.cpp" />
-    <ClCompile Include="src\GUIhealthPanel.cpp" />
     <ClCompile Include="src\GUIrichTextPanel.cpp" />
     <ClCompile Include="src\hexRenderer.cpp" />
     <ClCompile Include="src\hexWorld.cpp" />
@@ -164,7 +163,6 @@
     <ClInclude Include="src\gameTextWin.h" />
     <ClInclude Include="src\gameWin.h" />
     <ClInclude Include="src\GUIgamePanel.h" />
-    <ClInclude Include="src\GUIhealthPanel.h" />
     <ClInclude Include="src\GUIrichTextPanel.h" />
     <ClInclude Include="src\hexMsg.h" />
     <ClInclude Include="src\hexRenderer.h" />

@@ -29,5 +29,5 @@ namespace gWin {
 	void timeOut(const std::string& winName, float time);
 	void hideOnMouseOff(const std::string& winName);
 	void setPlugin(const std::string& winName, TWinPlugin plugin);
-	void msg(const std::string& winName, const std::string& msg);
+
 }

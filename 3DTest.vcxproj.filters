@@ -39,9 +39,6 @@
     <ClCompile Include="src\GUIrichTextPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GUIhealthPanel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\hexWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -135,9 +132,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GUIrichTextPanel.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GUIhealthPanel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\hexWorld.h">
