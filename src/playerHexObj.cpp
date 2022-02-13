@@ -6,21 +6,19 @@
 
 #include "utils/log.h"
 
-//#include "hexItem.h"
-
 #include "gameState.h"
 
 #include "missile.h"
 
 #include "sound/sound.h"
 
-#include "messaging/msg2.h"
-
 #include "gameGui.h"
 
 #include "spawner.h"
 
 #include "..\3Dtest\src\hexRenderer.h"
+
+#include "gameWin.h"
 
 constexpr float sin30 = 0.5f;
 constexpr float sin60 = 0.86602540378443;
@@ -30,7 +28,6 @@ CPlayerObject::CPlayerObject() {
 	viewField.centre = CHex(0);
 	viewField.setField(10);
 
-	msg::attach(msg::tmpMsg, this, &CPlayerObject::tmpKeyCB); //temp!
 
 	physics.invMass = 1.0f/80.0f; //temp!
 
@@ -74,30 +71,7 @@ void CPlayerObject::buildWorldMatrix() {
 
 }
 
-/** Temporary keystroke catcher. */
-void CPlayerObject::tmpKeyCB(int key) {
-	if (key == 'F') {
-		tmpDrop();
-	}
-	if (key == 'T')
-		tmpTake();
-}
 
-void CPlayerObject::tmpDrop() {
-	//temp drop gun procedure:
-	if (inventory.empty())
-		return;
-
-	auto dropItem = inventory.front();
-	inventory.erase(inventory.begin());
-
-	float dropDist = 0.75f;
-	glm::vec3 dropPoint = worldPos + (getUpperBodyRotationVec() * dropDist);
-	dropItem->setPosition(dropPoint);
-	dropItem->drop();
-
-	updateInventory();
-}
 
 void CPlayerObject::dropItem(int entityNo) {
 	CItem* item = (CItem*)game.map->getEntity(entityNo);
@@ -110,36 +84,14 @@ void CPlayerObject::dropItem(int entityNo) {
 	item->setPosition(dropPoint);
 	item->drop();
 	item->parent = nullptr;
-	updateInventory();
+	gWin::pInv->refresh();
 
 }
 
 
 
-void CPlayerObject::tmpTake() {
-	if (nearItems.empty())
-		return;
 
-	CItem* taken = (CItem*) nearItems.front().get();
-	nearItems.erase(nearItems.begin());
-	
-	gWin::clearText("con");
-	for (auto& item : nearItems) {
-		gWin::addText("con", item->name + "\n");
-	}
 
-	taken->take(this);
-
-	updateInventory();
-}
-
-void CPlayerObject::updateInventory() {
-	gWin::clearText("inv");
-	for (auto& item : inventory) {
-		gWin::addText("inv", item->getShortDesc());
-		gWin::addText("inv", "\n");
-	}
-}
 
 /** Player has pressed or released the fire button. */
 void CPlayerObject::onFireKey(bool pressed) {
@@ -292,7 +244,6 @@ void CPlayerObject::update(float dT) {
 	oldMoveDir = moveDir;
 	moveDir = moveNone;
 
-	nearItemUpdate();
 }
 
 void CPlayerObject::setTargetAngle(float angle) {
@@ -354,6 +305,7 @@ void CPlayerObject::addToInventory(CEntity* item) {
 	CItem* takenEnt = (CItem*)item;
 	inventory.push_back(takenEnt);
 	takenEnt->parent = this;
+	gWin::pInv->refresh();
 }
 
 void CPlayerObject::setGun(CEntity* gun) {
@@ -402,39 +354,6 @@ void CPlayerObject::updateWalkCycle() {
 	return;
 }
 
-/** Report any nearby items to the UI. */
-void CPlayerObject::nearItemUpdate() {
-	float nearDist = 1.0f;
-	bool nearItemsChanged = false;
-
-	for (auto item = nearItems.begin(); item != nearItems.end();) {
-		if (glm::distance(worldPos, (*item)->worldPos) > nearDist) {
-			item = nearItems.erase(item);
-			nearItemsChanged = true;
-		}
-		else
-			item++;
-	}
-
-
-	for (auto& entity : game.map->entities) {
-		if (entity->isItem && ((CItem*)entity.get())->parent == nullptr
-			&& glm::distance(worldPos, entity->worldPos) < nearDist) {
-			if (std::find(nearItems.begin(),nearItems.end(),entity) == nearItems.end()) {
-				nearItems.push_back(entity);
-				nearItemsChanged = true;
-			}
-		}
-	}
-
-	if (nearItemsChanged) {
-		gWin::clearText("con");
-		for (auto& item : nearItems) {
-			gWin::addText("con", item->getShortDesc() + "\n");
-		}
-	}
-
-}
 
 
 

@@ -27,16 +27,6 @@ public:
 
 	void onNotify(CMouseExitHex& msg);
 
-	bool OnMouseMove(const int mouseX, const int mouseY, int key);
-	bool onMouseOff(const  int mouseX, const  int mouseY, int key);
-
-	void setHotTextMouseoverHandler(std::function<void(const std::string&)> handler) {
-		richText->setHotTextMouseoverHandler(handler);
-	}
-
-	void setHotTextClickHandler(std::function<void(const std::string&)> handler) {
-		richText->setHotTextClickHandler(handler);
-	}
 
 	void update(float dT);
 
@@ -45,10 +35,8 @@ public:
 		smartPlugin->setWindow(this);
 	}
 
-	void msg(const std::string& msg);
+	//void msg(const std::string& msg);
 
-	void onRichTextMouseover(const std::string& msg);
-	void onRichTextClick(const std::string& msg);
 
 	float timeOut = 0;
 	TWinPlugin smartPlugin = nullptr;

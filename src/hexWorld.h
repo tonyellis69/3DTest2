@@ -11,26 +11,14 @@
 
 #include "robot.h"
 #include "playerHexObj.h"
-//#include "hexItem.h"
-//#include "groupItem.h"
-
-//#include "bolt.h"
-
-#include "tigConst.h"
 
 #include "UI/GUIlabel2.h"
 
-//#include "messaging/events.h"
+
 #include "gameEvents.h"
 #include "messaging/messenger.h"
 
-#include "door.h" //hopefully *temporary* 
-
 #include "gameTextWin.h"
-
-//#include "hexMsg.h"
-
-//#include "qps.h"
 
 #include "gameState.h"
 
@@ -42,13 +30,14 @@
 
 #include "listen/listen.h"
 
+#include "hexRender/hexRender.h"
+
 enum TViewMode {gameView, devView};
 enum TMsgType {msgId,msgId2,msgId3};
   
 
 /** A class encapsulating the hex-based representation of the world. */
-class CHexWorld //: // public CGameEventSubject,
-{ //public CMessenger { //, public CTigObjptr {
+class CHexWorld { 
 public:
 	CHexWorld();
 	void onEvent(CEvent& e) {
@@ -56,6 +45,7 @@ public:
 
 	}
 	void addMesh(const std::string& name, const std::string& fileName);
+	void addHexTile(const std::string& name, const std::string& fileName, std::vector<glm::vec4>& colours);
 	void makeMap();
 	void deleteMap();
 	void startGame();
@@ -81,8 +71,7 @@ public:
 
 	void prepMapEntities();
 
-	void onNearbyItemMouseover(const std::string& msg);
-	void onInventoryItemMouseover(const std::string& msg);
+
 
 	CGUIlabel2* hexPosLbl;
 
@@ -105,6 +94,8 @@ private:
 	void onMapDrag();
 
 	CMap* map;
+
+	CHexRender hexRender; ///<New hex renderer.
 
 	CPlayerObject* playerObj = NULL;
 	CEntity* hexCursor = NULL;;

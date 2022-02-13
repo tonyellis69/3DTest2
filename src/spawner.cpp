@@ -5,6 +5,8 @@
 
 #include "items/gun.h"
 
+#include "gameGui.h"
+
 std::unordered_map<std::string, CModel> CSpawn::models;
 
 CMap* CSpawn::pMap;
@@ -14,6 +16,7 @@ TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 	auto player = std::make_shared<CPlayerObject>();
 	player->setModel(models[name]);
 	player->setPosition(pos);
+
 	CEntity* equippedGun = gun("guntype1");
 	player->setGun(equippedGun);
 	player->addToInventory(equippedGun);

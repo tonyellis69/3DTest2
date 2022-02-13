@@ -1,10 +1,15 @@
 #pragma once
 
 #include "smartWin.h"
+#include "listen/listen.h"
 
 class CExamWin : public CSmartWin {
 public:
-	void onMouseOff();
+	CExamWin() {
+		lis::subscribe(this);
+	}
+	virtual void showWin();
+	void onEvent(CEvent& e);
 
 
 };

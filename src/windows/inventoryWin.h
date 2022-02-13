@@ -8,4 +8,6 @@ class CInventoryWin : public CSmartWin {
 public:
 
 
+	void refresh();
+
 };

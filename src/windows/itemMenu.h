@@ -11,8 +11,9 @@ public:
 	}
 	void onEvent(CEvent& e);
 	void startTimeout();
-	void showItemChoices(const std::string& hotTxt);
+	void showItemChoices();
 	void positionLeftOf(CguiBase* spawner);
+	void alignWithMouse(CguiBase* spawner);
 	void update(float dT);
 	void onRichTextClick(const std::string& msg);
 
@@ -21,5 +22,5 @@ public:
 private:
 	float timer = 0;
 
-	int currentEntityNo = 0;
+	int currentItem = 0;
 };

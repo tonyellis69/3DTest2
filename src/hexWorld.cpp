@@ -27,9 +27,7 @@
 
 #include "spawner.h"
 
-#include "windows/inventoryWin.h"
-#include "windows/itemMenu.h"
-#include "windows/examWin.h"
+
 
 int listenId = -1;
 
@@ -37,6 +35,9 @@ CHexWorld::CHexWorld() {
 	game.paused = true;
 
 	hexRendr2.init();
+	hexRender.pCamera = &hexRendr2.camera;
+	hexRender.pLineShader = hexRendr2.lineShader;
+
 	imRendr::setMatrix(&hexRendr2.camera.clipMatrix);
 	
 	//subscribe(&game);
@@ -46,22 +47,8 @@ CHexWorld::CHexWorld() {
 
 	snd::setVolume(1);
 
-	gWin::createWin("con", 10, 10, 200, 300);
-	gWin::setDefaultFont("con", "mainFnt");
+	gWin::initWindows();
 
-	gWin::createWin("inv", 10, 340, 200, 300);
-	gWin::setDefaultFont("inv", "mainFnt");
-	gWin::setPlugin("inv", std::make_shared<CInventoryWin>());
-
-	gWin::createWin("itemMenu", 10, 10, 200, 200);
-	gWin::setDefaultFont("itemMenu", "mainFnt");
-	gWin::setPlugin("itemMenu", std::make_shared<CItemMenu>());
-	gWin::hideWin("itemMenu");
-
-	gWin::createWin("exam", 10, 10, 250, 200);
-	gWin::setDefaultFont("exam", "mainFnt");
-	gWin::setPlugin("exam", std::make_shared<CExamWin>());
-	gWin::hideWin("exam");
 
 
 }
@@ -73,6 +60,15 @@ void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
 	CImporter importer;
 	importer.loadFile(fileName);	
 	spawn::models[name] = importer.getModel();
+}
+
+/** Import a mesh to use in drawing the level. */
+void CHexWorld::addHexTile(const std::string& name, const std::string& fileName, std::vector<glm::vec4>& colours) {
+	CImporter importer;
+	importer.loadFile(fileName);
+
+	hexRender.addHexTile(name, importer.getHexTile(colours));
+
 }
 
 /** Create a map using the data in the given Tig file. */
@@ -101,20 +97,9 @@ void CHexWorld::deleteMap() {
 /** Required each time we restart. */
 void CHexWorld::startGame() {
 
-
-	gWin::addText("con", "1Here is some \\bbold\\b text.");
-	gWin::addText("con", "\n2Here is some more text.");
-	gWin::addText("con", "\n3Here is some more text.");
-	gWin::setColour("con", glm::vec4{ 1,1,0,1 });
-	gWin::addText("con", "\n4Here is some more text.");
-	gWin::addText("con", "\n5Here is some more text.");
-	gWin::addText("con", "\n6Here is some more text.");
-	gWin::addText("con", "\n7Here is some more text.");
-	gWin::addText("con", "\nAnd here is some more text");
-
-
-
 	hexRendr2.setMap(map->getHexArray());
+
+
 	game.setMap(map);
 	physics.removeEntities();
 
@@ -126,6 +111,7 @@ void CHexWorld::startGame() {
 	//spawn::player("player", cubeToWorldSpace(CHex(-6,9-3)));
 
 	mapEdit.load();
+	hexRender.loadMap(map->getHexArray());
 	prepMapEntities();
 
 	if (hexCursor == NULL)
@@ -137,7 +123,7 @@ void CHexWorld::startGame() {
 
 	map->getHexArray()->effectsNeedUpdate = true; //old code! Replace
 
-	playerObj->updateInventory();
+	gWin::pInv->refresh();
 
 	game.paused = false;
 
@@ -306,7 +292,9 @@ void CHexWorld::calcMouseWorldPos() {
 
 
 void CHexWorld::draw() {
-	hexRendr2.drawFloorPlan();
+//	hexRendr2.drawFloorPlan();
+
+	hexRender.drawMap();
 
 	for (auto& entity : map->entities) {
 		if (entity->live)
@@ -414,10 +402,10 @@ void CHexWorld::toggleView() {
 void CHexWorld::toggleEditMode() {
 	editMode = !editMode;
 	if (editMode) {
-		gWin::hideWin("con");
+		gWin::pNear->hideWin();
 	}
 	else {
-		gWin::showWin("con");
+		gWin::pNear->showWin();
 		prepMapEntities();
 	}
 	
@@ -454,32 +442,7 @@ void CHexWorld::prepMapEntities() {
 
 }
 
-void CHexWorld::onNearbyItemMouseover(const std::string& msg) {
-	int b = 0;
-}
 
-void CHexWorld::onInventoryItemMouseover(const std::string& msg) {
-	if (msg == "mouseOff") {
-		if (highlitInvItem) {
-			CItem* prevItem = (CItem*)map->getEntity(highlitInvItem);
-			prevItem->timeOutItemMenu();
-		}
-		return;
-	}
-
-
-
-	int entityNo = std::stoi(msg.substr(msg.find_first_of("0123456789")).c_str());
-
-	if (entityNo != highlitInvItem && highlitInvItem != 0) {
-		CItem* prevItem = (CItem*)map->getEntity(highlitInvItem);
-		prevItem->loseItemMenu();
-	}
-
-	CItem* item = (CItem*)map->getEntity(entityNo);
-	highlitInvItem = entityNo;
-	item->onMouseover("inv");
-}
 
 
 /////////////public - private devide

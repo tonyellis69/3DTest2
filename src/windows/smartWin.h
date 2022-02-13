@@ -11,12 +11,13 @@ public:
 		pWin = win;
 	}
 	virtual void update(float dT) {}
-	virtual void onRichTextMouseOver(const std::string& msg) {}
-	virtual void onMouseOff() {}
-	virtual void onRichTextClick(const std::string& msg) {}
-	virtual void onMsg(const std::string& msg) {}
-
-	int getEntityNo(const std::string& str);
+	virtual void clearText();
+	virtual void addText(const std::string& text);
+	virtual void hideWin();
+	virtual void showWin();
+	virtual void centreOnMouse();
+	virtual void removeItem(int itemNo) {}
+	virtual void refresh() {}
 
 	CGameTextWin* pWin;
 };

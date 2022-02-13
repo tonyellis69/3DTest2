@@ -10,12 +10,7 @@ CGameTextWin::CGameTextWin() {
 	richText = new CGUIrichText(style::gameWinCtrBorder.x, style::gameWinCtrBorder.y,
 		500, 200);
 	richText->resizeMax = { 400, 500 };
-
-	richText->setHotTextMouseoverHandler([this](const std::string& msg) {
-		(onRichTextMouseover)(msg); });
-	richText->setHotTextClickHandler([this](const std::string& msg) {
-		(onRichTextClick)(msg); });
-
+	richText->setDefaultFont("mainFnt");
 	add(richText);
 }
 
@@ -52,11 +47,11 @@ void CGameTextWin::message(CGUIbase* sender, CMessage& msg) {
 		resize(newSize.x, newSize.y);
 
 	}
-	if (msg.Msg == uiMsgMouseOff) {
-		if (smartPlugin)
-			smartPlugin->onMouseOff();
+	//if (msg.Msg == uiMsgMouseOff) {
+	//	if (smartPlugin)
+	//		smartPlugin->onMouseOff();
 
-	}
+	//}
 }
 
 /** Extends normal resize to ensure we resize richText ctrl. */
@@ -96,17 +91,7 @@ void CGameTextWin::onNotify(CMouseExitHex& msg) {
 
 }
 
-bool CGameTextWin::OnMouseMove(const  int mouseX, const  int mouseY, int key) {
 
-	return true;
-}
-
-bool CGameTextWin::onMouseOff(const int mouseX, const int mouseY, int key)
-{
-	/*if (smartPlugin)
-		smartPlugin->onMouseOff();*/
-	return true;
-}
 
 
 
@@ -115,21 +100,12 @@ void CGameTextWin::update(float dT) {
 		smartPlugin->update(dT);
 }
 
-void CGameTextWin::msg(const std::string& msg) {
-	if (smartPlugin)
-		smartPlugin->onMsg(msg);
-}
+//void CGameTextWin::msg(const std::string& msg) {
+//	if (smartPlugin)
+//		smartPlugin->onMsg(msg);
+//}
 
-void CGameTextWin::onRichTextMouseover(const std::string& msg) {
-	if (smartPlugin)
-		smartPlugin->onRichTextMouseOver(msg);
-}
 
-void CGameTextWin::onRichTextClick(const std::string& msg) {
-	if (smartPlugin)
-		smartPlugin->onRichTextClick(msg);
-
-}
 
 
 

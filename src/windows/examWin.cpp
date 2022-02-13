@@ -2,6 +2,15 @@
 
 #include "../gameTextWin.h"
 
-void CExamWin::onMouseOff() {
-	pWin->setVisible(false);
+#include "UI/gui2.h"
+
+
+void CExamWin::showWin() {
+	centreOnMouse();
+	CSmartWin::showWin();
+}
+
+void CExamWin::onEvent(CEvent& e) {
+	if (e.type == eMouseOff && gui.mouseNotIn("exam") )
+		pWin->setVisible(false);
 }

@@ -25,6 +25,9 @@
     <Filter Include="Source Files\windows">
       <UniqueIdentifier>{0c2c63e5-c7b6-404f-8d3c-d6c06b44e4d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\hexRender">
+      <UniqueIdentifier>{e69ea2c0-f502-4034-8dfe-14eec42ee71f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp">
@@ -122,6 +125,12 @@
     </ClCompile>
     <ClCompile Include="src\windows\examWin.cpp">
       <Filter>Source Files\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\windows\nearWin.cpp">
+      <Filter>Source Files\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hexRender\hexRender.cpp">
+      <Filter>Source Files\hexRender</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +241,12 @@
     </ClInclude>
     <ClInclude Include="src\windows\examWin.h">
       <Filter>Source Files\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\windows\nearWin.h">
+      <Filter>Source Files\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexRender\hexRender.h">
+      <Filter>Source Files\hexRender</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

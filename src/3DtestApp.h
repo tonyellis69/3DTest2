@@ -61,9 +61,7 @@ public:
 
 	glm::i32vec2 getMousePos();
 
-	void makePowerQueueWin();
 
-	void makeCombatLogWin();
 
 
 	std::string dataPath; ///<Filepath to the Data folder

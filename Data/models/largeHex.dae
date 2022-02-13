@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <asset>
+    <contributor>
+      <author>Blender User</author>
+      <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
+    </contributor>
+    <created>2022-02-09T12:53:28</created>
+    <modified>2022-02-09T12:53:28</modified>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_images/>
+  <library_geometries>
+    <geometry id="solid_001-mesh" name="solid.001">
+      <mesh>
+        <source id="solid_001-mesh-positions">
+          <float_array id="solid_001-mesh-positions-array" count="18">0 0.9 0 -0.7794229 0.4499999 0 -0.7794228 -0.4500001 0 0 -0.9 0 0.7794229 -0.4499999 0 0.7794229 0.4499999 0</float_array>
+          <technique_common>
+            <accessor source="#solid_001-mesh-positions-array" count="6" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="solid_001-mesh-normals">
+          <float_array id="solid_001-mesh-normals-array" count="0"/>
+          <technique_common>
+            <accessor source="#solid_001-mesh-normals-array" count="0" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="solid_001-mesh-vertices">
+          <input semantic="POSITION" source="#solid_001-mesh-positions"/>
+        </vertices>
+        <lines count="6">
+          <input semantic="VERTEX" source="#solid_001-mesh-vertices" offset="0"/>
+          <p>0 1 1 2 2 3 3 4 4 5 5 0</p>
+        </lines>
+      </mesh>
+    </geometry>
+    <geometry id="solid_002-mesh" name="solid.002">
+      <mesh>
+        <source id="solid_002-mesh-positions">
+          <float_array id="solid_002-mesh-positions-array" count="18">0 0.81 0 -0.7014806 0.4049999 0 -0.7014805 -0.405 0 0 -0.81 0 0.7014806 -0.4049999 0 0.7014806 0.4049999 0</float_array>
+          <technique_common>
+            <accessor source="#solid_002-mesh-positions-array" count="6" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="solid_002-mesh-normals">
+          <float_array id="solid_002-mesh-normals-array" count="0"/>
+          <technique_common>
+            <accessor source="#solid_002-mesh-normals-array" count="0" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="solid_002-mesh-vertices">
+          <input semantic="POSITION" source="#solid_002-mesh-positions"/>
+        </vertices>
+        <lines count="6">
+          <input semantic="VERTEX" source="#solid_002-mesh-vertices" offset="0"/>
+          <p>0 1 1 2 2 3 3 4 4 5 5 0</p>
+        </lines>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="largeHexA" name="largeHexA" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#solid_001-mesh" name="largeHexA"/>
+      </node>
+      <node id="largeHexB" name="largeHexB" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#solid_002-mesh" name="largeHexB"/>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

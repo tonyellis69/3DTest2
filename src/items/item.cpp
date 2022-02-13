@@ -7,6 +7,7 @@
 
 #include "..\gameGui.h"
 
+
 void CItem::setParent(CEntity* parent) {
 	this->parent = parent;
 }
@@ -33,54 +34,23 @@ void CItem::take(CEntity* taker) {
 	//TO DO: assumption! Taker may not always be the player. Amend if necessary.
 	CPlayerObject* takerEnt = (CPlayerObject*) taker;
 	takerEnt->addToInventory(this);
-
+	gWin::pNear->removeItem(id);
 }
 
 void CItem::examine() {
 	std::string desc = name + ":\nDescription text";
-	gWin::clearText("exam");
-	gWin::addText("exam", desc);
-	gWin::centreOnMouse("exam");
-	gWin::showWin("exam");
+	gWin::pExam->clearText();
+	gWin::pExam->addText( desc);
+	gWin::pExam->showWin();
 }
 
 
-void CItem::onMouseover(const std::string& parentWin) {
-	//open item menu
-
-
-
-
-
-	//open item menu window
-	if (parentWin == "inv" && !itemMenuOpen) {
-		gWin::putLeftOf("itemMenu", "inv");
-		gWin::alignWithMouse("itemMenu");
-		itemMenuOpen = true;
-	}
-		
-	gWin::clearText("itemMenu");
-	std::string txt =  name + ":\n\\h{drop}Drop\\h\n\\h{examine}Examine\\h";
-	gWin::addText("itemMenu", txt);
-	
-	gWin::showWin("itemMenu");
-	
-
-	//write options
-
-}
-
-void CItem::loseItemMenu() {
-	itemMenuOpen = false;
-	gWin::hideWin("itemMenu");
-}
-
-void CItem::timeOutItemMenu() {
-	itemMenuOpen = false;
-	gWin::timeOut("itemMenu",0.5f);
-}
 
 std::string CItem::getMenuTextInv() {
 	return name + ":\n\\h{drop}Drop\\h\n\\h{examine}Examine\\h";
+}
+
+std::string CItem::getMenuTextNear() {
+	return name + ":\n\\h{take}Take\\h\n\\h{examine}Examine\\h";
 }
 

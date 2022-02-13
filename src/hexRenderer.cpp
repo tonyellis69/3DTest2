@@ -55,6 +55,7 @@ void CHexRenderer::init()
 	unitLineBuf.storeVerts(lineVerts, index, 3);
 
 
+
 	std::vector<glm::vec3> dummyVerts(numExplosionParticles, glm::vec3(0));
 	std::vector<unsigned int> dummyIndex(numExplosionParticles);
 	std::iota(std::begin(dummyIndex), std::end(dummyIndex), 0); // Fill with 0, 1, ..., 99.
@@ -65,9 +66,9 @@ void CHexRenderer::init()
 void CHexRenderer::setMap(CHexArray* hexArray){
 	this->hexArray = hexArray;
 	
-	fillFloorplanLineBuffer();
-	fillFloorplanSolidBuffer(floorplanSolidBuf, 2, 1);
-	fillFloorplanSolidBuffer(floorplanSpaceBuf, 1, 0.9f);
+	//fillFloorplanLineBuffer();
+	//fillFloorplanSolidBuffer(floorplanSolidBuf, 2, 1);
+	//fillFloorplanSolidBuffer(floorplanSpaceBuf, 1, 0.9f);
 
 	createFogBuffer(hexArray->width,hexArray->height);
 
@@ -161,8 +162,8 @@ void CHexRenderer::drawLineModel(TModelMesh& model) {
 	lineShader->setShaderValue(hWinSize, camera.getView());
 
 	lineShader->setShaderValue(hColour, model.colour);
-	
-	renderer.drawLineStripAdjBuf(*model.buf, (void*)(model.mesh.indexStart * sizeof(unsigned short)), model.mesh.indexSize);
+	auto& lineModel = model.draw;
+	renderer.drawLineStripAdjBuf(*lineModel.buf, (void*)(lineModel.mesh.indexStart * sizeof(unsigned short)), lineModel.mesh.indexSize);
 
 
 }
@@ -173,8 +174,8 @@ void CHexRenderer::drawSolidModel(TModelMesh& model) {
 	filledShader->setShaderValue(hFillMVP, mvp);
 	filledShader->setShaderValue(hFillColour, model.colour);
 
-	auto& mesh = model.mesh;
-	renderer.drawTrisBuf(*model.buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
+	auto& mesh = model.draw.mesh;
+	renderer.drawTrisBuf(*model.draw.buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
 
 }
 

@@ -48,13 +48,8 @@ void C3DtestApp::onStart() {
 
 	if (appMode == hexMode) {
 		initHexWorld();
-		makePowerQueueWin();
-		makeCombatLogWin();
 	}
 
-
-	//messageBus.setHandler<CSendText>(this, &C3DtestApp::onPopupText); 
-	//messageBus.setHandler<CSysMsg>(this, &C3DtestApp::onSysMessage);
 
 	return;
 }
@@ -341,6 +336,7 @@ void C3DtestApp::addGameWindow(CGUIbase* gameWin) {
 void C3DtestApp::initHexWorld() {
 	hexWorld.addMesh("test", dataPath + "models\\test.obj");
 	hexWorld.addMesh("cursor", dataPath + "models\\cursor.dae");
+	
 
 
 	//hexWorld.addMesh("player", dataPath + "models\\player.obj");
@@ -366,6 +362,12 @@ void C3DtestApp::initHexWorld() {
 	//... more models
 
 
+	//tiles
+	std::vector<glm::vec4> hex = { { 0.0f,0.3f,0.0f,1.0f} };
+	std::vector<glm::vec4> largerHex = { { 0.0f,0.0f,0.9f,1.0f}, { 0.5f,0.5f,0.8f,1.0f} };
+	hexWorld.addHexTile("hex", dataPath + "models\\hex.dae", hex);
+	hexWorld.addHexTile("largeHex", dataPath + "models\\largeHex.dae", largerHex);
+
 
 	//ITigObj* tigMapTemplate = vm.getObject("testRoom");
 	hexWorld.makeMap();
@@ -376,22 +378,7 @@ glm::i32vec2 C3DtestApp::getMousePos() {
 	return CBaseApp::getMousePos();
 }
 
-void C3DtestApp::makePowerQueueWin() {
-	//powerQueueWin = new CGameTextWin();
-	//powerQueueWin->setLocalPos(100, style::mainWinCtrlBorder + 10);
-	//powerQueueWin->setSize(style::powerQueueWinSize);
-	//powerQueueWin->anchorRight = style::mainWinCtrlBorder;
-	//powerQueueWin->setTheme("smallNormal");
-	//GUIroot.add(powerQueueWin);
-}
 
-void C3DtestApp::makeCombatLogWin() {
-	//combatLogWin = new CGameTextWin();
-	//combatLogWin->setLocalPos(style::mainWinCtrlBorder, style::mainWinCtrlBorder + 20);
-	//combatLogWin->setSize(style::combatLogWinSize);
-	//combatLogWin->setTheme("smallNormal");
-	//GUIroot.add(combatLogWin);
-}
 
 
 /** Trap mousewheel events for our own use. */

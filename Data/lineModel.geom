@@ -8,6 +8,12 @@ layout(triangle_strip, max_vertices = 7) out;
  
  out vec2 gsTexCoord;
  
+ in vColour {
+	vec4 colour;
+} colour_in[];
+
+out vec4 gsColour;
+ 
  float thickness =  2.0f; //2.0f;
  float miter_limit = 0.75f; //1.0f; //1 = always, -1 = never. 0.75f good default.
  //NB 1 (always) creates glitches with very small lines at sharpish angles, which -1 and 0.75f seem to fix
@@ -51,6 +57,8 @@ void main() {
 	float length_a = thickness / dot(miter_a, n1);
 	float length_b = thickness / dot(miter_b, n1);
 	
+	
+	gsColour = colour_in[0].colour;
 	
 
 	  // prevent excessively long miters at sharp corners
