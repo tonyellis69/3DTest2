@@ -15,7 +15,10 @@ CMap* CSpawn::pMap;
 TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 	auto player = std::make_shared<CPlayerObject>();
 	player->setModel(models[name]);
+	player->model.setBasePalette(std::vector<glm::vec4>({ {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {0,0,1,1} }) );
+	player->initDrawFn();
 	player->setPosition(pos);
+
 
 	CEntity* equippedGun = gun("guntype1");
 	player->setGun(equippedGun);
@@ -34,6 +37,8 @@ TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	auto robot = std::make_shared<CRobot>();
 	robot->setModel(models["robot"]);
+	robot->model.setBasePalette(std::vector<glm::vec4>({ {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {0,0,1,1} }));
+	robot->initDrawFn();
 	robot->setPosition(pos);
 
 	if (name == "melee bot") {
@@ -54,6 +59,9 @@ TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 TEntity CSpawn::missile(const std::string& name, glm::vec3& pos, float angle) {
 	auto missile = std::make_shared<CMissile>();
 	missile->setModel(models["bolt"]);
+	missile->model.setBasePalette(std::vector<glm::vec4>({ {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {0,0,1,1} }));
+	missile->initDrawFn();
+
 	missile->setPosition(pos, angle);
 
 	//missile->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
@@ -75,6 +83,9 @@ CEntity* CSpawn::gun(const std::string& name, glm::vec3& pos ) {
 	auto gun = std::make_shared<CGun>();
 
 	gun->setModel(models["gun"]);
+	gun->model.setBasePalette(std::vector<glm::vec4>({ {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {0,0,1,1} }));
+	gun->initDrawFn();
+
 	gun->model.meshes[0].colour = glm::vec4(0, 1, 1.0, 0.45f);
 	if (pos != glm::vec3(0,0,0) )
 		gun->setPosition(pos);
@@ -90,6 +101,9 @@ CEntity* CSpawn::armour(const std::string& name, glm::vec3& pos) {
 	auto armour = std::make_shared<CArmour>();
 
 	armour->setModel(models["armour"]);
+	armour->model.setBasePalette(std::vector<glm::vec4>({ {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {0,0,1,1} }));
+	armour->initDrawFn();
+
 	armour->model.meshes[0].colour = glm::vec4(1, 0, 1.0, 0.45f);
 	if (pos != glm::vec3(0, 0, 0))
 		armour->setPosition(pos);

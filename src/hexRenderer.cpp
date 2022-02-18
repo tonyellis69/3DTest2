@@ -20,7 +20,11 @@ CHexRenderer hexRendr2;
 
 
 CHexRenderer::CHexRenderer() : hexModel(6) {
-
+	//temp!!!
+	testColours.push_back(glm::vec4(1, 1, 0, 1));
+	testColours.push_back(glm::vec4(0, 1, 1, 1));
+	testColours.push_back(glm::vec4(1, 0, 1, 1));
+	testColours.push_back(glm::vec4(0, 0, 1, 1));
 }
 
 /** Essential setup. */
@@ -161,7 +165,8 @@ void CHexRenderer::drawLineModel(TModelMesh& model) {
 	lineShader->setShaderValue(hMVP, mvp);
 	lineShader->setShaderValue(hWinSize, camera.getView());
 
-	lineShader->setShaderValue(hColour, model.colour);
+	lineShader->setShaderValue(hColour, glm::vec4(0, 0, 0, 0)); // model.colour);
+	glUniform4fv(hPalette, 4, (float*)(model.palette.data()));
 	auto& lineModel = model.draw;
 	renderer.drawLineStripAdjBuf(*lineModel.buf, (void*)(lineModel.mesh.indexStart * sizeof(unsigned short)), lineModel.mesh.indexSize);
 
@@ -453,6 +458,7 @@ void CHexRenderer::createLineShader() {
 	hMVP = lineShader->getUniformHandle("mvpMatrix");
 	hColour = lineShader->getUniformHandle("colour");
 	hWinSize = lineShader->getUniformHandle("winSize");
+	hPalette = lineShader->getUniformHandle("colourPalette");
 
 	lineShaderBasic = renderer.createShader("lineModelBasic");
 	hMVPb = lineShaderBasic->getUniformHandle("mvpMatrix");

@@ -1,6 +1,7 @@
 #include "entity.h"
 
 #include <string>
+#include <memory>
 
 #include "utils\log.h"
 
@@ -10,6 +11,8 @@
 
 #include "gameState.h"
 
+#include "hexRender/entityDraw.h"
+
 const float rad360 = M_PI * 2;
 
 unsigned int CEntity::nextId = 1;
@@ -18,6 +21,7 @@ CEntity::CEntity() {
 	if (id == 0)
 		id++;
 	id = nextId++;
+
 }
 
 
@@ -160,6 +164,11 @@ std::string CEntity::getShortDesc() {
 		+ name + "\\h";
 	
 	return hotDesc;
+}
+
+
+void CEntity::initDrawFn() {
+	this->drawFn = std::make_shared<CEntityDraw>(&this->model);
 }
 
 

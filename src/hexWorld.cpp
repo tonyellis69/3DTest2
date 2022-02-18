@@ -34,6 +34,8 @@ int listenId = -1;
 CHexWorld::CHexWorld() {
 	game.paused = true;
 
+	hexRender.init();
+
 	hexRendr2.init();
 	hexRender.pCamera = &hexRendr2.camera;
 	hexRender.pLineShader = hexRendr2.lineShader;
@@ -67,7 +69,7 @@ void CHexWorld::addHexTile(const std::string& name, const std::string& fileName,
 	CImporter importer;
 	importer.loadFile(fileName);
 
-	hexRender.addHexTile(name, importer.getHexTile(colours));
+	hexRender.addHexTile(name, importer.getVertData(),colours);
 
 }
 
@@ -317,7 +319,7 @@ void CHexWorld::draw() {
 
 	//temp!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if (!game.player->dead) {
-		imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 0.25f });
+		imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 1.0f });
 		imRendr::drawLine(playerObj->worldPos, mouseWorldPos);
 		hexCursor->draw();
 	}

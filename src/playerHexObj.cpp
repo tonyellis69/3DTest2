@@ -42,8 +42,8 @@ CPlayerObject::~CPlayerObject() {
 
 
 
-void CPlayerObject::setModel(CModel& model) {
-	this->model = model;
+void CPlayerObject::setModel(CModel& modelRef) {
+	this->model = modelRef;
 	upperBody = model.getMesh("body");
 	leftFoot = model.getMesh("footL");
 	rightFoot = model.getMesh("footR");
@@ -110,9 +110,12 @@ void CPlayerObject::draw() {
 	if (dead)
 		return;
 	//CEntity::draw();
-	hexRendr2.drawLineModel(*leftFoot);
-	hexRendr2.drawLineModel(*rightFoot);
-	hexRendr2.drawLineModel(*upperBody);
+	//hexRendr2.drawLineModel(*leftFoot);
+	//hexRendr2.drawLineModel(*rightFoot);
+	//hexRendr2.drawLineModel(*upperBody);
+	hexRendr2.drawLineModel(model.meshes[2]);
+	hexRendr2.drawLineModel(model.meshes[1]);
+	hexRendr2.drawLineModel(model.meshes[0]);
 }
 
 

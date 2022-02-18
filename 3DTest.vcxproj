@@ -128,6 +128,8 @@
     <ClCompile Include="src\GUIgamePanel.cpp" />
     <ClCompile Include="src\GUIrichTextPanel.cpp" />
     <ClCompile Include="src\hexRenderer.cpp" />
+    <ClCompile Include="src\hexRender\drawFunc.cpp" />
+    <ClCompile Include="src\hexRender\entityDraw.cpp" />
     <ClCompile Include="src\hexRender\hexRender.cpp" />
     <ClCompile Include="src\hexWorld.cpp" />
     <ClCompile Include="src\items\armour.cpp" />
@@ -168,6 +170,8 @@
     <ClInclude Include="src\GUIrichTextPanel.h" />
     <ClInclude Include="src\hexMsg.h" />
     <ClInclude Include="src\hexRenderer.h" />
+    <ClInclude Include="src\hexRender\drawFunc.h" />
+    <ClInclude Include="src\hexRender\entityDraw.h" />
     <ClInclude Include="src\hexRender\hexRender.h" />
     <ClInclude Include="src\hexWorld.h" />
     <ClInclude Include="src\items\armour.h" />

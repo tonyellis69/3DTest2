@@ -10,6 +10,8 @@
 
 #include "model.h"
 
+//#include "hexRender/drawFunc.h"
+
 /// <summary>
 /// ////////////
 
@@ -25,6 +27,7 @@ enum TEntityType {entNull = 0, entPlayer = 1, entMissile, entExplode,
 	entMeleeBot, entShootBot, entGun};
 
 /** The base class for objects in the game world.*/
+class CDrawFunc;
 class CEntity  {
 public:
 	CEntity();
@@ -57,10 +60,12 @@ public:
 	bool isOnScreen();
 	
 	virtual std::string getShortDesc();
+
+
+	virtual void initDrawFn();
 	
 	float dT;
 
-	//CLineModel lineModel;
 	CModel model;
 
 	CHex hexPosition = CHex(-1); ///<Position on a hex grid in cube coordinates.
@@ -87,6 +92,8 @@ public:
 
 	std::string name;
 	unsigned int id; 
+
+	std::shared_ptr<CDrawFunc> drawFn;
 
 protected:
 	float rotation = 0.0f; ///<Angle of object's z-rotation in world space.

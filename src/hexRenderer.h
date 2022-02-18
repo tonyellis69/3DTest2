@@ -77,12 +77,12 @@ public:
 
 	CCamera camera;
 
-	CShader* hexLineShader;
-	CShader* hexSolidShader;
-	CShader* lineShader;
-	CShader* visibilityShader;
-	CShader* explosionShader;
-	CShader* filledShader;
+	CShaderOld* hexLineShader;
+	CShaderOld* hexSolidShader;
+	CShaderOld* lineShader;
+	CShaderOld* visibilityShader;
+	CShaderOld* explosionShader;
+	CShaderOld* filledShader;
 
 	const int numExplosionParticles = 200;
 	
@@ -124,8 +124,9 @@ private:
 	unsigned int hMVP;
 	unsigned int hColour;
 	unsigned int hWinSize;
+	unsigned int hPalette;
 
-	CShader* lineShaderBasic;
+	CShaderOld* lineShaderBasic;
 	unsigned int hMVPb;
 	unsigned int hColourb;
 
@@ -177,6 +178,7 @@ private:
 
 	CBuf2 explosionBuf; //Holds dummy verts for draw calls
 
+	std::vector<glm::vec4> testColours;
 };
 
 

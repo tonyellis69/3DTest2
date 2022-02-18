@@ -132,6 +132,12 @@
     <ClCompile Include="src\hexRender\hexRender.cpp">
       <Filter>Source Files\hexRender</Filter>
     </ClCompile>
+    <ClCompile Include="src\hexRender\drawFunc.cpp">
+      <Filter>Source Files\hexRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hexRender\entityDraw.cpp">
+      <Filter>Source Files\hexRender</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -246,6 +252,12 @@
       <Filter>Source Files\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\hexRender\hexRender.h">
+      <Filter>Source Files\hexRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexRender\drawFunc.h">
+      <Filter>Source Files\hexRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexRender\entityDraw.h">
       <Filter>Source Files\hexRender</Filter>
     </ClInclude>
   </ItemGroup>
