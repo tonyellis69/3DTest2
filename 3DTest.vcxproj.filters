@@ -138,6 +138,18 @@
     <ClCompile Include="src\hexRender\entityDraw.cpp">
       <Filter>Source Files\hexRender</Filter>
     </ClCompile>
+    <ClCompile Include="src\hexRender\itemDraw.cpp">
+      <Filter>Source Files\hexRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hexRender\splodeDraw.cpp">
+      <Filter>Source Files\hexRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hexRender\graphics.cpp">
+      <Filter>Source Files\hexRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hexRender\destGraphic.cpp">
+      <Filter>Source Files\hexRender</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -258,6 +270,21 @@
       <Filter>Source Files\hexRender</Filter>
     </ClInclude>
     <ClInclude Include="src\hexRender\entityDraw.h">
+      <Filter>Source Files\hexRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexRender\itemDraw.h">
+      <Filter>Source Files\hexRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexRender\splodeDraw.h">
+      <Filter>Source Files\hexRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexRender\drawData.h">
+      <Filter>Source Files\hexRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexRender\graphics.h">
+      <Filter>Source Files\hexRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexRender\destGraphic.h">
       <Filter>Source Files\hexRender</Filter>
     </ClInclude>
   </ItemGroup>

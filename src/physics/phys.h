@@ -12,7 +12,7 @@ public:
 	float invMass = 0;
 	float restitution = 0.0f; //bounce
 	float drag = 0.00125f;
-	float maxVelocity = 4.0f;
+	//float maxVelocity = 4.0f;
 
 	float boundingRadius = 0;
 };

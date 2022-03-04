@@ -12,7 +12,7 @@ out vec4 outputColor;
 
 void main() {
 
-	outputColor = mix(gsColour,colour,colour.a);
+	outputColor =  mix(gsColour,colour,colour.a);
 
 	
 	float lateralFade =  abs(gsTexCoord.y - 0.5) / 0.5;  // puts in form 1 - 0 - 1, like a graph axis

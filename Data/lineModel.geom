@@ -58,7 +58,7 @@ void main() {
 	float length_b = thickness / dot(miter_b, n1);
 	
 	
-	gsColour = colour_in[0].colour;
+	gsColour = colour_in[1].colour;
 	
 
 	  // prevent excessively long miters at sharp corners

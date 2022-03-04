@@ -27,7 +27,9 @@
 
 #include "spawner.h"
 
+#include "hexRender/drawFunc.h"
 
+#include "hexRender/destGraphic.h"
 
 int listenId = -1;
 
@@ -38,11 +40,11 @@ CHexWorld::CHexWorld() {
 
 	hexRendr2.init();
 	hexRender.pCamera = &hexRendr2.camera;
-	hexRender.pLineShader = hexRendr2.lineShader;
+	//hexRender.pLineShader = hexRendr2.lineShader;
 
 	imRendr::setMatrix(&hexRendr2.camera.clipMatrix);
 	
-	//subscribe(&game);
+	lis::subscribe(this);
 
 	hexPosLbl = gui::addLabel("xxx", 10, 10);
 	hexPosLbl->setTextColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -51,8 +53,16 @@ CHexWorld::CHexWorld() {
 
 	gWin::initWindows();
 
+	initPalettes();
 
+}
 
+void CHexWorld::onEvent(CEvent& e) {
+	if (e.type == eKeyDown) {
+		if (e.i1 == GLFW_KEY_F2)
+			toggleDirectionGraphics();
+
+	}
 }
 
 
@@ -298,10 +308,25 @@ void CHexWorld::draw() {
 
 	hexRender.drawMap();
 
+	//for (auto& entity : map->entities) {
+	//	if (entity->live)
+	//		entity->draw();
+	//}
+
+	hexRender.resetDrawLists();
 	for (auto& entity : map->entities) {
 		if (entity->live)
-			entity->draw();
+			entity->drawFn.get()->draw(hexRender);
 	}
+
+
+	for (auto& graphic : hexRender.graphics)
+		graphic->draw(hexRender);
+
+	hexRender.drawSolidList();
+	hexRender.drawLineList();
+	hexRender.drawExplosionList();
+
 
 	if (editMode) {
 		if (mapEdit.entityMode) {
@@ -325,6 +350,7 @@ void CHexWorld::draw() {
 	}
 
 	imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp));
+
 
 
 }
@@ -374,6 +400,12 @@ void CHexWorld::update(float dT) {
 	}
 
 	gWin::update(dT);
+
+	for (auto& graphic : hexRender.graphics)
+		graphic->update(dT);
+
+
+
 
 }
 
@@ -569,8 +601,7 @@ void CHexWorld::setViewMode(TViewMode mode) {
 
 }
 
-void CHexWorld::adjustZoomScale(float delta)
-{
+void CHexWorld::adjustZoomScale(float delta) {
 	zoomAdjust += (delta > 0) ? -0.1f : 0.1f;
 	zoomAdjust = std::max(zoomAdjust, 0.0f);
 	zoomScale = 1.0f + (std::pow(zoomAdjust, 0.5f) * 10);
@@ -588,4 +619,39 @@ void CHexWorld::onMapDrag() {
 	mapDragging = true;
 }
 
+void CHexWorld::toggleDirectionGraphics() {
+	directionGraphicsOn = !directionGraphicsOn;
 
+	if (directionGraphicsOn) {
+		//for each robot
+		//create a graphic,
+		//connect them
+		for (auto& entity : map->entities) {
+			if (entity->isRobot) {
+				auto graphic = std::make_shared<CDestinationGraphic>();
+				graphic->entity = entity;
+				graphic->pPalette = hexRender.getPalette("basic");
+				hexRender.graphics.push_back(graphic);
+			}
+		}
+	}
+	else {
+		hexRender.graphics.clear();
+	}
+
+}
+
+/** TO DO: ultimately this should be automated via a Tig
+	config file rather than hardcoded. */
+void CHexWorld::initPalettes() {
+	hexRender.storePalette("hex", { {0.0f,0.3f,0.0f,1.0f} });
+	hexRender.storePalette("largeHex", { { 0.0f,0.0f,0.9f,1.0f}, { 0.5f,0.5f,0.8f,1.0f} });
+	hexRender.storePalette("basic", { {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {0,0,1,1} });
+	hexRender.storePalette("gun", { {0, 1, 1.0, 0.45f}, {0,0,0,1}, {1,1,1,1} });
+	hexRender.storePalette("armour", { {1, 0, 1.0, 0.45f}, {0,0,0,1}, {1,1,1,1} });
+	hexRender.storePalette("explosion", { {1, 1, 0.0,1}, {0,0,1,1}, {1,1,1,1} });
+
+
+
+	spawn::pPalettes = &hexRender.palettes;
+}

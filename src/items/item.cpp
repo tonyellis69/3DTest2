@@ -7,6 +7,7 @@
 
 #include "..\gameGui.h"
 
+#include "..\hexRender\itemDraw.h"
 
 void CItem::setParent(CEntity* parent) {
 	this->parent = parent;
@@ -30,11 +31,16 @@ void CItem::draw() {
 	}
 }
 
+void CItem::drop() {
+	drawFn = std::make_shared<CItemDraw>(this);
+}
+
 void CItem::take(CEntity* taker) {
 	//TO DO: assumption! Taker may not always be the player. Amend if necessary.
 	CPlayerObject* takerEnt = (CPlayerObject*) taker;
 	takerEnt->addToInventory(this);
 	gWin::pNear->removeItem(id);
+	drawFn = std::make_shared<CDrawFunc>(nullptr);
 }
 
 void CItem::examine() {
@@ -52,5 +58,9 @@ std::string CItem::getMenuTextInv() {
 
 std::string CItem::getMenuTextNear() {
 	return name + ":\n\\h{take}Take\\h\n\\h{examine}Examine\\h";
+}
+
+void CItem::initDrawFn() {
+	drawFn = std::make_shared<CItemDraw>(this);
 }
 

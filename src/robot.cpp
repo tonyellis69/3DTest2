@@ -220,7 +220,7 @@ void CRobot::fireMissile(CEntity* target) {
 
 	auto missile = (CMissile*) spawn::missile("missile", worldPos, targetAngle).get();
 	missile->setOwner(this);
-	missile->setSpeed(7.0f);
+	missile->setSpeed(15);// 7.0f);
 
 	snd::play("shoot");
 }
@@ -259,6 +259,10 @@ bool CRobot::turnTo(glm::vec3& p) {
 void CRobot::stopMoving() {
 	moving = false;
 	physics.moveImpulse = { 0,0,0 };
+}
+
+glm::vec3* CRobot::getDestination() {
+	return currentState->getDestination();
 }
 
 /** Rotate upper body to track a target, if any. */

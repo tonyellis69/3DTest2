@@ -2,11 +2,11 @@
 
 #include "drawFunc.h"
 
-
-class CEntity;
-class CEntityDraw : public CDrawFunc {
+class CSplodeDraw : public CDrawFunc {
 public:
-	CEntityDraw(CEntity* owner);
+	CSplodeDraw(CEntity* owner);
 	void draw(CHexRender& hexRender);
+
+
 
 };

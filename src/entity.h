@@ -63,6 +63,7 @@ public:
 
 
 	virtual void initDrawFn();
+	virtual void setPalette(std::vector<glm::vec4>* pPalette);
 	
 	float dT;
 
@@ -94,6 +95,8 @@ public:
 	unsigned int id; 
 
 	std::shared_ptr<CDrawFunc> drawFn;
+
+	std::vector<glm::vec4>* pPalette;
 
 protected:
 	float rotation = 0.0f; ///<Angle of object's z-rotation in world space.

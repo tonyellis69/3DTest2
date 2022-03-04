@@ -1,21 +1,19 @@
 #include "entityDraw.h"
 
-#include "graphics/shader2.h"
+#include <glm/glm.hpp>
 
-CEntityDraw::CEntityDraw(CModel* model) : CDrawFunc(model) {
-	pLineShader = shader::get("lineModel");
+#include "../entity.h"
 
-	hMVP = pLineShader->getUniform("mvpMatrix");
-	hColour = pLineShader->getUniform("colour");
-	hWinSize = pLineShader->getUniform("winSize");
-	hPalette = pLineShader->getUniform("colourPalette");
+
+CEntityDraw::CEntityDraw(CEntity* owner) : CDrawFunc(owner) {
+
 }
 
 void CEntityDraw::draw(CHexRender& hexRender) {
-	//call a hexRender draw mesh function here for each mesh
-	//something like hexRender->
-
-
+	for (auto& mesh : model->meshes) {
+		hexRender.lineDrawList.push_back({model->meshes[0].draw.buf.get(), &mesh.matrix,pOwner->pPalette,
+			&mesh.draw.meshRec});
+	}
 
 
 }

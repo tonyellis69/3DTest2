@@ -3,10 +3,11 @@
 #include "drawFunc.h"
 
 
-class CEntity;
-class CEntityDraw : public CDrawFunc {
+class CItemDraw : public CDrawFunc {
 public:
-	CEntityDraw(CEntity* owner);
+	CItemDraw(CEntity* owner);
 	void draw(CHexRender& hexRender);
+
+private:
 
 };

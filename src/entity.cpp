@@ -22,6 +22,8 @@ CEntity::CEntity() {
 		id++;
 	id = nextId++;
 
+	//dummy null drawer that can be called without a crash.
+	drawFn = std::make_shared<CDrawFunc>(nullptr);
 }
 
 
@@ -168,7 +170,11 @@ std::string CEntity::getShortDesc() {
 
 
 void CEntity::initDrawFn() {
-	this->drawFn = std::make_shared<CEntityDraw>(&this->model);
+	drawFn = std::make_shared<CEntityDraw>(this);
+}
+
+void CEntity::setPalette(std::vector<glm::vec4>* pPalette) {
+	this->pPalette = pPalette;
 }
 
 

@@ -40,10 +40,7 @@ enum TMsgType {msgId,msgId2,msgId3};
 class CHexWorld { 
 public:
 	CHexWorld();
-	void onEvent(CEvent& e) {
-	
-
-	}
+	void onEvent(CEvent& e);
 	void addMesh(const std::string& name, const std::string& fileName);
 	void addHexTile(const std::string& name, const std::string& fileName, std::vector<glm::vec4>& colours);
 	void makeMap();
@@ -92,6 +89,9 @@ private:
 	void setViewMode(TViewMode mode);
 	void adjustZoomScale(float delta);
 	void onMapDrag();
+	void initPalettes();
+
+	void toggleDirectionGraphics();
 
 	CMap* map;
 
@@ -128,6 +128,8 @@ private:
 	float zoomAdjust = 0.0f;
 
 	int highlitInvItem = 0;
+
+	bool directionGraphicsOn = false;
 };
 
 

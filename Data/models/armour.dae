@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
     </contributor>
-    <created>2021-11-30T19:00:17</created>
-    <modified>2021-11-30T19:00:17</modified>
+    <created>2022-02-23T19:57:59</created>
+    <modified>2022-02-23T19:57:59</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -34,45 +34,25 @@
             </accessor>
           </technique_common>
         </source>
+        <source id="Plane_003-mesh-colors-Col" name="Col">
+          <float_array id="Plane_003-mesh-colors-Col-array" count="36">0.2431373 0.3647059 1 0.227451 0.3529412 1 0.1019608 0.2431373 1 0.227451 0.3529412 1 0.427451 0.5176471 1 0.1019608 0.2431373 1 0.1019608 0.2431373 1 0.09411764 0.2392157 1 0.09411764 0.2392157 1 0.09411764 0.2392157 1 0.2431373 0.3647059 1 0.1019608 0.2431373 1</float_array>
+          <technique_common>
+            <accessor source="#Plane_003-mesh-colors-Col-array" count="12" stride="3">
+              <param name="R" type="float"/>
+              <param name="G" type="float"/>
+              <param name="B" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
         <vertices id="Plane_003-mesh-vertices">
           <input semantic="POSITION" source="#Plane_003-mesh-positions"/>
         </vertices>
         <triangles count="4">
           <input semantic="VERTEX" source="#Plane_003-mesh-vertices" offset="0"/>
           <input semantic="NORMAL" source="#Plane_003-mesh-normals" offset="1"/>
-          <p>5 0 0 0 2 0 0 0 1 0 2 0 2 0 3 0 4 0 4 0 5 0 2 0</p>
+          <input semantic="COLOR" source="#Plane_003-mesh-colors-Col" offset="2" set="0"/>
+          <p>5 0 0 0 0 1 2 0 2 0 0 3 1 0 4 2 0 5 2 0 6 3 0 7 4 0 8 4 0 9 5 0 10 2 0 11</p>
         </triangles>
-      </mesh>
-    </geometry>
-    <geometry id="Plane_005-mesh" name="Plane.005">
-      <mesh>
-        <source id="Plane_005-mesh-positions">
-          <float_array id="Plane_005-mesh-positions-array" count="18">0 0.3000001 0 -0.2598077 0.15 0 -0.2598077 -0.15 0 0 -0.3000001 0 0.2598077 -0.15 0 0.2598077 0.15 0</float_array>
-          <technique_common>
-            <accessor source="#Plane_005-mesh-positions-array" count="6" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <source id="Plane_005-mesh-normals">
-          <float_array id="Plane_005-mesh-normals-array" count="0"/>
-          <technique_common>
-            <accessor source="#Plane_005-mesh-normals-array" count="0" stride="3">
-              <param name="X" type="float"/>
-              <param name="Y" type="float"/>
-              <param name="Z" type="float"/>
-            </accessor>
-          </technique_common>
-        </source>
-        <vertices id="Plane_005-mesh-vertices">
-          <input semantic="POSITION" source="#Plane_005-mesh-positions"/>
-        </vertices>
-        <lines count="6">
-          <input semantic="VERTEX" source="#Plane_005-mesh-vertices" offset="0"/>
-          <p>0 1 1 2 2 3 3 4 4 5 5 0</p>
-        </lines>
       </mesh>
     </geometry>
     <geometry id="Plane_004-mesh" name="Plane.004">
@@ -107,20 +87,51 @@
         </triangles>
       </mesh>
     </geometry>
+    <geometry id="Plane_005-mesh" name="Plane.005">
+      <mesh>
+        <source id="Plane_005-mesh-positions">
+          <float_array id="Plane_005-mesh-positions-array" count="18">0 0.3000001 0 -0.2598077 0.15 0 -0.2598077 -0.15 0 0 -0.3000001 0 0.2598077 -0.15 0 0.2598077 0.15 0</float_array>
+          <technique_common>
+            <accessor source="#Plane_005-mesh-positions-array" count="6" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Plane_005-mesh-normals">
+          <float_array id="Plane_005-mesh-normals-array" count="0"/>
+          <technique_common>
+            <accessor source="#Plane_005-mesh-normals-array" count="0" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Plane_005-mesh-vertices">
+          <input semantic="POSITION" source="#Plane_005-mesh-positions"/>
+        </vertices>
+        <lines count="6">
+          <input semantic="VERTEX" source="#Plane_005-mesh-vertices" offset="0"/>
+          <p>0 1 1 2 2 3 3 4 4 5 5 0</p>
+        </lines>
+      </mesh>
+    </geometry>
   </library_geometries>
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
-      <node id="armourIcon_hex_solid_001" name="armourIcon_hex_solid_001" type="NODE">
+      <node id="armourIcon_001_hex_solid" name="armourIcon_001_hex_solid" type="NODE">
         <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
-        <instance_geometry url="#Plane_003-mesh" name="armourIcon_hex_solid_001"/>
+        <instance_geometry url="#Plane_003-mesh" name="armourIcon_001_hex_solid"/>
       </node>
-      <node id="armourIcon_hex_line_003" name="armourIcon_hex_line_003" type="NODE">
-        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
-        <instance_geometry url="#Plane_005-mesh" name="armourIcon_hex_line_003"/>
-      </node>
-      <node id="armourIcon_symbol_solid_002" name="armourIcon_symbol_solid_002" type="NODE">
+      <node id="armourIcon_002_symbol_solid" name="armourIcon_002_symbol_solid" type="NODE">
         <matrix sid="transform">1 0 0 -9.31049e-5 0 1 0 -1.39668e-5 0 0 1 -5.96046e-5 0 0 0 1</matrix>
-        <instance_geometry url="#Plane_004-mesh" name="armourIcon_symbol_solid_002"/>
+        <instance_geometry url="#Plane_004-mesh" name="armourIcon_002_symbol_solid"/>
+      </node>
+      <node id="armourIcon_003_hex_line" name="armourIcon_003_hex_line" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#Plane_005-mesh" name="armourIcon_003_hex_line"/>
       </node>
     </visual_scene>
   </library_visual_scenes>

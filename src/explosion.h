@@ -10,8 +10,10 @@ public:
 	void draw();
 	void setCollidee(CEntity* collidee);
 
+	void initDrawFn();
+
 	float lifeTime = 0;
-	float timeOut = 2.0f;
+	float timeOut = 3.0f;
 	float size;
 	int particleCount;
 	CEntity* collidee = nullptr; ///<Entity hit, if any.

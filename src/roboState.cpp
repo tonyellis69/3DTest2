@@ -70,6 +70,10 @@ std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
 	return nullptr;
 }
 
+glm::vec3* CRoboWander::getDestination() {
+	return &destination;
+}
+
 
 
 
@@ -177,6 +181,10 @@ std::shared_ptr<CRoboState> CCharge::update(float dT) {
 	return nullptr;
 }
 
+glm::vec3* CCharge::getDestination() {
+	return &destination;
+}
+
 
 CMelee::CMelee(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
 	this->targetEntity = targetEntity; 
@@ -218,12 +226,12 @@ std::shared_ptr<CRoboState> CMelee::update(float dT) {
 
 CCloseAndShoot::CCloseAndShoot(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
 	this->targetEntity = targetEntity;
-	//bot->lineModel.setColourR(glm::vec4(1, 0, 0, 1));
 	bot->startTracking(targetEntity);
 }
 
 std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 	missileCooldown += dT;
+	
 
 	//can we see the target?
 	if (bot->clearLineTo(targetEntity)) {
@@ -251,7 +259,8 @@ std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 		float targetDist = glm::distance(bot->worldPos, targetEntity->worldPos);
 
 		if (targetDist > idealShootRange && !stoppedToShoot) {
-			bot->setImpulse(targetEntity->worldPos, 1500);
+			bot->setImpulse(targetEntity->worldPos, 3000);
+			destination = targetEntity->worldPos;
 		}
 		else {
 			stoppedToShoot = true;
@@ -259,7 +268,8 @@ std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 		}
 
 		if (stoppedToShoot && targetDist > escapeRange) {
-			bot->setImpulse(targetEntity->worldPos, 1500);
+			bot->setImpulse(targetEntity->worldPos, 3000);
+			destination = targetEntity->worldPos;
 		}
 	}
 	else { //lost sight of target
@@ -269,6 +279,10 @@ std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 
 
 	return nullptr;
+}
+
+glm::vec3* CCloseAndShoot::getDestination() {
+	return &destination;
 }
 
 
@@ -292,6 +306,10 @@ std::shared_ptr<CRoboState> CGoTo::update(float dT) {
 	}
 
 	return nullptr;
+}
+
+glm::vec3* CGoTo::getDestination() {
+	return &destination;
 }
 
 CDoNothing::CDoNothing(CRobot* bot) : CRoboState(bot)

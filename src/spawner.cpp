@@ -8,6 +8,7 @@
 #include "gameGui.h"
 
 std::unordered_map<std::string, CModel> CSpawn::models;
+std::unordered_map<std::string, std::vector<glm::vec4> >* CSpawn::pPalettes;
 
 CMap* CSpawn::pMap;
 
@@ -15,7 +16,7 @@ CMap* CSpawn::pMap;
 TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 	auto player = std::make_shared<CPlayerObject>();
 	player->setModel(models[name]);
-	player->model.setBasePalette(std::vector<glm::vec4>({ {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {0,0,1,1} }) );
+	player->setPalette(&pPalettes->at("basic"));
 	player->initDrawFn();
 	player->setPosition(pos);
 
@@ -37,7 +38,7 @@ TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	auto robot = std::make_shared<CRobot>();
 	robot->setModel(models["robot"]);
-	robot->model.setBasePalette(std::vector<glm::vec4>({ {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {0,0,1,1} }));
+	robot->setPalette(&pPalettes->at("basic"));
 	robot->initDrawFn();
 	robot->setPosition(pos);
 
@@ -49,7 +50,7 @@ TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 		robot->setState(robotWander3);
 		robot->entityType = entShootBot;
 	}
-	//robot->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
+	//robot->linesetColourR(glm::vec4(0.3, 1, 0.3, 1));
 	robot->name = "robot";
 
 	pMap->addEntity(robot);
@@ -59,12 +60,12 @@ TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 TEntity CSpawn::missile(const std::string& name, glm::vec3& pos, float angle) {
 	auto missile = std::make_shared<CMissile>();
 	missile->setModel(models["bolt"]);
-	missile->model.setBasePalette(std::vector<glm::vec4>({ {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {0,0,1,1} }));
+	missile->setPalette(&pPalettes->at("basic"));
 	missile->initDrawFn();
 
 	missile->setPosition(pos, angle);
 
-	//missile->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
+	//missile->linesetColourR(glm::vec4(0.3, 1, 0.3, 1));
 
 	pMap->addEntity(missile);
 	return missile;
@@ -73,7 +74,8 @@ TEntity CSpawn::missile(const std::string& name, glm::vec3& pos, float angle) {
 TEntity CSpawn::explosion(const std::string& name, glm::vec3& pos, float scale) {
 	auto explode = std::make_shared<CExplosion>(scale);
 	explode->worldPos = pos;
-
+	explode->setPalette(&pPalettes->at("explosion"));
+	explode->initDrawFn();
 	pMap->addEntity(explode);
 	return explode;
 }
@@ -83,7 +85,7 @@ CEntity* CSpawn::gun(const std::string& name, glm::vec3& pos ) {
 	auto gun = std::make_shared<CGun>();
 
 	gun->setModel(models["gun"]);
-	gun->model.setBasePalette(std::vector<glm::vec4>({ {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {0,0,1,1} }));
+	gun->setPalette(&pPalettes->at("gun"));
 	gun->initDrawFn();
 
 	gun->model.meshes[0].colour = glm::vec4(0, 1, 1.0, 0.45f);
@@ -101,7 +103,7 @@ CEntity* CSpawn::armour(const std::string& name, glm::vec3& pos) {
 	auto armour = std::make_shared<CArmour>();
 
 	armour->setModel(models["armour"]);
-	armour->model.setBasePalette(std::vector<glm::vec4>({ {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {0,0,1,1} }));
+	armour->setPalette(&pPalettes->at("armour"));
 	armour->initDrawFn();
 
 	armour->model.meshes[0].colour = glm::vec4(1, 0, 1.0, 0.45f);

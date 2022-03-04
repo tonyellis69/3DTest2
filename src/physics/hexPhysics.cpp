@@ -109,9 +109,10 @@ void CHexPhysics::integrateForces() {
 		ent->moveImpulse = { 0, 0, 0};
 
 		//drag
-		//ent->velocity = glm::mix(ent->velocity, glm::vec3(0), 1.0f - std::pow(ent->drag, dT)); //larger dt, closer v gets to 0
 		ent->velocity *= std::pow(ent->drag, dT);
-		//larger number, slower falloff
+		//bigger time-gap = smaller fraction by which we scale velocity
+		//so over time velocity will never rise above a certain value for a given acceleration
+		//larger drag, slower falloff = larger fraction by which we scale velocity
 
 
 	}

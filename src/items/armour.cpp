@@ -12,6 +12,7 @@ int CArmour::reduceDamage(int damage) {
 }
 
 void CArmour::drop() {
+	CItem::drop();
 	CPlayerObject* player = (CPlayerObject*)parent;
 	if (player->armour == this)
 		player->armour = nullptr;

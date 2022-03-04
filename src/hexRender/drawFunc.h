@@ -2,15 +2,16 @@
 
 #include "hexRender.h"
 
+class CEntity;
 /** The basic draw-me component for entities. */
 class CDrawFunc {
 public:
 	CDrawFunc() {};
-	CDrawFunc(CModel* model);
+	CDrawFunc(CEntity* owner);
 	virtual void draw(CHexRender& hexRender) {}
 
 
 protected:
 	CModel* model;
-
+	CEntity* pOwner;
 };

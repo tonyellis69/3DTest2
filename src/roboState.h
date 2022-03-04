@@ -14,6 +14,11 @@ public:
 		this->bot = bot;
 	}
 	virtual std::shared_ptr<CRoboState> update(float dT) = 0;
+	virtual glm::vec3* getDestination() {
+		return nullptr;
+	}
+
+
 	CRobot* bot;
 	float dT;
 
@@ -23,8 +28,9 @@ class CRoboWander : public CRoboState {
 public:
 	CRoboWander(CRobot* bot);
 	std::shared_ptr<CRoboState> update(float dT);
+	glm::vec3* getDestination();
 
-	bool turnTo(glm::vec3& p);
+//	bool turnTo(glm::vec3& p);
 
 	glm::vec3 destination = { 0,0,0 };
 	float speed = 0.0f;
@@ -59,6 +65,7 @@ class CCharge : public CRoboState {
 public:
 	CCharge(CRobot* bot, CEntity* targetEntity);
 	std::shared_ptr<CRoboState> update(float dT);
+	glm::vec3* getDestination();
 
 	CEntity* targetEntity;
 	glm::vec3 destination;
@@ -88,6 +95,7 @@ class CCloseAndShoot : public CRoboState {
 public:
 	CCloseAndShoot(CRobot* bot, CEntity* targetEntity);
 	std::shared_ptr<CRoboState> update(float dT);
+	glm::vec3* getDestination();
 
 	CEntity* targetEntity;
 	glm::vec3 destination;
@@ -103,6 +111,7 @@ class CGoTo : public CRoboState {
 public:
 	CGoTo(CRobot* bot, glm::vec3& dest);
 	std::shared_ptr<CRoboState> update(float dT);
+	glm::vec3* getDestination();
 
 	glm::vec3 destination;
 	float speed = 1000.0f;

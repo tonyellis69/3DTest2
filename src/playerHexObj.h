@@ -81,7 +81,7 @@ private:
 
 	float dT;
 
-	float playerMoveSpeed = 5.0f;
+	//float playerMoveSpeed = 5.0f;
 
 	//float targetAngle;
 

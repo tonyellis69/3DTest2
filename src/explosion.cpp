@@ -6,11 +6,12 @@
 #include "utils/log.h"
 #include "utils/random.h"
 
+#include "hexRender/splodeDraw.h"
 
 CExplosion::CExplosion(float size) {
 	this->size = size;
-	float unitSize = (size - 1) / (maxSize - 1); //put in range 0-1
-	timeOut = glm::mix(0.5f, timeOut, unitSize);
+	float unitSize = (size - 1.0f) / (maxSize - 1); //put in range 0-1
+	timeOut = glm::mix(0.75f, timeOut, unitSize);
 	float weighted = pow(unitSize, 0.35f);
 	particleCount = glm::mix(20, hexRendr2.numExplosionParticles, weighted);
 	seed = rnd::rand(1.0f);
@@ -39,3 +40,8 @@ void CExplosion::setCollidee(CEntity* collidee) {
 	this->collidee = collidee;
 	relativePos = worldPos - collidee->worldPos;
 }
+
+void CExplosion::initDrawFn() {
+	drawFn = std::make_shared<CSplodeDraw>(this);
+}
+

@@ -8,11 +8,14 @@ uniform float lifeTime;
 uniform float size;
 uniform float seed;
 
+uniform vec4 colourPalette[4] ;
+
 out quad {
 	vec4 a;
 	vec4 b;
 	vec4 c;
 	vec4 d; 
+	vec4 colour;
 } gQuad;
 
 float w = 0.04;
@@ -110,6 +113,8 @@ void main() {
 	gQuad.b = mvpMatrix * gQuad.b;
 	gQuad.c = mvpMatrix * gQuad.c;
 	gQuad.d = mvpMatrix * gQuad.d;
+	
+	gQuad.colour = colourPalette[0];
 
 };
 

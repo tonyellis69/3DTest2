@@ -16,6 +16,7 @@ void CGun::fire(float firingAngle) {
 }
 
 void CGun::drop() {
+	CItem::drop();
 	CPlayerObject* player = (CPlayerObject*) parent;
 	if (player->gun == this)
 		player->gun = nullptr;

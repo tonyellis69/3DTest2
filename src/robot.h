@@ -40,6 +40,7 @@ public:
 	void fireMissile(CEntity* target);
 	bool turnTo(glm::vec3& p);
 	void stopMoving();
+	glm::vec3* getDestination();
 
 	float upperBodyRotation = 0;
 	bool upperBodyLocked = true; ///<If true, rotate upper body with base.

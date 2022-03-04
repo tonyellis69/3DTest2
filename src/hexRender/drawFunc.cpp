@@ -1,7 +1,8 @@
 #include "drawFunc.h"
 
+#include "../entity.h"
 
-
-CDrawFunc::CDrawFunc(CModel* model) {
-	this->model = model;
+CDrawFunc::CDrawFunc(CEntity* owner) {
+	pOwner = owner;
+	model = &owner->model;
 }

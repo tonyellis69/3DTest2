@@ -13,11 +13,14 @@ public:
 
 	void draw();
 
-	virtual void drop() {};
+	virtual void drop();
 	virtual void take(CEntity* taker);
+
 	void examine();
 	virtual std::string getMenuTextInv();
 	virtual std::string getMenuTextNear();
+
+	void initDrawFn();
 
 	CEntity* parent = nullptr; ///<Enity wielding, carrying, etc, this item
 	bool itemMenuOpen = false;
