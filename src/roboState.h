@@ -114,7 +114,7 @@ public:
 	glm::vec3* getDestination();
 
 	glm::vec3 destination;
-	float speed = 1000.0f;
+	float speed = 2000.0f;
 };
 
 class CDoNothing : public CRoboState {

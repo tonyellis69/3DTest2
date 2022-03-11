@@ -73,6 +73,11 @@ void CEntity::rotate(float angle) {
 }
 
 
+glm::vec3 CEntity::getRotationVec() {
+	return 	 { cos(rotation), -sin(rotation),0 };
+}
+
+
 void CEntity::draw(){
 	if (hexPosition == CHex(-1))
 		return;

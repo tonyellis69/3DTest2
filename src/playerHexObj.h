@@ -65,7 +65,7 @@ public:
 	bool visible = false;
 	bool dead = false;
 
-	int hp = 10;
+	int hp = 30;
 
 	CGun* gun; ///<Currently equipped gun.
 	CArmour* armour; ///<Currently worn armour;

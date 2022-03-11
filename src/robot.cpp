@@ -180,6 +180,16 @@ void CRobot::setImpulse(glm::vec3& dest, float maxSpeed) {
 	moving = true;
 }
 
+glm::vec3 CRobot::slowTo(glm::vec3& dest) {
+	float proportionalSlowingDist = slowingDist * (chosenSpeed / 1000);
+	glm::vec3 targetOffset = dest - worldPos;
+	float distance = glm::length(targetOffset);
+	float rampedSpeed = chosenSpeed * (distance / proportionalSlowingDist);
+	float clippedSpeed = std::min(rampedSpeed, chosenSpeed);
+	moving = true;
+	return (clippedSpeed / distance) * targetOffset;
+}
+
 
 /** Return true if we can draw a line to the target without hitting anything. */
 bool CRobot::clearLineTo(CEntity* target) {
@@ -263,6 +273,157 @@ void CRobot::stopMoving() {
 
 glm::vec3* CRobot::getDestination() {
 	return currentState->getDestination();
+}
+
+/** Return the necessary vector to avoid obstacles ahead. */
+glm::vec3 CRobot::findAvoidance() {
+	float halfWidth = 0.55f;
+
+	glm::vec3 travelDir = getRotationVec();
+	lAvoidVec[0] = worldPos + glm::vec3(-travelDir.y, travelDir.x, travelDir.z) * halfWidth;
+	rAvoidVec[0] = worldPos + glm::vec3(travelDir.y, -travelDir.x, travelDir.z) * halfWidth;
+
+	lAvoidVec[1] = lAvoidVec[0] + travelDir * avoidanceDist;
+	rAvoidVec[1] = rAvoidVec[0] + travelDir * avoidanceDist;
+
+	//check for collision
+	lObstacle = false; rObstacle = false;
+	TIntersections solidHexes;
+	auto hexes = getIntersectedHexes(lAvoidVec[0], lAvoidVec[1]);
+	for (auto& hex : hexes) {
+		if (game.map->getHexArray()->getHexCube(hex.first).content == solidHex) {
+			solidHexes.push_back(hex);
+		}
+	}
+
+	hexes = getIntersectedHexes(rAvoidVec[0], rAvoidVec[1]) ;
+	for (auto& hex : hexes) {
+		if (game.map->getHexArray()->getHexCube(hex.first).content == solidHex) {
+			solidHexes.push_back(hex);
+		}
+	}
+
+	if (solidHexes.empty())
+		return glm::vec3(0);
+
+
+	std::sort(solidHexes.begin(), solidHexes.end(), [&](const auto& a, const auto& b) {
+		return glm::distance(worldPos, a.second) < glm::distance(worldPos, b.second); });
+
+
+
+
+	//find which side of us collision point is on
+	glm::vec3 pt = solidHexes.begin()->second;
+	auto c = glm::cross(travelDir, pt - worldPos);
+	glm::vec3 avoidanceVec;
+	if (c.z > 0) {
+		lObstacle = true;
+		avoidanceVec = { travelDir.y, -travelDir.x, 0 };
+	}
+	else {
+		rObstacle = true;
+
+		avoidanceVec = { -travelDir.y, travelDir.x, 0 };
+	}
+
+	//find closest point along travel line:
+	//project pt - worldPos along travel vec
+	//find distance between = degree of avoidance needed?
+
+
+
+	return avoidanceVec;
+}
+
+
+glm::vec3 CRobot::findAvoidance2() {
+	float halfWidth = 0.55f;
+
+	glm::vec3 travelDir = getRotationVec();
+	lAvoidVec[0] = worldPos + glm::vec3(-travelDir.y, travelDir.x, travelDir.z) * halfWidth;
+	rAvoidVec[0] = worldPos + glm::vec3(travelDir.y, -travelDir.x, travelDir.z) * halfWidth;
+
+	lAvoidVec[1] = lAvoidVec[0] + travelDir * avoidanceDist;
+	rAvoidVec[1] = rAvoidVec[0] + travelDir * avoidanceDist;
+
+	//check for collision
+	lObstacle = false; rObstacle = false;
+	glm::vec3 aheadVec = travelDir * avoidanceDist;
+	THexList solidHexes;
+
+	CHex aheadHex = worldSpaceToHex(worldPos + aheadVec);
+	THexList aheadHexes = getNeighbours(aheadHex);
+	aheadHexes.push_back(aheadHex);
+
+	for (auto& hex : aheadHexes) {
+		if (game.map->getHexArray()->getHexCube(hex).content == solidHex) {
+			solidHexes.push_back(hex);
+		}
+	}
+
+	if (solidHexes.empty()) //do programatically!
+		return glm::vec3(0);
+
+
+	std::sort(solidHexes.begin(), solidHexes.end(), [&](const auto& a, const auto& b) {
+		return glm::distance(worldPos, cubeToWorldSpace(a)) < glm::distance(worldPos, cubeToWorldSpace(b)); });
+
+
+	//check for collision
+	glm::vec3 pt = glm::vec3(0);
+	float radius = 1.2f;
+	for (auto& hex : solidHexes) {
+		float dist = glm::distance(worldPos + aheadVec, cubeToWorldSpace(hex));
+		if (dist < radius) {
+			pt = cubeToWorldSpace(hex);
+			break;
+		}
+	}
+
+	if (pt == glm::vec3(0))
+		return glm::vec3(0);
+
+	//find which side of us collision point is on
+
+	auto c = glm::cross(aheadVec, pt - worldPos);
+	glm::vec3 avoidanceVec;
+	if (c.z > 0) {
+		lObstacle = true;
+		avoidanceVec = { travelDir.y, -travelDir.x, 0 };
+	}
+	else {
+		rObstacle = true;
+		avoidanceVec = { -travelDir.y, travelDir.x, 0 };
+	}
+
+	glm::vec3 avoidForce = (worldPos + aheadVec) - pt;
+	avoidForce = glm::normalize(avoidForce);
+
+	return avoidForce;
+}
+
+void CRobot::headTo(glm::vec3 & pos) {
+	//avoidanceDist = std::min(2.0f, glm::distance(pos, worldPos));
+
+	glm::vec3 impulse = slowTo(pos);
+
+	//check if we need to avoid anything
+	glm::vec3 avoidVec = findAvoidance2();
+
+	if (glm::length(avoidVec) > 0)
+		int b = 0;
+
+	impulse += avoidVec * 50.0f;
+
+
+	bool facingDest = turnTo(worldPos + impulse);
+	if (!facingDest)
+		return ;
+
+	physics.moveImpulse = impulse;
+
+
 }
 
 /** Rotate upper body to track a target, if any. */

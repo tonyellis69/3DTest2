@@ -128,6 +128,7 @@
     <ClCompile Include="src\GUIgamePanel.cpp" />
     <ClCompile Include="src\GUIrichTextPanel.cpp" />
     <ClCompile Include="src\hexRenderer.cpp" />
+    <ClCompile Include="src\hexRender\avoidGraphic.cpp" />
     <ClCompile Include="src\hexRender\destGraphic.cpp" />
     <ClCompile Include="src\hexRender\drawFunc.cpp" />
     <ClCompile Include="src\hexRender\entityDraw.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="src\GUIrichTextPanel.h" />
     <ClInclude Include="src\hexMsg.h" />
     <ClInclude Include="src\hexRenderer.h" />
+    <ClInclude Include="src\hexRender\avoidGraphic.h" />
     <ClInclude Include="src\hexRender\destGraphic.h" />
     <ClInclude Include="src\hexRender\drawData.h" />
     <ClInclude Include="src\hexRender\drawFunc.h" />

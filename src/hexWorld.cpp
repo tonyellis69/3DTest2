@@ -30,6 +30,7 @@
 #include "hexRender/drawFunc.h"
 
 #include "hexRender/destGraphic.h"
+#include "hexRender/avoidGraphic.h"
 
 int listenId = -1;
 
@@ -623,15 +624,17 @@ void CHexWorld::toggleDirectionGraphics() {
 	directionGraphicsOn = !directionGraphicsOn;
 
 	if (directionGraphicsOn) {
-		//for each robot
-		//create a graphic,
-		//connect them
 		for (auto& entity : map->entities) {
 			if (entity->isRobot) {
-				auto graphic = std::make_shared<CDestinationGraphic>();
+				auto graphic = std::make_shared<CAvoidGraphic>();
 				graphic->entity = entity;
-				graphic->pPalette = hexRender.getPalette("basic");
+				graphic->pPalette = hexRender.getPalette("mix");
 				hexRender.graphics.push_back(graphic);
+
+				auto graphic2 = std::make_shared<CDestinationGraphic>();
+				graphic2->entity = entity;
+				graphic2->pPalette = hexRender.getPalette("mix");
+				hexRender.graphics.push_back(graphic2);
 			}
 		}
 	}
@@ -650,7 +653,7 @@ void CHexWorld::initPalettes() {
 	hexRender.storePalette("gun", { {0, 1, 1.0, 0.45f}, {0,0,0,1}, {1,1,1,1} });
 	hexRender.storePalette("armour", { {1, 0, 1.0, 0.45f}, {0,0,0,1}, {1,1,1,1} });
 	hexRender.storePalette("explosion", { {1, 1, 0.0,1}, {0,0,1,1}, {1,1,1,1} });
-
+	hexRender.storePalette("mix", { {1,1,1,1}, {1,1,0,1}, {1,0,1,1}, {0,0,1,1} });
 
 
 	spawn::pPalettes = &hexRender.palettes;

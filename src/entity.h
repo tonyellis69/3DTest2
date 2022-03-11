@@ -40,6 +40,7 @@ public:
 	void setHexDirection(THexDir direction);
 	virtual void setRotation(float angle);
 	virtual void rotate(float angle);
+	glm::vec3 getRotationVec();
 	virtual void draw();
 	THexDir getDirection() {
 		return facing;

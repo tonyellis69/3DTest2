@@ -19,6 +19,7 @@ const float rad120 = rad360 / 3;
 
 CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 	speed = 1000.0f;
+	bot->chosenSpeed = bot->defaultSpeed;
 	//bot->lineModel.setColourR(glm::vec4(0, 1, 0, 1));
 	
 	THexList ring;
@@ -54,9 +55,9 @@ std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
 
 	this->dT = dT;
 
-	bool facingDest = bot->turnTo(destination);
-	if (!facingDest)
-		return nullptr;
+	//bool facingDest = bot->turnTo(destination);
+	//if (!facingDest)
+	//	return nullptr;
 
 	//proceed to actual movement
 	float dist = glm::distance(bot->worldPos, destination);
@@ -66,7 +67,8 @@ std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
 		return std::make_shared<CGlanceAround>(bot); 
 	}
 
-	bot->setImpulse(destination, speed);
+	bot->headTo(destination);
+	
 	return nullptr;
 }
 
@@ -148,8 +150,6 @@ std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
 
 CCharge::CCharge(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
 	this->targetEntity = targetEntity;
-
-	//bot->lineModel.setColourR(glm::vec4(1, 0, 0, 1));
 }
 
 std::shared_ptr<CRoboState> CCharge::update(float dT) {
@@ -173,6 +173,7 @@ std::shared_ptr<CRoboState> CCharge::update(float dT) {
 	}
 
 	//otherwise charge at target
+	bot->findAvoidance();
 	bot->setImpulse(destination, chargeSpeed);
 
 	//ensure facing destination
@@ -227,6 +228,7 @@ std::shared_ptr<CRoboState> CMelee::update(float dT) {
 CCloseAndShoot::CCloseAndShoot(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
 	this->targetEntity = targetEntity;
 	bot->startTracking(targetEntity);
+	bot->chosenSpeed = 2000; //temp for test purposes, should be max speed
 }
 
 std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
@@ -239,16 +241,9 @@ std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 		
 		
 		//ensure facing destination
-		//float destAngle = glm::orientedAngle(glm::normalize(targetEntity->worldPos - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
-		//bot->setRotation(destAngle);
-
-
 		bool facingDest = bot->turnTo(targetEntity->worldPos);
 		if (!facingDest)
 			return nullptr;
-
-
-
 
 		if (missileCooldown > 1.0f) {
 			bot->fireMissile(targetEntity);
@@ -259,7 +254,13 @@ std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 		float targetDist = glm::distance(bot->worldPos, targetEntity->worldPos);
 
 		if (targetDist > idealShootRange && !stoppedToShoot) {
+	/*		bot->avoidanceDist = std::min(2.0f, targetDist);
+			glm::vec3 avoidVec = bot->findAvoidance();
+
 			bot->setImpulse(targetEntity->worldPos, 3000);
+			bot->physics.moveImpulse += (avoidVec * 500.0f);*/
+			bot->headTo(targetEntity->worldPos);
+
 			destination = targetEntity->worldPos;
 		}
 		else {
@@ -268,7 +269,13 @@ std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 		}
 
 		if (stoppedToShoot && targetDist > escapeRange) {
-			bot->setImpulse(targetEntity->worldPos, 3000);
+			//bot->avoidanceDist = std::min(2.0f, targetDist);
+			//glm::vec3 avoidVec = bot->findAvoidance();
+
+			//bot->setImpulse(targetEntity->worldPos, 3000);
+			//bot->physics.moveImpulse += (avoidVec * 500.0f);
+
+			bot->headTo(targetEntity->worldPos);
 			destination = targetEntity->worldPos;
 		}
 	}
@@ -292,13 +299,19 @@ CGoTo::CGoTo(CRobot* bot, glm::vec3& dest) : CRoboState(bot) {
 }
 
 std::shared_ptr<CRoboState> CGoTo::update(float dT) {
+	float dist = glm::distance(bot->worldPos, destination);
+
+	//bot->avoidanceDist = std::min(4.0f, dist);
+	glm::vec3 avoidVec = bot->findAvoidance();
+
 	bot->setImpulse(destination, speed);
+	bot->physics.moveImpulse += (avoidVec * 500.0f);
 
 	//ensure facing destination
 	float destAngle = glm::orientedAngle(glm::normalize(destination - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 	bot->setRotation(destAngle);
 
-	float dist = glm::distance(bot->worldPos, destination);
+
 	if (dist < 0.05f) {
 		bot->stopMoving();
 		bot->stopTracking();
