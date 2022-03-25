@@ -117,9 +117,21 @@ public:
 	float speed = 2000.0f;
 };
 
+
+
 class CDoNothing : public CRoboState {
 public:
-	CDoNothing(CRobot* bot);
+	CDoNothing(CRobot* bot) : CRoboState(bot) {}
+	std::shared_ptr<CRoboState> update(float dT) {
+		return nullptr;
+	};
+
+};
+
+class CGoToHunting : public CGoTo {
+public:
+	CGoToHunting(CRobot* bot, glm::vec3& dest, CEntity* quarry);
 	std::shared_ptr<CRoboState> update(float dT);
 
+	CEntity* targetEntity;
 };

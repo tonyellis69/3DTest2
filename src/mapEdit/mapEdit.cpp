@@ -187,7 +187,7 @@ void CMapEdit::save() {
 }
 
 void CMapEdit::load() {
-	std::string filename = file::getDataPath() + "mapTest.map";
+	std::string filename = file::getDataPath() + "oneMapTest.map";// "oneMapTest.map";
 	std::ifstream loadFile(filename);
 	assert(loadFile.is_open());
 	pMap->load(loadFile);

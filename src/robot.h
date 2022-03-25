@@ -34,7 +34,7 @@ public:
 
 	void receiveDamage(CEntity& attacker, int damage);
 	void setImpulse(glm::vec3& dest, float maxSpeed);
-	glm::vec3 slowTo(glm::vec3& pos);
+	glm::vec3 arriveAt(glm::vec3& pos);
 	bool clearLineTo(const glm::vec3& p);
 	bool canSeePlayer();
 	bool clearLineTo(CEntity* target);
@@ -42,19 +42,23 @@ public:
 	bool turnTo(glm::vec3& p);
 	void stopMoving();
 	glm::vec3* getDestination();
-	glm::vec3 findAvoidance();
 	glm::vec3 findAvoidance2();
 	void headTo(glm::vec3& pos);
 
 	float upperBodyRotation = 0;
 	bool upperBodyLocked = true; ///<If true, rotate upper body with base.
 
-	float avoidanceDist = 2.0f; ///<Arbitrary check-ahead distance.
+	float maxAvoidanceDist = 2.5f; ///<Arbitrary check-ahead distance.
+
 
 	glm::vec3 lAvoidVec[2];
 	glm::vec3 rAvoidVec[2];
 	bool lObstacle;
 	bool rObstacle;
+	glm::vec3 tmpCollisionPt;
+	glm::vec3 tmpCollisionSegPt;
+	glm::vec3 tmpAheadVecEnd;;
+	glm::vec3 tmpAheadVecBegin;;
 
 	float chosenSpeed;
 	const float defaultSpeed = 1000;

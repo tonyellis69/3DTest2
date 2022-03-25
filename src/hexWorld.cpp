@@ -62,6 +62,8 @@ void CHexWorld::onEvent(CEvent& e) {
 	if (e.type == eKeyDown) {
 		if (e.i1 == GLFW_KEY_F2)
 			toggleDirectionGraphics();
+		else if (e.i1 == 'F')
+			game.slowed = !game.slowed;
 
 	}
 }
@@ -315,14 +317,17 @@ void CHexWorld::draw() {
 	//}
 
 	hexRender.resetDrawLists();
-	for (auto& entity : map->entities) {
-		if (entity->live)
-			entity->drawFn.get()->draw(hexRender);
-	}
+	
+		for (auto& entity : map->entities) {
+			if (entity->live)
+				entity->drawFn.get()->draw(hexRender);
+		}
+	
 
-
-	for (auto& graphic : hexRender.graphics)
-		graphic->draw(hexRender);
+		if (directionGraphicsOn) {
+			for (auto& graphic : hexRender.graphics)
+				graphic->draw(hexRender);
+		}
 
 	hexRender.drawSolidList();
 	hexRender.drawLineList();
@@ -363,12 +368,15 @@ void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 
 
 /** Called every frame to get the hex world up to date.*/
-void CHexWorld::update(float dT) {
+void CHexWorld::update(float dt) {
 
 	if (game.paused)
 		return;
 
-	this->dT = dT;
+	this->dT = dt;
+
+	if (game.slowed)
+		dT *= 0.5f;
 
 
 	updateCameraPosition();
@@ -633,7 +641,7 @@ void CHexWorld::toggleDirectionGraphics() {
 
 				auto graphic2 = std::make_shared<CDestinationGraphic>();
 				graphic2->entity = entity;
-				graphic2->pPalette = hexRender.getPalette("mix");
+				graphic2->pPalette = hexRender.getPalette("blue");
 				hexRender.graphics.push_back(graphic2);
 			}
 		}
@@ -654,6 +662,7 @@ void CHexWorld::initPalettes() {
 	hexRender.storePalette("armour", { {1, 0, 1.0, 0.45f}, {0,0,0,1}, {1,1,1,1} });
 	hexRender.storePalette("explosion", { {1, 1, 0.0,1}, {0,0,1,1}, {1,1,1,1} });
 	hexRender.storePalette("mix", { {1,1,1,1}, {1,1,0,1}, {1,0,1,1}, {0,0,1,1} });
+	hexRender.storePalette("blue", { {0,0,1,1}, {0.2,0.2,1,1}, {0.3,0.3,1,1}, {0,0,1,1} });
 
 
 	spawn::pPalettes = &hexRender.palettes;
