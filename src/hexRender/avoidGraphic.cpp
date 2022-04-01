@@ -56,5 +56,6 @@ void CAvoidGraphic::update(float dT) {
 }
 
 void CAvoidGraphic::draw(CHexRender& hexRender) {
-	hexRender.lineDrawList.push_back({ &buf, &matrix, pPalette, &mesh });
+	if (buf.numVerts > 0)
+		hexRender.lineDrawList.push_back({ &buf, &matrix, pPalette, &mesh });
 }

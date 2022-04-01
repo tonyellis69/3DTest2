@@ -14,6 +14,8 @@ enum TLungeState { preLunge, lunging, returning };
 
 /** A class describing basic robot characteristics and
 	behaviour. */
+
+struct TObstacle { glm::vec3 pos; float radius; };
 class CRobot : public CEntity {
 public:
 	CRobot();
@@ -33,7 +35,6 @@ public:
 
 
 	void receiveDamage(CEntity& attacker, int damage);
-	void setImpulse(glm::vec3& dest, float maxSpeed);
 	glm::vec3 arriveAt(glm::vec3& pos);
 	bool clearLineTo(const glm::vec3& p);
 	bool canSeePlayer();
@@ -61,8 +62,8 @@ public:
 	glm::vec3 tmpAheadVecBegin;;
 
 	float chosenSpeed;
-	const float defaultSpeed = 1000;
-	const float maxSpeed = 3000;
+	const float defaultSpeed = 1000;// 1000;
+	const float maxSpeed = 1000; //3000
 
 private:
 	bool inFov(CEntity* target);
@@ -71,6 +72,12 @@ private:
 	void trackTarget();
 
 	void updateTreadCycle();
+
+
+	std::vector<TObstacle> findNearObstacles(glm::vec3& centre);
+
+	void amIStuck();
+	void abortDestination();
 
 	float dT;
 	int hp = 3; 
@@ -93,7 +100,8 @@ private:
 	bool moving = false; ///<True if we're motoring somewhere.
 	float treadTranslate = 0; ///<Movement for tread animation.
 
-
+	float stuckCheck = 0; ///<Seconds since last check
+	float destinationDist = FLT_MAX; ///<Distance to destination on last check.
 };
 
 

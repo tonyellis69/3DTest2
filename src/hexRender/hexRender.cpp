@@ -119,12 +119,14 @@ void CHexRender::drawLineList() {
 	lineShader->setUniform(hWinSize, pCamera->getView());
 	//lineShader->setUniform(hColour, glm::vec4(0, 0, 0, 0));
 
+	int c = 0;
 	for (auto& draw : lineDrawList) {
 		draw.buf->setVAO();
 		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
+		c++;
 	}
 }
 

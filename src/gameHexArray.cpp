@@ -26,6 +26,18 @@ CEntity* CMap::getEntityAt2(const CHex& hex) {
 	return nullptr;
 }
 
+//!!!!!!!!!!!!!!!!
+//Temporary fix - consider map etc for speed, quadtree
+CEntities CMap::getEntitiesAt(const CHex& hex) {
+	CEntities hexEntities;
+	for (auto& entity : entities) {
+		if (entity->hexPosition == hex)
+			hexEntities.push_back(entity.get());
+	}
+
+	return hexEntities;
+}
+
 
 THexList CMap::findVisibleHexes(CHex& apex, THexList& perimeterHexes, bool obsessive) {
 	std::unordered_set<CHex, hex_hash> uniqueHexes;

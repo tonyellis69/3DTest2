@@ -38,7 +38,6 @@ CRobot::CRobot() {
 }
 
 
-
 void CRobot::setModel(CModel& model) {
 	this->model = model;
 	upperBody = this->model.getMesh("robody");
@@ -61,6 +60,9 @@ void CRobot::update(float dT) {
 		trackTarget();
 
 	updateTreadCycle();
+
+	if (moving)
+		amIStuck();
 
 	buildWorldMatrix();
 }
@@ -172,16 +174,6 @@ void CRobot::receiveDamage(CEntity& attacker, int damage) {
 
 /** Give robot a push toward this destination, which will scale down
 	with proximity to avoid overshooting. */
-void CRobot::setImpulse(glm::vec3& dest, float maxSpeed) {
-	float proportionalSlowingDist = slowingDist * (maxSpeed / 1000);
-	glm::vec3 targetOffset = dest - worldPos;
-	float distance = glm::length(targetOffset);
-	float rampedSpeed = maxSpeed * (distance / proportionalSlowingDist);
-	float clippedSpeed = std::min(rampedSpeed, maxSpeed);
-	physics.moveImpulse = (clippedSpeed / distance) * targetOffset;
-	moving = true;
-}
-
 glm::vec3 CRobot::arriveAt(glm::vec3& dest) {
 	float proportionalSlowingDist = slowingDist * (chosenSpeed / 1000);
 	glm::vec3 targetOffset = dest - worldPos;
@@ -224,6 +216,50 @@ bool CRobot::inFov(CEntity* target) {
 			return true;
 	
 	return false;
+}
+
+std::vector<TObstacle> CRobot::findNearObstacles(glm::vec3& centre) {
+	CHex midwayHex = worldSpaceToHex(centre);
+	THexList aheadHexes = getNeighbours(midwayHex, 2);
+
+	std::vector<TObstacle> obstacles;
+
+	for (auto& hex : aheadHexes) {
+		if (game.map->getHexArray()->getHexCube(hex).content == solidHex) {
+			 obstacles.push_back({ cubeToWorldSpace(hex), hexSize });
+		}
+		else {
+			CEntities entities = game.map->getEntitiesAt(hex);
+			for (auto& entity : entities) {
+				if (entity->isRobot && entity != this)
+					obstacles.push_back({ entity->worldPos,1.0f /* entity->getRadius()*/ });
+			}
+		}
+	}
+
+	return obstacles;
+}
+
+
+/** Check if we're failing to get to our destination, and resolve. */
+void CRobot::amIStuck() {
+	stuckCheck += dT;
+	if (stuckCheck > 1.0f) {
+		stuckCheck = 0;
+		float newDist = glm::distance(worldPos, *getDestination());
+		if (newDist < destinationDist) {
+			destinationDist = newDist;
+		}
+		else {
+			destinationDist = FLT_MAX;
+			abortDestination();
+		}
+	}
+}
+
+/** What to do when we can't get to the destinatin.*/
+void CRobot::abortDestination() {
+	currentState = std::make_shared<CRoboWander>(this); //!!!!!!temp!
 }
 
 void CRobot::fireMissile(CEntity* target) {
@@ -277,19 +313,20 @@ glm::vec3* CRobot::getDestination() {
 
 /** Return the necessary vector to avoid obstacles ahead. */
 glm::vec3 CRobot::findAvoidance2() {
-	float halfWidth = 0.7f;
+	float robotRadius = 0.7f;
 
 	glm::vec3 travelDir = getRotationVec();
 
 	//check for collision
 	float destinationDist = glm::distance(worldPos, *getDestination());
 	float avoidanceDist = std::min(maxAvoidanceDist, destinationDist) ;
-	float aheadSegStartDist = halfWidth *0.75f;//  1.0f;
+	float aheadSegStartDist = 0.15f;// robotRadius * 0.75f;//  1.0f;
 
 
 	glm::vec3 aheadVec = travelDir * avoidanceDist;
 	glm::vec3 aheadSegEnd = worldPos + aheadVec;
 	glm::vec3 aheadSegBegin = worldPos +travelDir * aheadSegStartDist;
+	glm::vec3 aheadSegCentre = aheadSegBegin + (aheadSegEnd - aheadSegBegin) * 0.5f;
 	tmpAheadVecBegin = aheadSegBegin;
 
 
@@ -302,39 +339,37 @@ glm::vec3 CRobot::findAvoidance2() {
 		return glm::vec3(0);
 	}
 
-	THexList solidHexes;
 
-	CHex aheadHex = worldSpaceToHex(aheadSegEnd);
-	THexList aheadHexes = getNeighbours(aheadHex,2);
+	CHex midwayHex = worldSpaceToHex(aheadSegCentre);
+	THexList aheadHexes = getNeighbours(midwayHex,2);
 
-	for (auto& hex : aheadHexes) {
-		if (game.map->getHexArray()->getHexCube(hex).content == solidHex) {
-			solidHexes.push_back(hex);
-		}
-	}
+	//find nearest obstacle
+	std::vector<TObstacle> obstacles = findNearObstacles(aheadSegCentre);
 
 
-
-	if (solidHexes.empty()) //do programatically!
+	if (obstacles.empty()) 
 		return glm::vec3(0);
 
-	//nearest hexes first
-	std::sort(solidHexes.begin(), solidHexes.end(), [&](const auto& a, const auto& b) {
-		return glm::distance(worldPos, cubeToWorldSpace(a)) < glm::distance(worldPos, cubeToWorldSpace(b)); });
+	////nearest obstacles first
+	std::sort(obstacles.begin(), obstacles.end(), [&](const auto& a, const auto& b) {
+		return glm::distance(worldPos, a.pos) < glm::distance(worldPos, b.pos); });
 
 
-	//check for collision
+	////check for collision
 	glm::vec3 obstacleCentre = glm::vec3(0);
-	float radius = 1.0f + halfWidth;
+	float radius;
 	float distance = 0;
 	glm::vec3 collision;
-	for (auto& hex : solidHexes) {
+	for (auto& obstacle : obstacles) {
 		//find nearest point on ahead vector to hex origin
-		glm::vec3 hexPos = cubeToWorldSpace(hex);
-		collision = closestPointSegment(aheadSegBegin, aheadSegEnd, hexPos);
-		distance = glm::distance(collision, hexPos);
-		if (distance < radius ) {
-			obstacleCentre = hexPos;
+		glm::vec3 pos = obstacle.pos;
+		collision = closestPointSegment(aheadSegBegin, aheadSegEnd, pos);
+		if (collision == aheadSegBegin)
+			continue; //assume obstacle behind us
+		distance = glm::distance(collision, pos);
+		radius = obstacle.radius + robotRadius;
+		if (distance < radius ) { //!!!
+			obstacleCentre = pos;
 			tmpCollisionSegPt = collision;
 			break;
 		}
@@ -360,13 +395,20 @@ glm::vec3 CRobot::findAvoidance2() {
 void CRobot::headTo(glm::vec3 & pos) {
 	glm::vec3 impulse = arriveAt(pos);
 
-	//check if we need to avoid anything
-	glm::vec3 avoidVec = findAvoidance2();
+	glm::vec3 avoidVec = glm::vec3(0);
+
+	//if we're not facing destination, turn before
+	//checking for obstacles
+	bool facingDest = turnTo(pos);
+	if (!facingDest)
+		return;
+
+	avoidVec = findAvoidance2();
 
 	float impulseStrength = glm::length(impulse);
 	impulse += avoidVec * impulseStrength; 
 
-	bool facingDest = turnTo(worldPos + impulse);
+	turnTo(worldPos + impulse); //have to turn again in case we're avoiding (confirm)
 
 	physics.moveImpulse = impulse;
 }
@@ -412,7 +454,7 @@ void CRobot::updateTreadCycle() {
 
 	treadCycle += dT * velocityMod;
 	treadCycle = fmod(treadCycle, treadLoop); //loop after travelling treadLoop
-	float f = treadCycle / treadLoop; // 0 - 1
+	float f = 1.0f - treadCycle / treadLoop; // 0 - 1
 
 	float treadGap = 0.1f;
 	treadTranslate = f * treadGap;

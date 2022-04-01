@@ -182,4 +182,8 @@ void CEntity::setPalette(std::vector<glm::vec4>* pPalette) {
 	this->pPalette = pPalette;
 }
 
+float CEntity::getRadius() {
+	return model.getRadius();
+}
+
 

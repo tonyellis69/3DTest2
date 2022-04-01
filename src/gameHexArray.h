@@ -18,6 +18,7 @@ public:
 		hexArray.init(x, y);
 	}
 	CEntity* getEntityAt2(const CHex& hex);
+	CEntities getEntitiesAt(const CHex& hex);
 	THexList findVisibleHexes(CHex& apex, THexList& perimeterHexes, bool obsessive);
 	void updateVisibility(THexList& visibleHexes, THexList& unvisibleHexes);
 	void addEntity(TEntity entity, CHex& hex);

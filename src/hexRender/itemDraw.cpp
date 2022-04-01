@@ -16,7 +16,7 @@ void CItemDraw::draw(CHexRender& hexRender) {
 
 	auto& mesh = model->meshes[2];
 
-	hexRender.lineDrawList.push_back({ model->meshes[0].draw.buf.get(), &mesh.matrix,pOwner->pPalette,
-	&mesh.draw.meshRec });
-
+	if (model->meshes[0].draw.buf.get()->numVerts > 0)
+		hexRender.lineDrawList.push_back({ model->meshes[0].draw.buf.get(), &mesh.matrix,pOwner->pPalette,
+			&mesh.draw.meshRec });
 }

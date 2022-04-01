@@ -65,6 +65,8 @@ public:
 
 	virtual void initDrawFn();
 	virtual void setPalette(std::vector<glm::vec4>* pPalette);
+
+	float getRadius();
 	
 	float dT;
 
@@ -109,4 +111,4 @@ private:
 using TEntity = std::shared_ptr<CEntity>;
 using TEntities = std::vector<std::shared_ptr<CEntity>>;
 
-
+using CEntities = std::vector<CEntity*>;

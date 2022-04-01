@@ -34,6 +34,8 @@ void CDestinationGraphic::update(float dT) {
 void CDestinationGraphic::draw(CHexRender& hexRender) {
 	if (dest == nullptr)
 		return;
-	hexRender.lineDrawList.push_back({ &buf, &matrix, pPalette, &mesh });
+	if (buf.numVerts > 0)
+		hexRender.lineDrawList.push_back({ &buf, &matrix, pPalette, &mesh });
+
 }
 
