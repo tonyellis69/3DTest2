@@ -307,7 +307,7 @@ void CHexWorld::calcMouseWorldPos() {
 
 
 void CHexWorld::draw() {
-//	hexRendr2.drawFloorPlan();
+	hexRender.startScreenBuffer();
 
 	hexRender.drawMap();
 
@@ -357,13 +357,14 @@ void CHexWorld::draw() {
 
 	imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp));
 
-
+	hexRender.drawScreenBuffer();
 
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
 void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 	hexRendr2.setCameraAspectRatio(ratio);
+	hexRender.setScreenSize(ratio);
 }
 
 

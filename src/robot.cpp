@@ -282,9 +282,9 @@ void CRobot::onMovedHex()
 bool CRobot::turnTo(glm::vec3& p) {
 	float turnDist = orientationTo(p);
 
-	if (abs(turnDist) < 0.01f) { //temp!!!!
-		return true;
-	}
+	//if (abs(turnDist) < 0.01f) { //temp!!!!
+	//	return true;
+	//}
 
 	float turnDir = (std::signbit(turnDist)) ? -1.0f : 1.0f;
 

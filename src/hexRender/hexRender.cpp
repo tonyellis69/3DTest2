@@ -10,6 +10,10 @@
 
 #include "graphics/shader2.h"
 
+#include "utils/log.h"
+
+#include "vertBufs.h" 
+
 /** Load shaders, etc. */
 void CHexRender::init() {
 	lineShader = shader::create("lineModel");
@@ -36,7 +40,21 @@ void CHexRender::init() {
 	std::vector<unsigned int> dummyIndex(numExplosionParticles);
 	std::iota(std::begin(dummyIndex), std::end(dummyIndex), 0); // Fill with 0, 1, ..., 99.
 	explosionBuf.storeVerts(dummyVerts, dummyIndex, 1);
-}
+
+	screenBufShader = shader::create("screen");
+	hScreenBuf = screenBufShader->getUniform("screenBuf");
+	hScreenMask = screenBufShader->getUniform("screenMask");
+
+	std::vector<vBuf::T2DtexVert> quadVerts{	{ {-1.0f, 1.0f}, { 0.0f,1.0f} },
+												{ {-1.0f, -1.0f}, {0,0.0f} },
+												{ {1.0f, 1.0f}, {1.0f, 1.0f} },
+												{ {1.0f, -1.0f}, {1.0f, 0.0f } } };
+	std::vector<unsigned short> idx{ 0,1,2,3 };
+	screenQuad.storeVerts(quadVerts, idx, 2, 2);
+
+	glGenFramebuffers(1, &hScreenFrameBuffer);
+};
+
 
 void CHexRender::loadMap(CHexArray* hexArray) {
 	pHexArray = hexArray;
@@ -119,14 +137,12 @@ void CHexRender::drawLineList() {
 	lineShader->setUniform(hWinSize, pCamera->getView());
 	//lineShader->setUniform(hColour, glm::vec4(0, 0, 0, 0));
 
-	int c = 0;
 	for (auto& draw : lineDrawList) {
 		draw.buf->setVAO();
 		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
-		c++;
 	}
 }
 
@@ -160,6 +176,37 @@ void CHexRender::drawExplosionList() {
 
 }
 
+void CHexRender::startScreenBuffer() {
+	//glGenFramebuffers(1, &hScreenFrameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, hScreenFrameBuffer); //NB: bulk of overhead is here
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, screenBuffer.handle, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, screenMask.handle, 0);
+	GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, DrawBuffers);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		fatalLog << alertMsg << "\nError creating framebuffer.";
+		return;
+	}
+	glClear(GL_COLOR_BUFFER_BIT );
+}
+
+void CHexRender::drawScreenBuffer() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//	glDeleteFramebuffers(1, &hScreenFrameBuffer);
+
+	screenBufShader->activate();
+	screenBufShader->setTexture0(hScreenBuf, screenBuffer.handle);
+	screenBufShader->setTexture1(hScreenMask, screenMask.handle);
+	screenQuad.setVAO();
+	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, 0);
+	screenQuad.clearVAO();
+}
+
+
+void CHexRender::setScreenSize(glm::vec2& ratio) {
+	screenBuffer.resize(int(ratio.x), int(ratio.y) );
+	screenMask.resize(int(ratio.x), int(ratio.y));
+}
 
 
 void CHexRender::addToMapBuf(std::vector<vc>& v, std::vector<unsigned int>& i,CHex& hex, int tileNo) {
