@@ -32,6 +32,7 @@ public:
 	void drawSolidList();
 	void drawExplosionList();
 	void startScreenBuffer();
+	void blur();
 	void drawScreenBuffer();
 	void setScreenSize(glm::vec2& ratio);
 
@@ -58,9 +59,7 @@ public:
 	unsigned int hSeed;
 	unsigned int hExpPalette;
 
-	CShader* screenBufShader;
-	unsigned int hScreenBuf;
-	unsigned int hScreenMask;
+
 
 	std::unordered_map<std::string, std::vector<glm::vec4>> palettes;
 	
@@ -85,6 +84,19 @@ private:
 
 	const int numExplosionParticles = 200;
 	CBuf2 explosionBuf; //Holds dummy verts for draw calls
+
+
+	CShader* blurShader;
+	unsigned int hSrcTexture;
+	unsigned int hHorizontal;
+
+	CRenderTexture blurTexture[2];
+	unsigned int hBlurFrameBuffer[2];
+
+
+	CShader* screenBufShader;
+	unsigned int hScreenBuf;
+	unsigned int hScreenMask;
 
 	CRenderTexture screenBuffer;
 	CRenderTexture screenMask;

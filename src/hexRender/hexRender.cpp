@@ -41,6 +41,11 @@ void CHexRender::init() {
 	std::iota(std::begin(dummyIndex), std::end(dummyIndex), 0); // Fill with 0, 1, ..., 99.
 	explosionBuf.storeVerts(dummyVerts, dummyIndex, 1);
 
+	
+	blurShader = shader::create("blur");
+	hSrcTexture = blurShader->getUniform("srcTexture");
+	hHorizontal = blurShader->getUniform("horizontal");
+
 	screenBufShader = shader::create("screen");
 	hScreenBuf = screenBufShader->getUniform("screenBuf");
 	hScreenMask = screenBufShader->getUniform("screenMask");
@@ -53,6 +58,7 @@ void CHexRender::init() {
 	screenQuad.storeVerts(quadVerts, idx, 2, 2);
 
 	glGenFramebuffers(1, &hScreenFrameBuffer);
+	glGenFramebuffers(2, hBlurFrameBuffer);
 };
 
 
@@ -177,7 +183,6 @@ void CHexRender::drawExplosionList() {
 }
 
 void CHexRender::startScreenBuffer() {
-	//glGenFramebuffers(1, &hScreenFrameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, hScreenFrameBuffer); //NB: bulk of overhead is here
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, screenBuffer.handle, 0);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, screenMask.handle, 0);
@@ -187,16 +192,47 @@ void CHexRender::startScreenBuffer() {
 		fatalLog << alertMsg << "\nError creating framebuffer.";
 		return;
 	}
+	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT );
+
+}
+
+void CHexRender::blur() {
+	glClearColor(0.0, 0.0, 0.0, 1); 
+	for (int b = 0; b < 2; b++) {
+		glBindFramebuffer(GL_FRAMEBUFFER, hBlurFrameBuffer[b]);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, blurTexture[b].handle,0);
+		glClear(GL_COLOR_BUFFER_BIT); //clears away last frame's residue
+	}
+
+	blurShader->activate();
+	screenQuad.setVAO();
+	bool horizontal = true, first_iteration = true;
+	//screenBuffer.savePNG("d://screenBuf.png");
+	int blurs = 6;
+	glViewport(0, 0, blurTexture[0].width, blurTexture[0].height);
+	for (int b = 0; b < blurs; b++) {
+		glBindFramebuffer(GL_FRAMEBUFFER, hBlurFrameBuffer[horizontal]);
+		unsigned int hTexture = first_iteration ? screenMask.handle : blurTexture[!horizontal].handle;
+		blurShader->setTexture0(hSrcTexture, hTexture);
+		blurShader->setUniform(hHorizontal, horizontal);
+		glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, 0);
+		horizontal = !horizontal;
+		if (first_iteration) {
+			first_iteration = false;
+			
+		}
+	}
+	screenQuad.clearVAO();
+	glViewport(0, 0, screenBuffer.width, screenBuffer.height);
 }
 
 void CHexRender::drawScreenBuffer() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-//	glDeleteFramebuffers(1, &hScreenFrameBuffer);
 
 	screenBufShader->activate();
 	screenBufShader->setTexture0(hScreenBuf, screenBuffer.handle);
-	screenBufShader->setTexture1(hScreenMask, screenMask.handle);
+	screenBufShader->setTexture1(hScreenMask, blurTexture[1].handle); 
 	screenQuad.setVAO();
 	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, 0);
 	screenQuad.clearVAO();
@@ -206,6 +242,10 @@ void CHexRender::drawScreenBuffer() {
 void CHexRender::setScreenSize(glm::vec2& ratio) {
 	screenBuffer.resize(int(ratio.x), int(ratio.y) );
 	screenMask.resize(int(ratio.x), int(ratio.y));
+	//blurTexture[0].resize(int(ratio.x), int(ratio.y));
+	//blurTexture[1].resize(int(ratio.x), int(ratio.y));
+	blurTexture[0].resize(int(ratio.x)/2, int(ratio.y)/2);
+	blurTexture[1].resize(int(ratio.x)/2, int(ratio.y)/2);
 }
 
 

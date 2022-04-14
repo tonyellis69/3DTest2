@@ -57,7 +57,7 @@ void main() {
 	for (pass = 0; pass < 2; pass += 1.0f) {
 		
 		if (pass == 1.0f)
-			thickness = 10.0f;
+			thickness = 8.0f;
 
 	//find length of miter by projecting it onto normal for this segment
 	float length_a = thickness / dot(miter_a, n1);
