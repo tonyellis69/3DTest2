@@ -46,9 +46,12 @@ void CHexRender::init() {
 	hSrcTexture = blurShader->getUniform("srcTexture");
 	hHorizontal = blurShader->getUniform("horizontal");
 
+
 	screenBufShader = shader::create("screen");
 	hScreenBuf = screenBufShader->getUniform("screenBuf");
 	hScreenMask = screenBufShader->getUniform("screenMask");
+	hBlurTex = screenBufShader->getUniform("blurTex");
+	hX = screenBufShader->getUniform("x");
 
 	std::vector<vBuf::T2DtexVert> quadVerts{	{ {-1.0f, 1.0f}, { 0.0f,1.0f} },
 												{ {-1.0f, -1.0f}, {0,0.0f} },
@@ -208,12 +211,12 @@ void CHexRender::blur() {
 	blurShader->activate();
 	screenQuad.setVAO();
 	bool horizontal = true, first_iteration = true;
-	//screenBuffer.savePNG("d://screenBuf.png");
-	int blurs = 6;
+
+	int blurs = 2;
 	glViewport(0, 0, blurTexture[0].width, blurTexture[0].height);
 	for (int b = 0; b < blurs; b++) {
 		glBindFramebuffer(GL_FRAMEBUFFER, hBlurFrameBuffer[horizontal]);
-		unsigned int hTexture = first_iteration ? screenMask.handle : blurTexture[!horizontal].handle;
+		unsigned int hTexture = first_iteration ? screenBuffer.handle : blurTexture[!horizontal].handle;
 		blurShader->setTexture0(hSrcTexture, hTexture);
 		blurShader->setUniform(hHorizontal, horizontal);
 		glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, 0);
@@ -229,10 +232,12 @@ void CHexRender::blur() {
 
 void CHexRender::drawScreenBuffer() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+	//blurTexture[1].savePNG("d://blur1.png");
 	screenBufShader->activate();
 	screenBufShader->setTexture0(hScreenBuf, screenBuffer.handle);
-	screenBufShader->setTexture1(hScreenMask, blurTexture[1].handle); 
+	screenBufShader->setTexture1(hScreenMask, screenMask.handle); 
+	screenBufShader->setTexture2(hBlurTex, blurTexture[1].handle); 
+	screenBufShader->setUniform(hX, tmpX);
 	screenQuad.setVAO();
 	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, 0);
 	screenQuad.clearVAO();

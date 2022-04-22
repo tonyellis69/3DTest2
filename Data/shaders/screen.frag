@@ -5,20 +5,42 @@ out vec4 colour;
 
 uniform sampler2D screenBuf;
 uniform sampler2D screenMask;
+uniform sampler2D blurTex;
 
 
-//const float offset = 1.0 / 600; //3000.0; 
+uniform int x = 0;
 
 
 void main() {
 	
 	 colour =  texture2D(screenBuf, vTexCoord.st );
 	 vec4 mask =  texture2D(screenMask, vTexCoord.st );
+	 vec4 blur = texture2D(blurTex, vTexCoord.st );
 	 
-		//colour = mask;
+	 float blurStrength = length(blur.rgb);
+	 blurStrength = blur.r;
+	 blurStrength *= 1.1;
+	 //blurStrength = clamp(blurStrength,0,0.5);
+	//blurStrength *= .3;
+	//blurStrength = blur.r;
+	//blurStrength *= 1.5;
+	
+	if (x == 0)	{
+		 blur = vec4(blurStrength,blurStrength,blurStrength,1);
+		 mask.a *= 1.25;
+		colour = vec4(colour.rgb * mask.a,1);
+		colour = mix(blur,colour,mask.a ) ;
+		
+	}
+	else {
+		//blur = vec4(blurStrength,blurStrength,blurStrength,1);
+		//colour = vec4(colour.rgb * mask.a,1);
+		//colour = mix(blur,colour,mask.a) ;
+		colour = vec4(colour.rgb * mask.a,1);;
+	}
 	 
 	 
-	 colour = colour + mask;
+	//colour =  vec4(colour.rgb + mask.rgb,1);
 	// colour = vec4(colour.rgb,1.0);
 
 	
@@ -29,4 +51,6 @@ void main() {
 	
 
 	//colour = mask;
+	
+	
 };

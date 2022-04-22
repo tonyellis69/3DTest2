@@ -15,8 +15,8 @@ layout(location = 1) out vec4 outputMask;
 void main() {
 
 	if (pass == 0.0) {
-	outputColor = mix(gsColour,colour,colour.a);
-
+		outputColor = mix(gsColour,colour,colour.a);
+		//outputColor = vec4(1,1,1,1);
 	
 	
 	float lateralFade =  abs(gsTexCoord.y - 0.5) / 0.5;  // puts in form 1 - 0 - 1, like a graph axis
@@ -28,12 +28,14 @@ void main() {
 	float line = 1- pow((lateralFade * narrowing),falloff); 
 	
 
-	outputColor.a *= line;    //NB smoothing thin lines makes them flicker when scrolling!
+	outputMask = vec4(0,0,0,line);    
 	
 	
 	}
+	/*
 	else {
-		outputMask = mix(gsColour,colour,colour.a);
+		outputMask = vec4(gsColour.rgb,0.8);
+		//outputMask = gsColour;// mix(gsColour,colour,colour.a);
 		
 		
 	float lateralFade =  abs(gsTexCoord.y - 0.5) / 0.5;  // puts in form 1 - 0 - 1, like a graph axis
@@ -48,6 +50,6 @@ void main() {
 	//outputMask.a *= line;    //NB smoothing thin lines makes them flicker when scrolling!
 	
 	}
-	
+		*/
 
 }

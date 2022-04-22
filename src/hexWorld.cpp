@@ -64,7 +64,8 @@ void CHexWorld::onEvent(CEvent& e) {
 			toggleDirectionGraphics();
 		else if (e.i1 == 'F')
 			game.slowed = !game.slowed;
-
+		else if (e.i1 == GLFW_KEY_F3)
+			hexRender.tmpX = hexRender.tmpX == 0 ? 1 : 0;
 	}
 }
 
@@ -319,11 +320,12 @@ void CHexWorld::draw() {
 	hexRender.resetDrawLists();
 	
 		for (auto& entity : map->entities) {
+			//if (entity->entityType == entPlayer)
+				//int b = 0;
 			if (entity->live)
 				entity->drawFn.get()->draw(hexRender);
 		}
 	
-
 		if (directionGraphicsOn) {
 			for (auto& graphic : hexRender.graphics)
 				graphic->draw(hexRender);

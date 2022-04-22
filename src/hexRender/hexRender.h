@@ -69,6 +69,8 @@ public:
 
 	std::vector<std::shared_ptr<CGraphic>> graphics;
 
+	int tmpX = 0;
+
 private:
 	void addToMapBuf(std::vector<vc>& v, std::vector<unsigned int>& i, CHex& hex, int tile);
 	unsigned int getColourNo(glm::vec4& colour);
@@ -97,6 +99,10 @@ private:
 	CShader* screenBufShader;
 	unsigned int hScreenBuf;
 	unsigned int hScreenMask;
+	unsigned int hBlurTex;
+	unsigned int hX;
+
+
 
 	CRenderTexture screenBuffer;
 	CRenderTexture screenMask;

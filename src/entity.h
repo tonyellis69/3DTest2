@@ -85,6 +85,7 @@ public:
 	
 	bool isItem = false; //temp cludge!
 	bool isRobot = false; //temp cludge!
+	bool isPlayer = false;
 
 	bool deleteMe = false;
 
