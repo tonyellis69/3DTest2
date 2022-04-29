@@ -308,14 +308,10 @@ void CHexWorld::calcMouseWorldPos() {
 
 
 void CHexWorld::draw() {
-	hexRender.startScreenBuffer();
+	//hexRender.startScreenBuffer(); 
+	hexRender.startSceneBuffer();
 
 	hexRender.drawMap();
-
-	//for (auto& entity : map->entities) {
-	//	if (entity->live)
-	//		entity->draw();
-	//}
 
 	hexRender.resetDrawLists();
 	
@@ -331,9 +327,17 @@ void CHexWorld::draw() {
 				graphic->draw(hexRender);
 		}
 
-	hexRender.drawSolidList();
+	hexRender.drawMaskList();
 	hexRender.drawLineList();
+
+	hexRender.drawSolidList();
+
+
+	hexRender.drawUpperLineList();
 	hexRender.drawExplosionList();
+
+	//temp!
+
 
 
 	if (editMode) {
@@ -360,8 +364,9 @@ void CHexWorld::draw() {
 	imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp));
 
 
-	hexRender.blur();
-	hexRender.drawScreenBuffer();
+	//hexRender.blur();
+	//hexRender.drawScreenBuffer();
+	hexRender.drawSceneLayers();
 
 }
 
@@ -668,6 +673,7 @@ void CHexWorld::initPalettes() {
 	hexRender.storePalette("explosion", { {1, 1, 0.0,1}, {0,0,1,1}, {1,1,1,1} });
 	hexRender.storePalette("mix", { {1,1,1,1}, {1,1,0,1}, {1,0,1,1}, {0,0,1,1} });
 	hexRender.storePalette("blue", { {0,0,1,1}, {0.2,0.2,1,1}, {0.3,0.3,1,1}, {0,0,1,1} });
+	hexRender.storePalette("test", { {1,0,0,1}, {0,1,0,1}, {0,0,1,1}, {1,1,0,1} });
 
 
 	spawn::pPalettes = &hexRender.palettes;

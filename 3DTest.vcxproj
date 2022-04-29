@@ -135,6 +135,7 @@
     <ClCompile Include="src\hexRender\graphics.cpp" />
     <ClCompile Include="src\hexRender\hexRender.cpp" />
     <ClCompile Include="src\hexRender\itemDraw.cpp" />
+    <ClCompile Include="src\hexRender\multiDraw.cpp" />
     <ClCompile Include="src\hexRender\splodeDraw.cpp" />
     <ClCompile Include="src\hexWorld.cpp" />
     <ClCompile Include="src\items\armour.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="src\hexRender\graphics.h" />
     <ClInclude Include="src\hexRender\hexRender.h" />
     <ClInclude Include="src\hexRender\itemDraw.h" />
+    <ClInclude Include="src\hexRender\multiDraw.h" />
     <ClInclude Include="src\hexRender\splodeDraw.h" />
     <ClInclude Include="src\hexWorld.h" />
     <ClInclude Include="src\items\armour.h" />

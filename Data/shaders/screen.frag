@@ -20,12 +20,14 @@ void main() {
 	 float blurStrength = length(blur.rgb);
 	 blurStrength = blur.r;
 	 blurStrength *= 1.1;
+	 
 	 //blurStrength = clamp(blurStrength,0,0.5);
 	//blurStrength *= .3;
 	//blurStrength = blur.r;
 	//blurStrength *= 1.5;
 	
 	if (x == 0)	{
+		blurStrength = pow(blurStrength,1.5);
 		 blur = vec4(blurStrength,blurStrength,blurStrength,1);
 		 mask.a *= 1.25;
 		colour = vec4(colour.rgb * mask.a,1);
@@ -33,10 +35,12 @@ void main() {
 		
 	}
 	else {
-		//blur = vec4(blurStrength,blurStrength,blurStrength,1);
 		//colour = vec4(colour.rgb * mask.a,1);
-		//colour = mix(blur,colour,mask.a) ;
-		colour = vec4(colour.rgb * mask.a,1);;
+		
+		 blur = vec4(blurStrength,blurStrength,blurStrength,1);
+		 mask.a *= 1.25;
+		colour = vec4(colour.rgb * mask.a,1);
+		colour = mix(blur,colour,mask.a ) ;
 	}
 	 
 	 

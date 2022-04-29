@@ -16,7 +16,7 @@ CMap* CSpawn::pMap;
 TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 	auto player = std::make_shared<CPlayerObject>();
 	player->setModel(models[name]);
-	player->setPalette(&pPalettes->at("basic"));
+	player->setPalette(&pPalettes->at("basic")); //was basic
 	player->initDrawFn();
 	player->setPosition(pos);
 

@@ -22,10 +22,14 @@ void CHexRender::init() {
 	hColour = lineShader->getUniform("colour");
 	hWinSize = lineShader->getUniform("winSize");
 	hPalette = lineShader->getUniform("colourPalette");
+	hChannel = lineShader->getUniform("channel");
 
 	filledShader = shader::create("filled");
 	hMVPF = filledShader->getUniform("mvpMatrix");
 	hPaletteF = filledShader->getUniform("colourPalette");
+
+	maskShader = shader::create("mask");
+	hMaskMVP = maskShader->getUniform("mvpMatrix");
 
 	splodeShader = shader::create("explosion");
 	hPos = splodeShader->getUniform("pos");
@@ -53,6 +57,11 @@ void CHexRender::init() {
 	hBlurTex = screenBufShader->getUniform("blurTex");
 	hX = screenBufShader->getUniform("x");
 
+	sceneLayerShader = shader::create("sceneLayer");
+	hMap = sceneLayerShader->getUniform("mapTexture");
+	hModels = sceneLayerShader->getUniform("modelsTexture");
+
+
 	std::vector<vBuf::T2DtexVert> quadVerts{	{ {-1.0f, 1.0f}, { 0.0f,1.0f} },
 												{ {-1.0f, -1.0f}, {0,0.0f} },
 												{ {1.0f, 1.0f}, {1.0f, 1.0f} },
@@ -62,6 +71,8 @@ void CHexRender::init() {
 
 	glGenFramebuffers(1, &hScreenFrameBuffer);
 	glGenFramebuffers(2, hBlurFrameBuffer);
+
+	glGenRenderbuffers(1, &hStencilBuf);
 };
 
 
@@ -106,6 +117,7 @@ void CHexRender::drawMap() {
 	lineShader->setUniform(hWinSize, pCamera->getView());
 	lineShader->setUniform(hColour, glm::vec4(1, 0, 0, 0));
 	glUniform4fv(hPalette, 4, (float*)(uniqueTileColours.data()));
+	lineShader->setUniform(hChannel, 0.0f);
 
 	//renderer.drawLineStripAdjBuf(mapBuf, 0, mapBuf.numElements);
 	mapBuf.setVAO();
@@ -137,16 +149,38 @@ std::vector<glm::vec4>* CHexRender::getPalette(const std::string& name) {
 
 void CHexRender::resetDrawLists() {
 	lineDrawList.clear();
+	upperLineList.clear();
 	solidDrawList.clear();
 	explosionDrawList.clear();
+	maskList.clear();
 }
 
 void CHexRender::drawLineList() {
 	lineShader->activate();
 	lineShader->setUniform(hWinSize, pCamera->getView());
-	//lineShader->setUniform(hColour, glm::vec4(0, 0, 0, 0));
+	lineShader->setUniform(hChannel, 1.0f);
+
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF); //the test to pass
+	glStencilMask(0x00);
+
+	//glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+	//glStencilFunc(GL_NEVER, 1, 0xFF);
 
 	for (auto& draw : lineDrawList) {
+		draw.buf->setVAO();
+		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+		lineShader->setUniform(hMVP, mvp);
+		lineShader->setUniform(hPalette, *draw.palette);
+		drawMeshLine(*draw.meshRec);
+	}
+}
+
+void CHexRender::drawUpperLineList() {
+	lineShader->activate();
+	lineShader->setUniform(hWinSize, pCamera->getView());
+	lineShader->setUniform(hChannel, 1.0f);
+
+	for (auto& draw : upperLineList) {
 		draw.buf->setVAO();
 		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
@@ -166,6 +200,23 @@ void CHexRender::drawSolidList() {
 		drawMeshSolid(*draw.meshRec);
 	}
 
+}
+
+void CHexRender::drawMaskList() {
+	maskShader->activate();
+
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); //if either test fails, keep buffer
+	glStencilFunc(GL_ALWAYS, 1, 0xFF); //so test always passes 
+	glStencilMask(0xFF);
+	//glDisable(GL_DEPTH_TEST);
+
+	for (auto& draw : maskList) {
+		draw.buf->setVAO();
+		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+		filledShader->setUniform(hMaskMVP, mvp);
+		drawMeshSolid(*draw.meshRec);
+	}
 }
 
 void CHexRender::drawExplosionList() {
@@ -197,7 +248,23 @@ void CHexRender::startScreenBuffer() {
 	}
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT );
+}
 
+void CHexRender::startSceneBuffer() {
+	glBindFramebuffer(GL_FRAMEBUFFER, hScreenFrameBuffer); //NB: bulk of overhead is here
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, levelTexture.handle, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, modelTexture.handle, 0);
+	//glFramebufferTexture(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, hStencilBuf, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, hStencilBuf);
+	GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+	glDrawBuffers(2, DrawBuffers);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		fatalLog << alertMsg << "\nError creating framebuffer.";
+		return;
+	}
+	glClearColor(0, 0, 0, 0);
+	glStencilMask(0xFF);
+	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void CHexRender::blur() {
@@ -212,7 +279,7 @@ void CHexRender::blur() {
 	screenQuad.setVAO();
 	bool horizontal = true, first_iteration = true;
 
-	int blurs = 2;
+	int blurs = 6;
 	glViewport(0, 0, blurTexture[0].width, blurTexture[0].height);
 	for (int b = 0; b < blurs; b++) {
 		glBindFramebuffer(GL_FRAMEBUFFER, hBlurFrameBuffer[horizontal]);
@@ -243,6 +310,19 @@ void CHexRender::drawScreenBuffer() {
 	screenQuad.clearVAO();
 }
 
+void CHexRender::drawSceneLayers() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//levelTexture.savePNG("d://level.png");
+	//modelTexture.savePNG("d://models.png");
+	sceneLayerShader->activate();
+	sceneLayerShader->setTexture0(hMap, levelTexture.handle);
+	sceneLayerShader->setTexture1(hModels, modelTexture.handle);
+	screenQuad.setVAO();
+	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, 0);
+	screenQuad.clearVAO();
+
+}
+
 
 void CHexRender::setScreenSize(glm::vec2& ratio) {
 	screenBuffer.resize(int(ratio.x), int(ratio.y) );
@@ -251,6 +331,12 @@ void CHexRender::setScreenSize(glm::vec2& ratio) {
 	//blurTexture[1].resize(int(ratio.x), int(ratio.y));
 	blurTexture[0].resize(int(ratio.x)/2, int(ratio.y)/2);
 	blurTexture[1].resize(int(ratio.x)/2, int(ratio.y)/2);
+
+	levelTexture.resize(int(ratio.x), int(ratio.y));
+	modelTexture.resize(int(ratio.x), int(ratio.y));
+
+	glBindRenderbuffer(GL_RENDERBUFFER, hStencilBuf);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8,int(ratio.x),int(ratio.y));
 }
 
 

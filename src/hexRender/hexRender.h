@@ -29,11 +29,15 @@ public:
 	std::vector<glm::vec4>* getPalette(const std::string& name);
 	void resetDrawLists();
 	void drawLineList();
+	void drawUpperLineList();
 	void drawSolidList();
+	void drawMaskList();
 	void drawExplosionList();
 	void startScreenBuffer();
+	void startSceneBuffer();
 	void blur();
 	void drawScreenBuffer();
+	void drawSceneLayers();
 	void setScreenSize(glm::vec2& ratio);
 
 
@@ -44,10 +48,14 @@ public:
 	unsigned int hColour;
 	unsigned int hWinSize;
 	unsigned int hPalette;
+	unsigned int hChannel;
 
 	CShader* filledShader;
 	unsigned int hMVPF;
 	unsigned int hPaletteF;
+
+	CShader* maskShader;
+	unsigned int hMaskMVP;
 
 
 	CShader* splodeShader;
@@ -64,8 +72,10 @@ public:
 	std::unordered_map<std::string, std::vector<glm::vec4>> palettes;
 	
 	std::vector<TLineDraw> lineDrawList;
+	std::vector<TLineDraw> upperLineList;
 	std::vector<TSolidDraw> solidDrawList;
 	std::vector<TSplodeDraw> explosionDrawList;
+	std::vector<TSolidDraw> maskList;
 
 	std::vector<std::shared_ptr<CGraphic>> graphics;
 
@@ -102,12 +112,20 @@ private:
 	unsigned int hBlurTex;
 	unsigned int hX;
 
+	CShader* sceneLayerShader;
+	unsigned int hMap;
+	unsigned int hModels;
 
 
 	CRenderTexture screenBuffer;
 	CRenderTexture screenMask;
 	unsigned int hScreenFrameBuffer;
 	CBuf2 screenQuad;
+
+	CRenderTexture levelTexture;
+	CRenderTexture modelTexture;
+
+	unsigned int hStencilBuf;
 };
 
 struct THexTile {

@@ -20,6 +20,8 @@
 
 #include "gameWin.h"
 
+#include "hexRender/multiDraw.h"
+
 constexpr float sin30 = 0.5f;
 constexpr float sin60 = 0.86602540378443;
 
@@ -47,7 +49,7 @@ void CPlayerObject::setModel(CModel& modelRef) {
 	upperBody = model.getMesh("body");
 	leftFoot = model.getMesh("footL");
 	rightFoot = model.getMesh("footR");
-
+	upperBodyMask = model.getMesh("body_mask");
 	setBoundingRadius();
 }
 
@@ -61,7 +63,7 @@ void CPlayerObject::buildWorldMatrix() {
 	model.tmpMatrix = upperBody->matrix;
 	//FIXME! Temp kludge to ensure collision check works
 	//maybe solve by giving every model a collision subModel to check against.
-
+	upperBodyMask->matrix = upperBody->matrix;
 
 	worldM = glm::rotate(worldM, rotation, glm::vec3(0, 0, -1));
 
@@ -69,6 +71,15 @@ void CPlayerObject::buildWorldMatrix() {
 	leftFoot->matrix = glm::translate(worldM, glm::vec3(-footExtension,0,0));
 
 
+}
+
+void CPlayerObject::initDrawFn() {
+	drawFn = std::make_shared<CMultiDraw>(this);
+	auto fn = (CMultiDraw*)drawFn.get();
+	fn->lowerMeshes.push_back(model.getMesh("footL"));
+	fn->lowerMeshes.push_back(model.getMesh("footR"));
+	fn->upperMeshes.push_back(model.getMesh("body"));
+	fn->upperMask = model.getMesh("body_mask");
 }
 
 

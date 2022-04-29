@@ -24,6 +24,7 @@ public:
 	~CPlayerObject();
 	void setModel(CModel& model);
 	void buildWorldMatrix();
+	void initDrawFn();
 
 	void dropItem(int entityNo);
 	void onFireKey(bool pressed);
@@ -94,6 +95,7 @@ private:
 
 	TModelMesh* upperBody;
 	float upperBodyRotation = 0;
+	TModelMesh* upperBodyMask;
 
 	TModelMesh* leftFoot;
 	TModelMesh* rightFoot;

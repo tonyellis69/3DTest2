@@ -109,6 +109,14 @@ void CRobot::rotateUpper(float angle) {
 	upperBodyRotation = fmod(upperBodyRotation + rad360, rad360);
 }
 
+void CRobot::initDrawFn() {
+	drawFn = std::make_shared<CMultiDraw>(this);
+	auto fn = (CMultiDraw*)drawFn.get();
+	fn->lowerMeshes.push_back(model.getMesh("robase"));
+	fn->lowerMeshes.push_back(model.getMesh("treads"));
+	fn->upperMeshes.push_back(model.getMesh("robody"));
+}
+
 void CRobot::draw() {
 	//if (!visibleToPlayer)
 	//	return;

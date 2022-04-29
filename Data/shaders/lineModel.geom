@@ -1,7 +1,7 @@
 #version 330
 
 layout(lines_adjacency) in;
-layout(triangle_strip, max_vertices = 14) out;
+layout(triangle_strip, max_vertices = 7) out;
 //layout(line_strip, max_vertices = 8) out; //uncomment for wireframe
   
  uniform vec2 winSize; //multiplay by to get screenspace, divide by to get normspace
@@ -13,7 +13,7 @@ layout(triangle_strip, max_vertices = 14) out;
 } colour_in[];
 
 out vec4 gsColour;
-out float pass;
+
  
  float thickness =  2.0f; //2.0f;
  float miter_limit = 0.75f; //1.0f; //1 = always, -1 = never. 0.75f good default.
@@ -54,10 +54,10 @@ void main() {
 	vec2 miter_a = normalize(n0 + n1);	
 	vec2 miter_b = normalize(n1 + n2);	
 	
-	for (pass = 0; pass < 2; pass += 1.0f) {
+	//for (pass = 0; pass < 2; pass += 1.0f) {
 		
-		if (pass == 1.0f)
-			thickness = 6.0f;
+	//	if (pass == 1.0f)
+	//		thickness = 6.0f;
 
 	//find length of miter by projecting it onto normal for this segment
 	float length_a = thickness / dot(miter_a, n1);
@@ -142,6 +142,6 @@ void main() {
 
 	EndPrimitive();
 
-	}
+	//}
 
 }

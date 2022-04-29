@@ -3,6 +3,7 @@
 
 #include "entity.h"
 #include "roboState.h"
+#include "hexRender/multiDraw.h"
 
 enum TRobotState { robotLightSleep,	robotWander3, robotCharge3,
 	robotMelee3, robotCloseAndShoot, robotDoNothing
@@ -26,7 +27,9 @@ public:
 	void rotate(float angle);
 	void setUpperRotation(float angle);
 	void rotateUpper(float angle);
+	void initDrawFn();
 	void draw();
+
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
 	void buildWorldMatrix();
 	void startTracking(CEntity* target);

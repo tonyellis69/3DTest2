@@ -153,6 +153,9 @@
     <ClCompile Include="src\hexRender\avoidGraphic.cpp">
       <Filter>Source Files\hexRender</Filter>
     </ClCompile>
+    <ClCompile Include="src\hexRender\multiDraw.cpp">
+      <Filter>Source Files\hexRender</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -291,6 +294,9 @@
       <Filter>Source Files\hexRender</Filter>
     </ClInclude>
     <ClInclude Include="src\hexRender\avoidGraphic.h">
+      <Filter>Source Files\hexRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexRender\multiDraw.h">
       <Filter>Source Files\hexRender</Filter>
     </ClInclude>
   </ItemGroup>
