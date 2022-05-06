@@ -73,6 +73,8 @@ void CHexRender::init() {
 	glGenFramebuffers(2, hBlurFrameBuffer);
 
 	glGenRenderbuffers(1, &hStencilBuf);
+
+	glGenTextures(1, &hDepthTex);
 };
 
 
@@ -160,11 +162,10 @@ void CHexRender::drawLineList() {
 	lineShader->setUniform(hWinSize, pCamera->getView());
 	lineShader->setUniform(hChannel, 1.0f);
 
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF); //the test to pass
-	glStencilMask(0x00);
+	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF); //the test to pass
+	//glStencilMask(0x00);
 
-	//glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-	//glStencilFunc(GL_NEVER, 1, 0xFF);
+	
 
 	for (auto& draw : lineDrawList) {
 		draw.buf->setVAO();
@@ -173,6 +174,9 @@ void CHexRender::drawLineList() {
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
 	}
+	//glDisable(GL_STENCIL_TEST);
+
+	glDisable(GL_DEPTH_TEST);
 }
 
 void CHexRender::drawUpperLineList() {
@@ -205,18 +209,26 @@ void CHexRender::drawSolidList() {
 void CHexRender::drawMaskList() {
 	maskShader->activate();
 
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); //if either test fails, keep buffer
-	glStencilFunc(GL_ALWAYS, 1, 0xFF); //so test always passes 
-	glStencilMask(0xFF);
-	//glDisable(GL_DEPTH_TEST);
+	//glEnable(GL_STENCIL_TEST);
+	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); //if either test fails, keep buffer
+	//glStencilFunc(GL_ALWAYS, 1, 0xFF); //so test always passes 
+	//glStencilMask(0xFF);
+	glDepthRange(0, 0);
+	glClear( GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+
 
 	for (auto& draw : maskList) {
 		draw.buf->setVAO();
 		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
-		filledShader->setUniform(hMaskMVP, mvp);
+		maskShader->setUniform(hMaskMVP, mvp);
 		drawMeshSolid(*draw.meshRec);
 	}
+	//glEnable(GL_DEPTH_TEST);
+	//modelTexture.savePNG("d://model.png");
+//	levelTexture.savePNG("d://level.png");
+
+	glDepthRange(0, 1);
 }
 
 void CHexRender::drawExplosionList() {
@@ -251,19 +263,22 @@ void CHexRender::startScreenBuffer() {
 }
 
 void CHexRender::startSceneBuffer() {
+	//glDisable(GL_DEPTH_TEST);
 	glBindFramebuffer(GL_FRAMEBUFFER, hScreenFrameBuffer); //NB: bulk of overhead is here
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, levelTexture.handle, 0);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, modelTexture.handle, 0);
-	//glFramebufferTexture(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, hStencilBuf, 0);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, hStencilBuf);
+	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, hStencilBuf);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+		GL_TEXTURE_2D, hDepthTex, 0);
 	GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
 	glDrawBuffers(2, DrawBuffers);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		fatalLog << alertMsg << "\nError creating framebuffer.";
 		return;
 	}
+
 	glClearColor(0, 0, 0, 0);
-	glStencilMask(0xFF);
+	//glStencilMask(0xFF);
 	glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -336,7 +351,14 @@ void CHexRender::setScreenSize(glm::vec2& ratio) {
 	modelTexture.resize(int(ratio.x), int(ratio.y));
 
 	glBindRenderbuffer(GL_RENDERBUFFER, hStencilBuf);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8,int(ratio.x),int(ratio.y));
+	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8,int(ratio.x),int(ratio.y));
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, int(ratio.x), int(ratio.y));
+
+
+	glBindTexture(GL_TEXTURE_2D, hDepthTex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, int(ratio.x), int(ratio.y), 
+		0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 

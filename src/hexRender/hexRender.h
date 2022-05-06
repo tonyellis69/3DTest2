@@ -126,6 +126,8 @@ private:
 	CRenderTexture modelTexture;
 
 	unsigned int hStencilBuf;
+
+	unsigned int hDepthTex;
 };
 
 struct THexTile {

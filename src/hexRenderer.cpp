@@ -429,8 +429,15 @@ void CHexRenderer::createSolidHexModel() {
 
 
 
-void CHexRenderer::dollyCamera(float delta) {
+bool CHexRenderer::dollyCamera(float delta) {
 	camera.dolly(delta);
+	glm::vec3 pos = camera.getPos();
+	if (pos.z <= 0) {
+		pos.z = 1;
+		camera.setPos(pos);
+		return false;
+	}
+	return true;
 }
 
 void CHexRenderer::pitchCamera(float delta) {
@@ -513,7 +520,8 @@ std::tuple <CHex, glm::vec3> CHexRenderer::pickHex(int screenX, int screenY) {
 
 	//undo perspective 
 	glm::vec4 view = glm::inverse(camera.perspectiveMatrix) * clip;
-	view.z = -1.0f; view.w = 0.0f;
+	view.z = -1.0f;
+	view.w = 0.0f;
 
 	//undo view (camera position)
 	glm::vec4 worldPos = camera.worldMatrix * view;

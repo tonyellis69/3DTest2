@@ -13,5 +13,6 @@ void main() {
 	vec4 mapColour =  texture2D(mapTexture, vTexCoord.st );
 	vec4 modelsColour =  texture2D(modelsTexture, vTexCoord.st );
 	
-	colour = mapColour + modelsColour;
+	vec3 rgb = mix(mapColour.rgb,modelsColour.rgb,modelsColour.a);
+	colour = vec4(rgb,1);
 };

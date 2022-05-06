@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
     </contributor>
-    <created>2021-11-12T16:10:48</created>
-    <modified>2021-11-12T16:10:48</modified>
+    <created>2022-05-06T14:38:29</created>
+    <modified>2022-05-06T14:38:29</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -105,6 +105,38 @@
         </lines>
       </mesh>
     </geometry>
+    <geometry id="Circle_015-mesh" name="Circle.015">
+      <mesh>
+        <source id="Circle_015-mesh-positions">
+          <float_array id="Circle_015-mesh-positions-array" count="36">0.09749996 0.375 0 -0.1274999 0.375 0 -0.1274999 -0.375 0 0.09749996 -0.375 0 0.218566 0.1060661 0 0.006433904 0.106066 0 0.006433904 -0.106066 0 0.218566 -0.106066 0 0.09749996 0.15 0 0.09749996 -0.15 0 -0.02249997 -0.15 0 -0.02249997 0.1499999 0</float_array>
+          <technique_common>
+            <accessor source="#Circle_015-mesh-positions-array" count="12" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Circle_015-mesh-normals">
+          <float_array id="Circle_015-mesh-normals-array" count="3">0 0 1</float_array>
+          <technique_common>
+            <accessor source="#Circle_015-mesh-normals-array" count="1" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Circle_015-mesh-vertices">
+          <input semantic="POSITION" source="#Circle_015-mesh-positions"/>
+        </vertices>
+        <triangles count="8">
+          <input semantic="VERTEX" source="#Circle_015-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Circle_015-mesh-normals" offset="1"/>
+          <p>1 0 11 0 0 0 11 0 1 0 2 0 10 0 11 0 2 0 7 0 4 0 5 0 7 0 5 0 6 0 3 0 9 0 10 0 3 0 10 0 2 0 11 0 8 0 0 0</p>
+        </triangles>
+      </mesh>
+    </geometry>
   </library_geometries>
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
@@ -119,6 +151,10 @@
       <node id="treads" name="treads" type="NODE">
         <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
         <instance_geometry url="#Circle_014-mesh" name="treads"/>
+      </node>
+      <node id="robody_mask" name="robody_mask" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#Circle_015-mesh" name="robody_mask"/>
       </node>
     </visual_scene>
   </library_visual_scenes>

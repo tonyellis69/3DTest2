@@ -43,6 +43,7 @@ void CRobot::setModel(CModel& model) {
 	upperBody = this->model.getMesh("robody");
 	base = this->model.getMesh("robase");
 	treads = this->model.getMesh("treads");
+	upperBodyMask = this->model.getMesh("robody_mask");
 	setBoundingRadius();
 }
 
@@ -115,6 +116,15 @@ void CRobot::initDrawFn() {
 	fn->lowerMeshes.push_back(model.getMesh("robase"));
 	fn->lowerMeshes.push_back(model.getMesh("treads"));
 	fn->upperMeshes.push_back(model.getMesh("robody"));
+	fn->upperMask = model.getMesh("robody_mask");
+
+
+	//drawFn = std::make_shared<CMultiDraw>(this);
+	//auto fn = (CMultiDraw*)drawFn.get();
+	//fn->lowerMeshes.push_back(model.getMesh("footL"));
+	//fn->lowerMeshes.push_back(model.getMesh("footR"));
+	//fn->upperMeshes.push_back(model.getMesh("body"));
+	//fn->upperMask = model.getMesh("body_mask");
 }
 
 void CRobot::draw() {
@@ -141,6 +151,8 @@ void CRobot::buildWorldMatrix() {
 
 	upperBody->matrix = worldM;
 	upperBody->matrix = glm::rotate(worldM, upperBodyRotation, glm::vec3(0, 0, -1));
+
+	upperBodyMask->matrix = upperBody->matrix;
 
 	worldM = glm::rotate(worldM, rotation, glm::vec3(0, 0, -1));
 

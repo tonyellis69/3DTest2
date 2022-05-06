@@ -35,7 +35,7 @@ public:
 	void setMap(CHexArray* hexArray);
 	void drawFloorPlan();
 	void drawPath(THexList* path, glm::vec4& pathStartColour, glm::vec4& pathEndColour);
-	void dollyCamera(float delta);
+	bool dollyCamera(float delta);
 	void pitchCamera(float delta);
 	void moveCamera(glm::vec3& move);
 	void setCameraAspectRatio(glm::vec2 ratio);

@@ -248,8 +248,8 @@ void CHexWorld::onMouseWheel(float delta, int key) {
 			return;
 		}
 		if (!mapEdit.resize(delta, key)) {
-			hexRendr2.dollyCamera(delta * zoomScale);
-			adjustZoomScale(delta);
+			if (hexRendr2.dollyCamera(delta * zoomScale))
+				adjustZoomScale(delta);
 		}
 		return;
 	}
@@ -261,8 +261,8 @@ void CHexWorld::onMouseWheel(float delta, int key) {
 	}
 	else {
 		if (key == GLFW_KEY_LEFT_CONTROL) {
-			hexRendr2.dollyCamera(delta * zoomScale);
-			adjustZoomScale(delta);
+			if (hexRendr2.dollyCamera(delta * zoomScale) )
+				adjustZoomScale(delta);
 		}
 		else {
 			;

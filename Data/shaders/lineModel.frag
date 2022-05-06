@@ -13,6 +13,15 @@ in vec4 gsColour;
 layout(location = 0) out vec4 channel0;
 layout(location = 1) out vec4 channel1;
 
+float near = 0.1; 
+float far  = 1000.0; 
+  
+float LinearizeDepth(float depth) 
+{
+    float z = depth * 2.0 - 1.0; // back to NDC 
+    return (2.0 * near * far) / (far + near - z * (far - near));	
+}
+
 void main() {
 
 
@@ -30,11 +39,17 @@ void main() {
 	if (channel == 0.0) {
 		channel0 = mix(gsColour,colour,colour.a);  
 		channel0.a *= line;
+		//channel0 = vec4(gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z,1);
 	}
 	else {
 		channel1 = mix(gsColour,colour,colour.a);  
 		channel1.a *= line;
+		//channel1 = vec4(gl_FragCoord.z,gl_FragCoord.z,gl_FragCoord.z,1);
+		//channel1 = vec4(1,1,1,1);
 		
+		 float depth = LinearizeDepth(gl_FragCoord.z) / far; // divide by far for demonstration
+			
+		//channel1 = vec4(vec3(depth),1);
 	}
 
 }

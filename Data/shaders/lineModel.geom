@@ -66,6 +66,7 @@ void main() {
 	
 	gsColour = colour_in[0].colour;
 	
+	float z = 0;
 
 	  // prevent excessively long miters at sharp corners
   if( dot(v0,v1) < -miter_limit ) {
@@ -75,25 +76,25 @@ void main() {
 	// close the gap
 	if( dot(v0,n1) > 0 ) { // /- join
 		gsTexCoord = vec2(0, 0);
-		gl_Position = vec4( (p1 + thickness * n0) / winSize, 0.0, 1.0 );
+		gl_Position = vec4( (p1 + thickness * n0) / winSize, z, 1.0 );
 		EmitVertex();
 		gsTexCoord = vec2(0, 0);
-		gl_Position = vec4( (p1 + thickness * n1) / winSize, 0.0, 1.0 );
+		gl_Position = vec4( (p1 + thickness * n1) / winSize, z, 1.0 );
 		EmitVertex();
 		gsTexCoord = vec2(0, 0.5);
-		gl_Position = vec4( p1 / winSize, 0.0, 1.0 );
+		gl_Position = vec4( p1 / winSize, z, 1.0 );
 		EmitVertex();
 		EndPrimitive();
 	}
 	else { // \_ join
 		gsTexCoord = vec2(0, 1);
-		gl_Position = vec4( (p1 - thickness * n1) / winSize, 0.0, 1.0 );
+		gl_Position = vec4( (p1 - thickness * n1) / winSize, z, 1.0 );
 		EmitVertex();		
 		gsTexCoord = vec2(0, 1);
-		gl_Position = vec4( (p1 - thickness * n0) / winSize, 0.0, 1.0 );
+		gl_Position = vec4( (p1 - thickness * n0) / winSize, z, 1.0 );
 		EmitVertex();
 		gsTexCoord = vec2(0, 0.5);
-		gl_Position = vec4( p1 / winSize, 0.0, 1.0 );
+		gl_Position = vec4( p1 / winSize, z, 1.0 );
 		EmitVertex();
 		EndPrimitive();
 	}
@@ -108,19 +109,19 @@ void main() {
 
 	  // generate the triangle strip
 	gsTexCoord = vec2(0, 0);
-	gl_Position = vec4( (p1 + length_a * miter_a) / winSize, 0.0, 1.0 );
+	gl_Position = vec4( (p1 + length_a * miter_a) / winSize, z, 1.0 );
 	EmitVertex();
 	gsTexCoord = vec2(0, 1);
-	gl_Position = vec4( (p1 - length_a * miter_a) / winSize, 0.0, 1.0 );
+	gl_Position = vec4( (p1 - length_a * miter_a) / winSize, z, 1.0 );
 	EmitVertex();
 	
 	
 	gsTexCoord = vec2(0, 0);
-	gl_Position = vec4( (p2 + length_b * miter_b) / winSize, 0.0, 1.0 );
+	gl_Position = vec4( (p2 + length_b * miter_b) / winSize, z, 1.0 );
 	EmitVertex();
 	
 	gsTexCoord = vec2(0, 1);
-	gl_Position = vec4( (p2 - length_b * miter_b) / winSize, 0.0, 1.0 );
+	gl_Position = vec4( (p2 - length_b * miter_b) / winSize, z, 1.0 );
 	EmitVertex();
 	
 	
@@ -128,15 +129,15 @@ void main() {
 	//uncomment for wireframe
 	/*
 	gsTexCoord = vec2(0, 1);
-	gl_Position = vec4( (p2 - length_b * miter_b) / winSize, 0.0, 1.0 );
+	gl_Position = vec4( (p2 - length_b * miter_b) / winSize, z, 1.0 );
 	EmitVertex();
 	
 	gsTexCoord = vec2(0, 0);
-	gl_Position = vec4( (p2 + length_b * miter_b) / winSize, 0.0, 1.0 );
+	gl_Position = vec4( (p2 + length_b * miter_b) / winSize, z, 1.0 );
 	EmitVertex();
 	
 	gsTexCoord = vec2(0, 0);
-	gl_Position = vec4( (p1 + length_a * miter_a) / winSize, 0.0, 1.0 );
+	gl_Position = vec4( (p1 + length_a * miter_a) / winSize, z, 1.0 );
 	EmitVertex(); 
 	*/
 
