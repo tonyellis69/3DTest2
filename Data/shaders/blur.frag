@@ -6,7 +6,7 @@ out vec4 colour;
 uniform sampler2D srcTexture;
 
 uniform bool horizontal;
-uniform int blurSize = 5;   
+uniform int blurSize = 7;   
 
 uniform float sigma = 5;        // The sigma value for the gaussian function: higher value means more blur
                             // A good value for 9x9 is around 3 to 5

@@ -15,7 +15,7 @@ layout(triangle_strip, max_vertices = 7) out;
 out vec4 gsColour;
 
  
- float thickness =  2.0f; //2.0f;
+ float thickness =  3;//2.0f; //2.0f;
  float miter_limit = 0.75f; //1.0f; //1 = always, -1 = never. 0.75f good default.
  //NB 1 (always) creates glitches with very small lines at sharpish angles, which -1 and 0.75f seem to fix
 

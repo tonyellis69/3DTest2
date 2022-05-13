@@ -33,4 +33,9 @@ void CMultiDraw::draw(CHexRender& hexRender) {
 				&mesh->draw.meshRec });
 	}
 
+	for (auto& mask : lowerMasks) {
+		hexRender.lowerMaskList.push_back({ mask->draw.buf.get(), &mask->matrix, pOwner->pPalette,
+		&mask->draw.meshRec });
+	}
+
 }

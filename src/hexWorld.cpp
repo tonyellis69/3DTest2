@@ -364,7 +364,7 @@ void CHexWorld::draw() {
 	imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp));
 
 
-	//hexRender.blur();
+	hexRender.blur();
 	//hexRender.drawScreenBuffer();
 	hexRender.drawSceneLayers();
 

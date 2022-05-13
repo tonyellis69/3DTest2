@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
     </contributor>
-    <created>2022-05-06T14:38:29</created>
-    <modified>2022-05-06T14:38:29</modified>
+    <created>2022-05-13T18:01:00</created>
+    <modified>2022-05-13T18:01:00</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -137,6 +137,42 @@
         </triangles>
       </mesh>
     </geometry>
+    <geometry id="Circle_018-mesh" name="Circle.018">
+      <mesh>
+        <source id="Circle_018-mesh-positions">
+          <float_array id="Circle_018-mesh-positions-array" count="42">-0.2 -0.15 0 -0.2999515 -0.3001821 0 -0.4 0.09999996 0 -0.2999514 -0.15 0 -0.2 0.1499999 0 0.3 -0.15 0 0.3 0.3 0 -0.2999515 0.3 0 -0.2999514 0.1499999 0 0.3 0.1499999 0 0.3 0.3 0 0.3 -0.3001821 0 0.1499999 0.1499999 0 0.1499999 -0.15 0</float_array>
+          <technique_common>
+            <accessor source="#Circle_018-mesh-positions-array" count="14" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Circle_018-mesh-normals">
+          <float_array id="Circle_018-mesh-normals-array" count="3">0 0 1</float_array>
+          <technique_common>
+            <accessor source="#Circle_018-mesh-normals-array" count="1" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Circle_018-mesh-vertices">
+          <input semantic="POSITION" source="#Circle_018-mesh-positions"/>
+        </vertices>
+        <lines count="1">
+          <input semantic="VERTEX" source="#Circle_018-mesh-vertices" offset="0"/>
+          <p>7 6</p>
+        </lines>
+        <triangles count="6">
+          <input semantic="VERTEX" source="#Circle_018-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Circle_018-mesh-normals" offset="1"/>
+          <p>13 0 12 0 4 0 13 0 4 0 0 0 11 0 5 0 3 0 11 0 3 0 1 0 9 0 10 0 7 0 9 0 7 0 8 0</p>
+        </triangles>
+      </mesh>
+    </geometry>
   </library_geometries>
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
@@ -155,6 +191,10 @@
       <node id="robody_mask" name="robody_mask" type="NODE">
         <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
         <instance_geometry url="#Circle_015-mesh" name="robody_mask"/>
+      </node>
+      <node id="robase_mask" name="robase_mask" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#Circle_018-mesh" name="robase_mask"/>
       </node>
     </visual_scene>
   </library_visual_scenes>

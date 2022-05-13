@@ -44,6 +44,7 @@ void CRobot::setModel(CModel& model) {
 	base = this->model.getMesh("robase");
 	treads = this->model.getMesh("treads");
 	upperBodyMask = this->model.getMesh("robody_mask");
+	robaseMask = this->model.getMesh("robase_mask");
 	setBoundingRadius();
 }
 
@@ -117,6 +118,7 @@ void CRobot::initDrawFn() {
 	fn->lowerMeshes.push_back(model.getMesh("treads"));
 	fn->upperMeshes.push_back(model.getMesh("robody"));
 	fn->upperMask = model.getMesh("robody_mask");
+	fn->lowerMasks.push_back(model.getMesh("robase_mask"));
 
 
 	//drawFn = std::make_shared<CMultiDraw>(this);
@@ -163,6 +165,7 @@ void CRobot::buildWorldMatrix() {
 	//maybe solve by giving every model a collision subModel to check against.
 
 	treads->matrix = glm::translate(worldM, glm::vec3(-treadTranslate, 0, 0));
+	robaseMask->matrix = base->matrix;
 }
 
 void CRobot::startTracking(CEntity* target) {

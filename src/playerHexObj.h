@@ -100,6 +100,9 @@ private:
 	TModelMesh* leftFoot;
 	TModelMesh* rightFoot;
 
+	TModelMesh* leftFootMask;
+	TModelMesh* rightFootMask;
+
 	glm::vec3 mouseVec; ///<Relative direction of mousepointer.
 
 	TMoveDir moveDir = moveNone; ///<Move direction ordered by player.

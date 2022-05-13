@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 2.79.0 commit date:2018-03-22, commit time:14:10, hash:f4dc9f9d68b</authoring_tool>
     </contributor>
-    <created>2022-05-06T14:39:08</created>
-    <modified>2022-05-06T14:39:08</modified>
+    <created>2022-05-13T16:45:26</created>
+    <modified>2022-05-13T16:45:26</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -106,6 +106,38 @@
         </lines>
       </mesh>
     </geometry>
+    <geometry id="Circle_017-mesh" name="Circle.017">
+      <mesh>
+        <source id="Circle_017-mesh-positions">
+          <float_array id="Circle_017-mesh-positions-array" count="51">-0.0832048 0.1427882 0 -0.07485681 0.1228603 0 -0.05119764 0.1138357 0 -0.01412367 0.11847 0 -0.07583242 0.1638368 0 -0.05194032 0.1734732 0 -0.01412367 0.1735932 0 0.007676422 0.1727031 0 0.007721006 0.1186973 0 0.02584481 0.1190361 0 0.1034212 0.08854752 0 0.1474602 0.09396773 0 0.1645675 0.1197136 0 0.1613494 0.1417331 0 0.1452582 0.1586712 0 0.1120596 0.173746 0 0.0427829 0.1757786 0</float_array>
+          <technique_common>
+            <accessor source="#Circle_017-mesh-positions-array" count="17" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Circle_017-mesh-normals">
+          <float_array id="Circle_017-mesh-normals-array" count="3">0 0 1</float_array>
+          <technique_common>
+            <accessor source="#Circle_017-mesh-normals-array" count="1" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Circle_017-mesh-vertices">
+          <input semantic="POSITION" source="#Circle_017-mesh-positions"/>
+        </vertices>
+        <triangles count="13">
+          <input semantic="VERTEX" source="#Circle_017-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Circle_017-mesh-normals" offset="1"/>
+          <p>5 0 3 0 6 0 3 0 5 0 2 0 13 0 11 0 12 0 4 0 0 0 5 0 15 0 16 0 9 0 2 0 0 0 1 0 16 0 7 0 9 0 9 0 7 0 8 0 13 0 14 0 11 0 11 0 14 0 10 0 5 0 0 0 2 0 9 0 10 0 15 0 15 0 10 0 14 0</p>
+        </triangles>
+      </mesh>
+    </geometry>
     <geometry id="Circle_013-mesh" name="Circle.013">
       <mesh>
         <source id="Circle_013-mesh-positions">
@@ -137,6 +169,38 @@
         </lines>
       </mesh>
     </geometry>
+    <geometry id="Circle_016-mesh" name="Circle.016">
+      <mesh>
+        <source id="Circle_016-mesh-positions">
+          <float_array id="Circle_016-mesh-positions-array" count="51">-0.0832048 -0.1325978 0 -0.07485681 -0.1126699 0 -0.05119764 -0.1036453 0 -0.01412367 -0.1082795 0 -0.07583242 -0.1536465 0 -0.05194032 -0.1632828 0 -0.01412367 -0.1634028 0 0.007676422 -0.1625127 0 0.007721006 -0.1085069 0 0.02584481 -0.1088457 0 0.1034212 -0.07835716 0 0.1474602 -0.0837773 0 0.1645675 -0.1095232 0 0.1613494 -0.1315427 0 0.1452582 -0.1484808 0 0.1120596 -0.1635556 0 0.0427829 -0.1655882 0</float_array>
+          <technique_common>
+            <accessor source="#Circle_016-mesh-positions-array" count="17" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Circle_016-mesh-normals">
+          <float_array id="Circle_016-mesh-normals-array" count="3">0 0 1</float_array>
+          <technique_common>
+            <accessor source="#Circle_016-mesh-normals-array" count="1" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Circle_016-mesh-vertices">
+          <input semantic="POSITION" source="#Circle_016-mesh-positions"/>
+        </vertices>
+        <triangles count="13">
+          <input semantic="VERTEX" source="#Circle_016-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Circle_016-mesh-normals" offset="1"/>
+          <p>2 0 5 0 3 0 9 0 7 0 16 0 9 0 8 0 7 0 13 0 11 0 14 0 11 0 10 0 14 0 10 0 9 0 15 0 14 0 10 0 15 0 15 0 9 0 16 0 13 0 12 0 11 0 5 0 2 0 0 0 4 0 5 0 0 0 5 0 6 0 3 0 2 0 1 0 0 0</p>
+        </triangles>
+      </mesh>
+    </geometry>
   </library_geometries>
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
@@ -152,9 +216,17 @@
         <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
         <instance_geometry url="#Circle_012-mesh" name="footL"/>
       </node>
+      <node id="footL_mask" name="footL_mask" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#Circle_017-mesh" name="footL_mask"/>
+      </node>
       <node id="footR" name="footR" type="NODE">
         <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
         <instance_geometry url="#Circle_013-mesh" name="footR"/>
+      </node>
+      <node id="footR_mask" name="footR_mask" type="NODE">
+        <matrix sid="transform">1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
+        <instance_geometry url="#Circle_016-mesh" name="footR_mask"/>
       </node>
     </visual_scene>
   </library_visual_scenes>

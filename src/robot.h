@@ -95,6 +95,7 @@ private:
 	TModelMesh* base;
 	TModelMesh* treads;
 	TModelMesh* upperBodyMask;
+	TModelMesh* robaseMask;
 
 	TrackingState trackingState = trackNone; ///<What, if anything, we're keeping upper body pointing at.
 	CEntity* trackingEntity = nullptr;

@@ -50,6 +50,9 @@ void CPlayerObject::setModel(CModel& modelRef) {
 	leftFoot = model.getMesh("footL");
 	rightFoot = model.getMesh("footR");
 	upperBodyMask = model.getMesh("body_mask");
+	leftFootMask = model.getMesh("footL_mask");
+	rightFootMask = model.getMesh("footR_mask");
+
 	setBoundingRadius();
 }
 
@@ -67,9 +70,11 @@ void CPlayerObject::buildWorldMatrix() {
 
 	worldM = glm::rotate(worldM, rotation, glm::vec3(0, 0, -1));
 
-	rightFoot->matrix = glm::translate(worldM, glm::vec3(footExtension, 0, 0));;
+	rightFoot->matrix = glm::translate(worldM, glm::vec3(footExtension, 0, 0));
 	leftFoot->matrix = glm::translate(worldM, glm::vec3(-footExtension,0,0));
 
+	leftFootMask->matrix = leftFoot->matrix;
+	rightFootMask->matrix = rightFoot->matrix;
 
 }
 
@@ -80,6 +85,8 @@ void CPlayerObject::initDrawFn() {
 	fn->lowerMeshes.push_back(model.getMesh("footR"));
 	fn->upperMeshes.push_back(model.getMesh("body"));
 	fn->upperMask = model.getMesh("body_mask");
+	fn->lowerMasks.push_back(model.getMesh("footL_mask"));
+	fn->lowerMasks.push_back(model.getMesh("footR_mask"));
 }
 
 

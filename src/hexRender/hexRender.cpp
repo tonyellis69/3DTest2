@@ -60,6 +60,7 @@ void CHexRender::init() {
 	sceneLayerShader = shader::create("sceneLayer");
 	hMap = sceneLayerShader->getUniform("mapTexture");
 	hModels = sceneLayerShader->getUniform("modelsTexture");
+	hBlur = sceneLayerShader->getUniform("blurTexture");
 
 
 	std::vector<vBuf::T2DtexVert> quadVerts{	{ {-1.0f, 1.0f}, { 0.0f,1.0f} },
@@ -155,6 +156,7 @@ void CHexRender::resetDrawLists() {
 	solidDrawList.clear();
 	explosionDrawList.clear();
 	maskList.clear();
+	lowerMaskList.clear();
 }
 
 void CHexRender::drawLineList() {
@@ -224,11 +226,19 @@ void CHexRender::drawMaskList() {
 		maskShader->setUniform(hMaskMVP, mvp);
 		drawMeshSolid(*draw.meshRec);
 	}
-	//glEnable(GL_DEPTH_TEST);
-	//modelTexture.savePNG("d://model.png");
-//	levelTexture.savePNG("d://level.png");
 
-	glDepthRange(0, 1);
+	//modelTexture.savePNG("d://model.png");
+	//screenMask.savePNG("d://mask.png");
+
+	glDepthRange(0, 1); //restore default
+
+	for (auto& draw : lowerMaskList) {
+		draw.buf->setVAO();
+		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+		maskShader->setUniform(hMaskMVP, mvp);
+		drawMeshSolid(*draw.meshRec);
+	}
+
 }
 
 void CHexRender::drawExplosionList() {
@@ -267,11 +277,13 @@ void CHexRender::startSceneBuffer() {
 	glBindFramebuffer(GL_FRAMEBUFFER, hScreenFrameBuffer); //NB: bulk of overhead is here
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, levelTexture.handle, 0);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, modelTexture.handle, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, screenMask.handle, 0);
+
 	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, hStencilBuf);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
 		GL_TEXTURE_2D, hDepthTex, 0);
-	GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
-	glDrawBuffers(2, DrawBuffers);
+	GLenum DrawBuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, DrawBuffers);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		fatalLog << alertMsg << "\nError creating framebuffer.";
 		return;
@@ -283,22 +295,25 @@ void CHexRender::startSceneBuffer() {
 }
 
 void CHexRender::blur() {
-	glClearColor(0.0, 0.0, 0.0, 1); 
+	glClearColor(0.0, 0.0, 0.0, 0); 
 	for (int b = 0; b < 2; b++) {
 		glBindFramebuffer(GL_FRAMEBUFFER, hBlurFrameBuffer[b]);
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, blurTexture[b].handle,0);
-		glClear(GL_COLOR_BUFFER_BIT); //clears away last frame's residue
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //clears away last frame's residue
 	}
+	
+
+	//blur texs clear here
 
 	blurShader->activate();
 	screenQuad.setVAO();
 	bool horizontal = true, first_iteration = true;
 
-	int blurs = 6;
+	int blurs = 4;
 	glViewport(0, 0, blurTexture[0].width, blurTexture[0].height);
 	for (int b = 0; b < blurs; b++) {
 		glBindFramebuffer(GL_FRAMEBUFFER, hBlurFrameBuffer[horizontal]);
-		unsigned int hTexture = first_iteration ? screenBuffer.handle : blurTexture[!horizontal].handle;
+		unsigned int hTexture = first_iteration ? screenMask.handle : blurTexture[!horizontal].handle;
 		blurShader->setTexture0(hSrcTexture, hTexture);
 		blurShader->setUniform(hHorizontal, horizontal);
 		glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, 0);
@@ -310,6 +325,9 @@ void CHexRender::blur() {
 	}
 	screenQuad.clearVAO();
 	glViewport(0, 0, screenBuffer.width, screenBuffer.height);
+
+	//blurTexture[0].savePNG("d://blur0.png");
+	//now black!
 }
 
 void CHexRender::drawScreenBuffer() {
@@ -328,14 +346,18 @@ void CHexRender::drawScreenBuffer() {
 void CHexRender::drawSceneLayers() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//levelTexture.savePNG("d://level.png");
-	//modelTexture.savePNG("d://models.png");
+	//blurTexture[1].savePNG("d://blur.png");
 	sceneLayerShader->activate();
 	sceneLayerShader->setTexture0(hMap, levelTexture.handle);
 	sceneLayerShader->setTexture1(hModels, modelTexture.handle);
+	sceneLayerShader->setTexture2(hBlur, blurTexture[1].handle);
 	screenQuad.setVAO();
 	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, 0);
 	screenQuad.clearVAO();
 
+	//levelTexture.savePNG("d://level.png");
+	//screenMask.savePNG("d://mask.png");
+	
 }
 
 

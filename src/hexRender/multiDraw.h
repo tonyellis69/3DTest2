@@ -12,4 +12,5 @@ public:
 	std::vector<TModelMesh*> lowerMeshes;
 	TModelMesh* upperMask = NULL;
 	std::vector<TModelMesh*> upperMeshes;
+	std::vector<TModelMesh*> lowerMasks;
 };

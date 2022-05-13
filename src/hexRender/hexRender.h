@@ -76,6 +76,7 @@ public:
 	std::vector<TSolidDraw> solidDrawList;
 	std::vector<TSplodeDraw> explosionDrawList;
 	std::vector<TSolidDraw> maskList;
+	std::vector<TSolidDraw> lowerMaskList;
 
 	std::vector<std::shared_ptr<CGraphic>> graphics;
 
@@ -115,6 +116,7 @@ private:
 	CShader* sceneLayerShader;
 	unsigned int hMap;
 	unsigned int hModels;
+	unsigned int hBlur;
 
 
 	CRenderTexture screenBuffer;
