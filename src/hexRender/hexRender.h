@@ -49,6 +49,7 @@ public:
 	unsigned int hWinSize;
 	unsigned int hPalette;
 	unsigned int hChannel;
+	unsigned int hThickness;
 
 	CShader* filledShader;
 	unsigned int hMVPF;
@@ -81,6 +82,9 @@ public:
 	std::vector<std::shared_ptr<CGraphic>> graphics;
 
 	int tmpX = 0;
+
+	float sceneryLine = 6;
+	float modelLine = 2; // 1.5f;
 
 private:
 	void addToMapBuf(std::vector<vc>& v, std::vector<unsigned int>& i, CHex& hex, int tile);

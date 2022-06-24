@@ -368,6 +368,7 @@ void CHexWorld::draw() {
 	//hexRender.drawScreenBuffer();
 	hexRender.drawSceneLayers();
 
+	
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */

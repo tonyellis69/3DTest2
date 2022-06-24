@@ -23,6 +23,7 @@ void CHexRender::init() {
 	hWinSize = lineShader->getUniform("winSize");
 	hPalette = lineShader->getUniform("colourPalette");
 	hChannel = lineShader->getUniform("channel");
+	hThickness = lineShader->getUniform("thickness");
 
 	filledShader = shader::create("filled");
 	hMVPF = filledShader->getUniform("mvpMatrix");
@@ -121,6 +122,7 @@ void CHexRender::drawMap() {
 	lineShader->setUniform(hColour, glm::vec4(1, 0, 0, 0));
 	glUniform4fv(hPalette, 4, (float*)(uniqueTileColours.data()));
 	lineShader->setUniform(hChannel, 0.0f);
+	lineShader->setUniform(hThickness, sceneryLine);
 
 	//renderer.drawLineStripAdjBuf(mapBuf, 0, mapBuf.numElements);
 	mapBuf.setVAO();
@@ -163,6 +165,7 @@ void CHexRender::drawLineList() {
 	lineShader->activate();
 	lineShader->setUniform(hWinSize, pCamera->getView());
 	lineShader->setUniform(hChannel, 1.0f);
+	lineShader->setUniform(hThickness, modelLine);
 
 	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF); //the test to pass
 	//glStencilMask(0x00);
@@ -185,6 +188,7 @@ void CHexRender::drawUpperLineList() {
 	lineShader->activate();
 	lineShader->setUniform(hWinSize, pCamera->getView());
 	lineShader->setUniform(hChannel, 1.0f);
+	lineShader->setUniform(hThickness, modelLine);
 
 	for (auto& draw : upperLineList) {
 		draw.buf->setVAO();
@@ -303,13 +307,13 @@ void CHexRender::blur() {
 	}
 	
 
-	//blur texs clear here
+	glDisable(GL_BLEND);
 
 	blurShader->activate();
 	screenQuad.setVAO();
 	bool horizontal = true, first_iteration = true;
 
-	int blurs = 4;
+	int blurs =  4;
 	glViewport(0, 0, blurTexture[0].width, blurTexture[0].height);
 	for (int b = 0; b < blurs; b++) {
 		glBindFramebuffer(GL_FRAMEBUFFER, hBlurFrameBuffer[horizontal]);
@@ -326,8 +330,9 @@ void CHexRender::blur() {
 	screenQuad.clearVAO();
 	glViewport(0, 0, screenBuffer.width, screenBuffer.height);
 
-	//blurTexture[0].savePNG("d://blur0.png");
-	//now black!
+	glEnable(GL_BLEND);
+	//blurTexture[1].savePNG("d://blur.png");
+	//screenMask.savePNG("d://mask.png");
 }
 
 void CHexRender::drawScreenBuffer() {
@@ -355,6 +360,7 @@ void CHexRender::drawSceneLayers() {
 	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, 0);
 	screenQuad.clearVAO();
 
+	//modelTexture.savePNG("d://model.png");
 	//levelTexture.savePNG("d://level.png");
 	//screenMask.savePNG("d://mask.png");
 	
@@ -364,10 +370,10 @@ void CHexRender::drawSceneLayers() {
 void CHexRender::setScreenSize(glm::vec2& ratio) {
 	screenBuffer.resize(int(ratio.x), int(ratio.y) );
 	screenMask.resize(int(ratio.x), int(ratio.y));
-	//blurTexture[0].resize(int(ratio.x), int(ratio.y));
-	//blurTexture[1].resize(int(ratio.x), int(ratio.y));
-	blurTexture[0].resize(int(ratio.x)/2, int(ratio.y)/2);
-	blurTexture[1].resize(int(ratio.x)/2, int(ratio.y)/2);
+	blurTexture[0].resize(int(ratio.x), int(ratio.y));
+	blurTexture[1].resize(int(ratio.x), int(ratio.y));
+	/*blurTexture[0].resize(int(ratio.x)/2, int(ratio.y)/2);
+	blurTexture[1].resize(int(ratio.x)/2, int(ratio.y)/2);*/
 
 	levelTexture.resize(int(ratio.x), int(ratio.y));
 	modelTexture.resize(int(ratio.x), int(ratio.y));

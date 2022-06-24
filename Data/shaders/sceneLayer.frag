@@ -18,14 +18,15 @@ void main() {
 	vec3 blurBright = blurColour.rgb * 1.5;
 	blurBright = min(blurBright,0.4);
 
-	vec3 mapAndBlur =  mapColour.rgb + blurBright; 
+	vec3 mapAndBlur =  mapColour.rgb;// 
+	
+	//vec3 mapAndBlur = mapColour.rgb * (1 - blurColour.a) + (blurBright );
 	
 	vec3 final = modelsColour.rgb /* vec3(1) * modelsColour.a*/  + mapAndBlur.rgb * (1-modelsColour.a);
 
 
 	colour = vec4(final,1);
 	
-	//colour = vec4(vec3(blurColour.a),1);
 	
-	//colour = vec4(blurColour.rgb,1);
+
 };

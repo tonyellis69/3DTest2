@@ -6,22 +6,28 @@ layout(triangle_strip, max_vertices = 7) out;
   
  uniform vec2 winSize; //multiplay by to get screenspace, divide by to get normspace
  
+ uniform float thickness; // =  3;//2.0f; //2.0f;
+ 
  out vec2 gsTexCoord;
+ 
+ flat out int gsSegNo;
  
  in vColour {
 	vec4 colour;
 } colour_in[];
 
 out vec4 gsColour;
+out vec2 lineA;
+out vec2 lineB;
+out float gsThickness;
+out vec2 gsWinSize;
 
- 
- float thickness =  3;//2.0f; //2.0f;
  float miter_limit = 0.75f; //1.0f; //1 = always, -1 = never. 0.75f good default.
  //NB 1 (always) creates glitches with very small lines at sharpish angles, which -1 and 0.75f seem to fix
 
 //Put vertex into screen space, eg, 1280 x 1060
 vec2 screenSpace(vec4 vertex) {
-	return vec2( vertex.xy / vertex.w ) * winSize;
+	return vec2( vertex.xy / vertex.w ) * winSize; //now in range -screenwidth to screenwidth
 }
 
 
@@ -67,6 +73,14 @@ void main() {
 	gsColour = colour_in[0].colour;
 	
 	float z = 0;
+	
+	lineA = (p1 + winSize) * 0.5; //convert to actual frag coordinates
+	lineB = (p2 + winSize) * 0.5f;
+	gsThickness = thickness;
+	gsWinSize = winSize;
+	
+	gsSegNo = gl_PrimitiveIDIn % 2;
+	
 
 	  // prevent excessively long miters at sharp corners
   if( dot(v0,v1) < -miter_limit ) {
@@ -76,7 +90,7 @@ void main() {
 	// close the gap
 	if( dot(v0,n1) > 0 ) { // /- join
 		gsTexCoord = vec2(0, 0);
-		gl_Position = vec4( (p1 + thickness * n0) / winSize, z, 1.0 );
+		gl_Position = vec4( (p1 + thickness * n0) / winSize, z, 1.0 ); //back in range -1 to 1
 		EmitVertex();
 		gsTexCoord = vec2(0, 0);
 		gl_Position = vec4( (p1 + thickness * n1) / winSize, z, 1.0 );
@@ -107,7 +121,7 @@ void main() {
 	}
 	
 
-	  // generate the triangle strip
+	  // generate the triangle strip for the rectangle
 	gsTexCoord = vec2(0, 0);
 	gl_Position = vec4( (p1 + length_a * miter_a) / winSize, z, 1.0 );
 	EmitVertex();
