@@ -28,5 +28,11 @@ void main() {
 	colour = vec4(final,1);
 	
 	
+	
+	colour = blurColour;
+	//colour.a = 0.25f;
+	//colour.r = 0;
+	//colour.g = 0;
+	
 
 };

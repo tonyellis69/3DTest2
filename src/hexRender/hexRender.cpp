@@ -24,6 +24,7 @@ void CHexRender::init() {
 	hPalette = lineShader->getUniform("colourPalette");
 	hChannel = lineShader->getUniform("channel");
 	hThickness = lineShader->getUniform("thickness");
+	hSmoothing = lineShader->getUniform("smoothing");
 
 	filledShader = shader::create("filled");
 	hMVPF = filledShader->getUniform("mvpMatrix");
@@ -50,6 +51,8 @@ void CHexRender::init() {
 	blurShader = shader::create("blur");
 	hSrcTexture = blurShader->getUniform("srcTexture");
 	hHorizontal = blurShader->getUniform("horizontal");
+	hKernelSize = blurShader->getUniform("blurSize");
+	hSigma = blurShader->getUniform("sigma");
 
 
 	screenBufShader = shader::create("screen");
@@ -165,7 +168,8 @@ void CHexRender::drawLineList() {
 	lineShader->activate();
 	lineShader->setUniform(hWinSize, pCamera->getView());
 	lineShader->setUniform(hChannel, 1.0f);
-	lineShader->setUniform(hThickness, modelLine);
+	lineShader->setUniform(hThickness, tmpLineThickness);
+	lineShader->setUniform(hSmoothing, tmpLineSmooth);
 
 	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF); //the test to pass
 	//glStencilMask(0x00);
@@ -188,7 +192,8 @@ void CHexRender::drawUpperLineList() {
 	lineShader->activate();
 	lineShader->setUniform(hWinSize, pCamera->getView());
 	lineShader->setUniform(hChannel, 1.0f);
-	lineShader->setUniform(hThickness, modelLine);
+	lineShader->setUniform(hThickness, tmpLineThickness);
+	lineShader->setUniform(hSmoothing, tmpLineSmooth);
 
 	for (auto& draw : upperLineList) {
 		draw.buf->setVAO();
@@ -313,13 +318,16 @@ void CHexRender::blur() {
 	screenQuad.setVAO();
 	bool horizontal = true, first_iteration = true;
 
-	int blurs =  4;
+	int blurs = tmpBlurs;
 	glViewport(0, 0, blurTexture[0].width, blurTexture[0].height);
 	for (int b = 0; b < blurs; b++) {
 		glBindFramebuffer(GL_FRAMEBUFFER, hBlurFrameBuffer[horizontal]);
 		unsigned int hTexture = first_iteration ? screenMask.handle : blurTexture[!horizontal].handle;
 		blurShader->setTexture0(hSrcTexture, hTexture);
 		blurShader->setUniform(hHorizontal, horizontal);
+		blurShader->setUniform(hKernelSize, tmpKernel);
+		blurShader->setUniform(hSigma, tmpSigma);
+
 		glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, 0);
 		horizontal = !horizontal;
 		if (first_iteration) {

@@ -50,6 +50,7 @@ public:
 	unsigned int hPalette;
 	unsigned int hChannel;
 	unsigned int hThickness;
+	unsigned int hSmoothing;
 
 	CShader* filledShader;
 	unsigned int hMVPF;
@@ -68,6 +69,12 @@ public:
 	unsigned int hSeed;
 	unsigned int hExpPalette;
 
+	CShader* blurShader;
+	unsigned int hSrcTexture;
+	unsigned int hHorizontal;
+	unsigned int hKernelSize;
+	unsigned int hSigma;
+
 
 
 	std::unordered_map<std::string, std::vector<glm::vec4>> palettes;
@@ -82,6 +89,13 @@ public:
 	std::vector<std::shared_ptr<CGraphic>> graphics;
 
 	int tmpX = 0;
+
+	float tmpLineThickness = 6; // 2;
+	float tmpLineSmooth = 0; // 1.5f;
+	int tmpKernel = 5;
+	float tmpSigma = 0.1;
+	int tmpBlurs = 1;
+
 
 	float sceneryLine = 6;
 	float modelLine = 2; // 1.5f;
@@ -103,9 +117,7 @@ private:
 	CBuf2 explosionBuf; //Holds dummy verts for draw calls
 
 
-	CShader* blurShader;
-	unsigned int hSrcTexture;
-	unsigned int hHorizontal;
+
 
 	CRenderTexture blurTexture[2];
 	unsigned int hBlurFrameBuffer[2];

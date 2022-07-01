@@ -66,6 +66,29 @@ void CHexWorld::onEvent(CEvent& e) {
 			game.slowed = !game.slowed;
 		else if (e.i1 == GLFW_KEY_F3)
 			hexRender.tmpX = hexRender.tmpX == 0 ? 1 : 0;
+
+		else if (e.i1 == '-')
+			hexRender.tmpLineThickness -= 0.25f;
+		else if (e.i1 == '=')
+			hexRender.tmpLineThickness += 0.25f;
+		else if (e.i1 == '[')
+			hexRender.tmpLineSmooth -= 0.1f;
+		else if (e.i1 == ']')
+			hexRender.tmpLineSmooth += 0.1f;
+
+		else if (e.i1 == 'L')
+			hexRender.tmpKernel -= 2;
+		else if (e.i1 == ';')
+			hexRender.tmpKernel += 2;
+		else if (e.i1 == '\'')
+			hexRender.tmpSigma -= 0.1f;
+		else if (e.i1 == '\\')
+			hexRender.tmpSigma += 0.1f;
+		else if (e.i1 == ',')
+			hexRender.tmpBlurs -= 1;
+		else if (e.i1 == '.')
+			hexRender.tmpBlurs += 1;
+
 	}
 }
 
@@ -362,6 +385,12 @@ void CHexWorld::draw() {
 	}
 
 	imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp));
+
+	imRendr::drawText(300, 70, "thickness: " + std::to_string(hexRender.tmpLineThickness)
+		+ " smoothing: " + std::to_string(hexRender.tmpLineSmooth));
+	imRendr::drawText(300, 90, "kernel: " + std::to_string(hexRender.tmpKernel)
+		+ " sigma: " + std::to_string(hexRender.tmpSigma) +  " blurs: "
+		+ std::to_string(hexRender.tmpBlurs));
 
 
 	hexRender.blur();

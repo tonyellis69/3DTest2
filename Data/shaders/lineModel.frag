@@ -4,12 +4,14 @@
 
 uniform vec4 colour;
 uniform float channel;
+uniform float smoothing;
 
 in vec2 gsTexCoord;
 in vec4 gsColour;
 in vec2 lineA;
 in vec2 lineB;
 in float gsThickness;
+
 in vec2 gsWinSize;
 flat in int gsSegNo;
 
@@ -77,7 +79,7 @@ void main() {
 		else
 			channel1 = vec4(0,0,col,1);	
 		
-		col = pow(col,1.5f);
+		col = pow(col,smoothing);
 		
 		channel1 = vec4(vec3(1),col);
 
