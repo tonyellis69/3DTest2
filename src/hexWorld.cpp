@@ -72,9 +72,13 @@ void CHexWorld::onEvent(CEvent& e) {
 		else if (e.i1 == '=')
 			hexRender.tmpLineThickness += 0.25f;
 		else if (e.i1 == '[')
-			hexRender.tmpLineSmooth -= 0.1f;
+			hexRender.tmpLineSmooth -= 0.05f;
 		else if (e.i1 == ']')
-			hexRender.tmpLineSmooth += 0.1f;
+			hexRender.tmpLineSmooth += 0.05f;
+		else if (e.i1 == 'O')
+			hexRender.tmpLineSolid -= 0.05f;
+		else if (e.i1 == 'P')
+			hexRender.tmpLineSolid += 0.05f;
 
 		else if (e.i1 == 'L')
 			hexRender.tmpKernel -= 2;
@@ -88,6 +92,16 @@ void CHexWorld::onEvent(CEvent& e) {
 			hexRender.tmpBlurs -= 1;
 		else if (e.i1 == '.')
 			hexRender.tmpBlurs += 1;
+		else if (e.i1 == '/')
+		{
+			hexRender.tmpBlurTextDivisor++;
+			if (hexRender.tmpBlurTextDivisor > 5)
+				hexRender.tmpBlurTextDivisor = 1;
+			hexRender.resizeBlurTextures();
+		}
+
+		else if (e.i1 == 'R')
+			hexRender.recompileShader();
 
 	}
 }
@@ -359,7 +373,7 @@ void CHexWorld::draw() {
 	hexRender.drawUpperLineList();
 	hexRender.drawExplosionList();
 
-	//temp!
+	//hexRender.drawScaledShape();
 
 
 
@@ -389,8 +403,12 @@ void CHexWorld::draw() {
 	imRendr::drawText(300, 70, "thickness: " + std::to_string(hexRender.tmpLineThickness)
 		+ " smoothing: " + std::to_string(hexRender.tmpLineSmooth));
 	imRendr::drawText(300, 90, "kernel: " + std::to_string(hexRender.tmpKernel)
-		+ " sigma: " + std::to_string(hexRender.tmpSigma) +  " blurs: "
-		+ std::to_string(hexRender.tmpBlurs));
+		+ " sigma: " + std::to_string(hexRender.tmpSigma) + " blurs: "
+		+ std::to_string(hexRender.tmpBlurs)
+		+ " blur div: " + std::to_string(hexRender.tmpBlurTextDivisor)
+		+ " solidity: " + std::to_string(hexRender.tmpLineSolid));
+
+
 
 
 	hexRender.blur();

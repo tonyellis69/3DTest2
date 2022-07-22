@@ -28,6 +28,9 @@ void main() {
   incrementalGaussian.x = 1.0 / (sqrt(2.0 * PI) * sigma);
   incrementalGaussian.y = exp(-0.5 / (sigma * sigma));
   incrementalGaussian.z = incrementalGaussian.y * incrementalGaussian.y;
+  
+
+ 
 
   vec4 avgValue = vec4(0.0, 0.0, 0.0, 0.0);
   float coefficientSum = 0.0;

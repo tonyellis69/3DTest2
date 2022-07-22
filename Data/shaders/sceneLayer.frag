@@ -30,9 +30,9 @@ void main() {
 	
 	
 	colour = blurColour;
-	//colour.a = 0.25f;
-	//colour.r = 0;
-	//colour.g = 0;
+
+
+	colour = modelsColour;
 	
 
 };

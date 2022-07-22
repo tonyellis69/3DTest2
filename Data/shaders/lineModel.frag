@@ -5,11 +5,12 @@
 uniform vec4 colour;
 uniform float channel;
 uniform float smoothing;
+uniform float solid;
 
 in vec2 gsTexCoord;
 in vec4 gsColour;
-in vec2 lineA;
-in vec2 lineB;
+flat in vec2 lineA;
+flat in vec2 lineB;
 in float gsThickness;
 
 in vec2 gsWinSize;
@@ -17,6 +18,7 @@ flat in int gsSegNo;
 
 layout(location = 0) out vec4 channel0; //scenery
 layout(location = 1) out vec4 channel1; //model
+layout(location = 2) out vec4 channel2; //glow
 
 
 
@@ -35,6 +37,16 @@ float lineDist(vec2 segA, vec2 segB, vec2 pt) {
 	return dot(ac, ac) - e * e / f;
 }
 
+float lineDist2(vec2 segA, vec2 segB, vec2 pt) {
+	vec2 ab = segB - segA;
+	float t = dot(pt - segA, ab) / dot(ab, ab);
+	if (t < 0.0f) 
+		t = 0.0f;
+	if (t > 1.0f) 
+		t = 1.0f;
+	vec2 np = segA + t * ab;
+	return distance(pt,np);
+}
 
 
 void main() {
@@ -65,21 +77,26 @@ void main() {
 		float dist = lineDist(lineA, lineB, p);
 		float normDist = sqrt(dist) / gsThickness;
 		
-		if (normDist > 1) {
+		normDist = lineDist2(lineA, lineB, p) / gsThickness;
+		
+		if (normDist < 0) {
 			channel1 = vec4(0,1,0,1);
 		
 			return;
 		}
 		
 		channel1 = vec4(vec3(1 - normDist),1);
-		float col = 1 - normDist;
+		float col = 1 - normDist; //0 = edge, 1 = centre
 
-		if (gsSegNo == 1) 
+		/* if (gsSegNo == 1) //stripe diagnostic
 			channel1 = vec4(col,0,0,1);	
 		else
 			channel1 = vec4(0,0,col,1);	
+		*/
 		
-		col = pow(col,smoothing);
+		//col = pow(col,smoothing);
+		col = smoothstep(smoothing,solid,col);
+		//col = smoothstep(0.5,0.9,col);
 		
 		channel1 = vec4(vec3(1),col);
 

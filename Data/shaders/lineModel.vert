@@ -8,12 +8,17 @@ out vColour {
 	vec4 colour; 
 } colour_out;
 
+
 uniform mat4 mvpMatrix;
 
 uniform vec4 colourPalette[4] ;
 
+uniform float scale = 1;
+
 void main() {
-	gl_Position = mvpMatrix * vec4(position,1);
+	gl_Position = mvpMatrix * ( vec4(position,1) * vec4(scale,scale,1,1)  );
+
+	
 	if (colourPalette.length() == 0)
 		colour_out.colour = vec4(1,0,0,1);
 	else

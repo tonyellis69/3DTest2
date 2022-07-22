@@ -16,6 +16,31 @@
 
 /** Load shaders, etc. */
 void CHexRender::init() {
+	recompileShader();
+
+	std::vector<glm::vec3> dummyVerts(numExplosionParticles, glm::vec3(0));
+	std::vector<unsigned int> dummyIndex(numExplosionParticles);
+	std::iota(std::begin(dummyIndex), std::end(dummyIndex), 0); // Fill with 0, 1, ..., 99.
+	explosionBuf.storeVerts(dummyVerts, dummyIndex, 1);
+
+	
+
+
+	std::vector<vBuf::T2DtexVert> quadVerts{	{ {-1.0f, 1.0f}, { 0.0f,1.0f} },
+												{ {-1.0f, -1.0f}, {0,0.0f} },
+												{ {1.0f, 1.0f}, {1.0f, 1.0f} },
+												{ {1.0f, -1.0f}, {1.0f, 0.0f } } };
+	std::vector<unsigned short> idx{ 0,1,2,3 };
+	screenQuad.storeVerts(quadVerts, idx, 2, 2);
+
+	glGenFramebuffers(1, &hScreenFrameBuffer);
+	glGenFramebuffers(2, hBlurFrameBuffer);
+
+	glGenRenderbuffers(1, &hStencilBuf);
+
+	glGenTextures(1, &hDepthTex);
+}
+void CHexRender::recompileShader() {
 	lineShader = shader::create("lineModel");
 	//very temp!!!
 	hMVP = lineShader->getUniform("mvpMatrix");
@@ -25,6 +50,8 @@ void CHexRender::init() {
 	hChannel = lineShader->getUniform("channel");
 	hThickness = lineShader->getUniform("thickness");
 	hSmoothing = lineShader->getUniform("smoothing");
+	hScale = lineShader->getUniform("scale");
+	hSolid = lineShader->getUniform("solid");
 
 	filledShader = shader::create("filled");
 	hMVPF = filledShader->getUniform("mvpMatrix");
@@ -42,12 +69,6 @@ void CHexRender::init() {
 	hSeed = splodeShader->getUniform("seed");
 	hExpPalette = splodeShader->getUniform("colourPalette");
 
-	std::vector<glm::vec3> dummyVerts(numExplosionParticles, glm::vec3(0));
-	std::vector<unsigned int> dummyIndex(numExplosionParticles);
-	std::iota(std::begin(dummyIndex), std::end(dummyIndex), 0); // Fill with 0, 1, ..., 99.
-	explosionBuf.storeVerts(dummyVerts, dummyIndex, 1);
-
-	
 	blurShader = shader::create("blur");
 	hSrcTexture = blurShader->getUniform("srcTexture");
 	hHorizontal = blurShader->getUniform("horizontal");
@@ -66,21 +87,8 @@ void CHexRender::init() {
 	hModels = sceneLayerShader->getUniform("modelsTexture");
 	hBlur = sceneLayerShader->getUniform("blurTexture");
 
+}
 
-	std::vector<vBuf::T2DtexVert> quadVerts{	{ {-1.0f, 1.0f}, { 0.0f,1.0f} },
-												{ {-1.0f, -1.0f}, {0,0.0f} },
-												{ {1.0f, 1.0f}, {1.0f, 1.0f} },
-												{ {1.0f, -1.0f}, {1.0f, 0.0f } } };
-	std::vector<unsigned short> idx{ 0,1,2,3 };
-	screenQuad.storeVerts(quadVerts, idx, 2, 2);
-
-	glGenFramebuffers(1, &hScreenFrameBuffer);
-	glGenFramebuffers(2, hBlurFrameBuffer);
-
-	glGenRenderbuffers(1, &hStencilBuf);
-
-	glGenTextures(1, &hDepthTex);
-};
 
 
 void CHexRender::loadMap(CHexArray* hexArray) {
@@ -170,6 +178,8 @@ void CHexRender::drawLineList() {
 	lineShader->setUniform(hChannel, 1.0f);
 	lineShader->setUniform(hThickness, tmpLineThickness);
 	lineShader->setUniform(hSmoothing, tmpLineSmooth);
+	lineShader->setUniform(hSolid, tmpLineSolid);
+	lineShader->setUniform(hScale, 1.0f);
 
 	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF); //the test to pass
 	//glStencilMask(0x00);
@@ -183,6 +193,19 @@ void CHexRender::drawLineList() {
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
 	}
+
+	//lineShader->setUniform(hChannel, 2.0f);
+	//lineShader->setUniform(hThickness, 20);
+	//for (auto& draw : lineDrawList) {
+	//	draw.buf->setVAO();
+	//	glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+	//	lineShader->setUniform(hMVP, mvp);
+	//	lineShader->setUniform(hPalette, *draw.palette);
+	//	drawMeshLine(*draw.meshRec);
+	//}
+
+
+
 	//glDisable(GL_STENCIL_TEST);
 
 	glDisable(GL_DEPTH_TEST);
@@ -203,6 +226,33 @@ void CHexRender::drawUpperLineList() {
 		drawMeshLine(*draw.meshRec);
 	}
 }
+
+void CHexRender::drawScaledShape() {
+	lineShader->activate();
+	lineShader->setUniform(hWinSize, pCamera->getView());
+	lineShader->setUniform(hChannel, 1.0f);
+	lineShader->setUniform(hThickness, 20);
+	lineShader->setUniform(hSmoothing, 0);
+	lineShader->setUniform(hSolid, 0.1f);
+	lineShader->setUniform(hScale, 2.0f);
+
+	for (auto& draw : lineDrawList) {
+		draw.buf->setVAO();
+		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+		lineShader->setUniform(hMVP, mvp);
+		lineShader->setUniform(hPalette, *draw.palette);
+		drawMeshLine(*draw.meshRec);
+	}
+
+	for (auto& draw : upperLineList) {
+		draw.buf->setVAO();
+		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+		lineShader->setUniform(hMVP, mvp);
+		lineShader->setUniform(hPalette, *draw.palette);
+		drawMeshLine(*draw.meshRec);
+	}
+}
+
 
 void CHexRender::drawSolidList() {
 	filledShader->activate();
@@ -322,7 +372,7 @@ void CHexRender::blur() {
 	glViewport(0, 0, blurTexture[0].width, blurTexture[0].height);
 	for (int b = 0; b < blurs; b++) {
 		glBindFramebuffer(GL_FRAMEBUFFER, hBlurFrameBuffer[horizontal]);
-		unsigned int hTexture = first_iteration ? screenMask.handle : blurTexture[!horizontal].handle;
+		unsigned int hTexture = first_iteration ? modelTexture.handle : blurTexture[!horizontal].handle;
 		blurShader->setTexture0(hSrcTexture, hTexture);
 		blurShader->setUniform(hHorizontal, horizontal);
 		blurShader->setUniform(hKernelSize, tmpKernel);
@@ -376,12 +426,10 @@ void CHexRender::drawSceneLayers() {
 
 
 void CHexRender::setScreenSize(glm::vec2& ratio) {
+	screenSize = glm::i32vec2(ratio);
 	screenBuffer.resize(int(ratio.x), int(ratio.y) );
 	screenMask.resize(int(ratio.x), int(ratio.y));
-	blurTexture[0].resize(int(ratio.x), int(ratio.y));
-	blurTexture[1].resize(int(ratio.x), int(ratio.y));
-	/*blurTexture[0].resize(int(ratio.x)/2, int(ratio.y)/2);
-	blurTexture[1].resize(int(ratio.x)/2, int(ratio.y)/2);*/
+	resizeBlurTextures();
 
 	levelTexture.resize(int(ratio.x), int(ratio.y));
 	modelTexture.resize(int(ratio.x), int(ratio.y));
@@ -395,6 +443,13 @@ void CHexRender::setScreenSize(glm::vec2& ratio) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, int(ratio.x), int(ratio.y), 
 		0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void CHexRender::resizeBlurTextures() {
+	glm::i32vec2 newSize = screenSize / tmpBlurTextDivisor;
+	blurTexture[0].resize(newSize.x, newSize.y);
+	blurTexture[1].resize(newSize.x, newSize.y);
+
 }
 
 

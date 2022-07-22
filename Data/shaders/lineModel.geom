@@ -1,14 +1,14 @@
 #version 330
 
 layout(lines_adjacency) in;
-layout(triangle_strip, max_vertices = 7) out;
+layout(triangle_strip, max_vertices = 7) out; 
 //layout(line_strip, max_vertices = 8) out; //uncomment for wireframe
   
  uniform vec2 winSize; //multiplay by to get screenspace, divide by to get normspace
  
- uniform float thickness; // =  3;//2.0f; //2.0f;
+ uniform float thickness; 
  
- out vec2 gsTexCoord;
+ out vec2 gsTexCoord; //not currently used!
  
  flat out int gsSegNo;
  
@@ -16,11 +16,13 @@ layout(triangle_strip, max_vertices = 7) out;
 	vec4 colour;
 } colour_in[];
 
+
 out vec4 gsColour;
-out vec2 lineA;
-out vec2 lineB;
+flat out vec2 lineA;
+flat out vec2 lineB;
 out float gsThickness;
 out vec2 gsWinSize;
+
 
  float miter_limit = 0.75f; //1.0f; //1 = always, -1 = never. 0.75f good default.
  //NB 1 (always) creates glitches with very small lines at sharpish angles, which -1 and 0.75f seem to fix
@@ -32,10 +34,11 @@ vec2 screenSpace(vec4 vertex) {
 
 
 void main() {
-	vec2 p0 = screenSpace( gl_in[0].gl_Position );	// start of previous segment
-	vec2 p1 = screenSpace( gl_in[1].gl_Position );	// end of previous segment, start of current segment
-	vec2 p2 = screenSpace( gl_in[2].gl_Position );	// end of current segment, start of next segment
-	vec2 p3 = screenSpace( gl_in[3].gl_Position );	// end of next segment
+	vec2 p0 = screenSpace(gl_in[0].gl_Position );	// start of previous segment
+	vec2 p1 = screenSpace(gl_in[1].gl_Position );	// end of previous segment, start of current segment
+	vec2 p2 = screenSpace(gl_in[2].gl_Position );	// end of current segment, start of next segment
+	vec2 p3 = screenSpace(gl_in[3].gl_Position );	// end of next segment
+	
 	
 	//naive culling
 	vec2 area = winSize * 1.2f;
@@ -60,10 +63,6 @@ void main() {
 	vec2 miter_a = normalize(n0 + n1);	
 	vec2 miter_b = normalize(n1 + n2);	
 	
-	//for (pass = 0; pass < 2; pass += 1.0f) {
-		
-	//	if (pass == 1.0f)
-	//		thickness = 6.0f;
 
 	//find length of miter by projecting it onto normal for this segment
 	float length_a = thickness / dot(miter_a, n1);
@@ -157,6 +156,5 @@ void main() {
 
 	EndPrimitive();
 
-	//}
 
 }

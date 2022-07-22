@@ -19,6 +19,7 @@ struct THexTile;
 class CHexRender {
 public:
 	void init();
+	void recompileShader();
 	void loadMap(CHexArray* hexArray);
 	void addHexTile(const std::string& name, TVertData& vertData, std::vector<glm::vec4>& colours);
 	void drawMap();
@@ -30,6 +31,7 @@ public:
 	void resetDrawLists();
 	void drawLineList();
 	void drawUpperLineList();
+	void drawScaledShape();
 	void drawSolidList();
 	void drawMaskList();
 	void drawExplosionList();
@@ -39,6 +41,8 @@ public:
 	void drawScreenBuffer();
 	void drawSceneLayers();
 	void setScreenSize(glm::vec2& ratio);
+
+	void resizeBlurTextures();
 
 
 	CCamera* pCamera;///<Old renderer's camera - replace with own!
@@ -51,6 +55,8 @@ public:
 	unsigned int hChannel;
 	unsigned int hThickness;
 	unsigned int hSmoothing;
+	unsigned int hScale;
+	unsigned int hSolid;
 
 	CShader* filledShader;
 	unsigned int hMVPF;
@@ -90,11 +96,13 @@ public:
 
 	int tmpX = 0;
 
-	float tmpLineThickness = 6; // 2;
-	float tmpLineSmooth = 0; // 1.5f;
-	int tmpKernel = 5;
-	float tmpSigma = 0.1;
-	int tmpBlurs = 1;
+	float tmpLineThickness = 6; //20;// 6; // 2;
+	float tmpLineSmooth = 0.1f;// 1.5f;// 0; // 1.5f;
+	float tmpLineSolid = 0.9f;
+	int tmpKernel = 9;
+	float tmpSigma = 4.0;
+	int tmpBlurs = 4;
+	int tmpBlurTextDivisor = 4;
 
 
 	float sceneryLine = 6;
@@ -146,6 +154,8 @@ private:
 	unsigned int hStencilBuf;
 
 	unsigned int hDepthTex;
+
+	glm::i32vec2 screenSize;
 };
 
 struct THexTile {
