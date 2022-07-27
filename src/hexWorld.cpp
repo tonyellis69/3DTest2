@@ -99,9 +99,15 @@ void CHexWorld::onEvent(CEvent& e) {
 				hexRender.tmpBlurTextDivisor = 1;
 			hexRender.resizeBlurTextures();
 		}
+		else if (e.i1 == 'N')
+			hexRender.tmpFade -= 0.05f;
+		else if (e.i1 == 'M')
+			hexRender.tmpFade += 0.05f;
 
 		else if (e.i1 == 'R')
 			hexRender.recompileShader();
+		
+
 
 	}
 }
@@ -345,58 +351,44 @@ void CHexWorld::calcMouseWorldPos() {
 
 
 void CHexWorld::draw() {
-	//hexRender.startScreenBuffer(); 
-	hexRender.startSceneBuffer();
-
 	hexRender.drawMap();
 
 	hexRender.resetDrawLists();
-	
-		for (auto& entity : map->entities) {
-			//if (entity->entityType == entPlayer)
-				//int b = 0;
-			if (entity->live)
-				entity->drawFn.get()->draw(hexRender);
-		}
-	
-		if (directionGraphicsOn) {
-			for (auto& graphic : hexRender.graphics)
-				graphic->draw(hexRender);
-		}
 
-	hexRender.drawMaskList();
-	hexRender.drawLineList();
-
-	hexRender.drawSolidList();
-
-
-	hexRender.drawUpperLineList();
-	hexRender.drawExplosionList();
-
-	//hexRender.drawScaledShape();
-
-
-
-	if (editMode) {
-		if (mapEdit.entityMode) {
-			imRendr::drawText(50, 40, mapEdit.currentEntStr);
-		}
-		else if (mapEdit.shapeMode) {
-			imRendr::drawText(50, 40, mapEdit.currentShapeStr);
-		}
-
-		return;
+	for (auto& entity : map->entities) {
+		//if (entity->entityType == entPlayer)
+			//int b = 0;
+		if (entity->live)
+			entity->drawFn.get()->draw(hexRender);
 	}
 
+	if (directionGraphicsOn) {
+		for (auto& graphic : hexRender.graphics)
+			graphic->draw(hexRender);
+	}
 
-	//hexRendr2.drawSightLine(playerObj->worldPos, mouseWorldPos);
+	hexRender.makeGlowShapes();
 
-	//temp!!!!!!!!!!!!!!!!!!!!!!!!!!
+	hexRender.blur();
+
+	hexRender.drawGlow();
+
+
+	//draw masks first
+	hexRender.drawMaskList();
+
+	hexRender.drawLineList(); 
+	hexRender.drawSolidList();
+	hexRender.drawUpperLineList();
+
+	hexRender.drawExplosionList();
+
 	if (!game.player->dead) {
 		imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 1.0f });
 		imRendr::drawLine(playerObj->worldPos, mouseWorldPos);
 		hexCursor->draw();
 	}
+
 
 	imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp));
 
@@ -408,14 +400,6 @@ void CHexWorld::draw() {
 		+ " blur div: " + std::to_string(hexRender.tmpBlurTextDivisor)
 		+ " solidity: " + std::to_string(hexRender.tmpLineSolid));
 
-
-
-
-	hexRender.blur();
-	//hexRender.drawScreenBuffer();
-	hexRender.drawSceneLayers();
-
-	
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */

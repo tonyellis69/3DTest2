@@ -31,7 +31,7 @@ public:
 	void resetDrawLists();
 	void drawLineList();
 	void drawUpperLineList();
-	void drawScaledShape();
+	void makeGlowShapes();
 	void drawSolidList();
 	void drawMaskList();
 	void drawExplosionList();
@@ -40,6 +40,7 @@ public:
 	void blur();
 	void drawScreenBuffer();
 	void drawSceneLayers();
+	void drawGlow();
 	void setScreenSize(glm::vec2& ratio);
 
 	void resizeBlurTextures();
@@ -96,16 +97,16 @@ public:
 
 	int tmpX = 0;
 
-	float tmpLineThickness = 6; //20;// 6; // 2;
-	float tmpLineSmooth = 0.1f;// 1.5f;// 0; // 1.5f;
-	float tmpLineSolid = 0.9f;
+	float tmpLineThickness = 1;// 2; //20;// 6; // 2;
+	float tmpLineSmooth = 0;// 0.1f;// 1.5f;// 0; // 1.5f;
+	float tmpLineSolid = 0.1f;// 0.9f;
 	int tmpKernel = 9;
 	float tmpSigma = 4.0;
 	int tmpBlurs = 4;
 	int tmpBlurTextDivisor = 4;
+	float tmpFade = 0.2f;
 
-
-	float sceneryLine = 6;
+	float sceneryLine = 4;
 	float modelLine = 2; // 1.5f;
 
 private:
@@ -138,9 +139,8 @@ private:
 	unsigned int hX;
 
 	CShader* sceneLayerShader;
-	unsigned int hMap;
-	unsigned int hModels;
 	unsigned int hBlur;
+	unsigned int hFade;
 
 
 	CRenderTexture screenBuffer;

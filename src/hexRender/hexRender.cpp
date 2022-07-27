@@ -83,10 +83,8 @@ void CHexRender::recompileShader() {
 	hX = screenBufShader->getUniform("x");
 
 	sceneLayerShader = shader::create("sceneLayer");
-	hMap = sceneLayerShader->getUniform("mapTexture");
-	hModels = sceneLayerShader->getUniform("modelsTexture");
 	hBlur = sceneLayerShader->getUniform("blurTexture");
-
+	hFade = sceneLayerShader->getUniform("fade");
 }
 
 
@@ -133,7 +131,11 @@ void CHexRender::drawMap() {
 	lineShader->setUniform(hColour, glm::vec4(1, 0, 0, 0));
 	glUniform4fv(hPalette, 4, (float*)(uniqueTileColours.data()));
 	lineShader->setUniform(hChannel, 0.0f);
+	lineShader->setUniform(hScale, 1.0f);
 	lineShader->setUniform(hThickness, sceneryLine);
+
+	lineShader->setUniform(hSmoothing, 0.0f);
+	lineShader->setUniform(hSolid, 0.1f);
 
 	//renderer.drawLineStripAdjBuf(mapBuf, 0, mapBuf.numElements);
 	mapBuf.setVAO();
@@ -207,7 +209,7 @@ void CHexRender::drawLineList() {
 
 
 	//glDisable(GL_STENCIL_TEST);
-
+	glBindVertexArray(0);
 	glDisable(GL_DEPTH_TEST);
 }
 
@@ -225,16 +227,26 @@ void CHexRender::drawUpperLineList() {
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
 	}
+	glBindVertexArray(0);
 }
 
-void CHexRender::drawScaledShape() {
+void CHexRender::makeGlowShapes() {
+	glBindFramebuffer(GL_FRAMEBUFFER, hScreenFrameBuffer); 
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, screenMask.handle, 0);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		fatalLog << alertMsg << "\nError creating framebuffer.";
+		return;
+	}
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	lineShader->activate();
 	lineShader->setUniform(hWinSize, pCamera->getView());
 	lineShader->setUniform(hChannel, 1.0f);
-	lineShader->setUniform(hThickness, 20);
+	lineShader->setUniform(hThickness, 20.0f);
 	lineShader->setUniform(hSmoothing, 0);
 	lineShader->setUniform(hSolid, 0.1f);
-	lineShader->setUniform(hScale, 2.0f);
+	lineShader->setUniform(hScale, 1.5f);
 
 	for (auto& draw : lineDrawList) {
 		draw.buf->setVAO();
@@ -251,6 +263,9 @@ void CHexRender::drawScaledShape() {
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
 	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
+	//screenMask.savePNG("d://shapes.png");
 }
 
 
@@ -372,7 +387,7 @@ void CHexRender::blur() {
 	glViewport(0, 0, blurTexture[0].width, blurTexture[0].height);
 	for (int b = 0; b < blurs; b++) {
 		glBindFramebuffer(GL_FRAMEBUFFER, hBlurFrameBuffer[horizontal]);
-		unsigned int hTexture = first_iteration ? modelTexture.handle : blurTexture[!horizontal].handle;
+		unsigned int hTexture = first_iteration ? screenMask.handle : blurTexture[!horizontal].handle;
 		blurShader->setTexture0(hSrcTexture, hTexture);
 		blurShader->setUniform(hHorizontal, horizontal);
 		blurShader->setUniform(hKernelSize, tmpKernel);
@@ -391,6 +406,7 @@ void CHexRender::blur() {
 	glEnable(GL_BLEND);
 	//blurTexture[1].savePNG("d://blur.png");
 	//screenMask.savePNG("d://mask.png");
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void CHexRender::drawScreenBuffer() {
@@ -411,9 +427,10 @@ void CHexRender::drawSceneLayers() {
 	//levelTexture.savePNG("d://level.png");
 	//blurTexture[1].savePNG("d://blur.png");
 	sceneLayerShader->activate();
-	sceneLayerShader->setTexture0(hMap, levelTexture.handle);
-	sceneLayerShader->setTexture1(hModels, modelTexture.handle);
+	//sceneLayerShader->setTexture0(hMap, levelTexture.handle);
+	//sceneLayerShader->setTexture1(hModels, modelTexture.handle);
 	sceneLayerShader->setTexture2(hBlur, blurTexture[1].handle);
+
 	screenQuad.setVAO();
 	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, 0);
 	screenQuad.clearVAO();
@@ -422,6 +439,18 @@ void CHexRender::drawSceneLayers() {
 	//levelTexture.savePNG("d://level.png");
 	//screenMask.savePNG("d://mask.png");
 	
+}
+
+void CHexRender::drawGlow() {
+	glDisable(GL_DEPTH_TEST);
+	sceneLayerShader->activate();
+	sceneLayerShader->setTexture0(hBlur, blurTexture[1].handle);
+	sceneLayerShader->setUniform(hFade, tmpFade);
+	screenQuad.setVAO();
+	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, 0);
+	screenQuad.clearVAO();
+	glEnable(GL_DEPTH_TEST);
+
 }
 
 
