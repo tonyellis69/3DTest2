@@ -1,6 +1,8 @@
 #include "robot.h"
 
 #include <cmath>
+#include <glm/gtx/rotate_vector.hpp>
+
 
 #include "utils/log.h"
 
@@ -63,8 +65,8 @@ void CRobot::update(float dT) {
 
 	updateTreadCycle();
 
-	if (moving)
-		amIStuck();
+	if (moving) 
+		amIStuck(); //FIX: crudely geared to destination only
 
 	buildWorldMatrix();
 }
@@ -207,6 +209,16 @@ glm::vec3 CRobot::arriveAt(glm::vec3& dest) {
 	return (clippedSpeed / distance) * targetOffset;
 }
 
+float CRobot::speedFor(glm::vec3& dest) {
+	float proportionalSlowingDist = slowingDist * (chosenSpeed / 1000);
+	glm::vec3 targetOffset = dest - worldPos;
+	float distance = glm::length(targetOffset);
+	float rampedSpeed = chosenSpeed * (distance / proportionalSlowingDist);
+	float clippedSpeed = std::min(rampedSpeed, chosenSpeed);
+	moving = true;
+	return clippedSpeed;
+}
+
 
 /** Return true if we can draw a line to the target without hitting anything. */
 bool CRobot::clearLineTo(CEntity* target) {
@@ -305,10 +317,6 @@ void CRobot::onMovedHex()
 bool CRobot::turnTo(glm::vec3& p) {
 	float turnDist = orientationTo(p);
 
-	//if (abs(turnDist) < 0.01f) { //temp!!!!
-	//	return true;
-	//}
-
 	float turnDir = (std::signbit(turnDist)) ? -1.0f : 1.0f;
 
 	if (lastTurnDir != 0 && lastTurnDir != turnDir) { //we overshot
@@ -324,6 +332,8 @@ bool CRobot::turnTo(glm::vec3& p) {
 	lastTurnDir = turnDir;
 	return false;
 }
+
+
 
 void CRobot::stopMoving() {
 	moving = false;
@@ -342,57 +352,47 @@ glm::vec3 CRobot::findAvoidance2() {
 
 	//check for collision
 	float destinationDist = glm::distance(worldPos, *getDestination());
-	float avoidanceDist = std::min(maxAvoidanceDist, destinationDist) ;
-	float aheadSegStartDist = 0.15f;// robotRadius * 0.75f;//  1.0f;
+	float farCheckDist = std::min(maxAvoidanceDist, destinationDist) ;
+	float nearCheckDist = robotRadius + 0.1f;// 0.15f;// robotRadius * 0.75f;//  1.0f;
 
+	if (destinationDist < nearCheckDist) {//destination closer than check start? Skip avoidance 
+		return glm::vec3(0);
+	}
 
-	glm::vec3 aheadVec = travelDir * avoidanceDist;
-	glm::vec3 aheadSegEnd = worldPos + aheadVec;
-	glm::vec3 aheadSegBegin = worldPos +travelDir * aheadSegStartDist;
+	glm::vec3 aheadSegEnd = worldPos + (travelDir * farCheckDist);
+	glm::vec3 aheadSegBegin = worldPos + (travelDir * nearCheckDist);
 	glm::vec3 aheadSegCentre = aheadSegBegin + (aheadSegEnd - aheadSegBegin) * 0.5f;
-	tmpAheadVecBegin = aheadSegBegin;
 
-
-
+	//for graphic
+	tmpAheadVecBegin = aheadSegBegin; 
 	tmpCollisionPt = glm::vec3(0);
 	tmpCollisionSegPt = aheadSegBegin;
 	tmpAheadVecEnd = aheadSegEnd;
 
-	if (destinationDist < aheadSegStartDist) {//destination closer than aheadCheck? Skip avoidance 
-		return glm::vec3(0);
-	}
-
-
-	CHex midwayHex = worldSpaceToHex(aheadSegCentre);
-	THexList aheadHexes = getNeighbours(midwayHex,2);
-
 	//find nearest obstacle
 	std::vector<TObstacle> obstacles = findNearObstacles(aheadSegCentre);
-
-
 	if (obstacles.empty()) 
 		return glm::vec3(0);
 
-	////nearest obstacles first
+	//nearest obstacles first
 	std::sort(obstacles.begin(), obstacles.end(), [&](const auto& a, const auto& b) {
 		return glm::distance(worldPos, a.pos) < glm::distance(worldPos, b.pos); });
 
 
-	////check for collision
+	//check for collision
 	glm::vec3 obstacleCentre = glm::vec3(0);
-	float radius;
-	float distance = 0;
+	float safeDist;
+	float distanceToSegment = 0;
 	glm::vec3 collision;
 	for (auto& obstacle : obstacles) {
-		//find nearest point on ahead vector to hex origin
-		glm::vec3 pos = obstacle.pos;
-		collision = closestPointSegment(aheadSegBegin, aheadSegEnd, pos);
+		//find nearest point on ahead segment to obstacle
+		collision = closestPointSegment(aheadSegBegin, aheadSegEnd, obstacle.pos);
 		if (collision == aheadSegBegin)
 			continue; //assume obstacle behind us
-		distance = glm::distance(collision, pos);
-		radius = obstacle.radius + robotRadius;
-		if (distance < radius ) { //!!!
-			obstacleCentre = pos;
+		distanceToSegment = glm::distance(collision, obstacle.pos);
+		safeDist = obstacle.radius + robotRadius;
+		if (distanceToSegment < safeDist ) { 
+			obstacleCentre = obstacle.pos;
 			tmpCollisionSegPt = collision;
 			break;
 		}
@@ -404,28 +404,61 @@ glm::vec3 CRobot::findAvoidance2() {
 	tmpCollisionPt = obstacleCentre;
 
 
-	//Find vector from hex centre to collision point
+	//Find vector from obstacle centre to collision point
 	glm::vec3 collisionVec = collision - obstacleCentre;
 	glm::vec3 collisionVecN = glm::normalize(collisionVec);
-	glm::vec3 avoidVec = collisionVecN * (radius - distance);
+	glm::vec3 avoidVec = collisionVecN * (safeDist - distanceToSegment); //off centre = smaller push
 
-	float collisionDist = glm::distance(worldPos,collision);
-
-	return avoidVec / collisionDist;
+	return avoidVec; 
 }
 
 
-void CRobot::headTo(glm::vec3 & pos) {
-	glm::vec3 impulse = arriveAt(pos);
+void CRobot::headTo(glm::vec3 & destinationPos) {
+	glm::vec3 impulse = arriveAt(destinationPos);
 
 	glm::vec3 avoidVec = glm::vec3(0);
 
 	//if we're not facing destination, turn before
 	//checking for obstacles
-	bool facingDest = turnTo(pos);
-	if (!facingDest)
-		return;
+	//bool facingDest = turnTo(destinationPos); //old method
+	//if (!facingDest)
+	//	return;
 
+	float desiredTurn = orientationTo(destinationPos);
+	float maxTurn = dT * 4.0f; //FIX: use constant
+
+	float thisTurn = std::copysign( glm::min(maxTurn, abs(desiredTurn)),desiredTurn);
+	
+	rotate(thisTurn);
+
+	float speed = speedFor(destinationPos); 
+
+	//glm::vec3 newImpulse = getRotationVec();
+
+	//find avoidance needed
+
+	avoidVec = findAvoidance2();
+	//currently returns vector away from obstacle, divided by (reduced by) distanceToSegment
+	//convert to a rotation.
+	if (glm::length(avoidVec) > 0) {
+		float avoidAngle = glm::atan(-avoidVec.y, avoidVec.x);
+
+		float diff = avoidAngle - rotation; 
+		if (diff < -M_PI) //keep in (-pi,pi) range
+			diff += 2 * M_PI;
+		else if (diff > M_PI)
+			diff -= 2 * M_PI;
+
+		float adjustment = std::copysign(glm::min(maxTurn, abs(diff)), diff);
+		rotate(adjustment);
+	}
+
+	glm::vec3 newImpulse = getRotationVec();
+	physics.moveImpulse = newImpulse * speed;
+
+	return;
+
+	//old, scrap:
 	avoidVec = findAvoidance2();
 
 	float impulseStrength = glm::length(impulse);

@@ -3,6 +3,7 @@
 #include "..\gameTextWin.h"
 #include "UI/gui2.h"
 
+#include "win/win.h"
 
 void CSmartWin::clearText() {
 	pWin->clearText();
@@ -22,7 +23,8 @@ void CSmartWin::showWin() {
 
 void CSmartWin::centreOnMouse() {
 	//glm::i32vec2 mousePos = pGUIroot->getLocalMousePos();
-	glm::i32vec2 mousePos = gui.getMousePos();
+	glm::i32vec2 mousePos;
+	CWin::getMousePos(mousePos.x, mousePos.y);
 
 	glm::i32vec2 winSizeHalf = pWin->getSize() / 2;
 

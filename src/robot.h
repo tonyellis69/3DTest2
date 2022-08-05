@@ -39,6 +39,7 @@ public:
 
 	void receiveDamage(CEntity& attacker, int damage);
 	glm::vec3 arriveAt(glm::vec3& pos);
+	float speedFor(glm::vec3& dest);
 	bool clearLineTo(const glm::vec3& p);
 	bool canSeePlayer();
 	bool clearLineTo(CEntity* target);
@@ -67,6 +68,10 @@ public:
 	float chosenSpeed;
 	const float defaultSpeed = 1000;// 1000;
 	const float maxSpeed = 1000; //3000
+
+	float stuckCheck = 0; ///<Seconds since last check
+	float destinationDist = FLT_MAX; ///<Distance to destination on last check.
+
 
 private:
 	bool inFov(CEntity* target);
@@ -105,8 +110,6 @@ private:
 	bool moving = false; ///<True if we're motoring somewhere.
 	float treadTranslate = 0; ///<Movement for tread animation.
 
-	float stuckCheck = 0; ///<Seconds since last check
-	float destinationDist = FLT_MAX; ///<Distance to destination on last check.
-};
+	};
 
 

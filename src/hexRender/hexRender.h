@@ -45,6 +45,7 @@ public:
 
 	void resizeBlurTextures();
 
+	void setCameraPos(float x, float y);
 
 	CCamera* pCamera;///<Old renderer's camera - replace with own!
 

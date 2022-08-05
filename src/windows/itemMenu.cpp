@@ -7,10 +7,12 @@
 
 #include "UI/gui2.h"
 
+#include "win/win.h"
+
 #include "utils/log.h"
 
 void CItemMenu::onEvent(CEvent& e) {
-	if (e.type == eHotTextHover && (gui.mouseIn("inv") || gui.mouseIn("near")) ) {
+	if (e.type == eHotTextHover && (UI.mouseIn("inv") || UI.mouseIn("near")) ) {
 		if (e.hotTxt->empty()) 
 			startTimeout();
 		else {
@@ -18,11 +20,11 @@ void CItemMenu::onEvent(CEvent& e) {
 			showItemChoices();
 		}
 	}
-	else if (e.type == eMouseOff  && gui.mouseNotIn("itemMenu")
-		 && gui.mouseNotIn("itemMenu") ) {
+	else if (e.type == eMouseOff  && UI.mouseNotIn("itemMenu")
+		 && UI.mouseNotIn("itemMenu") ) {
 		startTimeout();
 	}
-	else if (e.type == eLeftClick && gui.mouseIn("itemMenu" )) {
+	else if (e.type == eLeftClick && UI.mouseIn("itemMenu" )) {
 		onRichTextClick(*e.hotTxt);
 	}
 }
@@ -38,12 +40,12 @@ void CItemMenu::showItemChoices() {
 	//get this item's menu text
 	std::string menuTxt;
 
-	if (gui.mouseIn("inv")) {
-		positionLeftOf(gui.findControl("inv"));
+	if (UI.mouseIn("inv")) {
+		positionLeftOf(UI.findControl("inv"));
 		menuTxt = item->getMenuTextInv();
 	}
 	else {
-		positionLeftOf(gui.findControl("near"));
+		positionLeftOf(UI.findControl("near"));
 		menuTxt = item->getMenuTextNear();
 	}
 
@@ -73,7 +75,8 @@ void CItemMenu::positionLeftOf(CguiBase* spawner) {
 
 void CItemMenu::alignWithMouse(CguiBase* spawner) {
 	//find mouse y pos
-	glm::i32vec2 mousePos = gui.getMousePos();
+	glm::i32vec2 mousePos;
+	CWin::getMousePos(mousePos.x, mousePos.y);
 
 	glm::i32vec2 winSize = pWin->getSize();
 	int ypos = mousePos.y - (winSize.y / 2);
@@ -89,7 +92,7 @@ void CItemMenu::update(float dT) {
 
 	if (timer > 0 ) { 
 		timer -= dT;
-		if (timer < 0 && gui.mouseNotIn("itemMenu") ) {
+		if (timer < 0 && UI.mouseNotIn("itemMenu") ) {
 			pWin->setVisible(false);
 			currentItem = 0;
 		}

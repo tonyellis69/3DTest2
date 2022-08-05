@@ -34,7 +34,8 @@
 
 enum TViewMode {gameView, devView};
 enum TMsgType {msgId,msgId2,msgId3};
-  
+
+enum TCameraMode {camNone, camFollow, camFree};
 
 /** A class encapsulating the hex-based representation of the world. */
 class CHexWorld { 
@@ -93,6 +94,10 @@ private:
 
 	void toggleDirectionGraphics();
 
+	void followCam(CEntity* ent);
+	void freeCam(float x, float y);
+	void realtimeKeyChecks();
+
 	CMap* map;
 
 	CHexRender hexRender; ///<New hex renderer.
@@ -130,6 +135,10 @@ private:
 	int highlitInvItem = 0;
 
 	bool directionGraphicsOn = false;
+
+	CEntity* pFollowCamEnt = NULL;
+	TCameraMode cameraMode = camNone;
+	glm::vec2 freeCamPos = { 0,0 };
 };
 
 

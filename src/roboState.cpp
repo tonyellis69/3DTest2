@@ -49,20 +49,16 @@ CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 
 std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
 	if (bot->canSeePlayer())
-		//return std::make_shared<CCharge>(bot, game.player);
 		return std::make_shared<CCloseAndShoot>(bot, game.player);
 
 	this->dT = dT;
-
-	//bool facingDest = bot->turnTo(destination);
-	//if (!facingDest)
-	//	return nullptr;
 
 	//proceed to actual movement
 	float dist = glm::distance(bot->worldPos, destination);
 
 	if (dist < 0.05f) {
 		bot->stopMoving();
+		bot->destinationDist = FLT_MAX;
 		return std::make_shared<CGlanceAround>(bot); 
 	}
 

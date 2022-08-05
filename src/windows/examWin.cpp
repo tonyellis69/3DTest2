@@ -11,6 +11,6 @@ void CExamWin::showWin() {
 }
 
 void CExamWin::onEvent(CEvent& e) {
-	if (e.type == eMouseOff && gui.mouseNotIn("exam") )
+	if (e.type == eMouseOff && UI.mouseNotIn("exam") )
 		pWin->setVisible(false);
 }

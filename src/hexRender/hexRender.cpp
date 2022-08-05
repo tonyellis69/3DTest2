@@ -481,6 +481,11 @@ void CHexRender::resizeBlurTextures() {
 
 }
 
+void CHexRender::setCameraPos(float x, float y) {
+	float camZ = pCamera->getPos().z; //FIX: just store cam height
+	pCamera->setPos(glm::vec3(x, y, camZ));
+}
+
 
 void CHexRender::addToMapBuf(std::vector<vc>& v, std::vector<unsigned int>& i,CHex& hex, int tileNo) {
 	glm::vec3 offset = cubeToWorldSpace(hex);

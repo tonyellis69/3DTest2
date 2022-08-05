@@ -1,6 +1,7 @@
 #include "hexWorld.h"
 
 #include <string>
+#include <algorithm>
 
 #include <glm/gtx/vector_angle.hpp> 
 
@@ -31,6 +32,10 @@
 
 #include "hexRender/destGraphic.h"
 #include "hexRender/avoidGraphic.h"
+
+#include "UI/gui2.h"
+
+#include "win/win.h"
 
 int listenId = -1;
 
@@ -106,10 +111,12 @@ void CHexWorld::onEvent(CEvent& e) {
 
 		else if (e.i1 == 'R')
 			hexRender.recompileShader();
-		
+
 
 
 	}
+
+
 }
 
 
@@ -158,16 +165,10 @@ void CHexWorld::startGame() {
 
 	hexRendr2.setMap(map->getHexArray());
 
-
 	game.setMap(map);
 	physics.removeEntities();
 
 	physics.setMap(map->getHexArray());
-
-
-
-
-	//spawn::player("player", cubeToWorldSpace(CHex(-6,9-3)));
 
 	mapEdit.load();
 	hexRender.loadMap(map->getHexArray());
@@ -186,13 +187,18 @@ void CHexWorld::startGame() {
 
 	game.paused = false;
 
+	//followCam(playerObj);
+	freeCam(-76, 15);
+	toggleDirectionGraphics();
+	game.slowed = true;
 }
 
 
 void CHexWorld::moveCamera(glm::vec3& direction) {
 	float camSpeed = 6.0f * dT;
 	glm::vec3 vector = direction *= camSpeed;
-	hexRendr2.moveCamera(vector);
+	hexRendr2.moveCamera(vector); //FIX: phase out!
+	freeCamPos.x += vector.x; freeCamPos.y += vector.y;
 }
 
 /** Called *when* a key is pressed. */
@@ -339,7 +345,6 @@ void CHexWorld::calcMouseWorldPos() {
 	lastMouseWorldPos = mouseWorldPos;
 	mouseWorldPos = mouseWS;
 	glm::vec3 mouseVec = mouseWorldPos - playerObj->worldPos;
-	//playerObj->setUpperBodyRotation(glm::orientedAngle(glm::normalize(mouseVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1)));
 	playerObj->setMouseDir(glm::normalize(mouseVec));
 
 	if (mouseHex != hexCursor->hexPosition) {
@@ -390,15 +395,20 @@ void CHexWorld::draw() {
 	}
 
 
-	imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp));
+	//imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp));
 
-	imRendr::drawText(300, 70, "thickness: " + std::to_string(hexRender.tmpLineThickness)
-		+ " smoothing: " + std::to_string(hexRender.tmpLineSmooth));
-	imRendr::drawText(300, 90, "kernel: " + std::to_string(hexRender.tmpKernel)
-		+ " sigma: " + std::to_string(hexRender.tmpSigma) + " blurs: "
-		+ std::to_string(hexRender.tmpBlurs)
-		+ " blur div: " + std::to_string(hexRender.tmpBlurTextDivisor)
-		+ " solidity: " + std::to_string(hexRender.tmpLineSolid));
+	//imRendr::drawText(300, 70, "thickness: " + std::to_string(hexRender.tmpLineThickness)
+	//	+ " smoothing: " + std::to_string(hexRender.tmpLineSmooth));
+	//imRendr::drawText(300, 90, "kernel: " + std::to_string(hexRender.tmpKernel)
+	//	+ " sigma: " + std::to_string(hexRender.tmpSigma) + " blurs: "
+	//	+ std::to_string(hexRender.tmpBlurs)
+	//	+ " blur div: " + std::to_string(hexRender.tmpBlurTextDivisor)
+	//	+ " solidity: " + std::to_string(hexRender.tmpLineSolid));
+
+	if (editMode) {
+		imRendr::drawText(600, 50, "Entity: " +  mapEdit.currentEntStr + " shape: " + mapEdit.currentShapeStr);
+
+	}
 
 }
 
@@ -423,6 +433,8 @@ void CHexWorld::update(float dt) {
 
 	updateCameraPosition();
 
+	calcMouseWorldPos();
+
 	physics.update(dT);
 
 	if (!editMode)
@@ -431,6 +443,8 @@ void CHexWorld::update(float dt) {
 			if (entity->live)
 				map->entities[n]->update(dT);
 		}
+
+
 
 
 	if (game.map->entitiesToDelete)
@@ -446,7 +460,8 @@ void CHexWorld::update(float dt) {
 	game.update(dT);
 
 	if (map->mapUpdated) {
-		hexRendr2.setMap(map->getHexArray()); //temp to refresh map
+		//hexRendr2.setMap(map->getHexArray()); //temp to refresh map
+		hexRender.loadMap(map->getHexArray());
 		map->mapUpdated = false;
 	}
 
@@ -456,7 +471,7 @@ void CHexWorld::update(float dt) {
 		graphic->update(dT);
 
 
-
+	realtimeKeyChecks();
 
 }
 
@@ -626,12 +641,21 @@ int CHexWorld::tigCall(int memberId) {
 
 
 void CHexWorld::updateCameraPosition() {
-	if (viewMode == gameView && !editMode && !game.player->dead )
-		hexRendr2.followTarget(playerObj->worldPos);
-	//else
-		//hexRendr2.attemptScreenScroll(mousePos, dT);
+	//if (viewMode == gameView && !editMode && !game.player->dead )
+		//hexRendr2.followTarget(playerObj->worldPos);
+		//old version
 
-	calcMouseWorldPos();
+	if (cameraMode == camFollow) {
+		if (pFollowCamEnt) {
+			hexRender.setCameraPos(pFollowCamEnt->worldPos.x, pFollowCamEnt->worldPos.y);
+		}
+
+
+	}
+	else if (cameraMode == camFree) {
+		hexRender.setCameraPos(freeCamPos.x, freeCamPos.y);
+	}
+
 }
 
 
@@ -654,7 +678,7 @@ void CHexWorld::setViewMode(TViewMode mode) {
 
 void CHexWorld::adjustZoomScale(float delta) {
 	zoomAdjust += (delta > 0) ? -0.1f : 0.1f;
-	zoomAdjust = std::max(zoomAdjust, 0.0f);
+	zoomAdjust = std::max<float>(zoomAdjust, 0.0f);
 	zoomScale = 1.0f + (std::pow(zoomAdjust, 0.5f) * 10);
 }
 
@@ -692,6 +716,25 @@ void CHexWorld::toggleDirectionGraphics() {
 		hexRender.graphics.clear();
 	}
 
+}
+
+void CHexWorld::followCam(CEntity* ent) {
+	if (ent) {
+		pFollowCamEnt = ent;
+		cameraMode = camFollow;
+	}
+}
+
+void CHexWorld::freeCam(float x, float y) {
+	cameraMode = camFree;
+	freeCamPos = glm::vec2(x, y);
+}
+
+void CHexWorld::realtimeKeyChecks() {
+	if (CWin::keyPressed('W')) moveCamera(glm::vec3{ 0, 1, 0 });
+	if (CWin::keyPressed('S')) moveCamera(glm::vec3{ 0, -1, 0 });
+	if (CWin::keyPressed('A')) moveCamera(glm::vec3{ -1,0,0 });
+	if (CWin::keyPressed('D')) moveCamera(glm::vec3{ 1,0,0 });
 }
 
 /** TO DO: ultimately this should be automated via a Tig
