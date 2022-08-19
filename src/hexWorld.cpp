@@ -69,6 +69,8 @@ void CHexWorld::onEvent(CEvent& e) {
 			toggleDirectionGraphics();
 		else if (e.i1 == 'F')
 			game.slowed = !game.slowed;
+		else if (e.i1 == 'G')
+			game.speeded = !game.speeded;
 		else if (e.i1 == GLFW_KEY_F3)
 			hexRender.tmpX = hexRender.tmpX == 0 ? 1 : 0;
 
@@ -191,6 +193,11 @@ void CHexWorld::startGame() {
 	freeCam(-76, 15);
 	toggleDirectionGraphics();
 	game.slowed = true;
+
+	for (auto& entity : map->entities) {
+		if (entity->isRobot)
+			pBotZero = entity.get();
+	}
 }
 
 
@@ -410,6 +417,9 @@ void CHexWorld::draw() {
 
 	}
 
+	if (pBotZero)
+		imRendr::drawText(600, 50, pBotZero->diagnostic);
+
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
@@ -428,7 +438,9 @@ void CHexWorld::update(float dt) {
 	this->dT = dt;
 
 	if (game.slowed)
-		dT *= 0.5f;
+		this->dT = dt * 0.1f;
+	if (game.speeded)
+		this->dT = dt * 4.0f;
 
 
 	updateCameraPosition();

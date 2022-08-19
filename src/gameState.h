@@ -34,6 +34,7 @@ public:
 
 	bool paused = true;
 	bool slowed = false;
+	bool speeded = false;
 	bool uiMode = false;
 
 private:

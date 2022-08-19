@@ -102,6 +102,8 @@ public:
 
 	std::vector<glm::vec4>* pPalette;
 
+	std::string diagnostic;
+
 protected:
 	float rotation = 0.0f; ///<Angle of object's z-rotation in world space.
 

@@ -47,7 +47,7 @@ public:
 	bool turnTo(glm::vec3& p);
 	void stopMoving();
 	glm::vec3* getDestination();
-	glm::vec3 findAvoidance2();
+	std::tuple<float, float> findAvoidance2();
 	void headTo(glm::vec3& pos);
 
 	float upperBodyRotation = 0;

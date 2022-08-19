@@ -139,6 +139,7 @@ private:
 	CEntity* pFollowCamEnt = NULL;
 	TCameraMode cameraMode = camNone;
 	glm::vec2 freeCamPos = { 0,0 };
+	CEntity* pBotZero = NULL;
 };
 
 
