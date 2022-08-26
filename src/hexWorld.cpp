@@ -192,7 +192,7 @@ void CHexWorld::startGame() {
 	//followCam(playerObj);
 	freeCam(-76, 15);
 	toggleDirectionGraphics();
-	game.slowed = true;
+	//game.slowed = true;
 
 	for (auto& entity : map->entities) {
 		if (entity->isRobot)

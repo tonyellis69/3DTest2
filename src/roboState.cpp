@@ -35,6 +35,7 @@ CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 				destination = hexWS;
 				turnDestination = glm::orientedAngle(glm::normalize(hexWS - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 				lastDestinationDist = FLT_MAX;
+				sysLog << "\nNew destination!";
 				return;
 			}
 			giveUp++;
