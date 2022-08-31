@@ -16,7 +16,7 @@ enum TLungeState { preLunge, lunging, returning };
 /** A class describing basic robot characteristics and
 	behaviour. */
 
-struct TObstacle { glm::vec3 pos; float radius; };
+struct TObstacle { glm::vec3 pos = glm::vec3(0); float radius; };
 class CRobot : public CEntity {
 public:
 	CRobot();
@@ -46,8 +46,9 @@ public:
 	void fireMissile(CEntity* target);
 	bool turnTo(glm::vec3& p);
 	void stopMoving();
-	glm::vec3* getDestination();
-	std::tuple<float, float> findAvoidance2();
+	glm::vec3 getDestination();
+	std::tuple<float, float> findAvoidance();
+	std::tuple<TObstacle, glm::vec3> findCollidable(std::vector<TObstacle>& obstacles, glm::vec3& aheadSegBegin, glm::vec3& aheadSegEnd);
 	void headTo(glm::vec3& pos);
 
 	float upperBodyRotation = 0;
@@ -95,6 +96,13 @@ private:
 	float slowingDist = 0.6f;
 	float lastTurnDir = 0;
 	float upperTurnSpeed = 5.0f;
+	float maxTurnSpeed = 3.0f;
+	float robotRadius = 0.7f;
+	float ignorable = 0.07f; //below .1 to avoid snapping to some directions, above .03 to avoid quiver
+	float obstacleProximityLimit = 0.75f; //0.7f
+	float obstacleAhead = 0.9f;  
+	float obstacleToSide = 0.2f;
+
 	
 	TModelMesh* upperBody;
 	TModelMesh* base;

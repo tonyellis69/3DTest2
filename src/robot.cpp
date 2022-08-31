@@ -202,7 +202,7 @@ void CRobot::receiveDamage(CEntity& attacker, int damage) {
 }
 
 /** Give robot a push toward this destination, which will scale down
-	with proximity to avoid overshooting. */
+	with obstacleProximity to avoid overshooting. */
 glm::vec3 CRobot::arriveAt(glm::vec3& dest) {
 	float proportionalSlowingDist = slowingDist * (chosenSpeed / 1000);
 	glm::vec3 targetOffset = dest - worldPos;
@@ -285,7 +285,7 @@ void CRobot::amIStuck() {
 	stuckCheck += dT;
 	if (stuckCheck > 1.0f) {
 		stuckCheck = 0;
-		float newDist = glm::distance(worldPos, *getDestination());
+		float newDist = glm::distance(worldPos, getDestination());
 		if (newDist < destinationDist) {
 			destinationDist = newDist;
 		}
@@ -344,60 +344,112 @@ void CRobot::stopMoving() {
 	physics.moveImpulse = { 0,0,0 };
 }
 
-glm::vec3* CRobot::getDestination() {
+glm::vec3 CRobot::getDestination() {
 	return currentState->getDestination();
 }
 
 /** Return the necessary vector to avoid obstacles ahead. */
-std::tuple<float, float> CRobot::findAvoidance2() {
-	float robotRadius = 0.7f;
-
+std::tuple<float, float> CRobot::findAvoidance() {
 	glm::vec3 travelDir = getRotationVec();
 
-	//check for collision
-	float destinationDist = glm::distance(worldPos, *getDestination());
+	float destinationDist = glm::distance(worldPos, getDestination());
 	float farCheckDist = std::min(maxAvoidanceDist, destinationDist) ;
-	float nearCheckDist = robotRadius *  0.75f; // +0.1f;// 0.15f;// robotRadius * 0.75f;//  1.0f;
+	float nearCheckDist = robotRadius *  0.75f; 
 
 	if (destinationDist < nearCheckDist) //destination closer than check start? Skip avoidance 
 		return { .0f,.0f };
 
-
-	//farCheckDist *= angleToDest; //reduce if we're not pointing where going
 	if (farCheckDist < nearCheckDist) {
-		sysLog << " bail 1";
 		return { .0f,.0f };
 	}
 
-	//find vec between dest and current heading
-	//check that  for obstacles
-	glm::vec3 exploreVec = travelDir;// glm::normalize(destinationVec + travelDir);
-
-
-	glm::vec3 aheadSegEnd = worldPos + (exploreVec * farCheckDist);
-	glm::vec3 aheadSegBegin = worldPos + (exploreVec * nearCheckDist);
+	glm::vec3 aheadSegEnd = worldPos + (travelDir * farCheckDist);
+	glm::vec3 aheadSegBegin = worldPos + (travelDir * nearCheckDist);
 	glm::vec3 aheadSegCentre = aheadSegBegin + (aheadSegEnd - aheadSegBegin) * 0.5f;
 
-	//for graphic
+	//for graphic debug aid
 	tmpAheadVecBegin = aheadSegBegin; 
 	tmpCollisionPt = glm::vec3(0);
 	tmpCollisionSegPt = aheadSegBegin;
 	tmpAheadVecEnd = aheadSegEnd;
 
-	//find nearest obstacle
+
 	std::vector<TObstacle> obstacles = findNearObstacles(aheadSegCentre);
 	if (obstacles.empty()) {
-		sysLog << " bail 2";
 		return { .0f,.0f };
 	}
 
-	//nearest obstacles first
 	std::sort(obstacles.begin(), obstacles.end(), [&](const auto& a, const auto& b) {
 		return glm::distance(worldPos, a.pos) < glm::distance(worldPos, b.pos); });
 
+	auto [obstacle, aheadSegNearestPt] = findCollidable(obstacles, aheadSegBegin, aheadSegEnd);
+	if (obstacle.pos == glm::vec3(0)) 
+		return { .0f,.0f };
 
-	//check for collision
-	glm::vec3 obstacleCentre = glm::vec3(0);
+	tmpCollisionPt = obstacle.pos;
+	tmpCollisionSegPt = aheadSegNearestPt;
+
+
+	//find rotation needed to steer us out of the bounding circle of the obstacle
+
+ 	glm::vec3 collisionExitVec = aheadSegNearestPt - obstacle.pos;
+	glm::vec3 destinationVec = glm::normalize(getDestination() - worldPos);
+	glm::vec3 destinationNormal = turnRight(destinationVec);
+	
+	//which way we turn to avoid depends on whether we're facing the destination or not
+	glm::vec3 avoidanceDir;
+	if (isAcute(travelDir, destinationVec) ) {
+		//find what side of destination vector obstacle is, turn other way
+		if (isAcute(obstacle.pos - worldPos, destinationNormal))
+			avoidanceDir = turnLeft(travelDir);
+		else
+			avoidanceDir = turnRight(travelDir);
+	}	
+	else {  
+		//find shortest direction to dest, turn that way.
+		if (isAcute(travelDir, destinationNormal) )
+			avoidanceDir = turnLeft(travelDir);
+		else
+			avoidanceDir = turnRight(travelDir);
+	}
+
+	//if avoidanceDir lies in the direction of collisionExitVec, avoidance lies that way
+	float safeDist = obstacle.radius + robotRadius;
+	float distanceToSegment = glm::distance(aheadSegNearestPt, obstacle.pos);
+	glm::vec3 collisionExitVecN = glm::normalize(collisionExitVec);
+	glm::vec3 avoidVec;
+	if (isAcute(avoidanceDir, collisionExitVec) ) {
+		avoidVec = collisionExitVecN * (safeDist - distanceToSegment);
+	}
+	else { //otherwise, avoidance requires turning the long way past the obstacle
+		avoidVec = -collisionExitVecN * (safeDist + distanceToSegment);
+	}
+
+	//find rotation required
+	glm::vec3 safeVec = glm::normalize(aheadSegNearestPt - worldPos + avoidVec);
+	float avoidAngle = glm::orientedAngle(safeVec, travelDir, glm::vec3(0, 0, 1));
+
+
+	//order no turn at all if obstacle close to perpendicular
+	//this helps move beyond point where avoidance rapidly turned on and off
+	glm::vec3 segAToObs = glm::normalize(obstacle.pos - aheadSegBegin);
+	float angleOfObstacle = glm::dot(segAToObs, travelDir);
+	if (angleOfObstacle < ignorable) 
+		return { avoidAngle,-1.0f };
+
+
+	//are we pointing directly enough at the obstacle to want to throttle speed?
+	float risk = 0;
+	float collisionDist = glm::distance(obstacle.pos, worldPos);
+	if (collisionDist - obstacle.radius < obstacleProximityLimit) { 
+		float bearingToObj = glm::dot(travelDir, glm::normalize(obstacle.pos - worldPos));
+		risk = glm::smoothstep(obstacleToSide, obstacleAhead, bearingToObj);
+	}
+
+	return { avoidAngle, risk };
+}
+
+std::tuple<TObstacle, glm::vec3> CRobot::findCollidable(std::vector<TObstacle>& obstacles, glm::vec3& aheadSegBegin, glm::vec3& aheadSegEnd) {
 	float safeDist;
 	float distanceToSegment = 0;
 	float obstacleRadius;
@@ -410,145 +462,55 @@ std::tuple<float, float> CRobot::findAvoidance2() {
 		distanceToSegment = glm::distance(aheadSegNearestPt, obstacle.pos);
 		obstacleRadius = obstacle.radius;
 		safeDist = obstacle.radius + robotRadius;
-		if (distanceToSegment < safeDist ) { 
-			obstacleCentre = obstacle.pos;
-			tmpCollisionSegPt = aheadSegNearestPt;
-			break;
+		if (distanceToSegment < safeDist) {
+			return {obstacle, aheadSegNearestPt};
 		}
 	}
 
-	if (obstacleCentre == glm::vec3(0)) {
-		sysLog << " bail 3";
-		return { .0f,.0f };
-	}
-
-	tmpCollisionPt = obstacleCentre;
-
-	//need to find desired rotation to move aheadSeg out of the bounding circle of the obstacle
-	//(+ radius of robot). Has to be in direction toward 'free' space, even if that means passing
-	//aheadSeg through bulk of the obstacle.
-
-	//Find vector from obstacle centre to collision point
- 	glm::vec3 collisionVec = aheadSegNearestPt - obstacleCentre;
-	glm::vec3 collisionVecN = glm::normalize(collisionVec);
-	glm::vec3 avoidVec; 
-
-	glm::vec3 segAToObs = glm::normalize(obstacleCentre - aheadSegBegin );
-	float angleOfObstacle = glm::dot(segAToObs, travelDir);
-	diagnostic += std::to_string(angleOfObstacle);
-	if (angleOfObstacle < 0.07f) //0.075 //below .1 to avoid snapping to some directions, above .03 to avoid quiver
-		return { 0.0f,-1.0f };
-
-	glm::vec3 chosenAvoidanceDir;
-	glm::vec3 destinationVec = glm::normalize(*getDestination() - worldPos);
-	float angleToDest = glm::dot((travelDir), destinationVec);
-	glm::vec3 perp = turnRight(destinationVec);
-	if (angleToDest > 0) { //if facing destination
-		//find what side of destination vector obstacle is, turn other way
-		if (glm::dot(obstacleCentre - worldPos, perp) > 0)
-			chosenAvoidanceDir = turnLeft(travelDir);
-		else
-			chosenAvoidanceDir = turnRight(travelDir);
-	}	
-	else { //if facing away from destination, 
-		//find shortest direction to dest, turn that way.
-		if (glm::dot(aheadSegBegin - worldPos, perp) > 0)
-			chosenAvoidanceDir = turnLeft(travelDir);
-		else
-			chosenAvoidanceDir = turnRight(travelDir);
-	}
-
-	//if chosenAvoidanceDir points approximately 'out' of the obstacle, avoidance lies that way
-	if (glm::dot(chosenAvoidanceDir, collisionVec) > 0) {
-		avoidVec = collisionVecN * (safeDist - distanceToSegment);
-	}
-	else { //otherwise, avoidance is a vector passing the long way through the obstacle
-		avoidVec = -collisionVecN * (safeDist + distanceToSegment);
-	}
-
-	//find rotation required
-	glm::vec3 safeVec = glm::normalize(aheadSegNearestPt - worldPos + avoidVec);
-	float avoidAngle = glm::orientedAngle(safeVec, exploreVec, glm::vec3(0, 0, 1));
-
-
-	//near enough for caution?
-
-	float risk = 0;
-	float collisionDist = glm::distance(obstacleCentre, worldPos);
-	if (collisionDist - obstacleRadius < 1.0f && glm::dot(travelDir, glm::normalize(obstacleCentre - worldPos)) > 0.8f) {
-		risk = 1.0f - (collisionDist - obstacleRadius);
-		diagnostic += "risk: " + std::to_string(risk);
-	}
-
-
-	return { avoidAngle, risk };
-
+	return { TObstacle(), glm::vec3() };
 }
 
 
 void CRobot::headTo(glm::vec3 & destinationPos) {
-	glm::vec3 impulse = arriveAt(destinationPos);
-
+	float maxFrameRotation = dT * maxTurnSpeed;
 	float desiredTurn = orientationTo(destinationPos);
-	float maxFrameRotation = dT * 3.0f; //FIX: use constant
-
-	float frameRotation = std::copysign( glm::min(maxFrameRotation /* 0.75f */, abs(desiredTurn)),desiredTurn);
-
-	float speed = speedFor(destinationPos); 
-
+	float frameRotation = std::copysign( glm::min(maxFrameRotation, abs(desiredTurn)),desiredTurn);
 	rotate(frameRotation);
 	
+	float speed = speedFor(destinationPos);
+	glm::vec3 impulse(0);
+	if (abs(desiredTurn) < rad90) 
+		impulse = getRotationVec() * speed;
+	physics.moveImpulse = impulse;
 
+ 	auto [avoidanceNeeded, obstacleProximity] = findAvoidance();
 
-	glm::vec3 newImpulse;
-	if (abs(desiredTurn) > rad90) {
-		newImpulse = glm::vec3(0);
-	}
-	else {
-		newImpulse = getRotationVec() * speed;
-	}
-
-
-	//find avoidance needed
- 	auto [avoidRot, proximity] = findAvoidance2();
-
-	if (proximity < 0 && glm::length(newImpulse) > 0) {
+	//if we're passing the obstacle, don't change course at all
+	//this avoids quivering to & fro
+	if (obstacleProximity < 0 && glm::length(impulse) > 0 
+		&& signbit(avoidanceNeeded) != std::signbit(frameRotation) ) {
 		rotate(-frameRotation);
-		physics.moveImpulse = newImpulse;
-		sysLog << "\nPushing on!";
 		return;
 	}
 
 
-	float frameAvoidance = 0;
-
-	if (abs(avoidRot) > 0) {
+	if (abs(avoidanceNeeded) > 0) {
 		//does avoidance oppose proposed turn?
-		sysLog << "\nAvoidance! Proximity: " << proximity << " Proposed turn : " << frameRotation << " ";
-		sysLog << "desired avoidance: " << avoidRot << " ";
-		if (signbit(avoidRot) != std::signbit(frameRotation)) {
-			avoidRot += frameRotation;
-			frameAvoidance = std::copysign(glm::min(maxFrameRotation, abs(avoidRot)), avoidRot);
+		if (signbit(avoidanceNeeded) != std::signbit(frameRotation)) {
+			avoidanceNeeded += frameRotation;
+			float frameAvoidance = std::copysign(glm::min(maxFrameRotation, abs(avoidanceNeeded)), avoidanceNeeded);
 			rotate(frameAvoidance + -frameRotation);
-			sysLog << " Negating " << -frameRotation << " avoiding " << frameAvoidance;
 		}
 		else {
-			frameAvoidance = std::copysign(glm::min(maxFrameRotation, abs(avoidRot)), avoidRot);
-			sysLog << " avoidance: " << frameAvoidance;
+			float frameAvoidance = std::copysign(glm::min(maxFrameRotation, abs(avoidanceNeeded)), avoidanceNeeded);
 			if (abs(frameAvoidance) > abs(frameRotation)) {
-				float diff = std::copysign(abs(frameAvoidance) - abs(frameRotation), avoidRot);
+				float diff = std::copysign(abs(frameAvoidance) - abs(frameRotation), avoidanceNeeded);
 				rotate(diff);
-				sysLog << " + " << diff;
 			}
-			else
-				sysLog << " ignored";
 		}
 	}
-	else sysLog << "\nUnopposed turn: " << frameRotation;
 
-	physics.moveImpulse = newImpulse * (1.0f - proximity);
-
-
+	physics.moveImpulse *= 1.0f - obstacleProximity;
 }
 
 /** Rotate upper body to track a target, if any. */

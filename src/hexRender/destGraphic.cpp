@@ -17,7 +17,7 @@ CDestinationGraphic::CDestinationGraphic() {
 void CDestinationGraphic::update(float dT) {
 	CRobot* pRobot = (CRobot*)entity.get();
 
-	dest = pRobot->getDestination();
+	dest = &pRobot->getDestination();
 	if (dest == nullptr) {
 		return;
 	}

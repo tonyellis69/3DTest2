@@ -164,7 +164,8 @@ void CPlayerObject::onMovedHex() {
 	//eventually calls hexWorld alertEntitiesInPlayerFov, which notifies entities
 	//if they're now in view of the player. Find a more direct way to do this
 
-	updateViewField();
+	//updateViewField();
+	//turned off 30/8/22 - needed?
 
 	//gWin::clearText("con");
 	//tmpFloorItems.clear();

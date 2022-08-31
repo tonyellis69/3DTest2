@@ -68,8 +68,8 @@ std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
 	return nullptr;
 }
 
-glm::vec3* CRoboWander::getDestination() {
-	return &destination;
+glm::vec3 CRoboWander::getDestination() {
+	return destination;
 }
 
 
@@ -179,8 +179,8 @@ std::shared_ptr<CRoboState> CCharge::update(float dT) {
 	return nullptr;
 }
 
-glm::vec3* CCharge::getDestination() {
-	return &destination;
+glm::vec3 CCharge::getDestination() {
+	return destination;
 }
 
 
@@ -271,8 +271,8 @@ std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 	return nullptr;
 }
 
-glm::vec3* CCloseAndShoot::getDestination() {
-	return &destination;
+glm::vec3 CCloseAndShoot::getDestination() {
+	return destination;
 }
 
 
@@ -302,8 +302,8 @@ std::shared_ptr<CRoboState> CGoTo::update(float dT) {
 	return nullptr;
 }
 
-glm::vec3* CGoTo::getDestination() {
-	return &destination;
+glm::vec3 CGoTo::getDestination() {
+	return destination;
 }
 
 
