@@ -265,13 +265,13 @@ std::vector<TObstacle> CRobot::findNearObstacles(glm::vec3& centre) {
 
 	for (auto& hex : aheadHexes) {
 		if (game.map->getHexArray()->getHexCube(hex).content == solidHex) {
-			 obstacles.push_back({ cubeToWorldSpace(hex), hexSize });
+			 obstacles.push_back({ cubeToWorldSpace(hex), hexSize * 1.0f });
 		}
 		else {
 			CEntities entities = game.map->getEntitiesAt(hex);
 			for (auto& entity : entities) {
 				if (entity->isRobot && entity != this)
-					obstacles.push_back({ entity->worldPos,1.0f /* entity->getRadius()*/ });
+					obstacles.push_back({ entity->worldPos,0.8f /* entity->getRadius()*/ });
 			}
 		}
 	}
@@ -354,7 +354,8 @@ std::tuple<float, float> CRobot::findAvoidance() {
 
 	float destinationDist = glm::distance(worldPos, getDestination());
 	float farCheckDist = std::min(maxAvoidanceDist, destinationDist) ;
-	float nearCheckDist = robotRadius *  0.75f; 
+	float nearCheckDist = 0.3f;
+	//0 = steep turns passing obstacle, higher values = stop turning past close obstacles too soon
 
 	if (destinationDist < nearCheckDist) //destination closer than check start? Skip avoidance 
 		return { .0f,.0f };
@@ -389,6 +390,12 @@ std::tuple<float, float> CRobot::findAvoidance() {
 	tmpCollisionPt = obstacle.pos;
 	tmpCollisionSegPt = aheadSegNearestPt;
 
+	//FIXME: temp bodge for when another robot sitting on destination!
+	if (glm::distance(getDestination(), obstacle.pos) < 0.2f) {
+		currentState->setDestination(worldPos);
+		return { .0f,.0f };
+	}
+
 
 	//find rotation needed to steer us out of the bounding circle of the obstacle
 
@@ -414,7 +421,7 @@ std::tuple<float, float> CRobot::findAvoidance() {
 	}
 
 	//if avoidanceDir lies in the direction of collisionExitVec, avoidance lies that way
-	float safeDist = obstacle.radius + robotRadius;
+	float safeDist = obstacle.radius + robotRadius + safeDistAdjust;
 	float distanceToSegment = glm::distance(aheadSegNearestPt, obstacle.pos);
 	glm::vec3 collisionExitVecN = glm::normalize(collisionExitVec);
 	glm::vec3 avoidVec;
@@ -429,15 +436,7 @@ std::tuple<float, float> CRobot::findAvoidance() {
 	glm::vec3 safeVec = glm::normalize(aheadSegNearestPt - worldPos + avoidVec);
 	float avoidAngle = glm::orientedAngle(safeVec, travelDir, glm::vec3(0, 0, 1));
 
-
-	//order no turn at all if obstacle close to perpendicular
-	//this helps move beyond point where avoidance rapidly turned on and off
-	glm::vec3 segAToObs = glm::normalize(obstacle.pos - aheadSegBegin);
-	float angleOfObstacle = glm::dot(segAToObs, travelDir);
-	if (angleOfObstacle < ignorable) 
-		return { avoidAngle,-1.0f };
-
-
+		
 	//are we pointing directly enough at the obstacle to want to throttle speed?
 	float risk = 0;
 	float collisionDist = glm::distance(obstacle.pos, worldPos);
@@ -461,7 +460,7 @@ std::tuple<TObstacle, glm::vec3> CRobot::findCollidable(std::vector<TObstacle>& 
 			continue; //assume obstacle behind us
 		distanceToSegment = glm::distance(aheadSegNearestPt, obstacle.pos);
 		obstacleRadius = obstacle.radius;
-		safeDist = obstacle.radius + robotRadius;
+		safeDist = obstacle.radius + robotRadius + safeDistAdjust;
 		if (distanceToSegment < safeDist) {
 			return {obstacle, aheadSegNearestPt};
 		}
@@ -475,7 +474,7 @@ void CRobot::headTo(glm::vec3 & destinationPos) {
 	float maxFrameRotation = dT * maxTurnSpeed;
 	float desiredTurn = orientationTo(destinationPos);
 	float frameRotation = std::copysign( glm::min(maxFrameRotation, abs(desiredTurn)),desiredTurn);
-	rotate(frameRotation);
+	rotate(frameRotation); 
 	
 	float speed = speedFor(destinationPos);
 	glm::vec3 impulse(0);
@@ -485,21 +484,13 @@ void CRobot::headTo(glm::vec3 & destinationPos) {
 
  	auto [avoidanceNeeded, obstacleProximity] = findAvoidance();
 
-	//if we're passing the obstacle, don't change course at all
-	//this avoids quivering to & fro
-	if (obstacleProximity < 0 && glm::length(impulse) > 0 
-		&& signbit(avoidanceNeeded) != std::signbit(frameRotation) ) {
-		rotate(-frameRotation);
-		return;
-	}
-
+	float maxOpposingFrameRotation = maxFrameRotation * 0.5f;
 
 	if (abs(avoidanceNeeded) > 0) {
 		//does avoidance oppose proposed turn?
 		if (signbit(avoidanceNeeded) != std::signbit(frameRotation)) {
-			avoidanceNeeded += frameRotation;
-			float frameAvoidance = std::copysign(glm::min(maxFrameRotation, abs(avoidanceNeeded)), avoidanceNeeded);
-			rotate(frameAvoidance + -frameRotation);
+			float frameAvoidance = std::copysign(glm::min(maxOpposingFrameRotation +  abs(frameRotation), abs(avoidanceNeeded)), avoidanceNeeded);
+			rotate(frameAvoidance);// +-frameRotation);
 		}
 		else {
 			float frameAvoidance = std::copysign(glm::min(maxFrameRotation, abs(avoidanceNeeded)), avoidanceNeeded);

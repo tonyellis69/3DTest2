@@ -1,4 +1,4 @@
-*** Wednesday August 31, 2022  time: 17:37:15 ***
+*** Friday September 09, 2022  time: 16:18:16 ***
 
 BaseApp constructor starting...
 Using GLEW 2.1.0
@@ -7,12 +7,6 @@ Has NPOT
 glsl version: 4.60 NVIDIA
 BaseApp constructor finished. Yay!
 
-New destination!
-New destination!
-New destination!
-New destination!
-New destination!
-New destination!
 New destination!
 New destination!
 New destination!

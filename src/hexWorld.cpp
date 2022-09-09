@@ -195,8 +195,12 @@ void CHexWorld::startGame() {
 	//game.slowed = true;
 
 	for (auto& entity : map->entities) {
-		if (entity->isRobot)
-			pBotZero = entity.get();
+		if (entity->isRobot) {
+			if (pBotZero == NULL)
+				pBotZero = entity.get();
+			else
+				;// ((CRobot*)entity.get())->setState(robotDoNothing);
+		}
 	}
 }
 

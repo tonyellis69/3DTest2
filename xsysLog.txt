@@ -1,0 +1,318 @@
+*** Thursday September 08, 2022  time: 13:14:35 ***
+
+BaseApp constructor starting...
+Using GLEW 2.1.0
+OpenGL version: 4.6.0 NVIDIA 512.15
+Has NPOT
+glsl version: 4.60 NVIDIA
+BaseApp constructor finished. Yay!
+
+New destination!
+Max 0.518719
+no avoidance, turn was 0.518719
+Max 0.158192
+no avoidance, turn was 0.158192
+Max 0.0348825
+Opposing. Final turn : 0.00486895
+Max 0.048627
+Opposing. Final turn : 0.00102197
+Max 0.0490419
+Opposing. Final turn : 0.00039243
+Max 0.0501417
+Opposing. Final turn : 0.000300746
+Max 0.0503622
+Opposing. Final turn : 0.000163611
+Max 0.0498999
+Opposing. Final turn : 4.22001e-05
+Max 0.0500337
+Opposing. Final turn : -2.0951e-05
+Max 0.0503484
+Opposing. Final turn : -8.95672e-05
+Max 0.0500163
+Opposing. Final turn : -0.000189412
+Max 0.0500565
+Opposing. Final turn : -0.000239398
+Max 0.0498879
+Opposing. Final turn : -0.000308316
+Max 0.0503499
+Opposing. Final turn : -0.000346318
+Max 0.0499572
+Opposing. Final turn : -0.000431091
+Max 0.0502398
+Opposing. Final turn : -0.000462301
+Max 0.0510456
+Opposing. Final turn : -0.000498649
+Max 0.0493203
+Opposing. Final turn : -0.000642542
+Max 0.0501123
+Opposing. Final turn : -0.000587448
+Max 0.0502776
+Opposing. Final turn : -0.000661518
+Max 0.0501912
+Opposing. Final turn : -0.000713956
+Max 0.0502089
+Opposing. Final turn : -0.000753619
+Max 0.0495759
+Opposing. Final turn : -0.000819486
+Max 0.0503619
+Opposing. Final turn : -0.000799149
+Max 0.0502044
+Opposing. Final turn : -0.000884339
+Max 0.0501831
+Opposing. Final turn : -0.00091964
+Max 0.0499014
+Opposing. Final turn : -0.000972122
+Max 0.0499887
+Opposing. Final turn : -0.000992544
+Max 0.0503088
+Opposing. Final turn : -0.00102563
+Max 0.0498603
+Opposing. Final turn : -0.00110222
+Max 0.0501282
+Opposing. Final turn : -0.00111438
+Max 0.0502257
+Opposing. Final turn : -0.00116329
+Max 0.0498165
+Opposing. Final turn : -0.00123137
+Max 0.0503733
+Opposing. Final turn : -0.00123338
+Max 0.0501675
+Opposing. Final turn : -0.0013235
+Max 0.0499971
+Opposing. Final turn : -0.001371
+Max 0.0501996
+Opposing. Final turn : -0.00140362
+Max 0.0500016
+Opposing. Final turn : -0.00148014
+Max 0.0502458
+Opposing. Final turn : -0.00151549
+Max 0.0497349
+Opposing. Final turn : -0.00161463
+Max 0.0505014
+Opposing. Final turn : -0.00161122
+Max 0.0499101
+Opposing. Final turn : -0.00175894
+Max 0.0501831
+Opposing. Final turn : -0.00178514
+Max 0.0503262
+Opposing. Final turn : -0.00187103
+Max 0.0500025
+Opposing. Final turn : -0.0019841
+Max 0.0498519
+Opposing. Final turn : -0.00206238
+Max 0.0502374
+Opposing. Final turn : -0.00212863
+Max 0.0496449
+Opposing. Final turn : -0.00230039
+Max 0.0505461
+Opposing. Final turn : -0.00231636
+Max 0.0500442
+Opposing. Final turn : -0.0025661
+Max 0.0499506
+Opposing. Final turn : -0.00267896
+Max 0.050391
+Opposing. Final turn : -0.00279759
+Max 0.0499992
+Opposing. Final turn : -0.00306368
+Max 0.0498888
+Opposing. Final turn : -0.0032437
+Max 0.0504732
+Opposing. Final turn : -0.00342374
+Max 0.0498201
+Opposing. Final turn : -0.0038262
+Max 0.0501663
+Opposing. Final turn : -0.00405935
+Max 0.0500805
+Opposing. Final turn : -0.00449703
+Max 0.0501096
+Opposing. Final turn : -0.00496609
+Max 0.0499875
+Opposing. Final turn : -0.00557116
+Max 0.050166
+Opposing. Final turn : -0.00626069
+Max 0.0502527
+Opposing. Final turn : -0.00723569
+Max 0.0499314
+Opposing. Final turn : -0.00861168
+Max 0.0500529
+Opposing. Final turn : -0.0104165
+Max 0.0502482
+Opposing. Final turn : -0.0133442
+Max 0.0498222
+Opposing. Final turn : -0.0187439
+Max 0.0504495
+Opposing. Final turn : -0.0302867
+Max 0.0496251
+Opposing. Final turn : -0.0496251
+Max 0.0502041
+no avoidance, turn was 0.0502041
+Max 0.0504165
+Opposing. Final turn : -0.0504165
+Max 0.0501321
+no avoidance, turn was 0.0501321
+Max 0.0496923
+no avoidance, turn was 0.0496923
+Max 0.0506931
+Opposing. Final turn : -0.0506931
+Max 0.0503763
+no avoidance, turn was 0.0503763
+Max 0.0490278
+no avoidance, turn was 0.0490278
+Max 0.0502956
+Opposing. Final turn : -0.0502956
+Max 0.0501768
+no avoidance, turn was 0.0501768
+Max 0.0502299
+no avoidance, turn was 0.0502299
+Max 0.050106
+Opposing. Final turn : -0.050106
+Max 0.0500985
+no avoidance, turn was 0.0500985
+Max 0.0499386
+no avoidance, turn was 0.0499386
+Max 0.0502953
+Opposing. Final turn : -0.0502953
+Max 0.0499701
+no avoidance, turn was 0.0499701
+Max 0.0500301
+no avoidance, turn was 0.0500301
+Max 0.0502422
+no avoidance, turn was 0.0502422
+Max 0.0506268
+no avoidance, turn was 0.0506268
+Max 0.049458
+no avoidance, turn was 0.049458
+Max 0.0499923
+no avoidance, turn was 0.0499923
+Max 0.0500181
+no avoidance, turn was 0.0500181
+Max 0.0500661
+Opposing. Final turn : 0.0340268
+Max 0.050385
+Opposing. Final turn : 0.0260662
+Max 0.0500931
+no avoidance, turn was 0.0183182
+Max 0.0500751
+no avoidance, turn was 0.00103569
+Max 0.0499395
+no avoidance, turn was 0.00093174
+Max 0.0505398
+no avoidance, turn was 0.000851631
+Max 0.0500559
+no avoidance, turn was 0.000760555
+Max 0.0501033
+no avoidance, turn was 0.000687122
+Max 0.0500172
+no avoidance, turn was 0.000619888
+Max 0.050253
+no avoidance, turn was 0.000562191
+Max 0.0500565
+no avoidance, turn was 0.000505924
+Max 0.0497586
+no avoidance, turn was 0.000453472
+Max 0.0503133
+no avoidance, turn was 0.000414371
+Max 0.0504114
+no avoidance, turn was 0.000375271
+Max 0.0500139
+no avoidance, turn was 0.000335693
+Max 0.0503106
+no avoidance, turn was 0.000304699
+Max 0.0499185
+no avoidance, turn was 0.000272751
+Max 0.0497871
+no avoidance, turn was 0.000246525
+Max 0.0499932
+no avoidance, turn was 0.000223637
+Max 0.0503553
+no avoidance, turn was 0.000202656
+Max 0.0500586
+no avoidance, turn was 0.000182629
+Max 0.0499101
+no avoidance, turn was 0.000165462
+Max 0.0501654
+no avoidance, turn was 0.000149727
+Max 0.0502023
+no avoidance, turn was 0.000134945
+Max 0.0499749
+no avoidance, turn was 0.000121117
+Max 0.050655
+no avoidance, turn was 0.00011158
+Max 0.0497241
+no avoidance, turn was 9.82285e-05
+Max 0.0499305
+no avoidance, turn was 8.96454e-05
+Max 0.0497391
+no avoidance, turn was 8.05855e-05
+Max 0.0505311
+no avoidance, turn was 7.39098e-05
+Max 0.0501942
+no avoidance, turn was 6.62804e-05
+Max 0.0503436
+no avoidance, turn was 6.05583e-05
+Max 0.0498696
+no avoidance, turn was 5.48363e-05
+Max 0.0499428
+no avoidance, turn was 4.86374e-05
+Max 0.0500904
+no avoidance, turn was 4.52995e-05
+Max 0.0501426
+no avoidance, turn was 4.00543e-05
+Max 0.0500838
+no avoidance, turn was 3.62396e-05
+Max 0.0501447
+no avoidance, turn was 3.24249e-05
+Max 0.0505809
+no avoidance, turn was 3.05176e-05
+Max 0.0495816
+no avoidance, turn was 2.6226e-05
+Max 0.0498369
+no avoidance, turn was 2.43187e-05
+Max 0.0500436
+no avoidance, turn was 2.19345e-05
+Max 0.0503817
+no avoidance, turn was 2.0504e-05
+Max 0.0497715
+no avoidance, turn was 1.81198e-05
+Max 0.0505179
+no avoidance, turn was 1.57356e-05
+Max 0.0502467
+no avoidance, turn was 1.52588e-05
+Max 0.0499275
+no avoidance, turn was 1.28746e-05
+Max 0.049887
+no avoidance, turn was 1.19209e-05
+Max 0.0506172
+no avoidance, turn was 1.14441e-05
+Max 0.0502629
+no avoidance, turn was 9.53674e-06
+Max 0.0496782
+no avoidance, turn was 8.58307e-06
+Max 0.0502173
+no avoidance, turn was 8.58307e-06
+Max 0.0504576
+no avoidance, turn was 8.10623e-06
+Max 0.0502314
+no avoidance, turn was 6.19888e-06
+Max 0.0493518
+no avoidance, turn was 6.67572e-06
+Max 0.0499833
+no avoidance, turn was 5.24521e-06
+Max 0.0504045
+no avoidance, turn was 5.72205e-06
+Max 0.0501372
+no avoidance, turn was 4.76837e-06
+Max 0.0504837
+no avoidance, turn was 4.29153e-06
+Max 0.0496215
+no avoidance, turn was 3.8147e-06
+Max 0.049986
+no avoidance, turn was 3.8147e-06
+Max 0.0502632
+no avoidance, turn was 2.38419e-06
+Max 0.0498108
+no avoidance, turn was 2.38419e-06
+Max 0.0505125
+no avoidance, turn was 2.86102e-06
+Max 0.0505446
+no avoidance, turn was 1.90735e-06

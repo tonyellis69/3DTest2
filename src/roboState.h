@@ -17,6 +17,7 @@ public:
 	virtual glm::vec3 getDestination() {
 		return glm::vec3(0);
 	}
+	virtual void setDestination(const glm::vec3& d) {}
 
 
 	CRobot* bot;
@@ -29,6 +30,9 @@ public:
 	CRoboWander(CRobot* bot);
 	std::shared_ptr<CRoboState> update(float dT);
 	glm::vec3 getDestination();
+	void setDestination(const glm::vec3& d) {
+		destination = d;
+	}
 
 //	bool turnTo(glm::vec3& p);
 

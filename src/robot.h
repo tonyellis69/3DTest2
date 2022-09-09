@@ -98,10 +98,12 @@ private:
 	float upperTurnSpeed = 5.0f;
 	float maxTurnSpeed = 3.0f;
 	float robotRadius = 0.7f;
-	float ignorable = 0.07f; //below .1 to avoid snapping to some directions, above .03 to avoid quiver
+	float ignorable = 0.08f; //below .1 to avoid snapping to some directions, above .03 to avoid quiver
 	float obstacleProximityLimit = 0.75f; //0.7f
 	float obstacleAhead = 0.9f;  
 	float obstacleToSide = 0.2f;
+
+	float safeDistAdjust = 0.0f;
 
 	
 	TModelMesh* upperBody;
