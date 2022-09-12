@@ -16,7 +16,7 @@ enum TLungeState { preLunge, lunging, returning };
 /** A class describing basic robot characteristics and
 	behaviour. */
 
-struct TObstacle { glm::vec3 pos = glm::vec3(0); float radius; };
+struct TObstacle { glm::vec3 pos = glm::vec3(0); float radius; CRobot* bot = nullptr; };
 class CRobot : public CEntity {
 public:
 	CRobot();
@@ -104,6 +104,9 @@ private:
 	float obstacleToSide = 0.2f;
 
 	float safeDistAdjust = 0.0f;
+
+	CRobot* pRoboCollidee;
+	float backingUp = 0;
 
 	
 	TModelMesh* upperBody;

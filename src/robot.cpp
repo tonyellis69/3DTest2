@@ -202,7 +202,7 @@ void CRobot::receiveDamage(CEntity& attacker, int damage) {
 }
 
 /** Give robot a push toward this destination, which will scale down
-	with obstacleProximity to avoid overshooting. */
+	with risk to avoid overshooting. */
 glm::vec3 CRobot::arriveAt(glm::vec3& dest) {
 	float proportionalSlowingDist = slowingDist * (chosenSpeed / 1000);
 	glm::vec3 targetOffset = dest - worldPos;
@@ -270,8 +270,9 @@ std::vector<TObstacle> CRobot::findNearObstacles(glm::vec3& centre) {
 		else {
 			CEntities entities = game.map->getEntitiesAt(hex);
 			for (auto& entity : entities) {
-				if (entity->isRobot && entity != this)
-					obstacles.push_back({ entity->worldPos,0.8f /* entity->getRadius()*/ });
+				if (entity->isRobot && entity != this) {
+					obstacles.push_back({ entity->worldPos,0.8f /* entity->getRadius()*/, (CRobot*)entity });
+				}
 			}
 		}
 	}
@@ -349,8 +350,11 @@ glm::vec3 CRobot::getDestination() {
 }
 
 /** Return the necessary vector to avoid obstacles ahead. */
+//FIXME: ultimately, probably better to set a robot member to the obstacle, so it has all data.
 std::tuple<float, float> CRobot::findAvoidance() {
 	glm::vec3 travelDir = getRotationVec();
+
+	pRoboCollidee = nullptr;
 
 	float destinationDist = glm::distance(worldPos, getDestination());
 	float farCheckDist = std::min(maxAvoidanceDist, destinationDist) ;
@@ -445,6 +449,7 @@ std::tuple<float, float> CRobot::findAvoidance() {
 		risk = glm::smoothstep(obstacleToSide, obstacleAhead, bearingToObj);
 	}
 
+	pRoboCollidee = obstacle.bot;
 	return { avoidAngle, risk };
 }
 
@@ -471,6 +476,12 @@ std::tuple<TObstacle, glm::vec3> CRobot::findCollidable(std::vector<TObstacle>& 
 
 
 void CRobot::headTo(glm::vec3 & destinationPos) {
+	if (backingUp > 0) {
+		backingUp -= dT;
+		physics.moveImpulse = -getRotationVec() * defaultSpeed ;
+		return;
+	}
+
 	float maxFrameRotation = dT * maxTurnSpeed;
 	float desiredTurn = orientationTo(destinationPos);
 	float frameRotation = std::copysign( glm::min(maxFrameRotation, abs(desiredTurn)),desiredTurn);
@@ -482,17 +493,27 @@ void CRobot::headTo(glm::vec3 & destinationPos) {
 		impulse = getRotationVec() * speed;
 	physics.moveImpulse = impulse;
 
- 	auto [avoidanceNeeded, obstacleProximity] = findAvoidance();
+ 	auto [avoidanceNeeded, risk] = findAvoidance();
 
 	float maxOpposingFrameRotation = maxFrameRotation * 0.5f;
 
+
 	if (abs(avoidanceNeeded) > 0) {
+
+		//Special case: colliding bots side-by-side heading same way
+		if (pRoboCollidee && pRoboCollidee->backingUp <= 0 &&
+			glm::dot(getRotationVec(),pRoboCollidee->getRotationVec()) > 0.8f &&
+			glm::distance(worldPos,pRoboCollidee->worldPos) < 1.0f) {
+			backingUp = 0.55f; 
+			return;
+		}
+
 		//does avoidance oppose proposed turn?
 		if (signbit(avoidanceNeeded) != std::signbit(frameRotation)) {
 			float frameAvoidance = std::copysign(glm::min(maxOpposingFrameRotation +  abs(frameRotation), abs(avoidanceNeeded)), avoidanceNeeded);
-			rotate(frameAvoidance);// +-frameRotation);
+			rotate(frameAvoidance);
 		}
-		else {
+		else { //no? work with it
 			float frameAvoidance = std::copysign(glm::min(maxFrameRotation, abs(avoidanceNeeded)), avoidanceNeeded);
 			if (abs(frameAvoidance) > abs(frameRotation)) {
 				float diff = std::copysign(abs(frameAvoidance) - abs(frameRotation), avoidanceNeeded);
@@ -501,7 +522,7 @@ void CRobot::headTo(glm::vec3 & destinationPos) {
 		}
 	}
 
-	physics.moveImpulse *= 1.0f - obstacleProximity;
+	physics.moveImpulse *= 1.0f - risk;
 }
 
 /** Rotate upper body to track a target, if any. */
