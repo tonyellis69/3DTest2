@@ -65,8 +65,8 @@ public:
 
 	void drawExplosion(TExplode& e);
 
-	void drawLineModel(TModelMesh& mesh);
-	void drawSolidModel(TModelMesh& model);
+	//void drawLineModel(TModelMesh& mesh);
+	//void drawSolidModel(TModelMesh& model);
 
 	void pointCamera(glm::vec3& dir);
 	void setCameraHeight(float z);

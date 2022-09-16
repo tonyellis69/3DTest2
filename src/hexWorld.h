@@ -97,6 +97,7 @@ private:
 	void followCam(CEntity* ent);
 	void freeCam(float x, float y);
 	void realtimeKeyChecks();
+	void drawReticule();
 
 	CMap* map;
 
@@ -140,6 +141,8 @@ private:
 	TCameraMode cameraMode = camNone;
 	glm::vec2 freeCamPos = { 0,0 };
 	CEntity* pBotZero = NULL;
+
+	CModel* reticule;
 };
 
 

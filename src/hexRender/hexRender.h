@@ -47,6 +47,8 @@ public:
 
 	void setCameraPos(float x, float y);
 
+	void drawModelAt(CModel& model, glm::vec3& pos);
+
 	CCamera* pCamera;///<Old renderer's camera - replace with own!
 
 	CShader* lineShader;

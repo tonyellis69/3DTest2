@@ -53,6 +53,8 @@ void CPlayerObject::setModel(CModel& modelRef) {
 	leftFootMask = model.getMesh("footL_mask");
 	rightFootMask = model.getMesh("footR_mask");
 
+	this->model.setMainMesh("body");
+
 	setBoundingRadius();
 }
 
@@ -63,7 +65,7 @@ void CPlayerObject::buildWorldMatrix() {
 	upperBody->matrix = glm::rotate(worldM, upperBodyRotation, glm::vec3(0, 0, -1));
 
 	//lineModel.model.matrix = upperBody->matrix;
-	model.tmpMatrix = upperBody->matrix;
+	//model.tmpMatrix = upperBody->matrix;
 	//FIXME! Temp kludge to ensure collision check works
 	//maybe solve by giving every model a collision subModel to check against.
 	upperBodyMask->matrix = upperBody->matrix;
@@ -131,9 +133,9 @@ void CPlayerObject::draw() {
 	//hexRendr2.drawLineModel(*leftFoot);
 	//hexRendr2.drawLineModel(*rightFoot);
 	//hexRendr2.drawLineModel(*upperBody);
-	hexRendr2.drawLineModel(model.meshes[2]);
-	hexRendr2.drawLineModel(model.meshes[1]);
-	hexRendr2.drawLineModel(model.meshes[0]);
+	//hexRendr2.drawLineModel(model.meshes[2]);
+	//hexRendr2.drawLineModel(model.meshes[1]);
+	//hexRendr2.drawLineModel(model.meshes[0]);
 }
 
 

@@ -24,7 +24,7 @@ void CMissile::setPosition(glm::vec3& pos, float rotation) {
 
 
 
-	dirVec =  glm::normalize( model.tmpMatrix * glm::vec4(1, 0, 0,0) );
+	dirVec =  glm::normalize( model.getMainMesh()->matrix * glm::vec4(1, 0, 0, 0));
 	leadingPoint = worldPos + dirVec * distToPoint;
 	leadingPointLastHex = leadingPoint;
 	lastLeadingPointHex = worldSpaceToHex(pos);
@@ -43,7 +43,7 @@ void CMissile::update(float dT) {
 }
 
 void CMissile::draw() {
-	hexRendr2.drawLineModel(model.meshes[0]);
+	//hexRendr2.drawLineModel(model.meshes[0]);
 }
 
 void CMissile::setOwner(CEntity* owner) {

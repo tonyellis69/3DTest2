@@ -486,7 +486,30 @@ void CHexRender::setCameraPos(float x, float y) {
 	pCamera->setPos(glm::vec3(x, y, camZ));
 }
 
+void CHexRender::drawModelAt(CModel& model, glm::vec3& pos) {
+	lineShader->activate();
+	lineShader->setUniform(hWinSize, pCamera->getView());
+	lineShader->setUniform(hChannel, 1.0f);
+	lineShader->setUniform(hThickness, 0.5f);////FIXME! User should control these, or (better) model should
+	lineShader->setUniform(hSmoothing, tmpLineSmooth);
+	lineShader->setUniform(hSolid, tmpLineSolid);
+	lineShader->setUniform(hScale, 1.0f);
 
+
+
+	model.buf.setVAO();
+
+	glm::mat4 mvp = pCamera->clipMatrix * glm::translate(glm::mat4(1), pos);
+	lineShader->setUniform(hMVP, mvp);
+	lineShader->setUniform(hPalette, model.getMainMesh()->palette);
+	drawMeshLine(model.getMainMesh()->meshRec);
+	
+	model.buf.clearVAO();
+}
+
+/** Add the verts for tile tileNo to the given arrays, offset to position hex.
+	This enables the creation of one big buffer storing all scenery for the map,
+	which can be drawn with one drawcall.*/
 void CHexRender::addToMapBuf(std::vector<vc>& v, std::vector<unsigned int>& i,CHex& hex, int tileNo) {
 	glm::vec3 offset = cubeToWorldSpace(hex);
 	int currentVerts = v.size();

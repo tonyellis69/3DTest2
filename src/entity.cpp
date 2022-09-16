@@ -81,18 +81,18 @@ glm::vec3 CEntity::getRotationVec() {
 void CEntity::draw(){
 	if (hexPosition == CHex(-1))
 		return;
-	hexRendr2.drawLineModel(model.meshes[0]);
+	//hexRendr2.drawLineModel(model.meshes[0]);
 }
 
 
 /** Construct this object's world matrix from its known position and rotation.*/
 void CEntity::buildWorldMatrix() {
-	model.tmpMatrix = glm::translate(glm::mat4(1), worldPos);
-	model.tmpMatrix = glm::rotate(model.tmpMatrix, rotation, glm::vec3(0, 0, -1));
+	glm::mat4 tmpMatrix = glm::translate(glm::mat4(1), worldPos);
+	tmpMatrix = glm::rotate(tmpMatrix, rotation, glm::vec3(0, 0, -1));
 	
 	//NB: we use a CW system for angles
 	for (auto& mesh : model.meshes)
-		mesh.matrix = model.tmpMatrix;
+		mesh.matrix = tmpMatrix;
 	//Kludgy, but we will usually want to move all meshes.
 }
 

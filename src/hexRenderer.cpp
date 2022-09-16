@@ -159,30 +159,30 @@ void CHexRenderer::drawPath(THexList* path, glm::vec4& pathStartColour, glm::vec
 
 
 
-void CHexRenderer::drawLineModel(TModelMesh& model) {
-	renderer.setShader(lineShader);
-	glm::mat4 mvp = camera.clipMatrix * model.matrix;
-	lineShader->setShaderValue(hMVP, mvp);
-	lineShader->setShaderValue(hWinSize, camera.getView());
-
-	lineShader->setShaderValue(hColour, glm::vec4(0, 0, 0, 0)); // model.colour);
-	glUniform4fv(hPalette, 4, (float*)(model.palette.data()));
-	auto& lineModel = model.draw;
-	renderer.drawLineStripAdjBuf(*lineModel.buf, (void*)(lineModel.meshRec.indexStart * sizeof(unsigned short)), lineModel.meshRec.indexSize);
-
-
-}
-
-void CHexRenderer::drawSolidModel(TModelMesh& model) {
-	renderer.setShader(filledShader);
-	glm::mat4 mvp = camera.clipMatrix * model.matrix;
-	filledShader->setShaderValue(hFillMVP, mvp);
-	filledShader->setShaderValue(hFillColour, model.colour);
-
-	auto& mesh = model.draw.meshRec;
-	renderer.drawTrisBuf(*model.draw.buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
-
-}
+//void CHexRenderer::drawLineModel(TModelMesh& model) {
+//	renderer.setShader(lineShader);
+//	glm::mat4 mvp = camera.clipMatrix * model.matrix;
+//	lineShader->setShaderValue(hMVP, mvp);
+//	lineShader->setShaderValue(hWinSize, camera.getView());
+//
+//	lineShader->setShaderValue(hColour, glm::vec4(0, 0, 0, 0)); // model.colour);
+//	glUniform4fv(hPalette, 4, (float*)(model.palette.data()));
+//	auto& lineModel = model.draw;
+//	renderer.drawLineStripAdjBuf(*lineModel.buf, (void*)(lineModel.meshRec.indexStart * sizeof(unsigned short)), lineModel.meshRec.indexSize);
+//
+//
+//}
+//
+//void CHexRenderer::drawSolidModel(TModelMesh& model) {
+//	renderer.setShader(filledShader);
+//	glm::mat4 mvp = camera.clipMatrix * model.matrix;
+//	filledShader->setShaderValue(hFillMVP, mvp);
+//	filledShader->setShaderValue(hFillColour, model.colour);
+//
+//	auto& mesh = model.draw.meshRec;
+//	renderer.drawTrisBuf(*model.draw.buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
+//
+//}
 
 /** Point the camera in the given direction. Eg, top-down. */
 void CHexRenderer::pointCamera(glm::vec3& dir) {

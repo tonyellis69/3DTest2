@@ -61,6 +61,8 @@ CHexWorld::CHexWorld() {
 
 	initPalettes();
 
+	reticule = &spawn::models["reticule"]; //FIXME: create our own model?
+
 }
 
 void CHexWorld::onEvent(CEvent& e) {
@@ -189,9 +191,9 @@ void CHexWorld::startGame() {
 
 	game.paused = false;
 
-	//followCam(playerObj);
-	freeCam(-76, 15);
-	toggleDirectionGraphics();
+	followCam(playerObj);
+	//freeCam(-76, 15);
+	//toggleDirectionGraphics();
 	//game.slowed = true;
 
 	for (auto& entity : map->entities) {
@@ -202,6 +204,7 @@ void CHexWorld::startGame() {
 				;// ((CRobot*)entity.get())->setState(robotDoNothing);
 		}
 	}
+	CWin::showMouse(false);
 }
 
 
@@ -372,8 +375,6 @@ void CHexWorld::draw() {
 	hexRender.resetDrawLists();
 
 	for (auto& entity : map->entities) {
-		//if (entity->entityType == entPlayer)
-			//int b = 0;
 		if (entity->live)
 			entity->drawFn.get()->draw(hexRender);
 	}
@@ -400,9 +401,10 @@ void CHexWorld::draw() {
 	hexRender.drawExplosionList();
 
 	if (!game.player->dead) {
-		imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 1.0f });
-		imRendr::drawLine(playerObj->worldPos, mouseWorldPos);
-		hexCursor->draw();
+		//imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 1.0f });
+		//imRendr::drawLine(playerObj->worldPos, mouseWorldPos);
+		//hexCursor->draw();
+		drawReticule();
 	}
 
 
@@ -751,6 +753,10 @@ void CHexWorld::realtimeKeyChecks() {
 	if (CWin::keyPressed('S')) moveCamera(glm::vec3{ 0, -1, 0 });
 	if (CWin::keyPressed('A')) moveCamera(glm::vec3{ -1,0,0 });
 	if (CWin::keyPressed('D')) moveCamera(glm::vec3{ 1,0,0 });
+}
+
+void CHexWorld::drawReticule() {
+	hexRender.drawModelAt(*reticule, mouseWorldPos);	
 }
 
 /** TO DO: ultimately this should be automated via a Tig

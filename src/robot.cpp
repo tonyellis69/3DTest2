@@ -49,6 +49,9 @@ void CRobot::setModel(CModel& model) {
 	treads = this->model.getMesh("treads");
 	upperBodyMask = this->model.getMesh("robody_mask");
 	robaseMask = this->model.getMesh("robase_mask");
+
+	this->model.setMainMesh("robody");
+
 	setBoundingRadius();
 }
 
@@ -141,9 +144,9 @@ void CRobot::draw() {
 	//for (auto hex : viewField.visibleHexes)
 	//	hexRendr2.highlightHex(hex);
 	//CEntity::draw();
-	hexRendr2.drawLineModel(*upperBody);
-	hexRendr2.drawLineModel(*base);
-	hexRendr2.drawLineModel(*treads);
+	//hexRendr2.drawLineModel(*upperBody);
+	//hexRendr2.drawLineModel(*base);
+	//hexRendr2.drawLineModel(*treads);
 }
 
 
@@ -166,7 +169,7 @@ void CRobot::buildWorldMatrix() {
 
 	base->matrix = worldM;
 
-	model.tmpMatrix = upperBody->matrix;
+	//model.tmpMatrix = upperBody->matrix;
 	//FIXME! Temp kludge to ensure collision check works
 	//maybe solve by giving every model a collision subModel to check against.
 

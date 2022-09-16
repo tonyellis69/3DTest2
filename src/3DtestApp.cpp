@@ -359,6 +359,8 @@ void C3DtestApp::initHexWorld() {
 
 	hexWorld.addMesh("armour", dataPath + "models\\armour.dae");
 
+	hexWorld.addMesh("reticule", dataPath + "models\\reticule.dae");
+
 	//... more models
 
 
