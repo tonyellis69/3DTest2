@@ -96,12 +96,12 @@ void CEntity::buildWorldMatrix() {
 	//Kludgy, but we will usually want to move all meshes.
 }
 
-void CEntity::updateMatrices(TModelData& model) {
-	model.matrix = glm::translate(glm::mat4(1), worldPos);
-
-	for (auto& childModel : model.subModels)
-		updateMatrices(childModel);
-}
+//void CEntity::updateMatrices(TModelData& model) {
+//	model.matrix = glm::translate(glm::mat4(1), worldPos);
+//
+//	for (auto& childModel : model.subModels)
+//		updateMatrices(childModel);
+//}
 
 std::tuple<float, glm::vec3> CEntity::collisionCheck(CEntity* e2) {
 	//get bounding-sphere radii
@@ -178,8 +178,9 @@ void CEntity::initDrawFn() {
 	drawFn = std::make_shared<CEntityDraw>(this);
 }
 
-void CEntity::setPalette(std::vector<glm::vec4>* pPalette) {
-	this->pPalette = pPalette;
+void CEntity::setPalette(std::vector<glm::vec4>& palette) {
+	//this->pPalette = pPalette;
+	model.palette = palette;
 }
 
 float CEntity::getRadius() {

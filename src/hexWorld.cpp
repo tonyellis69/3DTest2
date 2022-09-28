@@ -61,8 +61,6 @@ CHexWorld::CHexWorld() {
 
 	initPalettes();
 
-	reticule = &spawn::models["reticule"]; //FIXME: create our own model?
-
 }
 
 void CHexWorld::onEvent(CEvent& e) {
@@ -170,7 +168,7 @@ void CHexWorld::startGame() {
 	hexRendr2.setMap(map->getHexArray());
 
 	game.setMap(map);
-	physics.removeEntities();
+	physics.clearEntities();
 
 	physics.setMap(map->getHexArray());
 
@@ -197,7 +195,7 @@ void CHexWorld::startGame() {
 	//game.slowed = true;
 
 	for (auto& entity : map->entities) {
-		if (entity->isRobot) {
+		if (entity->isRobot && entity->id == 8) {
 			if (pBotZero == NULL)
 				pBotZero = entity.get();
 			else
@@ -205,6 +203,10 @@ void CHexWorld::startGame() {
 		}
 	}
 	CWin::showMouse(false);
+
+	//FIXME: this (and prob other stuff above) should be run once only in a hexWorld.init(). 
+	reticule = spawn::models["reticule"]; 
+	reticule.palette[0] = { 1,1,1,1 };
 }
 
 
@@ -243,7 +245,7 @@ void CHexWorld::onKeyDown(int key, long mod) {
 			mapEdit.save();
 
 		if (key == 'L' && mod == GLFW_MOD_CONTROL) {
-			physics.removeEntities();
+			physics.clearEntities();
 			mapEdit.load();
 		}
 
@@ -352,6 +354,9 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 	if (key == GLFW_MOUSE_BUTTON_LEFT && editMode) {
 		onMapDrag();
 	}
+
+	if (editMode)
+		mapEdit.onMouseMove(mouseWorldPos);
 }
 
 void CHexWorld::calcMouseWorldPos() {
@@ -419,18 +424,22 @@ void CHexWorld::draw() {
 	//	+ " solidity: " + std::to_string(hexRender.tmpLineSolid));
 
 	if (editMode) {
-		imRendr::drawText(600, 50, "Entity: " +  mapEdit.currentEntStr + " shape: " + mapEdit.currentShapeStr);
+		imRendr::drawText(600, 50, "Entity: " +  mapEdit.currentEntStr + " shape: " + mapEdit.currentShapeStr +
+		mapEdit.entIdStr);
 
 	}
 
-	if (pBotZero)
+	if (pBotZero && pBotZero->toRemove == false)
 		imRendr::drawText(600, 50, pBotZero->diagnostic);
 
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
 void CHexWorld::setAspectRatio(glm::vec2& ratio) {
-	hexRendr2.setCameraAspectRatio(ratio);
+	float defFov = glm::radians(45.0f);
+	float defaultScreenH = 800.0f;
+	float newFov = asin(sin(defFov / 2.0f) * ratio.y / defaultScreenH) * 2.0f;
+	hexRendr2.setCameraAspectRatio(ratio,newFov);
 	hexRender.setScreenSize(ratio);
 }
 
@@ -457,7 +466,7 @@ void CHexWorld::update(float dt) {
 
 	if (!editMode)
 		for (int n = 0; n < map->entities.size(); n++) {
-			auto entity = map->entities[n];
+			auto& entity = map->entities[n];
 			if (entity->live)
 				map->entities[n]->update(dT);
 		}
@@ -465,14 +474,14 @@ void CHexWorld::update(float dt) {
 
 
 
-	if (game.map->entitiesToDelete)
-		physics.removeDeletedEntities();
+	//if (game.map->entitiesToDelete)
+	//	physics.removeDeletedEntities();
 
-	//TO DO: this should come to replace above
-	if (game.map->entitiesToKill) {
-		physics.removeDeadEntities();
-		game.map->entitiesToKill = false;
-	}
+	////TO DO: this should come to replace above
+	//if (game.map->entitiesToKill) {
+	//	physics.removeDeadEntities();
+	//	game.map->entitiesToKill = false;
+	//}
 
 
 	game.update(dT);
@@ -490,6 +499,8 @@ void CHexWorld::update(float dt) {
 
 
 	realtimeKeyChecks();
+
+	removeEntities();
 
 }
 
@@ -521,10 +532,12 @@ void CHexWorld::toggleEditMode() {
 	editMode = !editMode;
 	if (editMode) {
 		gWin::pNear->hideWin();
+		CWin::showMouse(true);
 	}
 	else {
 		gWin::pNear->showWin();
 		prepMapEntities();
+		CWin::showMouse(false);
 	}
 	
 }
@@ -543,7 +556,7 @@ void CHexWorld::onRedo() {
 /** Plug the map's entities into physics and whatever else they need
 	to be connected to. */
 void CHexWorld::prepMapEntities() {
-	physics.removeEntities();
+	physics.clearEntities();
 
 	for (auto& entity : map->entities) {
 		if (entity->isRobot)
@@ -756,7 +769,31 @@ void CHexWorld::realtimeKeyChecks() {
 }
 
 void CHexWorld::drawReticule() {
-	hexRender.drawModelAt(*reticule, mouseWorldPos);	
+	hexRender.drawModelAt(reticule, mouseWorldPos);	
+}
+
+/** Remove marked entities from the game. */
+void CHexWorld::removeEntities() {
+	physics.removeDeadEntities();
+
+	for (auto& gra = hexRender.graphics.begin(); gra != hexRender.graphics.end();) {
+		if (gra->get()->entity && gra->get()->entity.get()->toRemove == true)
+			gra = hexRender.graphics.erase(gra);
+		else
+			gra++;
+	}
+
+	for (auto& ent = map->entities.begin(); ent != map->entities.end();) {
+		if (ent->get()->toRemove == true) {
+			if (pBotZero && pBotZero->id == ent->get()->id) {
+				pBotZero = nullptr;
+			}
+			ent = map->entities.erase(ent);
+		}
+		else
+			ent++;
+	}
+
 }
 
 /** TO DO: ultimately this should be automated via a Tig

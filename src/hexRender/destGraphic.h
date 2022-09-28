@@ -15,7 +15,7 @@ public:
 	void update(float dT);
 	void draw(CHexRender& hexRender);
 
-	TEntity entity;
+
 
 	glm::vec3* dest = nullptr;
 

@@ -98,6 +98,7 @@ private:
 	void freeCam(float x, float y);
 	void realtimeKeyChecks();
 	void drawReticule();
+	void removeEntities();
 
 	CMap* map;
 
@@ -142,7 +143,7 @@ private:
 	glm::vec2 freeCamPos = { 0,0 };
 	CEntity* pBotZero = NULL;
 
-	CModel* reticule;
+	CModel reticule;
 };
 
 

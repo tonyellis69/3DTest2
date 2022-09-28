@@ -47,7 +47,7 @@ public:
 	}
 	virtual void buildWorldMatrix();
 
-	virtual void updateMatrices(TModelData& model);
+	//virtual void updateMatrices(TModelData& model);
 
 	virtual void receiveDamage(CEntity& attacker, int damage) {};
 	virtual void onMovedHex() {};
@@ -64,7 +64,7 @@ public:
 
 
 	virtual void initDrawFn();
-	virtual void setPalette(std::vector<glm::vec4>* pPalette);
+	virtual void setPalette(std::vector<glm::vec4>& palette);
 
 	float getRadius();
 	
@@ -100,9 +100,11 @@ public:
 
 	std::shared_ptr<CDrawFunc> drawFn;
 
-	std::vector<glm::vec4>* pPalette;
+	//std::vector<glm::vec4>* pPalette;
 
 	std::string diagnostic;
+
+	bool toRemove = false;
 
 protected:
 	float rotation = 0.0f; ///<Angle of object's z-rotation in world space.

@@ -63,9 +63,6 @@
     <ClCompile Include="src\gameTextWin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\door.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\viewField.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -189,9 +186,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gameTextWin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\door.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\powerUser.h">

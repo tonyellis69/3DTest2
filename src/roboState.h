@@ -34,7 +34,7 @@ public:
 		destination = d;
 	}
 
-//	bool turnTo(glm::vec3& p);
+//	bool turnToward(glm::vec3& p);
 
 	glm::vec3 destination = { 0,0,0 };
 	float speed = 0.0f;
@@ -138,4 +138,13 @@ public:
 	std::shared_ptr<CRoboState> update(float dT);
 
 	CEntity* targetEntity;
+};
+
+
+class CTurnToSee : public CRoboState {
+public:
+	CTurnToSee(CRobot* bot, glm::vec3& dest);
+	std::shared_ptr<CRoboState> update(float dT);
+
+	glm::vec3 dir;
 };

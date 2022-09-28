@@ -66,6 +66,8 @@ void CRobot::update(float dT) {
 			currentState = newState;
 	}
 
+
+	diagnostic += " trackState " + std::to_string(trackingState);
 	if (trackingState)
 		trackTarget();
 
@@ -129,24 +131,10 @@ void CRobot::initDrawFn() {
 	fn->upperMask = model.getMesh("robody_mask");
 	fn->lowerMasks.push_back(model.getMesh("robase_mask"));
 
-
-	//drawFn = std::make_shared<CMultiDraw>(this);
-	//auto fn = (CMultiDraw*)drawFn.get();
-	//fn->lowerMeshes.push_back(model.getMesh("footL"));
-	//fn->lowerMeshes.push_back(model.getMesh("footR"));
-	//fn->upperMeshes.push_back(model.getMesh("body"));
-	//fn->upperMask = model.getMesh("body_mask");
 }
 
 void CRobot::draw() {
-	//if (!visibleToPlayer)
-	//	return;
-	//for (auto hex : viewField.visibleHexes)
-	//	hexRendr2.highlightHex(hex);
-	//CEntity::draw();
-	//hexRendr2.drawLineModel(*upperBody);
-	//hexRendr2.drawLineModel(*base);
-	//hexRendr2.drawLineModel(*treads);
+
 }
 
 
@@ -169,10 +157,6 @@ void CRobot::buildWorldMatrix() {
 
 	base->matrix = worldM;
 
-	//model.tmpMatrix = upperBody->matrix;
-	//FIXME! Temp kludge to ensure collision check works
-	//maybe solve by giving every model a collision subModel to check against.
-
 	treads->matrix = glm::translate(worldM, glm::vec3(-treadTranslate, 0, 0));
 	robaseMask->matrix = base->matrix;
 }
@@ -189,6 +173,10 @@ void CRobot::startTracking(glm::vec3& pos) {
 	upperBodyLocked = false;
 }
 
+
+
+
+
 void CRobot::stopTracking() {
 	trackingState = trackEnding;
 	upperBodyLocked = true;
@@ -201,6 +189,12 @@ void CRobot::receiveDamage(CEntity& attacker, int damage) {
 	if (hp == 0) {
 		game.killEntity(*this);
 		spawn::explosion("explosion", worldPos, 1.5f);
+		toRemove = true;
+	}
+	else {
+		if (canSeeEnemy() == false) {
+			currentState = std::make_shared<CTurnToSee>(this, glm::normalize(attacker.worldPos - worldPos));
+		}
 	}
 }
 
@@ -250,7 +244,7 @@ bool CRobot::inFov(CEntity* target) {
 
 	//find upper body rotation as a vector
 	glm::vec3 rotVec = { cos(upperBodyRotation), -sin(upperBodyRotation),0 };
-	if ((glm::dot(rotVec, targetDir)) < cos(rad40))
+	if ((glm::dot(rotVec, targetDir)) < cos(rad50))
 		return false;
 
 	if ( glm::distance(worldPos, target->worldPos) <= 12 && 
@@ -321,27 +315,16 @@ void CRobot::onMovedHex()
 {
 }
 
-/** Continue turning toward p, if not facing it. */
-bool CRobot::turnTo(glm::vec3& p) {
-	float turnDist = orientationTo(p);
-
-	float turnDir = (std::signbit(turnDist)) ? -1.0f : 1.0f;
-
-	if (lastTurnDir != 0 && lastTurnDir != turnDir) { //we overshot
-		float targetAngle = glm::orientedAngle(glm::normalize(p - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
-		setRotation(targetAngle);
-		lastTurnDir = 0;
-		return true;
-
-	}
-
-	float turnStep = turnDir * dT * 5.0f; //temp!
-	rotate(turnStep);
-	lastTurnDir = turnDir;
-	return false;
+/** Continue turning toward dir, if not facing it. */
+bool CRobot::turnToward(glm::vec3& dir) {
+	float maxFrameRotation = dT * maxTurnSpeed;
+	float desiredTurn = shortestAngle(getRotationVec(), dir);
+	float frameRotation = std::copysign(glm::min(maxFrameRotation, abs(desiredTurn)), desiredTurn);
+	if (abs(frameRotation) < 0.001f)
+		return false;
+	rotate(frameRotation);
+	return true;
 }
-
-
 
 void CRobot::stopMoving() {
 	moving = false;
@@ -533,12 +516,16 @@ void CRobot::trackTarget() {
 	float targetAngle;
 	switch (trackingState) {
 	case trackEntity: 
-		targetAngle = glm::orientedAngle(glm::normalize(trackingEntity->worldPos - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
-		setUpperRotation(targetAngle);
+		//targetAngle = glm::orientedAngle(glm::normalize(trackingEntity->worldPos - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+		targetAngle = shortestAngle(upperBodyRotation,trackingEntity->worldPos - worldPos );
+		//setUpperRotation(targetAngle);
+		turnUpperBodyTo(targetAngle);
 		break;
 	case trackPos:
-		targetAngle = glm::orientedAngle(glm::normalize(trackingPos - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
-		setUpperRotation(targetAngle);
+		//targetAngle = glm::orientedAngle(glm::normalize(trackingPos - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+		//setUpperRotation(targetAngle);
+		targetAngle = shortestAngle(upperBodyRotation,trackingPos - worldPos );
+		turnUpperBodyTo(targetAngle);
 		break;
 	case trackEnding:
 		float dist = fmod(rad360 + rotation - upperBodyRotation, rad360);
@@ -555,6 +542,12 @@ void CRobot::trackTarget() {
 		}
 
 	}
+
+}
+
+void CRobot::turnUpperBodyTo(float destAngle) {
+	float frameturn = std::copysign(glm::min(upperTurnSpeed, abs(destAngle)), destAngle);
+	rotateUpper(frameturn);
 
 }
 
@@ -576,7 +569,7 @@ void CRobot::updateTreadCycle() {
 }
 
 
-bool CRobot::canSeePlayer() {
+bool CRobot::canSeeEnemy() {
 
 	return game.player->visible &&  !game.player->dead && inFov(game.player);
 		//clearLineTo(world.player);

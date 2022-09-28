@@ -18,11 +18,11 @@ public:
 	CHexPhysics();
 	void add(CEntity* entity);
 	void setMap(CHexArray* hexArray);
-	void removeEntities();
+	void clearEntities();
 	void update(float dT);
 	void removeDeletedEntities();
 	void removeDeadEntities();
-
+	void removeEntities();
 
 private:
 	void broadphase();

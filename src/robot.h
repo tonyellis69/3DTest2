@@ -41,10 +41,10 @@ public:
 	glm::vec3 arriveAt(glm::vec3& pos);
 	float speedFor(glm::vec3& dest);
 	bool clearLineTo(const glm::vec3& p);
-	bool canSeePlayer();
+	bool canSeeEnemy();
 	bool clearLineTo(CEntity* target);
 	void fireMissile(CEntity* target);
-	bool turnTo(glm::vec3& p);
+	bool turnToward(glm::vec3& dir);
 	void stopMoving();
 	glm::vec3 getDestination();
 	std::tuple<float, float> findAvoidance();
@@ -69,9 +69,11 @@ public:
 	float chosenSpeed;
 	const float defaultSpeed = 1000;// 1000;
 	const float maxSpeed = 1000; //3000
+	float maxTurnSpeed = 3.0f;
 
 	float stuckCheck = 0; ///<Seconds since last check
 	float destinationDist = FLT_MAX; ///<Distance to destination on last check.
+
 
 
 private:
@@ -79,6 +81,8 @@ private:
 	void onMovedHex();
 
 	void trackTarget();
+
+	void turnUpperBodyTo(float destAngle);
 
 	void updateTreadCycle();
 
@@ -95,8 +99,8 @@ private:
 
 	float slowingDist = 0.6f;
 	float lastTurnDir = 0;
-	float upperTurnSpeed = 5.0f;
-	float maxTurnSpeed = 3.0f;
+	float upperTurnSpeed = 0.1f;
+
 	float robotRadius = 0.7f;
 	float ignorable = 0.08f; //below .1 to avoid snapping to some directions, above .03 to avoid quiver
 	float obstacleProximityLimit = 0.75f; //0.7f

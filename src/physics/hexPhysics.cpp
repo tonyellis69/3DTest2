@@ -14,7 +14,7 @@ void CHexPhysics::setMap(CHexArray* hexArray) {
 	this->hexArray = hexArray;
 }
 
-void CHexPhysics::removeEntities() {
+void CHexPhysics::clearEntities() {
 	entities.clear();
 }
 
@@ -40,6 +40,16 @@ void CHexPhysics::removeDeletedEntities() {
 void CHexPhysics::removeDeadEntities() {
 	for (auto& it = entities.begin(); it != entities.end(); ) {
 		if ((*it)->live == false)
+			it = entities.erase(it);
+		else
+			it++;
+	}
+}
+//FIXME: scrap above for below
+
+void CHexPhysics::removeEntities() {
+	for (auto& it = entities.begin(); it != entities.end(); ) {
+		if ((*it)->toRemove == true)
 			it = entities.erase(it);
 		else
 			it++;

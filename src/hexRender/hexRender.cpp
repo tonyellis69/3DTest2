@@ -501,7 +501,7 @@ void CHexRender::drawModelAt(CModel& model, glm::vec3& pos) {
 
 	glm::mat4 mvp = pCamera->clipMatrix * glm::translate(glm::mat4(1), pos);
 	lineShader->setUniform(hMVP, mvp);
-	lineShader->setUniform(hPalette, model.getMainMesh()->palette);
+	lineShader->setUniform(hPalette, model.palette);
 	drawMeshLine(model.getMainMesh()->meshRec);
 	
 	model.buf.clearVAO();

@@ -14,6 +14,6 @@ void CSplodeDraw::draw(CHexRender& hexRender) {
 
 	hexRender.explosionDrawList.push_back({ &explode->worldPos,
 		&explode->lifeTime, &explode->size, &explode->timeOut,
-		&explode->seed, &explode->particleCount, explode->pPalette });
+		&explode->seed, &explode->particleCount, &explode->model.palette });
 
 }

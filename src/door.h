@@ -13,7 +13,7 @@ public:
 
 	unsigned int blocks();
 
-	TModelData* doorNode;
+	//TModelData* doorNode;
 
 	TDoorStatus status;
 	float anim;

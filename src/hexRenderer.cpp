@@ -229,28 +229,28 @@ bool CHexRenderer::isOnScreen(glm::vec3& pos) {
 //
 //}
 
-void CHexRenderer::drawModel(TModelData& node, glm::mat4& parentMatrix, CBuf2* buf, glm::vec4& colour) {
-	renderer.setShader(lineShader);
-	glm::mat4 mvp = camera.clipMatrix * node.matrix * parentMatrix;
-	lineShader->setShaderValue(hMVP, mvp);
-	lineShader->setShaderValue(hWinSize, camera.getView());
+//void CHexRenderer::drawModel(TModelData& node, glm::mat4& parentMatrix, CBuf2* buf, glm::vec4& colour) {
+//	renderer.setShader(lineShader);
+//	glm::mat4 mvp = camera.clipMatrix * node.matrix * parentMatrix;
+//	lineShader->setShaderValue(hMVP, mvp);
+//	lineShader->setShaderValue(hWinSize, camera.getView());
+//
+//	for (auto& mesh : node.meshes) {
+//		lineShader->setShaderValue(hColour, colour);
+//	
+//		if (mesh.isLine) {//TO DO: ugh, try to avoid
+//			renderer.drawLineStripAdjBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
+//			//renderer.drawLinesBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
+//		}
+//		else
+//			renderer.drawTrisBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
+//
+//	}
+//
+//	for (auto& subNode : node.subModels)
+//		drawModel(subNode, node.matrix * parentMatrix, buf, colour);
 
-	for (auto& mesh : node.meshes) {
-		lineShader->setShaderValue(hColour, colour);
-	
-		if (mesh.isLine) {//TO DO: ugh, try to avoid
-			renderer.drawLineStripAdjBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
-			//renderer.drawLinesBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
-		}
-		else
-			renderer.drawTrisBuf(*buf, (void*)(mesh.indexStart * sizeof(unsigned short)), mesh.indexSize);
-
-	}
-
-	for (auto& subNode : node.subModels)
-		drawModel(subNode, node.matrix * parentMatrix, buf, colour);
-
-}
+//}
 
 
 
@@ -508,8 +508,8 @@ void CHexRenderer::createFilledShader() {
 	hFillColour = filledShader->getUniformHandle("colour");
 }
 
-void CHexRenderer::setCameraAspectRatio(glm::vec2 ratio) {
-	camera.setAspectRatio(ratio.x, ratio.y);
+void CHexRenderer::setCameraAspectRatio(glm::vec2 ratio, float fov) {
+	camera.setAspectRatio(ratio, fov);
 }
 
 /** Return the hex coordinates and worldspace pos for the given screen positon. */

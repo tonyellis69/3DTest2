@@ -104,6 +104,8 @@ void CMapEdit::onLeftClick(bool stillPressed, int key) {
 		lastPatch = nullptr;
 	}
 
+
+
 	if (currentPatch == nullptr) {
 		int hexVal = workingArray.getHexCube(cursorHex).content;
 		if (hexVal == emptyHex)
@@ -316,6 +318,19 @@ void CMapEdit::onDelKey() {
 		updateMap();
 	}
 
+}
+
+void CMapEdit::onMouseMove(glm::vec3& mouseWPos) {
+	
+	//on an entity?
+	entIdStr = "";
+	for (auto& it = pMap->entities.begin(); it != pMap->entities.end(); it++) {
+		TEntity entity = *it;
+		if (glm::distance(entity->worldPos, mouseWPos) < 0.5f) {
+			entIdStr = std::to_string(entity->id);
+			break;
+		}
+	}
 }
 
 void CMapEdit::updateMap() {

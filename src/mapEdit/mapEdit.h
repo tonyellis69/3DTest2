@@ -33,9 +33,11 @@ public:
 	void onShapeMode(bool isOn);
 	void onRightDrag();
 	void onDelKey();
+	void onMouseMove(glm::vec3& mouseWPos);
 
 	std::string currentEntStr = "none"; 
 	std::string currentShapeStr = "none";
+	std::string entIdStr = "";
 	bool entityMode = false;
 	bool shapeMode = false;
 

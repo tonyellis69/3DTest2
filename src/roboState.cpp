@@ -9,13 +9,14 @@
 #include "gameState.h"
 
 #include "utils/log.h"
+#include "utils/mathsLib.h"
 
-const float rad360 = M_PI * 2;
-const float rad80 = 1.39626;
-const float rad90 = M_PI / 2;
-const float rad60 = M_PI / 3;
-const float rad45 = M_PI / 4;
-const float rad120 = rad360 / 3;
+const float rad360 = M_PI * 2.0f;
+const float rad80 = 1.39626f;
+const float rad90 = M_PI / 2.0f;
+const float rad60 = M_PI / 3.0f;
+const float rad45 = M_PI / 4.0f;
+const float rad120 = rad360 / 3.0f;
 
 CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 	bot->chosenSpeed = bot->defaultSpeed;
@@ -49,7 +50,7 @@ CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 }
 
 std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
-	if (bot->canSeePlayer())
+	if (bot->canSeeEnemy())
 		return std::make_shared<CCloseAndShoot>(bot, game.player);
 
 	this->dT = dT;
@@ -92,7 +93,7 @@ CGlanceAround::CGlanceAround(CRobot* bot) : CRoboState(bot) {
 }
 
 std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
-	if (bot->canSeePlayer()) {
+	if (bot->canSeeEnemy()) {
 		//return std::make_shared<CCharge>(bot,game.player);
 		bot->upperBodyLocked = true;
 		return std::make_shared<CCloseAndShoot>(bot, game.player);
@@ -150,7 +151,7 @@ CCharge::CCharge(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
 
 std::shared_ptr<CRoboState> CCharge::update(float dT) {
 	
-	if (bot->canSeePlayer()) { //keep destination up to date
+	if (bot->canSeeEnemy()) { //keep destination up to date
 		destination = targetEntity->worldPos;
 		targetInSight = true;
 	}
@@ -223,6 +224,7 @@ std::shared_ptr<CRoboState> CMelee::update(float dT) {
 
 
 CCloseAndShoot::CCloseAndShoot(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
+	//bot->canSeeEnemy = true;
 	this->targetEntity = targetEntity;
 	bot->startTracking(targetEntity);
 	bot->chosenSpeed = bot->maxSpeed; 
@@ -264,6 +266,7 @@ std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 	}
 	else { //lost sight of target
 		bot->stopTracking(); //!!!Temp! should track lastsighting instead
+		//bot->canSeeEnemy = false;
 		return std::make_shared<CGoToHunting>(bot, lastSighting, targetEntity);
 	}
 
@@ -322,4 +325,22 @@ std::shared_ptr<CRoboState> CGoToHunting::update(float dT) {
 
 	CGoTo::update(dT);
 	return nullptr;
+}
+
+CTurnToSee::CTurnToSee(CRobot* bot, glm::vec3& dir) : CRoboState(bot) {
+	this->dir = dir;
+	bot->startTracking(bot->worldPos + dir);
+}
+
+std::shared_ptr<CRoboState> CTurnToSee::update(float dT) {
+	if (bot->canSeeEnemy()) {
+		return std::make_shared<CCloseAndShoot>(bot, game.player);
+	}
+
+	float success = bot->turnToward(dir);
+	if (success)
+		return nullptr;
+	else
+		return std::make_shared<CGlanceAround>(bot);
+		//TODO: should be goInvestigate
 }

@@ -38,7 +38,7 @@ public:
 	bool dollyCamera(float delta);
 	void pitchCamera(float delta);
 	void moveCamera(glm::vec3& move);
-	void setCameraAspectRatio(glm::vec2 ratio);
+	void setCameraAspectRatio(glm::vec2 ratio, float fov);
 	std::tuple <CHex, glm::vec3> pickHex(int screenX, int screenY);
 	void setCursorPath(CHex& playerPos, CHex& cursorPos);
 	void setCursorPath(THexList& path);
@@ -100,7 +100,7 @@ private:
 	void createFilledShader();
 
 	//TO DO: scrap this, but currently it's used in highLightHex
-	void drawModel(TModelData& node, glm::mat4& parentMatrix, CBuf2* buf, glm::vec4& colour);
+	//void drawModel(TModelData& node, glm::mat4& parentMatrix, CBuf2* buf, glm::vec4& colour);
 
 	
 	void createFogBuffer(int w, int h);
