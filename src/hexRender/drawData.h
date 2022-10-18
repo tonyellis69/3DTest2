@@ -9,14 +9,14 @@
 
 struct TLineDraw {
 	CBuf2* buf;
-	glm::mat4* matrix;
+	glm::mat4 matrix;
 	std::vector<glm::vec4>* palette;
 	TMeshRec* meshRec;
 };
 
 struct TSolidDraw {
 	CBuf2* buf;
-	glm::mat4* matrix;
+	glm::mat4 matrix;
 	std::vector<glm::vec4>* palette;
 	TMeshRec* meshRec;
 };

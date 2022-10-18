@@ -36,7 +36,6 @@ CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 				destination = hexWS;
 				turnDestination = glm::orientedAngle(glm::normalize(hexWS - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 				lastDestinationDist = FLT_MAX;
-				sysLog << "\nNew destination!";
 				return;
 			}
 			giveUp++;
@@ -51,7 +50,9 @@ CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 
 std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
 	if (bot->canSeeEnemy())
-		return std::make_shared<CCloseAndShoot>(bot, game.player);
+		return std::make_shared<CCharge>(bot, game.player);
+		//return std::make_shared<CCloseAndShoot>(bot, game.player);
+		//!!!!!!!!!!Temp for testing
 
 	this->dT = dT;
 
@@ -69,9 +70,6 @@ std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
 	return nullptr;
 }
 
-glm::vec3 CRoboWander::getDestination() {
-	return destination;
-}
 
 
 
@@ -94,7 +92,8 @@ CGlanceAround::CGlanceAround(CRobot* bot) : CRoboState(bot) {
 
 std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
 	if (bot->canSeeEnemy()) {
-		//return std::make_shared<CCharge>(bot,game.player);
+		return std::make_shared<CCharge>(bot,game.player);
+		//!!!!!!!!!!Temp for testing!!!!!!!!!!!!!
 		bot->upperBodyLocked = true;
 		return std::make_shared<CCloseAndShoot>(bot, game.player);
 	}
@@ -147,10 +146,11 @@ std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
 
 CCharge::CCharge(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
 	this->targetEntity = targetEntity;
+	destination = targetEntity->worldPos;
+
 }
 
 std::shared_ptr<CRoboState> CCharge::update(float dT) {
-	
 	if (bot->canSeeEnemy()) { //keep destination up to date
 		destination = targetEntity->worldPos;
 		targetInSight = true;
@@ -159,6 +159,9 @@ std::shared_ptr<CRoboState> CCharge::update(float dT) {
 		targetInSight = false;
 		//TO DO: switch to some other behaviour. Prob
 		//return std::make_shared<CGoToHunting>(bot, lastSighting, targetEntity);
+
+	//bot->stopMoving();
+	//return nullptr;
 	
 	//reached destination?
 	if (glm::distance(bot->worldPos, destination) < meleeRange ) {
@@ -173,16 +176,15 @@ std::shared_ptr<CRoboState> CCharge::update(float dT) {
 
 	//otherwise charge at target
 	bot->headTo(targetEntity->worldPos);
+	//bot->diagnostic += "src " + std::to_string(bot->worldPos.x) + " "
+	//	+ std::to_string(bot->worldPos.y) + " dest " +
+	//	std::to_string(destination.x) + " " + std::to_string(destination.y);
+	// NB src dest remain good numbers throughout charge
 
-	//ensure facing destination
-	float destAngle = glm::orientedAngle(glm::normalize(destination - bot->worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
-	bot->setRotation(destAngle);
 	return nullptr;
 }
 
-glm::vec3 CCharge::getDestination() {
-	return destination;
-}
+
 
 
 CMelee::CMelee(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
@@ -194,7 +196,7 @@ CMelee::CMelee(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
 
 std::shared_ptr<CRoboState> CMelee::update(float dT) {
 	float targetDist = glm::distance(bot->worldPos, targetEntity->worldPos);
-	if (targetDist > meleeRange && timer < 0)
+	if (targetDist > meleeRange  && timer < 0)
 		return std::make_shared<CRoboWander>(bot);
 
 	timer += dT;
@@ -274,9 +276,7 @@ std::shared_ptr<CRoboState> CCloseAndShoot::update(float dT) {
 	return nullptr;
 }
 
-glm::vec3 CCloseAndShoot::getDestination() {
-	return destination;
-}
+
 
 
 CGoTo::CGoTo(CRobot* bot, glm::vec3& dest) : CRoboState(bot) {
@@ -305,9 +305,6 @@ std::shared_ptr<CRoboState> CGoTo::update(float dT) {
 	return nullptr;
 }
 
-glm::vec3 CGoTo::getDestination() {
-	return destination;
-}
 
 
 

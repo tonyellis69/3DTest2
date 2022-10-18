@@ -18,6 +18,8 @@
 
 #include "sound/sound.h"
 
+#include "utils/log.h"
+
 using namespace glm;
 
 
@@ -135,8 +137,9 @@ void C3DtestApp::keyCheck() {
 			else if (keyNow('S')) {
 				game.player->moveCommand(moveSouth);
 			}
-
+		
 		}
+
 
 
 
@@ -176,6 +179,8 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 
 		if (key == GLFW_KEY_SPACE) {
 			Paused = !Paused;
+			if (Paused)
+				sysLog << "\n!!!!Paused!!!!";
 			game.togglePause();
 		}
 

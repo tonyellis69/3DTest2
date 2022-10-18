@@ -50,7 +50,8 @@ TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 		robot->setState(robotWander3);
 		robot->entityType = entShootBot;
 	}
-	//robot->linesetColourR(glm::vec4(0.3, 1, 0.3, 1));
+
+
 	robot->name = "robot";
 
 	pMap->addEntity(robot);

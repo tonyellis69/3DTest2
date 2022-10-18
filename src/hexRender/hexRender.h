@@ -30,6 +30,7 @@ public:
 	std::vector<glm::vec4>* getPalette(const std::string& name);
 	void resetDrawLists();
 	void drawLineList();
+	void drawLineListDBG();
 	void drawUpperLineList();
 	void makeGlowShapes();
 	void drawSolidList();
@@ -48,6 +49,14 @@ public:
 	void setCameraPos(float x, float y);
 
 	void drawModelAt(CModel& model, glm::vec3& pos);
+
+	void loadLineList(TLineDraw& listEntry);
+	void loadLineListDbg(TLineDraw& listEntry);
+	void loadUpperLineList(TLineDraw& listEntry);
+	void loadSolidList(TSolidDraw& listEntry);
+	void loadUpperMaskList(TSolidDraw& listEntry);
+	void loadLowerMaskList(TSolidDraw& listEntry);
+	void loadExplosionDrawList(TSplodeDraw& listEntry);
 
 	CCamera* pCamera;///<Old renderer's camera - replace with own!
 
@@ -89,12 +98,7 @@ public:
 
 	std::unordered_map<std::string, std::vector<glm::vec4>> palettes;
 	
-	std::vector<TLineDraw> lineDrawList;
-	std::vector<TLineDraw> upperLineList;
-	std::vector<TSolidDraw> solidDrawList;
-	std::vector<TSplodeDraw> explosionDrawList;
-	std::vector<TSolidDraw> maskList;
-	std::vector<TSolidDraw> lowerMaskList;
+
 
 	std::vector<std::shared_ptr<CGraphic>> graphics;
 
@@ -128,7 +132,21 @@ private:
 	const int numExplosionParticles = 200;
 	CBuf2 explosionBuf; //Holds dummy verts for draw calls
 
-
+	const int maxDrawListSize = 30;
+	std::vector<TLineDraw> lineDrawList;
+	std::vector<TLineDraw> lineDrawListDBG;
+	std::vector<TLineDraw> upperLineList;
+	std::vector<TSolidDraw> solidDrawList;
+	std::vector<TSplodeDraw> explosionDrawList;
+	std::vector<TSolidDraw> maskList;
+	std::vector<TSolidDraw> lowerMaskList;
+	int lineDrawSize;
+	int upperLineSize;
+	int solidDrawSize;
+	int explosionDrawSize;
+	int maskSize;
+	int lowerMaskSize;
+	//NB: can prob scrap sizes, emplace_back tracks this for you
 
 
 	CRenderTexture blurTexture[2];

@@ -15,10 +15,14 @@ public:
 	}
 	virtual std::shared_ptr<CRoboState> update(float dT) = 0;
 	virtual glm::vec3 getDestination() {
-		return glm::vec3(0);
+		return destination;
 	}
-	virtual void setDestination(const glm::vec3& d) {}
+	virtual void setDestination(const glm::vec3& d) {
+		destination = d;
+	}
 
+
+	glm::vec3 destination = { 0,0,0 };
 
 	CRobot* bot;
 	float dT;
@@ -29,14 +33,10 @@ class CRoboWander : public CRoboState {
 public:
 	CRoboWander(CRobot* bot);
 	std::shared_ptr<CRoboState> update(float dT);
-	glm::vec3 getDestination();
-	void setDestination(const glm::vec3& d) {
-		destination = d;
-	}
+
 
 //	bool turnToward(glm::vec3& p);
 
-	glm::vec3 destination = { 0,0,0 };
 	float speed = 0.0f;
 	float turnDestination = 0; ///<Bearing we want to turn to
 	float lastDestinationDist = FLT_MAX;
@@ -69,12 +69,12 @@ class CCharge : public CRoboState {
 public:
 	CCharge(CRobot* bot, CEntity* targetEntity);
 	std::shared_ptr<CRoboState> update(float dT);
-	glm::vec3 getDestination();
+
 
 	CEntity* targetEntity;
-	glm::vec3 destination;
+
 	bool targetInSight = true;
-	float meleeRange = 0.75f;
+	float meleeRange = 0.95f;// 0.75f;
 	float chargeSpeed = 3000.0f;
 };
 
@@ -91,7 +91,7 @@ public:
 	float timer;
 	float lungeEnd = 0.125f;
 	float returnEnd = 0.25f;
-	float meleeRange = 0.85f;
+	float meleeRange = 1.0f;
 };
 
 
@@ -99,10 +99,10 @@ class CCloseAndShoot : public CRoboState {
 public:
 	CCloseAndShoot(CRobot* bot, CEntity* targetEntity);
 	std::shared_ptr<CRoboState> update(float dT);
-	glm::vec3 getDestination();
+	//glm::vec3 getDestination();
 
 	CEntity* targetEntity;
-	glm::vec3 destination;
+	//glm::vec3 destination;
 	float missileCooldown = 0.0f;
 	bool stoppedToShoot = false;
 	float idealShootRange = 3;
@@ -115,9 +115,7 @@ class CGoTo : public CRoboState {
 public:
 	CGoTo(CRobot* bot, glm::vec3& dest);
 	std::shared_ptr<CRoboState> update(float dT);
-	glm::vec3 getDestination();
 
-	glm::vec3 destination;
 	float speed = 2000.0f;
 };
 

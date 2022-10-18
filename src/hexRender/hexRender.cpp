@@ -39,6 +39,14 @@ void CHexRender::init() {
 	glGenRenderbuffers(1, &hStencilBuf);
 
 	glGenTextures(1, &hDepthTex);
+
+	lineDrawList.reserve(maxDrawListSize);
+	upperLineList.reserve(maxDrawListSize);
+	solidDrawList.reserve(maxDrawListSize);
+	explosionDrawList.reserve(maxDrawListSize);
+	maskList.reserve(maxDrawListSize);
+	lowerMaskList.reserve(maxDrawListSize);
+	//NB: most of these need far less
 }
 void CHexRender::recompileShader() {
 	lineShader = shader::create("lineModel");
@@ -172,6 +180,14 @@ void CHexRender::resetDrawLists() {
 	explosionDrawList.clear();
 	maskList.clear();
 	lowerMaskList.clear();
+	lineDrawListDBG.clear();
+
+	lineDrawSize = 0;
+	upperLineSize = 0;
+	solidDrawSize = 0;
+	explosionDrawSize = 0;
+	maskSize = 0;
+	lowerMaskSize = 0;
 }
 
 void CHexRender::drawLineList() {
@@ -186,15 +202,16 @@ void CHexRender::drawLineList() {
 	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF); //the test to pass
 	//glStencilMask(0x00);
 
-	
 
 	for (auto& draw : lineDrawList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+		glm::mat4 mvp = pCamera->clipMatrix;// *draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
 	}
+
+//	sysLog << "\n" << pCamera->clipMatrix * glm::vec4(-77.2343, 10.2631, 0,1);
 
 	//lineShader->setUniform(hChannel, 2.0f);
 	//lineShader->setUniform(hThickness, 20);
@@ -213,6 +230,39 @@ void CHexRender::drawLineList() {
 	glDisable(GL_DEPTH_TEST);
 }
 
+void CHexRender::drawLineListDBG() {
+	//return;
+	lineShader->activate();
+	lineShader->setUniform(hWinSize, pCamera->getView());
+	lineShader->setUniform(hChannel, 1.0f);
+	lineShader->setUniform(hThickness, tmpLineThickness);
+	lineShader->setUniform(hSmoothing, tmpLineSmooth);
+	lineShader->setUniform(hSolid, tmpLineSolid);
+	lineShader->setUniform(hScale, 1.0f);
+
+	struct vc2 {
+		glm::vec3 v;
+		int c = 0;
+	};
+
+	std::vector<vc2> verts;
+
+	for (auto& draw : lineDrawListDBG) {
+		draw.buf->setVAO();
+		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
+		lineShader->setUniform(hMVP, mvp);
+		lineShader->setUniform(hPalette, *draw.palette);
+		drawMeshLine(*draw.meshRec);
+		draw.buf->readVerts(verts);
+		sysLog << "\nverts: ";
+		for (auto& i : verts)
+			sysLog << i.v << " ";
+	}
+
+
+
+}
+
 void CHexRender::drawUpperLineList() {
 	lineShader->activate();
 	lineShader->setUniform(hWinSize, pCamera->getView());
@@ -222,7 +272,7 @@ void CHexRender::drawUpperLineList() {
 
 	for (auto& draw : upperLineList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
@@ -250,7 +300,7 @@ void CHexRender::makeGlowShapes() {
 
 	for (auto& draw : lineDrawList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
@@ -258,7 +308,7 @@ void CHexRender::makeGlowShapes() {
 
 	for (auto& draw : upperLineList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
@@ -274,7 +324,7 @@ void CHexRender::drawSolidList() {
 
 	for (auto& draw : solidDrawList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
 		filledShader->setUniform(hMVPF, mvp);
 		filledShader->setUniform(hPaletteF, *draw.palette);
 		drawMeshSolid(*draw.meshRec);
@@ -296,7 +346,7 @@ void CHexRender::drawMaskList() {
 
 	for (auto& draw : maskList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
 		maskShader->setUniform(hMaskMVP, mvp);
 		drawMeshSolid(*draw.meshRec);
 	}
@@ -308,7 +358,7 @@ void CHexRender::drawMaskList() {
 
 	for (auto& draw : lowerMaskList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
 		maskShader->setUniform(hMaskMVP, mvp);
 		drawMeshSolid(*draw.meshRec);
 	}
@@ -505,6 +555,41 @@ void CHexRender::drawModelAt(CModel& model, glm::vec3& pos) {
 	drawMeshLine(model.getMainMesh()->meshRec);
 	
 	model.buf.clearVAO();
+}
+
+void CHexRender::loadLineList(TLineDraw& listEntry) {
+	lineDrawList.emplace_back(listEntry);
+	lineDrawSize++;
+}
+
+void CHexRender::loadLineListDbg(TLineDraw& listEntry)
+{
+	lineDrawListDBG.emplace_back(listEntry);
+}
+
+void CHexRender::loadUpperLineList(TLineDraw& listEntry) {
+	upperLineList.emplace_back(listEntry);
+	upperLineSize++;
+}
+
+void CHexRender::loadSolidList(TSolidDraw& listEntry) {
+	solidDrawList.emplace_back(listEntry);
+	solidDrawSize++;
+}
+
+void CHexRender::loadUpperMaskList(TSolidDraw& listEntry) {
+	maskList.emplace_back(listEntry);
+	maskSize++;
+}
+
+void CHexRender::loadLowerMaskList(TSolidDraw& listEntry) {
+	lowerMaskList.emplace_back(listEntry);
+	lowerMaskSize++;
+}
+
+void CHexRender::loadExplosionDrawList(TSplodeDraw& listEntry) {
+	explosionDrawList.emplace_back(listEntry);
+	explosionDrawSize++;
 }
 
 /** Add the verts for tile tileNo to the given arrays, offset to position hex.

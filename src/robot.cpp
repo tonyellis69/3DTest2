@@ -67,7 +67,7 @@ void CRobot::update(float dT) {
 	}
 
 
-	diagnostic += " trackState " + std::to_string(trackingState);
+
 	if (trackingState)
 		trackTarget();
 

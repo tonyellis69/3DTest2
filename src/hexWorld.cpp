@@ -191,7 +191,7 @@ void CHexWorld::startGame() {
 
 	followCam(playerObj);
 	//freeCam(-76, 15);
-	//toggleDirectionGraphics();
+	toggleDirectionGraphics();
 	//game.slowed = true;
 
 	for (auto& entity : map->entities) {
@@ -207,6 +207,12 @@ void CHexWorld::startGame() {
 	//FIXME: this (and prob other stuff above) should be run once only in a hexWorld.init(). 
 	reticule = spawn::models["reticule"]; 
 	reticule.palette[0] = { 1,1,1,1 };
+
+
+	updateCameraPosition();
+
+	//stupid fix for some kind of pixel rounding error that vanishes destination graphic lines 
+	//hexRendr2.camera.translate(glm::vec3(0, 0.001, 0));
 }
 
 
@@ -383,11 +389,13 @@ void CHexWorld::draw() {
 		if (entity->live)
 			entity->drawFn.get()->draw(hexRender);
 	}
-
 	if (directionGraphicsOn) {
 		for (auto& graphic : hexRender.graphics)
 			graphic->draw(hexRender);
 	}
+
+
+	hexRender.drawLineListDBG();
 
 	hexRender.makeGlowShapes();
 
@@ -400,8 +408,11 @@ void CHexWorld::draw() {
 	hexRender.drawMaskList();
 
 	hexRender.drawLineList(); 
+
 	hexRender.drawSolidList();
 	hexRender.drawUpperLineList();
+
+
 
 	hexRender.drawExplosionList();
 
@@ -458,7 +469,7 @@ void CHexWorld::update(float dt) {
 		this->dT = dt * 4.0f;
 
 
-	updateCameraPosition();
+	//updateCameraPosition();
 
 	calcMouseWorldPos();
 
@@ -494,8 +505,9 @@ void CHexWorld::update(float dt) {
 
 	gWin::update(dT);
 
-	for (auto& graphic : hexRender.graphics)
+	for (auto& graphic : hexRender.graphics) {
 		graphic->update(dT);
+	}
 
 
 	realtimeKeyChecks();
@@ -675,10 +687,10 @@ void CHexWorld::updateCameraPosition() {
 	//if (viewMode == gameView && !editMode && !game.player->dead )
 		//hexRendr2.followTarget(playerObj->worldPos);
 		//old version
-
+	
 	if (cameraMode == camFollow) {
 		if (pFollowCamEnt) {
-			hexRender.setCameraPos(pFollowCamEnt->worldPos.x, pFollowCamEnt->worldPos.y);
+			 hexRender.setCameraPos(pFollowCamEnt->worldPos.x, pFollowCamEnt->worldPos.y);
 		}
 
 
@@ -734,12 +746,12 @@ void CHexWorld::toggleDirectionGraphics() {
 				auto graphic = std::make_shared<CAvoidGraphic>();
 				graphic->entity = entity;
 				graphic->pPalette = hexRender.getPalette("mix");
-				hexRender.graphics.push_back(graphic);
+				hexRender.graphics.emplace_back(graphic);
 
 				auto graphic2 = std::make_shared<CDestinationGraphic>();
 				graphic2->entity = entity;
 				graphic2->pPalette = hexRender.getPalette("blue");
-				hexRender.graphics.push_back(graphic2);
+				hexRender.graphics.emplace_back(graphic2);
 			}
 		}
 	}
@@ -762,6 +774,10 @@ void CHexWorld::freeCam(float x, float y) {
 }
 
 void CHexWorld::realtimeKeyChecks() {
+	if (CWin::keyPressed('T')) {
+		;
+	}
+
 	if (CWin::keyPressed('W')) moveCamera(glm::vec3{ 0, 1, 0 });
 	if (CWin::keyPressed('S')) moveCamera(glm::vec3{ 0, -1, 0 });
 	if (CWin::keyPressed('A')) moveCamera(glm::vec3{ -1,0,0 });
