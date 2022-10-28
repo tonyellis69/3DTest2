@@ -43,17 +43,6 @@ void CGameState::togglePause() {
 	paused = !paused;
 }
 
-/** Do necessary housekeeping for the death of the player. */
-void CGameState::onPlayerDeath() {
-	for (auto& entity : map->entities) {
-		if (entity->isRobot) {
-			((CRobot*)entity.get())->setState(robotWander3);
-
-
-		}
-
-	}
-}
 
 void CGameState::toggleUImode(bool onOff) {
 	uiMode = onOff;

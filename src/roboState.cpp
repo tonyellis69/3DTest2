@@ -49,6 +49,7 @@ CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 }
 
 std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
+	bot->diagnostic += "wandering!";
 	if (bot->canSeeEnemy())
 		return std::make_shared<CCharge>(bot, game.player);
 		//return std::make_shared<CCloseAndShoot>(bot, game.player);
@@ -91,6 +92,7 @@ CGlanceAround::CGlanceAround(CRobot* bot) : CRoboState(bot) {
 }
 
 std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
+	bot->diagnostic += "glancing!";
 	if (bot->canSeeEnemy()) {
 		return std::make_shared<CCharge>(bot,game.player);
 		//!!!!!!!!!!Temp for testing!!!!!!!!!!!!!
@@ -147,13 +149,15 @@ std::shared_ptr<CRoboState> CGlanceAround::update(float dT) {
 CCharge::CCharge(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
 	this->targetEntity = targetEntity;
 	destination = targetEntity->worldPos;
-
+	bot->chosenSpeed = chargeSpeed;
 }
 
 std::shared_ptr<CRoboState> CCharge::update(float dT) {
+	bot->diagnostic += "charging!";
 	if (bot->canSeeEnemy()) { //keep destination up to date
 		destination = targetEntity->worldPos;
 		targetInSight = true;
+		bot->startTracking(targetEntity);
 	}
 	else
 		targetInSight = false;
@@ -195,18 +199,28 @@ CMelee::CMelee(CRobot* bot, CEntity* targetEntity) : CRoboState(bot) {
 }
 
 std::shared_ptr<CRoboState> CMelee::update(float dT) {
+	bot->diagnostic += "meleeing!";
 	float targetDist = glm::distance(bot->worldPos, targetEntity->worldPos);
-	if (targetDist > meleeRange  && timer < 0)
+	if (targetDist > meleeRange && timer < 0) {
 		return std::make_shared<CRoboWander>(bot);
+	}
 
 	timer += dT;
 	if (timer < 0)
 		return nullptr;
 
+	float adj = 0.21f;
+
 	if (timer < lungeEnd) {
 		float step = targetDist /(lungeEnd - timer) ;
 		step *= dT;
-		bot->worldPos += lungeVec * step;
+		bot->worldPos += lungeVec * step * adj;
+		return nullptr;
+	}
+
+	if (!hit) {
+		targetEntity->receiveDamage(*bot, 10);
+		hit = true;
 		return nullptr;
 	}
 
@@ -214,11 +228,12 @@ std::shared_ptr<CRoboState> CMelee::update(float dT) {
 		float dist = glm::distance(startPos, bot->worldPos);
 		float step = dist / (returnEnd - timer) ;
 		step *= dT;
-		bot->worldPos += -lungeVec * step;
+		bot->worldPos += -lungeVec * step * adj;
 		return nullptr;
 	}
 
 	timer = -1.0f;
+	hit = false;
 	bot->worldPos = startPos;
 
 	return nullptr;

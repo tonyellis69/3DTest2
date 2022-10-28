@@ -570,7 +570,8 @@ void CRobot::updateTreadCycle() {
 
 
 bool CRobot::canSeeEnemy() {
-
+	if (game.player == nullptr)
+		return false;
 	return game.player->visible &&  !game.player->dead && inFov(game.player);
 		//clearLineTo(world.player);
 }

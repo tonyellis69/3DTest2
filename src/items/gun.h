@@ -10,6 +10,7 @@ class CGun : public CItem {
 public:
 	CGun();
 	void fire(float firingAngle);
+	void update(float dT);
 	void drop();
 	std::string getShortDesc();
 
@@ -30,10 +31,15 @@ public:
 	virtual void fire(float firingAngle) {}
 
 	CGun* gun;
+
+	float fireRate = 0.25f;
+	float lastFired = 0;
 };
 
 class CSmallGun : public CGunType{
 public:
 	CSmallGun(CGun* gun) :  CGunType(gun) {};
 	void fire(float firingAngle);
+
+
 };

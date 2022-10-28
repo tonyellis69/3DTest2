@@ -117,6 +117,10 @@ void CHexWorld::onEvent(CEvent& e) {
 
 
 	}
+	else if (e.type == eGameEvent) {
+		//catch player death here
+		onPlayerDeath();
+	}
 
 
 }
@@ -191,11 +195,12 @@ void CHexWorld::startGame() {
 
 	followCam(playerObj);
 	//freeCam(-76, 15);
-	toggleDirectionGraphics();
+//	toggleDirectionGraphics();
 	//game.slowed = true;
 
+	pBotZero = nullptr;
 	for (auto& entity : map->entities) {
-		if (entity->isRobot && entity->id == 8) {
+		if (entity->isRobot && entity->id == 7) {
 			if (pBotZero == NULL)
 				pBotZero = entity.get();
 			else
@@ -209,10 +214,8 @@ void CHexWorld::startGame() {
 	reticule.palette[0] = { 1,1,1,1 };
 
 
-	updateCameraPosition();
+	CWin::fullScreen();
 
-	//stupid fix for some kind of pixel rounding error that vanishes destination graphic lines 
-	//hexRendr2.camera.translate(glm::vec3(0, 0.001, 0));
 }
 
 
@@ -395,7 +398,7 @@ void CHexWorld::draw() {
 	}
 
 
-	hexRender.drawLineListDBG();
+	//hexRender.drawLineListDBG();
 
 	hexRender.makeGlowShapes();
 
@@ -424,7 +427,7 @@ void CHexWorld::draw() {
 	}
 
 
-	//imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp));
+	imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp));
 
 	//imRendr::drawText(300, 70, "thickness: " + std::to_string(hexRender.tmpLineThickness)
 	//	+ " smoothing: " + std::to_string(hexRender.tmpLineSmooth));
@@ -435,13 +438,13 @@ void CHexWorld::draw() {
 	//	+ " solidity: " + std::to_string(hexRender.tmpLineSolid));
 
 	if (editMode) {
-		imRendr::drawText(600, 50, "Entity: " +  mapEdit.currentEntStr + " shape: " + mapEdit.currentShapeStr +
+		imRendr::drawText(600, 80, "Entity: " +  mapEdit.currentEntStr + " shape: " + mapEdit.currentShapeStr +
 		mapEdit.entIdStr);
 
 	}
 
 	if (pBotZero && pBotZero->toRemove == false)
-		imRendr::drawText(600, 50, pBotZero->diagnostic);
+		imRendr::drawText(600, 80, pBotZero->diagnostic);
 
 }
 
@@ -469,7 +472,7 @@ void CHexWorld::update(float dt) {
 		this->dT = dt * 4.0f;
 
 
-	//updateCameraPosition();
+	updateCameraPosition();
 
 	calcMouseWorldPos();
 
@@ -511,6 +514,7 @@ void CHexWorld::update(float dt) {
 
 
 	realtimeKeyChecks();
+	realtimeMouseButtons();
 
 	removeEntities();
 
@@ -654,8 +658,8 @@ void CHexWorld::onFireKey(bool stillPressed, int mods) {
 			cumulativeMapDrag = 0;
 		}
 	}
-	else if (!game.uiMode)
-		playerObj->onFireKey(stillPressed);
+	//else if (!game.uiMode)
+	//	playerObj->onFireKey(stillPressed);
 }
 
 void CHexWorld::onRightKey(bool released, int mods) {
@@ -773,15 +777,28 @@ void CHexWorld::freeCam(float x, float y) {
 	freeCamPos = glm::vec2(x, y);
 }
 
+void CHexWorld::fixedCam(float x, float y) {
+	cameraMode = camFixed;
+	hexRender.setCameraPos(x, y);
+}
+
 void CHexWorld::realtimeKeyChecks() {
 	if (CWin::keyPressed('T')) {
-		;
+		startGame();
 	}
 
 	if (CWin::keyPressed('W')) moveCamera(glm::vec3{ 0, 1, 0 });
 	if (CWin::keyPressed('S')) moveCamera(glm::vec3{ 0, -1, 0 });
 	if (CWin::keyPressed('A')) moveCamera(glm::vec3{ -1,0,0 });
 	if (CWin::keyPressed('D')) moveCamera(glm::vec3{ 1,0,0 });
+}
+
+void CHexWorld::realtimeMouseButtons() {
+	if (CWin::mouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+		playerObj->onFireKey(true);
+
+	}
+
 }
 
 void CHexWorld::drawReticule() {
@@ -810,6 +827,17 @@ void CHexWorld::removeEntities() {
 			ent++;
 	}
 
+}
+
+void CHexWorld::onPlayerDeath() {
+	fixedCam(playerObj->worldPos.x, playerObj->worldPos.y);
+	map->removeEntity(playerObj);
+
+	for (auto& entity : map->entities) {
+		if (entity->isRobot) {
+			((CRobot*)entity.get())->setState(robotWander3);
+		}
+	}
 }
 
 /** TO DO: ultimately this should be automated via a Tig

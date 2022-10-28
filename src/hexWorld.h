@@ -35,7 +35,7 @@
 enum TViewMode {gameView, devView};
 enum TMsgType {msgId,msgId2,msgId3};
 
-enum TCameraMode {camNone, camFollow, camFree};
+enum TCameraMode {camNone, camFollow, camFree, camFixed};
 
 /** A class encapsulating the hex-based representation of the world. */
 class CHexWorld { 
@@ -96,9 +96,12 @@ private:
 
 	void followCam(CEntity* ent);
 	void freeCam(float x, float y);
+	void fixedCam(float x, float y);
 	void realtimeKeyChecks();
+	void realtimeMouseButtons();
 	void drawReticule();
 	void removeEntities();
+	void onPlayerDeath();
 
 	CMap* map;
 

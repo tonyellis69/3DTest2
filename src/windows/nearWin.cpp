@@ -7,6 +7,9 @@
 
 void CNearWin::update(float dT)
 {
+	if (game.player == nullptr)
+		return;
+
 	float nearDist = 1.0f;
 	bool nearItemsChanged = false;
 	glm::vec3 playerPos = game.player->worldPos;

@@ -12,7 +12,15 @@ CGun::CGun() {
 }
 
 void CGun::fire(float firingAngle) {
-	gunType->fire(firingAngle);
+	if (gunType->lastFired <= 0) {
+		gunType->fire(firingAngle);
+		gunType->lastFired = gunType->fireRate;
+	}
+}
+
+void CGun::update(float dT) {
+	if (gunType->lastFired > 0)
+		gunType->lastFired -= dT;
 }
 
 void CGun::drop() {
@@ -54,6 +62,8 @@ std::string CGun::getMenuTextInv() {
 //!!!Different gun types:
 
 void CSmallGun::fire(float firingAngle) {
+
+
 	auto missile = (CMissile*) spawn::missile("missile", gun->parent->worldPos, firingAngle).get();
 	missile->setOwner(gun->parent);
 

@@ -22,6 +22,8 @@
 
 #include "hexRender/multiDraw.h"
 
+#include "listen/listen.h"
+
 constexpr float sin30 = 0.5f;
 constexpr float sin60 = 0.86602540378443;
 
@@ -145,15 +147,21 @@ void CPlayerObject::draw() {
 void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
 	liveLog << "\nPlayer hit!";
 
-	int finalDamage = armour->reduceDamage(damage);
+	int finalDamage = damage;// armour->reduceDamage(damage);
 
 	hp -= finalDamage;
 
 	if (hp < 1) {
-		game.map->removeEntity(this);
+		//game.map->removeEntity(this);
 		dead = true;
 		visible = false;
-		game.onPlayerDeath();
+		//game.onPlayerDeath();
+		
+
+		CEvent e;
+		e.type = eGameEvent;
+		lis::event(e);
+
 	}
 }
 
@@ -214,7 +222,7 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 		return;
 
 
-	const float accel = 3000;
+	const float accel = 4000;
 	switch (commandDir) {
 	case moveNorth:  physics.moveImpulse = { 0,1,0 }; break;
 	case moveNE: physics.moveImpulse = { sin30, sin60, 0 }; break;

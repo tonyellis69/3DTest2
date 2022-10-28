@@ -74,8 +74,8 @@ public:
 	CEntity* targetEntity;
 
 	bool targetInSight = true;
-	float meleeRange = 0.95f;// 0.75f;
-	float chargeSpeed = 3000.0f;
+	float meleeRange = 1.7f; // 0.95f;// 0.75f;
+	float chargeSpeed = 1750.0f;
 };
 
 
@@ -91,7 +91,8 @@ public:
 	float timer;
 	float lungeEnd = 0.125f;
 	float returnEnd = 0.25f;
-	float meleeRange = 1.0f;
+	float meleeRange = 1.75f;
+	bool hit = false;
 };
 
 

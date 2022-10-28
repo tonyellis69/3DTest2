@@ -205,7 +205,7 @@ void CHexRender::drawLineList() {
 
 	for (auto& draw : lineDrawList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix;// *draw.matrix;
+		glm::mat4 mvp = pCamera->clipMatrix *draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);

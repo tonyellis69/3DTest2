@@ -22,11 +22,9 @@ public:
 	void killEntity(CEntity& entity);
 	void update(float dT);
 	void togglePause();
-	void onPlayerDeath();
 	void toggleUImode(bool onOff);
 
-	//CHex cursorPos;
-	THexList cursorPath;
+
 	CPlayerObject* player = nullptr;
 	//std::shared_ptr< CPlayerObject> player;
 	CMap* map;
