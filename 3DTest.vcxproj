@@ -143,7 +143,6 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mapEdit\mapEdit.cpp" />
     <ClCompile Include="src\mapEdit\mapPatch.cpp" />
-    <ClCompile Include="src\mapMaker.cpp" />
     <ClCompile Include="src\missile.cpp" />
     <ClCompile Include="src\physics\hexPhysics.cpp" />
     <ClCompile Include="src\physics\phys.cpp" />
@@ -161,10 +160,10 @@
   <ItemGroup>
     <ClInclude Include="..\TC\Debug\tigConst.h" />
     <ClInclude Include="src\3DtestApp.h" />
+    <ClInclude Include="src\gameEvent.h" />
     <ClInclude Include="src\gameGui.h" />
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\explosion.h" />
-    <ClInclude Include="src\gameEvents.h" />
     <ClInclude Include="src\gameHexArray.h" />
     <ClInclude Include="src\gameMsg.h" />
     <ClInclude Include="src\gameState.h" />
@@ -190,7 +189,6 @@
     <ClInclude Include="src\items\item.h" />
     <ClInclude Include="src\mapEdit\mapEdit.h" />
     <ClInclude Include="src\mapEdit\mapPatch.h" />
-    <ClInclude Include="src\mapMaker.h" />
     <ClInclude Include="src\missile.h" />
     <ClInclude Include="src\physics\hexPhysics.h" />
     <ClInclude Include="src\physics\phys.h" />

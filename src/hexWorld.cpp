@@ -37,7 +37,8 @@
 
 #include "win/win.h"
 
-int listenId = -1;
+#include "UI/guiEvent.h"
+#include "gameEvent.h"
 
 CHexWorld::CHexWorld() {
 	game.paused = true;
@@ -50,7 +51,8 @@ CHexWorld::CHexWorld() {
 
 	imRendr::setMatrix(&hexRendr2.camera.clipMatrix);
 	
-	lis::subscribe(this);
+	lis::subscribe<CGUIevent>(this);
+	lis::subscribe<CGameEvent>(this);
 
 	hexPosLbl = gui::addLabel("xxx", 10, 10);
 	hexPosLbl->setTextColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -61,9 +63,10 @@ CHexWorld::CHexWorld() {
 
 	initPalettes();
 
+	//lis::unsubscribe<CEvent>(this);
 }
 
-void CHexWorld::onEvent(CEvent& e) {
+void CHexWorld::onEvent(CGUIevent& e) {
 	if (e.type == eKeyDown) {
 		if (e.i1 == GLFW_KEY_F2)
 			toggleDirectionGraphics();
@@ -117,11 +120,16 @@ void CHexWorld::onEvent(CEvent& e) {
 
 
 	}
-	else if (e.type == eGameEvent) {
+
+
+
+}
+
+void CHexWorld::onEvent(CGameEvent& e) {
+	//if (e.type == eGameEvent) {
 		//catch player death here
 		onPlayerDeath();
-	}
-
+//	}
 
 }
 

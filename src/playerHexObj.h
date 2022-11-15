@@ -4,7 +4,7 @@
 
 #include "entity.h"
 
-#include "gameEvents.h"
+//#include "gameEvents.h"
 #include "hexMsg.h"
 #include "viewField.h"
 
@@ -18,7 +18,7 @@ enum TMoveDir {
 
 /** A class describing characteristics and behaviour unique to
 	the player hex-world object. */
-class CPlayerObject : /*public CHexActor ,*/ public CEntity, public CGameEventSubject {
+class CPlayerObject : /*public CHexActor ,*/ public CEntity{ //}; , public CGameEventSubject{
 public:
 	CPlayerObject();
 	~CPlayerObject();
@@ -66,7 +66,7 @@ public:
 	bool visible = false;
 	bool dead = false;
 
-	int hp = 30;
+	int hp = 1;// 30;
 
 	CGun* gun; ///<Currently equipped gun.
 	CArmour* armour; ///<Currently worn armour;

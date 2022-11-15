@@ -24,6 +24,8 @@
 
 #include "listen/listen.h"
 
+#include "gameEvent.h"
+
 constexpr float sin30 = 0.5f;
 constexpr float sin60 = 0.86602540378443;
 
@@ -158,8 +160,7 @@ void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
 		//game.onPlayerDeath();
 		
 
-		CEvent e;
-		e.type = eGameEvent;
+		CGameEvent e;
 		lis::event(e);
 
 	}
@@ -169,7 +170,7 @@ void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
 
 /** Called when player has arrived at a new hex.*/
 void CPlayerObject::onMovedHex() {
-	CActorMovedHex msg(hexPosition, this);
+	//CActorMovedHex msg(hexPosition, this);
 	//send(msg);
 	//eventually calls hexWorld alertEntitiesInPlayerFov, which notifies entities
 	//if they're now in view of the player. Find a more direct way to do this

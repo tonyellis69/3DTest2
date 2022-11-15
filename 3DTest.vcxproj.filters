@@ -51,9 +51,6 @@
     <ClCompile Include="src\playerHexObj.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mapMaker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\gameHexArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -173,9 +170,6 @@
     <ClInclude Include="src\playerHexObj.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mapMaker.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\TC\Debug\tigConst.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -195,9 +189,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gameMsg.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\gameEvents.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\viewField.h">
@@ -292,6 +283,9 @@
     </ClInclude>
     <ClInclude Include="src\hexRender\multiDraw.h">
       <Filter>Source Files\hexRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameEvent.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

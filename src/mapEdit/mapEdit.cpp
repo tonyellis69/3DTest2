@@ -181,7 +181,7 @@ void CMapEdit::onRedo() {
 }
 
 void CMapEdit::save() {
-	std::string filename = file::getDataPath() + "combMapTest.map";
+	std::string filename = file::getDataPath() + "manyMapTest.map";
 	std::ofstream saveFile(filename);
 	updateMap();
 	pMap->save(saveFile);
@@ -189,7 +189,7 @@ void CMapEdit::save() {
 }
 
 void CMapEdit::load() {
-	std::string filename = file::getDataPath() + "combMapTest.map";// "oneMapTest.map";
+	std::string filename = file::getDataPath() + "manyMapTest.map";// "oneMapTest.map";
 	std::ifstream loadFile(filename);
 	assert(loadFile.is_open());
 	pMap->load(loadFile);

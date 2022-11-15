@@ -11,7 +11,7 @@
 
 #include "utils/log.h"
 
-void CItemMenu::onEvent(CEvent& e) {
+void CItemMenu::onEvent(CGUIevent& e) {
 	if (e.type == eHotTextHover && (UI.mouseIn("inv") || UI.mouseIn("near")) ) {
 		if (e.hotTxt->empty()) 
 			startTimeout();

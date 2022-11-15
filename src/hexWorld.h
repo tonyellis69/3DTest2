@@ -5,7 +5,7 @@
 
 #include "gameHexArray.h"
 
-#include "mapMaker.h"
+//#include "mapMaker.h"
 
 #include "hexRenderer.h"
 
@@ -15,7 +15,7 @@
 #include "UI/GUIlabel2.h"
 
 
-#include "gameEvents.h"
+//#include "gameEvents.h"
 #include "messaging/messenger.h"
 
 #include "gameTextWin.h"
@@ -32,6 +32,8 @@
 
 #include "hexRender/hexRender.h"
 
+#include "gameEvent.h"
+
 enum TViewMode {gameView, devView};
 enum TMsgType {msgId,msgId2,msgId3};
 
@@ -41,7 +43,8 @@ enum TCameraMode {camNone, camFollow, camFree, camFixed};
 class CHexWorld { 
 public:
 	CHexWorld();
-	void onEvent(CEvent& e);
+	void onEvent(CGUIevent& e);
+	void onEvent(CGameEvent& e);
 	void addMesh(const std::string& name, const std::string& fileName);
 	void addHexTile(const std::string& name, const std::string& fileName, std::vector<glm::vec4>& colours);
 	void makeMap();
@@ -79,7 +82,7 @@ public:
 
 	bool editMode = false;
 
-	CListener listTmp;
+	//CListener listTmp;
 
 private:
 
@@ -114,7 +117,7 @@ private:
 
 	std::mt19937 randEngine;
 
-	CMapMaker mapMaker;
+	//CMapMaker mapMaker;
 
 
 	glm::i32vec2 mousePos;

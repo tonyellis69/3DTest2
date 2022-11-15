@@ -50,9 +50,12 @@ CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 
 std::shared_ptr<CRoboState> CRoboWander::update(float dT) {
 	bot->diagnostic += "wandering!";
-	if (bot->canSeeEnemy())
-		return std::make_shared<CCharge>(bot, game.player);
-		//return std::make_shared<CCloseAndShoot>(bot, game.player);
+	if (bot->canSeeEnemy()) {
+		if (bot->entityType == entMeleeBot)
+			return std::make_shared<CCharge>(bot, game.player);
+		else
+			return std::make_shared<CCloseAndShoot>(bot, game.player);
+	}
 		//!!!!!!!!!!Temp for testing
 
 	this->dT = dT;

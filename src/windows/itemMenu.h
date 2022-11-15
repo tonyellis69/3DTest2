@@ -3,13 +3,14 @@
 #include "smartWin.h"
 #include "listen/listen.h"
 #include "UI/guiBase2.h"
+#include "UI/guiEvent.h"
 
 class CItemMenu : public CSmartWin {
 public:
 	CItemMenu() {
-		lis::subscribe(this);
+		lis::subscribe<CGUIevent>(this);
 	}
-	void onEvent(CEvent& e);
+	void onEvent(CGUIevent& e);
 	void startTimeout();
 	void showItemChoices();
 	void positionLeftOf(CguiBase* spawner);

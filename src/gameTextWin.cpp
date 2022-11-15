@@ -86,10 +86,10 @@ void CGameTextWin::positionOffset() {
 	vFormat = vTop;
 }
 
-void CGameTextWin::onNotify(CMouseExitHex& msg) {
-	setVisible(false);
-
-}
+//void CGameTextWin::onNotify(CMouseExitHex& msg) {
+//	setVisible(false);
+//
+//}
 
 
 

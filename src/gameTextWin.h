@@ -25,7 +25,7 @@ public:
 	void positionAtMousePointer();
 	void positionOffset();
 
-	void onNotify(CMouseExitHex& msg);
+	//void onNotify(CMouseExitHex& msg);
 
 
 	void update(float dT);

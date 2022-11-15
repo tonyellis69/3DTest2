@@ -42,14 +42,26 @@ TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	robot->initDrawFn();
 	robot->setPosition(pos);
 
-	if (name == "melee bot") {
+	//if (name == "melee bot") {
+	//	robot->setState(robotWander3);
+	//	robot->entityType = entMeleeBot;
+	//}
+	//else if (name == "shooter bot") {
+	//	robot->setState(robotWander3);
+	//	robot->entityType = entShootBot;
+	//}
+	// test kludge for random bot distribution
+	static int r = 0;
+	if (r % 3 == 0) {
 		robot->setState(robotWander3);
 		robot->entityType = entMeleeBot;
 	}
-	else if (name == "shooter bot") {
+	else  
+	{
 		robot->setState(robotWander3);
 		robot->entityType = entShootBot;
 	}
+	r++;
 
 
 	robot->name = "robot";

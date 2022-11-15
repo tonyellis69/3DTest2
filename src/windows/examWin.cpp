@@ -10,7 +10,7 @@ void CExamWin::showWin() {
 	CSmartWin::showWin();
 }
 
-void CExamWin::onEvent(CEvent& e) {
+void CExamWin::onEvent(CGUIevent& e) {
 	if (e.type == eMouseOff && UI.mouseNotIn("exam") )
 		pWin->setVisible(false);
 }
