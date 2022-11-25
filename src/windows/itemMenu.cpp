@@ -62,7 +62,7 @@ void CItemMenu::showItemChoices() {
 
 
 void CItemMenu::positionLeftOf(CguiBase* spawner) {
-	//find left edge of parent
+	//find left edge of parentEntity
 	glm::i32vec2 pos = spawner->getLocalPos();
 	glm::i32vec2 size = pWin->getSize();
 

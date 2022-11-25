@@ -62,26 +62,26 @@ void C3DtestApp::onStart() {
 /** Called every frame, provides a place for the user to check input where constant feedback is required. */
 void C3DtestApp::keyCheck() {
 	if (appMode == hexMode) {
-		if (hexWorld.editMode) { //edit-mode keystrokes:
-			if (keyNow('W')) {
+		//if (hexWorld.editMode) { //edit-mode keystrokes:
+		//	if (keyNow('W')) {
 
-				hexWorld.moveCamera(glm::vec3{ 0, 1, 0 });
-			}
-			else if (keyNow('S')) {
-				hexWorld.moveCamera(glm::vec3{ 0, -1, 0 });
-			}
-			else if (keyNow('A')) {
-				hexWorld.moveCamera(glm::vec3{ -1,0,0 });
-			}
-			else if (keyNow('D')) {
-				hexWorld.moveCamera(glm::vec3{ 1,0,0 });
-			}
+		//		hexWorld.moveCamera(glm::vec3{ 0, 1, 0 });
+		//	}
+		//	else if (keyNow('S')) {
+		//		hexWorld.moveCamera(glm::vec3{ 0, -1, 0 });
+		//	}
+		//	else if (keyNow('A')) {
+		//		hexWorld.moveCamera(glm::vec3{ -1,0,0 });
+		//	}
+		//	else if (keyNow('D')) {
+		//		hexWorld.moveCamera(glm::vec3{ 1,0,0 });
+		//	}
 
 
 
-			return;
+		//	return;
 
-		}
+		//}
 
 
 
@@ -294,32 +294,32 @@ void C3DtestApp::GUImsg(int ctrlId, TGUImessage& msg) {
 void C3DtestApp::HandleUImsg(CGUIbase& control, CMessage& Message) {
 
 
-	//if (control.parent->getUniqueID() == worldUI.invPanelID && Message.Msg == uiMsgHotTextClick) {
+	//if (control.parentEntity->getUniqueID() == worldUI.invPanelID && Message.Msg == uiMsgHotTextClick) {
 	//	glm::i32vec2 mousePos = glm::i32vec2(Message.x, Message.y);
 	//	worldUI.inventoryClick(Message.value, mousePos);
 	//	return;
 	//}
 
 	////popup menu text click
-	//if (control.parent->id == popMenuId && Message.Msg == uiMsgHotTextClick) {
+	//if (control.parentEntity->id == popMenuId && Message.Msg == uiMsgHotTextClick) {
 	//	glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
-	//	worldUI.menuClick(Message.value, mousePos, (CGUIrichTextPanel*)control.parent);
+	//	worldUI.menuClick(Message.value, mousePos, (CGUIrichTextPanel*)control.parentEntity);
 	//	return;
 	//}
 
-	//if (control.parent->id == popMenuId && Message.Msg == uiClickOutside) {
+	//if (control.parentEntity->id == popMenuId && Message.Msg == uiClickOutside) {
 	//	glm::i32vec2 mousePos = control.localToScreenCoords(Message.x, Message.y);
-	//	worldUI.deletePopupMenu((CGUIrichTextPanel*)control.parent);
+	//	worldUI.deletePopupMenu((CGUIrichTextPanel*)control.parentEntity);
 	//	return;
 	//}
 
-	//if (control.parent->id == popMenuId && Message.Msg == uiMsgMouseMove) {
+	//if (control.parentEntity->id == popMenuId && Message.Msg == uiMsgMouseMove) {
 	//	worldUI.queueMsg(TvmAppMsg{ appHotTxtChange,"","",Message.value });;
 	//	return;
 	//}
 
 
-	//if (control.parent->id == popMenuId && Message.Msg == uiMouseWheel) {
+	//if (control.parentEntity->id == popMenuId && Message.Msg == uiMouseWheel) {
 	//	worldUI.mouseWheelHotText(Message.value, Message.value2);
 	//	return;
 	//}

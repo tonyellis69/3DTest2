@@ -9,9 +9,10 @@
 
 #include <glm/gtc/matrix_transform.hpp>	
 
-#include "gameState.h"
+#include "../gameState.h"
 
-#include "hexRender/entityDraw.h"
+#include "../hexRender/entityDraw.h"
+
 
 const float rad360 = M_PI * 2;
 
@@ -24,9 +25,17 @@ CEntity::CEntity() {
 
 	//dummy null drawer that can be called without a crash.
 	drawFn = std::make_shared<CDrawFunc>(nullptr);
+
+	transform = std::make_shared<CTransformCmp>(this);
 }
 
-
+void CEntity::update(float dT) {
+	//update various components here
+	if (item)
+		item->update(dT);
+	if (transform)
+		transform->update(dT);
+}
 
 void CEntity::setModel(CModel& model) {
 	this->model = model;
@@ -66,6 +75,10 @@ void CEntity::setRotation(float angle) {
 	rotation = angle;
 }
 
+void CEntity::setScale(glm::vec3& s) {
+	scale = s;
+}
+
 /** Rotated by the given amount.*/
 void CEntity::rotate(float angle) {
 	rotation += angle;
@@ -89,6 +102,7 @@ void CEntity::draw(){
 void CEntity::buildWorldMatrix() {
 	glm::mat4 tmpMatrix = glm::translate(glm::mat4(1), worldPos);
 	tmpMatrix = glm::rotate(tmpMatrix, rotation, glm::vec3(0, 0, -1));
+	tmpMatrix = glm::scale(tmpMatrix, scale);
 	
 	//NB: we use a CW system for angles
 	for (auto& mesh : model.meshes)

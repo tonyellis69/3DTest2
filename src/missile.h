@@ -6,7 +6,7 @@
 //#include "sprite.h"
 
 #include "hex/hex.h"
-#include "entity.h"
+#include "entity\entity.h"
 
 using TIntersections = std::vector<std::pair<CHex, glm::vec3>>;
 

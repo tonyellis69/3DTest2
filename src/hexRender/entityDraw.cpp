@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "../entity.h"
+#include "../entity/entity.h"
 
 
 CEntityDraw::CEntityDraw(CEntity* owner) : CDrawFunc(owner) {

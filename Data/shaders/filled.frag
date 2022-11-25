@@ -8,6 +8,6 @@ out vec4 outputColor;
 
 void main() {
 
-	outputColor = colourV;// colour;
+	outputColor =  colourV;// colour;
 
 }

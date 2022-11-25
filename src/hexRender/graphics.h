@@ -1,7 +1,7 @@
 #pragma once
 
 //#include "hexRender.h"
-#include "..//entity.h"
+#include "..\entity\entity.h"
 
 /** Basic 'info graphic' class, for arrows, boxes etc. */
 class CHexRender;

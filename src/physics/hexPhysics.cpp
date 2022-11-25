@@ -64,6 +64,9 @@ void CHexPhysics::broadphase() {
 
 	for (unsigned int e1=0; e1<entities.size(); e1++) {
 		auto entity = entities[e1];
+		if (!entity->collider)
+			continue;
+
 		//openHexes.clear();
 		std::vector<CHex> openHexes;
 
@@ -95,7 +98,7 @@ void CHexPhysics::broadphase() {
 			if (entity->hexPosition == entity2->hexPosition ||
 				std::count(openHexes.begin(), openHexes.end(), entity2->hexPosition)) {
 				CBodyPairKey key(entity, entity2);
-				auto [penetration2, normal2] = entity->collisionCheck(entity2);
+				auto [penetration2, normal2] = entity->collider->entCollisionCheck(entity2);
 				if (penetration2 > 0) {
 					CBodyPair bodyPair(entity, entity2, penetration2, normal2);
 					bodyPairs[key] = bodyPair;

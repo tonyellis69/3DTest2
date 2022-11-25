@@ -5,7 +5,7 @@
 
 #include "hex/hexArray.h"
 
-#include "entity.h"
+#include "entity\entity.h"
 
 using TMapIt = std::unordered_multimap<CHex, CEntity*>::iterator;
 using TRange = std::pair<TMapIt, TMapIt>;

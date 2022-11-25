@@ -26,6 +26,8 @@
 
 #include "gameEvent.h"
 
+#include "items/shield.h"
+
 constexpr float sin30 = 0.5f;
 constexpr float sin60 = 0.86602540378443;
 
@@ -147,6 +149,16 @@ void CPlayerObject::draw() {
 
 
 void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
+	if (shield) {
+		CShieldComponent* playerShield = (CShieldComponent*) shield->item.get();
+		damage = playerShield->absorbDamage(damage);
+		if (damage <= 0)
+			return;
+	}
+
+
+
+
 	liveLog << "\nPlayer hit!";
 
 	int finalDamage = damage;// armour->reduceDamage(damage);

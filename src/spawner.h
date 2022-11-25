@@ -5,7 +5,7 @@
 #include <functional>
 #include <unordered_map>
 
-#include "entity.h"
+#include "entity\entity.h"
 #include "missile.h"
 #include "robot.h"
 #include "explosion.h"
@@ -27,6 +27,8 @@ public:
 	static TEntity explosion(const std::string& name, glm::vec3& pos, float scale);
 	static CEntity* gun(const std::string& name, glm::vec3& pos = glm::vec3( 0,0,0 ));
 	static CEntity* armour(const std::string& name, glm::vec3& pos = glm::vec3(0, 0, 0));
+
+	static CEntity* shield(const std::string& name);
 
 
 

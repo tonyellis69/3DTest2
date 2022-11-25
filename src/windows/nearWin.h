@@ -7,7 +7,7 @@
 #include "listen/listen.h"
 #include "UI/guiBase2.h"
 
-#include "../entity.h"
+#include "../entity/entity.h"
 #include "../items/item.h"
 
 class CNearWin : public CSmartWin {

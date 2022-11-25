@@ -7,6 +7,13 @@
 
 #include "gameGui.h"
 
+#include "items/shield.h"
+#include "items/item2.h"
+
+#include "hexRender/solidDraw.h"
+
+
+
 std::unordered_map<std::string, CModel> CSpawn::models;
 std::unordered_map<std::string, std::vector<glm::vec4> >* CSpawn::pPalettes;
 
@@ -19,6 +26,7 @@ TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 	player->setPalette(pPalettes->at("basic")); //was basic
 	player->initDrawFn();
 	player->setPosition(pos);
+	player->collider = std::make_shared<ColliderCmp>(player.get());
 
 
 	CEntity* equippedGun = gun("guntype1");
@@ -29,6 +37,12 @@ TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 	player->setArmour(equippedArmour);
 	player->addToInventory(equippedArmour);
 	player->name = "player";
+
+	CEntity* equippedShield = shield("basicShield");
+	CItemCmp* item = (CItemCmp*)equippedShield->item.get();
+	item->setOwner(player.get());
+	player->shield = equippedShield;
+
 
 	pMap->addEntity(player);
 	return player;
@@ -41,6 +55,8 @@ TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	robot->setPalette(pPalettes->at("basic"));
 	robot->initDrawFn();
 	robot->setPosition(pos);
+
+	robot->collider = std::make_shared<ColliderCmp>(robot.get());
 
 	//if (name == "melee bot") {
 	//	robot->setState(robotWander3);
@@ -128,6 +144,20 @@ CEntity* CSpawn::armour(const std::string& name, glm::vec3& pos) {
 
 	pMap->addEntity(armour);
 	return armour.get();
+}
+
+CEntity* CSpawn::shield(const std::string& name) {
+	auto shieldEnt = std::make_shared<CEntity>();
+
+	shieldEnt->setModel(models["solidHex"]);
+	shieldEnt->setPalette(pPalettes->at("shield"));
+	shieldEnt->drawFn = std::make_shared<CSolidDraw>(shieldEnt.get());
+
+	shieldEnt->item = std::make_shared<CShieldComponent>(shieldEnt.get());
+	shieldEnt->name = name;
+
+	pMap->addEntity(shieldEnt);
+	return shieldEnt.get();
 }
 
 

@@ -28,6 +28,9 @@
     <Filter Include="Source Files\hexRender">
       <UniqueIdentifier>{e69ea2c0-f502-4034-8dfe-14eec42ee71f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\entity">
+      <UniqueIdentifier>{42e3b2ce-2539-4ad5-8c2f-a156aa3b4bb1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp">
@@ -83,9 +86,6 @@
     </ClCompile>
     <ClCompile Include="src\physics\hexPhysics.cpp">
       <Filter>Source Files\physics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\entity.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mapEdit\mapEdit.cpp">
       <Filter>Source Files\mapEdit</Filter>
@@ -149,6 +149,24 @@
     </ClCompile>
     <ClCompile Include="src\hexRender\multiDraw.cpp">
       <Filter>Source Files\hexRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity\entity.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\items\item2.cpp">
+      <Filter>Source Files\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\items\shield.cpp">
+      <Filter>Source Files\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hexRender\solidDraw.cpp">
+      <Filter>Source Files\hexRender</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity\transform.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity\collider.cpp">
+      <Filter>Source Files\entity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -214,9 +232,6 @@
     </ClInclude>
     <ClInclude Include="src\physics\hexPhysics.h">
       <Filter>Source Files\physics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\entity.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mapEdit\mapEdit.h">
       <Filter>Source Files\mapEdit</Filter>
@@ -286,6 +301,27 @@
     </ClInclude>
     <ClInclude Include="src\gameEvent.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\component.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\items\item2.h">
+      <Filter>Source Files\items</Filter>
+    </ClInclude>
+    <ClInclude Include="src\items\shield.h">
+      <Filter>Source Files\items</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexRender\solidDraw.h">
+      <Filter>Source Files\hexRender</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\transform.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\collider.h">
+      <Filter>Source Files\entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -40,6 +40,8 @@
 #include "UI/guiEvent.h"
 #include "gameEvent.h"
 
+#include "items/shield.h"
+
 CHexWorld::CHexWorld() {
 	game.paused = true;
 
@@ -228,9 +230,9 @@ void CHexWorld::startGame() {
 
 
 void CHexWorld::moveCamera(glm::vec3& direction) {
-	float camSpeed = 6.0f * dT;
-	glm::vec3 vector = direction *= camSpeed;
-	hexRendr2.moveCamera(vector); //FIX: phase out!
+	float camSpeed =  10 * dT;
+	glm::vec3 vector = direction * camSpeed;
+	//hexRendr2.moveCamera(vector); //FIX: phase out!
 	freeCamPos.x += vector.x; freeCamPos.y += vector.y;
 }
 
@@ -423,8 +425,6 @@ void CHexWorld::draw() {
 	hexRender.drawSolidList();
 	hexRender.drawUpperLineList();
 
-
-
 	hexRender.drawExplosionList();
 
 	if (!game.player->dead) {
@@ -434,8 +434,12 @@ void CHexWorld::draw() {
 		drawReticule();
 	}
 
+	int sh = ((CShieldComponent*)game.player->shield->item.get())->hp;
 
-	imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp));
+	imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp)  
+		+ " Shield: " + std::to_string(sh)
+
+	);
 
 	//imRendr::drawText(300, 70, "thickness: " + std::to_string(hexRender.tmpLineThickness)
 	//	+ " smoothing: " + std::to_string(hexRender.tmpLineSmooth));
@@ -555,10 +559,12 @@ void CHexWorld::toggleView() {
 void CHexWorld::toggleEditMode() {
 	editMode = !editMode;
 	if (editMode) {
+		freeCam();
 		gWin::pNear->hideWin();
 		CWin::showMouse(true);
 	}
 	else {
+		followCam(playerObj);
 		gWin::pNear->showWin();
 		prepMapEntities();
 		CWin::showMouse(false);
@@ -785,6 +791,11 @@ void CHexWorld::freeCam(float x, float y) {
 	freeCamPos = glm::vec2(x, y);
 }
 
+void CHexWorld::freeCam() {
+	cameraMode = camFree;
+	freeCamPos = glm::vec2(hexRender.pCamera->getPos().x, hexRender.pCamera->getPos().y);
+}
+
 void CHexWorld::fixedCam(float x, float y) {
 	cameraMode = camFixed;
 	hexRender.setCameraPos(x, y);
@@ -795,10 +806,12 @@ void CHexWorld::realtimeKeyChecks() {
 		startGame();
 	}
 
-	if (CWin::keyPressed('W')) moveCamera(glm::vec3{ 0, 1, 0 });
-	if (CWin::keyPressed('S')) moveCamera(glm::vec3{ 0, -1, 0 });
-	if (CWin::keyPressed('A')) moveCamera(glm::vec3{ -1,0,0 });
-	if (CWin::keyPressed('D')) moveCamera(glm::vec3{ 1,0,0 });
+	if (cameraMode == camFree) {
+		if (CWin::keyPressed('W')) moveCamera(glm::vec3{ 0, 1, 0 });
+		if (CWin::keyPressed('S')) moveCamera(glm::vec3{ 0, -1, 0 });
+		if (CWin::keyPressed('A')) moveCamera(glm::vec3{ -1,0,0 });
+		if (CWin::keyPressed('D')) moveCamera(glm::vec3{ 1,0,0 });
+	}
 }
 
 void CHexWorld::realtimeMouseButtons() {
@@ -860,6 +873,7 @@ void CHexWorld::initPalettes() {
 	hexRender.storePalette("mix", { {1,1,1,1}, {1,1,0,1}, {1,0,1,1}, {0,0,1,1} });
 	hexRender.storePalette("blue", { {0,0,1,1}, {0.2,0.2,1,1}, {0.3,0.3,1,1}, {0,0,1,1} });
 	hexRender.storePalette("test", { {1,0,0,1}, {0,1,0,1}, {0,0,1,1}, {1,1,0,1} });
+	hexRender.storePalette("shield", { {0,0,1,0.15f}, {1,0,0,0.15f}, {0,1,0,1}, {1,1,0,1} });
 
 
 	spawn::pPalettes = &hexRender.palettes;

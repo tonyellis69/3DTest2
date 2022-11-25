@@ -5,7 +5,7 @@
 #include <tuple>
 
 //#include "../gamehextObj.h"
-#include "../entity.h"
+#include "../entity/entity.h"
 #include "hex/hexArray.h"
 
 class CBodyPairKey;

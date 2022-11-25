@@ -1,6 +1,6 @@
 #include "itemDraw.h"
 
-#include "../entity.h"
+#include "../entity/entity.h"
 
 CItemDraw::CItemDraw(CEntity* owner) : CDrawFunc(owner)  {
 

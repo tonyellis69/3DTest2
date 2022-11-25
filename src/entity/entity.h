@@ -5,17 +5,15 @@
 #include <glm/glm.hpp>
 
 #include "hex/hex.h"
-//#include "lineModel.h"
-#include "physics/phys.h"
+#include "../physics/phys.h"
 
 #include "model.h"
 
-//#include "hexRender/drawFunc.h"
+#include "component.h"
+#include "transform.h"
+#include "collider.h"
 
-/// <summary>
-/// ////////////
 
-/// </summary>
 
 struct TFov { //describes a fov shape
 	CHex A;
@@ -32,13 +30,14 @@ class CEntity  {
 public:
 	CEntity();
 	virtual ~CEntity() {}
-	virtual void update(float dT) {}
+	virtual void update(float dT);
 	virtual void setModel(CModel& model);
 	void setPosition(CHex& hex);
 	void setPosition(glm::vec3& worldPos);
 	virtual void setBoundingRadius();
 	void setHexDirection(THexDir direction);
 	virtual void setRotation(float angle);
+	virtual void setScale(glm::vec3& s);
 	virtual void rotate(float angle);
 	glm::vec3 getRotationVec();
 	virtual void draw();
@@ -106,8 +105,13 @@ public:
 
 	bool toRemove = false;
 
+	std::shared_ptr<CTransformCmp> transform;
+	std::shared_ptr<CEntityCmp> item;
+	std::shared_ptr<ColliderCmp> collider;
+
 protected:
 	float rotation = 0.0f; ///<Angle of object's z-rotation in world space.
+	glm::vec3 scale = glm::vec3(1);
 
 private:
 	static unsigned int nextId;

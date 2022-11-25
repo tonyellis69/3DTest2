@@ -24,7 +24,7 @@ void CItem::setModel(CModel& model) {
 
 
 void CItem::draw() {
-	//if (parent == nullptr) {
+	//if (parentEntity == nullptr) {
 	//	hexRendr2.drawSolidModel(model.meshes[0]);
 	//	hexRendr2.drawSolidModel(model.meshes[1]);
 	//	hexRendr2.drawLineModel(model.meshes[2]);

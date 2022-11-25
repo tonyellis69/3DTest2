@@ -3,7 +3,7 @@
 
 #include "graphics.h"
 
-#include "../entity.h"
+#include "../entity/entity.h"
 
 struct vc3 {
 	glm::vec3 v;

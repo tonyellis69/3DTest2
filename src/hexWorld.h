@@ -99,6 +99,7 @@ private:
 
 	void followCam(CEntity* ent);
 	void freeCam(float x, float y);
+	void freeCam();
 	void fixedCam(float x, float y);
 	void realtimeKeyChecks();
 	void realtimeMouseButtons();

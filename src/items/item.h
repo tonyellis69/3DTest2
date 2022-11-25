@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../entity.h"
+#include "..\entity\entity.h"
 
 /** Items are a distinct class of entity that the player can
 	use and typically carry. */

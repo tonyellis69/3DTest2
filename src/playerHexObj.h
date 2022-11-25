@@ -2,7 +2,7 @@
 
 #define _USE_MATH_DEFINES //for cmath
 
-#include "entity.h"
+#include "entity\entity.h"
 
 //#include "gameEvents.h"
 #include "hexMsg.h"
@@ -10,6 +10,8 @@
 
 #include "items/gun.h"
 #include "items/armour.h"
+
+#include "items/item2.h"
 
 enum TMoveDir {
 	moveNone, moveEast, moveWest, moveNE, moveSE,
@@ -71,6 +73,9 @@ public:
 	CGun* gun; ///<Currently equipped gun.
 	CArmour* armour; ///<Currently worn armour;
 	std::vector<CItem*> inventory; ///<Carried items.
+
+	CEntity* shield = nullptr;
+	//TODO: do I gain anything using a smartpointer here?
 
 private:
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);

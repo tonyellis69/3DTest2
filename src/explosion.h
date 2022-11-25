@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entity.h"
+#include "entity\entity.h"
 
 /** Prototype explosion sprite. */
 class CExplosion : public CEntity {
