@@ -24,13 +24,10 @@ class CPlayerObject : /*public CHexActor ,*/ public CEntity{ //}; , public CGame
 public:
 	CPlayerObject();
 	~CPlayerObject();
-	void setModel(CModel& model);
-	void buildWorldMatrix();
-	void initDrawFn();
+
 
 	void dropItem(int entityNo);
 	void onFireKey(bool pressed);
-	void draw();
 
 	void receiveDamage(CEntity& attacker, int damage);
 
@@ -117,6 +114,7 @@ private:
 	float footExtension = 0;
 	float maxFootExtension = 0.25f; 
 	float turningCycle = 0;
+	glm::vec3 oldWorldPos = { 0,0,0 };
 
 	std::vector<TEntity> nearItems; ///<Nearby items to report
 

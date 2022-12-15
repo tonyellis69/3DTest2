@@ -4,5 +4,5 @@
 
 CDrawFunc::CDrawFunc(CEntity* owner) {
 	pOwner = owner;
-	model = &owner->model;
+	//model = &owner->model;
 }

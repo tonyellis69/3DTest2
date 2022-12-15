@@ -24,7 +24,7 @@
 #include "intersect.h"
 #include "utils/mathsLib.h"
 
-const float rad360 = float(M_PI) * 2.0f;
+
 const float rad90 = float(M_PI) / 2;
 const float rad80 = 1.39626f;
 const float rad70 = 1.22173f;
@@ -42,21 +42,11 @@ CRobot::CRobot() {
 }
 
 
-void CRobot::setModel(CModel& model) {
-	this->model = model;
-	upperBody = this->model.getMesh("robody");
-	base = this->model.getMesh("robase");
-	treads = this->model.getMesh("treads");
-	upperBodyMask = this->model.getMesh("robody_mask");
-	robaseMask = this->model.getMesh("robase_mask");
-
-	this->model.setMainMesh("robody");
-
-	setBoundingRadius();
-}
 
 
 void CRobot::update(float dT) {
+	CEntity::update(dT);
+
 	this->dT = dT;
 	diagnostic = "";
 
@@ -95,57 +85,47 @@ void CRobot::setState(TRobotState newState, CEntity* entity)
 
 }
 
-void CRobot::setRotation(float angle) {
-	if (upperBodyLocked) {
-		float diff = upperBodyRotation - rotation;
-		upperBodyRotation = angle + diff;
-		upperBodyRotation = fmod(upperBodyRotation + rad360, rad360);
-	}
-	rotation = angle;
-}
 
-void CRobot::rotate(float angle) {
-	rotation += angle;
-	rotation = fmod(rotation + rad360, rad360);
-	if (upperBodyLocked) {
-		upperBodyRotation += angle;
-		upperBodyRotation = fmod(upperBodyRotation + rad360, rad360);
-	}
-}
 
-void CRobot::setUpperRotation(float angle) {
-	upperBodyRotation = angle;
-}
+//void CRobot::rotate(float angle) {
+//	rotation += angle;
+//	rotation = fmod(rotation + rad360, rad360);
+//	if (transform->upperBodyLocked) {
+//		upperBodyRotation += angle;
+//		upperBodyRotation = fmod(upperBodyRotation + rad360, rad360);
+//	}
+//}
 
-void CRobot::rotateUpper(float angle) {
-	upperBodyRotation += angle;
-	upperBodyRotation = fmod(upperBodyRotation + rad360, rad360);
-}
+//void CRobot::setUpperRotation(float angle) {
+//	upperBodyRotation = angle;
+//}
+//
+//void CRobot::rotateUpper(float angle) {
+//	upperBodyRotation += angle;
+//	upperBodyRotation = fmod(upperBodyRotation + rad360, rad360);
+//}
 
-void CRobot::initDrawFn() {
-	drawFn = std::make_shared<CMultiDraw>(this);
-	auto fn = (CMultiDraw*)drawFn.get();
-	fn->lowerMeshes.push_back(model.getMesh("robase"));
-	fn->lowerMeshes.push_back(model.getMesh("treads"));
-	fn->upperMeshes.push_back(model.getMesh("robody"));
-	fn->upperMask = model.getMesh("robody_mask");
-	fn->lowerMasks.push_back(model.getMesh("robase_mask"));
 
-}
 
-void CRobot::draw() {
-
-}
 
 
 /** Check if the given segment intersects this robot. */
 std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
-	if (model.BBcollision(segA, segB))
+	if (modelCmp->model.BBcollision(segA, segB))
 		return { true, glm::vec3() };
 	return { false, glm::vec3()};
 }
 
 void CRobot::buildWorldMatrix() {
+	return;
+	modelCmp->translateAll(transform->worldPos);
+	modelCmp->rotateUpper(upperBodyRotation);
+	modelCmp->rotateLower(rotation);
+	modelCmp->retranslateLower(glm::vec3(-treadTranslate, 0, 0));
+	return;
+
+
+
 	glm::mat4 worldM = glm::translate(glm::mat4(1), worldPos);
 
 	upperBody->matrix = worldM;
@@ -164,13 +144,13 @@ void CRobot::buildWorldMatrix() {
 void CRobot::startTracking(CEntity* target) {
 	trackingState = trackEntity;
 	trackingEntity = target;
-	upperBodyLocked = false;
+	transform->upperBodyLocked = false;
 }
 
 void CRobot::startTracking(glm::vec3& pos) {
 	trackingState = trackPos;
 	trackingPos = pos;
-	upperBodyLocked = false;
+	transform->upperBodyLocked = false;
 }
 
 
@@ -179,7 +159,7 @@ void CRobot::startTracking(glm::vec3& pos) {
 
 void CRobot::stopTracking() {
 	trackingState = trackEnding;
-	upperBodyLocked = true;
+	transform->upperBodyLocked = true;
 }
 
 
@@ -188,12 +168,12 @@ void CRobot::receiveDamage(CEntity& attacker, int damage) {
 	hp--;
 	if (hp == 0) {
 		game.killEntity(*this);
-		spawn::explosion("explosion", worldPos, 1.5f);
+		spawn::explosion("explosion", transform->worldPos, 1.5f);
 		toRemove = true;
 	}
 	else {
 		if (canSeeEnemy() == false) {
-			currentState = std::make_shared<CTurnToSee>(this, glm::normalize(attacker.worldPos - worldPos));
+			currentState = std::make_shared<CTurnToSee>(this, glm::normalize(attacker.worldPos - transform->worldPos));
 		}
 	}
 }
@@ -202,7 +182,7 @@ void CRobot::receiveDamage(CEntity& attacker, int damage) {
 	with risk to avoid overshooting. */
 glm::vec3 CRobot::arriveAt(glm::vec3& dest) {
 	float proportionalSlowingDist = slowingDist * (chosenSpeed / 1000);
-	glm::vec3 targetOffset = dest - worldPos;
+	glm::vec3 targetOffset = dest - transform->worldPos;
 	float distance = glm::length(targetOffset);
 	float rampedSpeed = chosenSpeed * (distance / proportionalSlowingDist);
 	float clippedSpeed = std::min(rampedSpeed, chosenSpeed);
@@ -212,7 +192,7 @@ glm::vec3 CRobot::arriveAt(glm::vec3& dest) {
 
 float CRobot::speedFor(glm::vec3& dest) {
 	float proportionalSlowingDist = slowingDist * (chosenSpeed / 1000);
-	glm::vec3 targetOffset = dest - worldPos;
+	glm::vec3 targetOffset = dest - transform->worldPos;
 	float distance = glm::length(targetOffset);
 	float rampedSpeed = chosenSpeed * (distance / proportionalSlowingDist);
 	float clippedSpeed = std::min(rampedSpeed, chosenSpeed);
@@ -227,7 +207,7 @@ bool CRobot::clearLineTo(CEntity* target) {
 }
 
 bool CRobot::clearLineTo(const glm::vec3& p) {
-	TIntersections intersectedHexes = getIntersectedHexes(worldPos, p);
+	TIntersections intersectedHexes = getIntersectedHexes(transform->worldPos, p);
 	for (auto& hex : intersectedHexes) {
 		if (game.map->getHexArray()->getHexCube(hex.first).content != emptyHex)
 			return false;
@@ -239,15 +219,15 @@ bool CRobot::clearLineTo(const glm::vec3& p) {
 
 
 bool CRobot::inFov(CEntity* target) {
-	glm::vec3 targetDir = target->worldPos - worldPos;
+	glm::vec3 targetDir = target->worldPos - transform->worldPos;
 	targetDir = glm::normalize(targetDir);
 
 	//find upper body rotation as a vector
-	glm::vec3 rotVec = { cos(upperBodyRotation), -sin(upperBodyRotation),0 };
+	glm::vec3 rotVec = transform->getUpperBodyRotationVec();
 	if ((glm::dot(rotVec, targetDir)) < cos(rad50))
 		return false;
 
-	if ( glm::distance(worldPos, target->worldPos) <= 12 && 
+	if ( glm::distance(transform->worldPos, target->worldPos) <= 12 && 
 		clearLineTo(target->worldPos) )
 			return true;
 	
@@ -268,7 +248,7 @@ std::vector<TObstacle> CRobot::findNearObstacles(glm::vec3& centre) {
 			CEntities entities = game.map->getEntitiesAt(hex);
 			for (auto& entity : entities) {
 				if (entity->isRobot && entity != this) {
-					obstacles.push_back({ entity->worldPos,0.8f /* entity->getRadius()*/, (CRobot*)entity });
+					obstacles.push_back({ entity->getPos(),0.8f /* entity->getRadius()*/, (CRobot*)entity});
 				}
 			}
 		}
@@ -283,7 +263,7 @@ void CRobot::amIStuck() {
 	stuckCheck += dT;
 	if (stuckCheck > 1.0f) {
 		stuckCheck = 0;
-		float newDist = glm::distance(worldPos, getDestination());
+		float newDist = glm::distance(getPos(), getDestination());
 		if (newDist < destinationDist) {
 			destinationDist = newDist;
 		}
@@ -300,10 +280,10 @@ void CRobot::abortDestination() {
 }
 
 void CRobot::fireMissile(CEntity* target) {
-	glm::vec3 targetVec = target->worldPos - worldPos;
+	glm::vec3 targetVec = target->worldPos - getPos();
 	float targetAngle = glm::orientedAngle(glm::normalize(targetVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 
-	auto missile = (CMissile*) spawn::missile("missile", worldPos, targetAngle).get();
+	auto missile = (CMissile*) spawn::missile("missile",getPos(), targetAngle).get();
 	missile->setOwner(this);
 	missile->setSpeed(15);// 7.0f);
 
@@ -318,11 +298,11 @@ void CRobot::onMovedHex()
 /** Continue turning toward dir, if not facing it. */
 bool CRobot::turnToward(glm::vec3& dir) {
 	float maxFrameRotation = dT * maxTurnSpeed;
-	float desiredTurn = shortestAngle(getRotationVec(), dir);
+	float desiredTurn = shortestAngle(transform->getRotationVec(), dir);
 	float frameRotation = std::copysign(glm::min(maxFrameRotation, abs(desiredTurn)), desiredTurn);
 	if (abs(frameRotation) < 0.001f)
 		return false;
-	rotate(frameRotation);
+	transform->rotate(frameRotation);
 	return true;
 }
 
@@ -338,11 +318,11 @@ glm::vec3 CRobot::getDestination() {
 /** Return the necessary vector to avoid obstacles ahead. */
 //FIXME: ultimately, probably better to set a robot member to the obstacle, so it has all data.
 std::tuple<float, float> CRobot::findAvoidance() {
-	glm::vec3 travelDir = getRotationVec();
+	glm::vec3 travelDir = transform->getRotationVec();
 
 	pRoboCollidee = nullptr;
 
-	float destinationDist = glm::distance(worldPos, getDestination());
+	float destinationDist = glm::distance(getPos(), getDestination());
 	float farCheckDist = std::min(maxAvoidanceDist, destinationDist) ;
 	float nearCheckDist = 0.3f;
 	//0 = steep turns passing obstacle, higher values = stop turning past close obstacles too soon
@@ -354,8 +334,8 @@ std::tuple<float, float> CRobot::findAvoidance() {
 		return { .0f,.0f };
 	}
 
-	glm::vec3 aheadSegEnd = worldPos + (travelDir * farCheckDist);
-	glm::vec3 aheadSegBegin = worldPos + (travelDir * nearCheckDist);
+	glm::vec3 aheadSegEnd = getPos() + (travelDir * farCheckDist);
+	glm::vec3 aheadSegBegin = getPos() + (travelDir * nearCheckDist);
 	glm::vec3 aheadSegCentre = aheadSegBegin + (aheadSegEnd - aheadSegBegin) * 0.5f;
 
 	//for graphic debug aid
@@ -371,7 +351,7 @@ std::tuple<float, float> CRobot::findAvoidance() {
 	}
 
 	std::sort(obstacles.begin(), obstacles.end(), [&](const auto& a, const auto& b) {
-		return glm::distance(worldPos, a.pos) < glm::distance(worldPos, b.pos); });
+		return glm::distance(getPos(), a.pos) < glm::distance(getPos(), b.pos); });
 
 	auto [obstacle, aheadSegNearestPt] = findCollidable(obstacles, aheadSegBegin, aheadSegEnd);
 	if (obstacle.pos == glm::vec3(0)) 
@@ -382,7 +362,7 @@ std::tuple<float, float> CRobot::findAvoidance() {
 
 	//FIXME: temp bodge for when another robot sitting on destination!
 	if (glm::distance(getDestination(), obstacle.pos) < 0.2f) {
-		currentState->setDestination(worldPos);
+		currentState->setDestination(getPos());
 		return { .0f,.0f };
 	}
 
@@ -390,14 +370,14 @@ std::tuple<float, float> CRobot::findAvoidance() {
 	//find rotation needed to steer us out of the bounding circle of the obstacle
 
  	glm::vec3 collisionExitVec = aheadSegNearestPt - obstacle.pos;
-	glm::vec3 destinationVec = glm::normalize(getDestination() - worldPos);
+	glm::vec3 destinationVec = glm::normalize(getDestination() - getPos());
 	glm::vec3 destinationNormal = turnRight(destinationVec);
 	
 	//which way we turn to avoid depends on whether we're facing the destination or not
 	glm::vec3 avoidanceDir;
 	if (isAcute(travelDir, destinationVec) ) {
 		//find what side of destination vector obstacle is, turn other way
-		if (isAcute(obstacle.pos - worldPos, destinationNormal))
+		if (isAcute(obstacle.pos - getPos(), destinationNormal))
 			avoidanceDir = turnLeft(travelDir);
 		else
 			avoidanceDir = turnRight(travelDir);
@@ -423,15 +403,15 @@ std::tuple<float, float> CRobot::findAvoidance() {
 	}
 
 	//find rotation required
-	glm::vec3 safeVec = glm::normalize(aheadSegNearestPt - worldPos + avoidVec);
+	glm::vec3 safeVec = glm::normalize(aheadSegNearestPt - getPos() + avoidVec);
 	float avoidAngle = glm::orientedAngle(safeVec, travelDir, glm::vec3(0, 0, 1));
 
 		
 	//are we pointing directly enough at the obstacle to want to throttle speed?
 	float risk = 0;
-	float collisionDist = glm::distance(obstacle.pos, worldPos);
+	float collisionDist = glm::distance(obstacle.pos, getPos());
 	if (collisionDist - obstacle.radius < obstacleProximityLimit) { 
-		float bearingToObj = glm::dot(travelDir, glm::normalize(obstacle.pos - worldPos));
+		float bearingToObj = glm::dot(travelDir, glm::normalize(obstacle.pos - getPos()));
 		risk = glm::smoothstep(obstacleToSide, obstacleAhead, bearingToObj);
 	}
 
@@ -464,19 +444,19 @@ std::tuple<TObstacle, glm::vec3> CRobot::findCollidable(std::vector<TObstacle>& 
 void CRobot::headTo(glm::vec3 & destinationPos) {
 	if (backingUp > 0) {
 		backingUp -= dT;
-		physics.moveImpulse = -getRotationVec() * defaultSpeed ;
+		physics.moveImpulse = -transform->getRotationVec() * defaultSpeed ;
 		return;
 	}
 
 	float maxFrameRotation = dT * maxTurnSpeed;
-	float desiredTurn = orientationTo(destinationPos);
+	float desiredTurn = transform->orientationTo(destinationPos);
 	float frameRotation = std::copysign( glm::min(maxFrameRotation, abs(desiredTurn)),desiredTurn);
-	rotate(frameRotation); 
+	transform->rotate(frameRotation); 
 	
 	float speed = speedFor(destinationPos);
 	glm::vec3 impulse(0);
 	if (abs(desiredTurn) < rad90) 
-		impulse = getRotationVec() * speed;
+		impulse = transform->getRotationVec() * speed;
 	physics.moveImpulse = impulse;
 
  	auto [avoidanceNeeded, risk] = findAvoidance();
@@ -488,8 +468,8 @@ void CRobot::headTo(glm::vec3 & destinationPos) {
 
 		//Special case: colliding bots side-by-side heading same way
 		if (pRoboCollidee && pRoboCollidee->backingUp <= 0 &&
-			glm::dot(getRotationVec(),pRoboCollidee->getRotationVec()) > 0.8f &&
-			glm::distance(worldPos,pRoboCollidee->worldPos) < 1.0f) {
+			glm::dot(transform->getRotationVec(),pRoboCollidee->transform->getRotationVec()) > 0.8f &&
+			glm::distance(getPos(), pRoboCollidee->getPos()) < 1.0f) {
 			backingUp = 0.55f; 
 			return;
 		}
@@ -497,13 +477,13 @@ void CRobot::headTo(glm::vec3 & destinationPos) {
 		//does avoidance oppose proposed turn?
 		if (signbit(avoidanceNeeded) != std::signbit(frameRotation)) {
 			float frameAvoidance = std::copysign(glm::min(maxOpposingFrameRotation +  abs(frameRotation), abs(avoidanceNeeded)), avoidanceNeeded);
-			rotate(frameAvoidance);
+			transform->rotate(frameAvoidance);
 		}
 		else { //no? work with it
 			float frameAvoidance = std::copysign(glm::min(maxFrameRotation, abs(avoidanceNeeded)), avoidanceNeeded);
 			if (abs(frameAvoidance) > abs(frameRotation)) {
 				float diff = std::copysign(abs(frameAvoidance) - abs(frameRotation), avoidanceNeeded);
-				rotate(diff);
+				transform->rotate(diff);
 			}
 		}
 	}
@@ -517,27 +497,27 @@ void CRobot::trackTarget() {
 	switch (trackingState) {
 	case trackEntity: 
 		//targetAngle = glm::orientedAngle(glm::normalize(trackingEntity->worldPos - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
-		targetAngle = shortestAngle(upperBodyRotation,trackingEntity->worldPos - worldPos );
+		targetAngle = shortestAngle(transform->getUpperBodyRotation(), trackingEntity->getPos() - getPos());
 		//setUpperRotation(targetAngle);
 		turnUpperBodyTo(targetAngle);
 		break;
 	case trackPos:
 		//targetAngle = glm::orientedAngle(glm::normalize(trackingPos - worldPos), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 		//setUpperRotation(targetAngle);
-		targetAngle = shortestAngle(upperBodyRotation,trackingPos - worldPos );
+		targetAngle = shortestAngle(transform->getUpperBodyRotation(), trackingPos - getPos());
 		turnUpperBodyTo(targetAngle);
 		break;
 	case trackEnding:
-		float dist = fmod(rad360 + rotation - upperBodyRotation, rad360);
+		float dist = fmod(rad360 + transform->getRotation() - transform->getUpperBodyRotation(), rad360);
 		float turnStep = dT * upperTurnSpeed;
 		if (turnStep < dist) {
 			//put in range [-pi - pi] to give turn a direction, ie, clockwise/anti
 			if (dist > M_PI)
 				turnStep = -turnStep;
-			rotateUpper(turnStep);
+			transform->rotateUpperBody(turnStep);
 		}
 		else {
-			setUpperRotation(rotation);
+			transform->setUpperBodyRotation(transform->getRotation());
 			trackingState = trackNone;
 		}
 
@@ -547,7 +527,7 @@ void CRobot::trackTarget() {
 
 void CRobot::turnUpperBodyTo(float destAngle) {
 	float frameturn = std::copysign(glm::min(upperTurnSpeed, abs(destAngle)), destAngle);
-	rotateUpper(frameturn);
+	transform->rotateUpperBody(frameturn);
 
 }
 
@@ -566,6 +546,7 @@ void CRobot::updateTreadCycle() {
 
 	float treadGap = 0.1f;
 	treadTranslate = f * treadGap;
+	transform->setWalkTranslation(glm::vec3(-treadTranslate, 0, 0));
 }
 
 

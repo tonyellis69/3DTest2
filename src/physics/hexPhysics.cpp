@@ -169,7 +169,7 @@ void CHexPhysics::resolveContacts() {
 /** Find new position of all entities from velocity. */
 void CHexPhysics::integrateVelocities() {
 	for (auto& entity : entities) {
-		entity->updatePos(entity->physics.velocity * dT);
+		entity->transform->updatePos(entity->physics.velocity * dT);
 
 	}
 }
@@ -180,7 +180,9 @@ std::tuple<float, glm::vec3> CHexPhysics::findSceneryCollision(CEntity* body, gl
 	glm::vec3 segA = hexPos + corners[dir];
 	glm::vec3 segB = hexPos + corners[(dir + 1) % 6];
 
-	float radius = body->physics.boundingRadius;
+	//float radius = body->physics.boundingRadius;
+	float radius = body->collider->boundingRadius;
+
 	glm::vec3 bodyOrigin = body->worldPos;
 
 	glm::vec3 PA = segA - bodyOrigin;

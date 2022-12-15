@@ -17,8 +17,8 @@ void CShieldComponent::update(float dT) {
 
 	CTransformCmp* transform = parentEntity->transform.get();
 
+	transform->setPos(itemOwner->getPos());
 	transform->setRotation(rad90);
-	transform->setPos(itemOwner->worldPos);
 	transform->setScale(glm::vec3{ 0.75f });
 
 
@@ -34,7 +34,7 @@ void CShieldComponent::update(float dT) {
 
 	float damageRatio = hp / maxHp;
 	glm::vec4 shieldColour = glm::mix(flatColour, chargedColour, damageRatio);
-	parentEntity->model.palette[0] = shieldColour;
+	parentEntity->modelCmp->model.palette[0] = shieldColour;
 
 }
 

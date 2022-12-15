@@ -12,6 +12,7 @@
 #include "component.h"
 #include "transform.h"
 #include "collider.h"
+#include "modelCmp.h"
 
 
 
@@ -31,20 +32,15 @@ public:
 	CEntity();
 	virtual ~CEntity() {}
 	virtual void update(float dT);
-	virtual void setModel(CModel& model);
 	void setPosition(CHex& hex);
 	void setPosition(glm::vec3& worldPos);
-	virtual void setBoundingRadius();
+	//virtual void setBoundingRadius();
+	glm::vec3 getPos();
 	void setHexDirection(THexDir direction);
-	virtual void setRotation(float angle);
-	virtual void setScale(glm::vec3& s);
-	virtual void rotate(float angle);
-	glm::vec3 getRotationVec();
-	virtual void draw();
 	THexDir getDirection() {
 		return facing;
 	}
-	virtual void buildWorldMatrix();
+	//virtual void buildWorldMatrix();
 
 	//virtual void updateMatrices(TModelData& model);
 
@@ -54,27 +50,25 @@ public:
 		return std::tuple<bool, glm::vec3>();
 	}
 	std::tuple<float, glm::vec3> collisionCheck(CEntity* e2);
-	float orientationTo(glm::vec3& targetPos);
-	void updatePos(glm::vec3& dPos);
+
 
 	bool isOnScreen();
 	
 	virtual std::string getShortDesc();
 
 
-	virtual void initDrawFn();
-	virtual void setPalette(std::vector<glm::vec4>& palette);
+	//virtual void setPalette(std::vector<glm::vec4>& palette);
 
-	float getRadius();
+	
 	
 	float dT;
 
-	CModel model;
+	//CModel model;
 
 	CHex hexPosition = CHex(-1); ///<Position on a hex grid in cube coordinates.
 	THexDir facing = hexEast; ///<Direction entity is facing.
 	glm::vec3 worldPos = { 0,0,0 }; ///<Position in world space.
-	glm::vec3 oldWorldPos = { 0,0,0 };
+	//glm::vec3 oldWorldPos = { 0,0,0 };
 
 	THexList travelPath; ///<Route for movement.
 	CHex destination; ///<The hex we're travelling to.
@@ -97,7 +91,7 @@ public:
 	std::string name;
 	unsigned int id; 
 
-	std::shared_ptr<CDrawFunc> drawFn;
+	//std::shared_ptr<CDrawFunc> drawFn;
 
 	//std::vector<glm::vec4>* pPalette;
 
@@ -108,10 +102,12 @@ public:
 	std::shared_ptr<CTransformCmp> transform;
 	std::shared_ptr<CEntityCmp> item;
 	std::shared_ptr<ColliderCmp> collider;
+	std::shared_ptr<CModelCmp> modelCmp;
 
-protected:
 	float rotation = 0.0f; ///<Angle of object's z-rotation in world space.
 	glm::vec3 scale = glm::vec3(1);
+protected:
+
 
 private:
 	static unsigned int nextId;

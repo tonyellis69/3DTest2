@@ -399,8 +399,11 @@ void CHexWorld::draw() {
 	hexRender.resetDrawLists();
 
 	for (auto& entity : map->entities) {
-		if (entity->live)
-			entity->drawFn.get()->draw(hexRender);
+		if (entity->name == "basicShield")
+			int b = 0;
+		if (entity->live) 
+			//entity->drawFn.get()->draw(hexRender);
+			entity->modelCmp->draw(hexRender);
 	}
 	if (directionGraphicsOn) {
 		for (auto& graphic : hexRender.graphics)
@@ -610,11 +613,8 @@ void CHexWorld::prepMapEntities() {
 
 void CHexWorld::createCursorObject() {
 	hexCursor = new CEntity();
-	hexCursor->setBoundingRadius();
-	//hexCursor->lineModel.buffer2 = &spawn::meshBufs["cursor"];
-	//hexCursor->lineModel.model = spawn::modelBufs["cursor"];
-	//hexCursor->lineModel.setColourR(glm::vec4(0.3, 1, 0.3, 1));
-	hexCursor->setModel(spawn::models["cursor"]);
+
+	//hexCursor->setModel(spawn::models["cursor"]);
 	hexCursor->setPosition(CHex(0, 0, 0));
 }
 

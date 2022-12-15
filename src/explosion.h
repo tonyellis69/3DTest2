@@ -7,10 +7,9 @@ class CExplosion : public CEntity {
 public:
 	CExplosion(float size);
 	void update(float dT);
-	void draw();
+	//void draw();
 	void setCollidee(CEntity* collidee);
 
-	void initDrawFn();
 
 	float lifeTime = 0;
 	float timeOut = 3.0f;

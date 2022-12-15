@@ -168,6 +168,15 @@
     <ClCompile Include="src\entity\collider.cpp">
       <Filter>Source Files\entity</Filter>
     </ClCompile>
+    <ClCompile Include="src\entity\modelCmp.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity\playerModelCmp.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity\botTreadsModelCmp.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -321,6 +330,15 @@
       <Filter>Source Files\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\entity\collider.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\modelCmp.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\playerModelCmp.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\botTreadsModelCmp.h">
       <Filter>Source Files\entity</Filter>
     </ClInclude>
   </ItemGroup>

@@ -13,26 +13,10 @@ void CItem::setParent(CEntity* parent) {
 	this->parent = parent;
 }
 
-void CItem::setModel(CModel& model) {
-	this->model = model;
-	setBoundingRadius();
-
-
-}
-
-
-
-
-void CItem::draw() {
-	//if (parentEntity == nullptr) {
-	//	hexRendr2.drawSolidModel(model.meshes[0]);
-	//	hexRendr2.drawSolidModel(model.meshes[1]);
-	//	hexRendr2.drawLineModel(model.meshes[2]);
-	//}
-}
 
 void CItem::drop() {
-	drawFn = std::make_shared<CItemDraw>(this);
+	//drawFn = std::make_shared<CItemDraw>(this);
+	//TO DO: rewrite to work with component?
 }
 
 void CItem::take(CEntity* taker) {
@@ -40,7 +24,8 @@ void CItem::take(CEntity* taker) {
 	CPlayerObject* takerEnt = (CPlayerObject*) taker;
 	takerEnt->addToInventory(this);
 	gWin::pNear->removeItem(id);
-	drawFn = std::make_shared<CDrawFunc>(nullptr);
+	//drawFn = std::make_shared<CDrawFunc>(nullptr);
+	//TO DO: needs component-handling
 }
 
 void CItem::examine() {
@@ -58,9 +43,5 @@ std::string CItem::getMenuTextInv() {
 
 std::string CItem::getMenuTextNear() {
 	return name + ":\n\\h{take}Take\\h\n\\h{examine}Examine\\h";
-}
-
-void CItem::initDrawFn() {
-	drawFn = std::make_shared<CItemDraw>(this);
 }
 

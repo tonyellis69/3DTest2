@@ -11,7 +11,7 @@ public:
 	virtual void draw(CHexRender& hexRender) {}
 
 
-protected:
+//protected:
 	CModel* model;
 	CEntity* pOwner;
 };

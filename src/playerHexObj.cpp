@@ -50,52 +50,8 @@ CPlayerObject::~CPlayerObject() {
 
 
 
-void CPlayerObject::setModel(CModel& modelRef) {
-	this->model = modelRef;
-	upperBody = model.getMesh("body");
-	leftFoot = model.getMesh("footL");
-	rightFoot = model.getMesh("footR");
-	upperBodyMask = model.getMesh("body_mask");
-	leftFootMask = model.getMesh("footL_mask");
-	rightFootMask = model.getMesh("footR_mask");
 
-	this->model.setMainMesh("body");
 
-	setBoundingRadius();
-}
-
-void CPlayerObject::buildWorldMatrix() {
-	glm::mat4 worldM = glm::translate(glm::mat4(1), worldPos);
-
-	upperBody->matrix = worldM;
-	upperBody->matrix = glm::rotate(worldM, upperBodyRotation, glm::vec3(0, 0, -1));
-
-	//lineModel.model.matrix = upperBody->matrix;
-	//model.tmpMatrix = upperBody->matrix;
-	//FIXME! Temp kludge to ensure collision check works
-	//maybe solve by giving every model a collision subModel to check against.
-	upperBodyMask->matrix = upperBody->matrix;
-
-	worldM = glm::rotate(worldM, rotation, glm::vec3(0, 0, -1));
-
-	rightFoot->matrix = glm::translate(worldM, glm::vec3(footExtension, 0, 0));
-	leftFoot->matrix = glm::translate(worldM, glm::vec3(-footExtension,0,0));
-
-	leftFootMask->matrix = leftFoot->matrix;
-	rightFootMask->matrix = rightFoot->matrix;
-
-}
-
-void CPlayerObject::initDrawFn() {
-	drawFn = std::make_shared<CMultiDraw>(this);
-	auto fn = (CMultiDraw*)drawFn.get();
-	fn->lowerMeshes.push_back(model.getMesh("footL"));
-	fn->lowerMeshes.push_back(model.getMesh("footR"));
-	fn->upperMeshes.push_back(model.getMesh("body"));
-	fn->upperMask = model.getMesh("body_mask");
-	fn->lowerMasks.push_back(model.getMesh("footL_mask"));
-	fn->lowerMasks.push_back(model.getMesh("footR_mask"));
-}
 
 
 
@@ -126,26 +82,6 @@ void CPlayerObject::onFireKey(bool pressed) {
 
 	gun->fire(getUpperBodyRotation());
 }
-
-
-
-
-void CPlayerObject::draw() {
-	//for (auto hex : viewField.visibleHexes)
-	//	hexRendr->highlightHex(hex);
-	if (dead)
-		return;
-	//CEntity::draw();
-	//hexRendr2.drawLineModel(*leftFoot);
-	//hexRendr2.drawLineModel(*rightFoot);
-	//hexRendr2.drawLineModel(*upperBody);
-	//hexRendr2.drawLineModel(model.meshes[2]);
-	//hexRendr2.drawLineModel(model.meshes[1]);
-	//hexRendr2.drawLineModel(model.meshes[0]);
-}
-
-
-
 
 
 void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
@@ -253,12 +189,13 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 
 	//turn to that direction
 	walkingBackwards = false;
-	glm::vec3 upperRotation = getUpperBodyRotationVec();
+	//glm::vec3 upperRotation = getUpperBodyRotationVec();
+	glm::vec3 upperRotation = transform->getUpperBodyRotationVec();
 	if (glm::dot(physics.moveImpulse, upperRotation) >= 0) {
-		setRotation(physics.moveImpulse);
+		transform->setRotation(physics.moveImpulse);
 	}
 	else {
-		setRotation(-physics.moveImpulse);
+		transform->setRotation(-physics.moveImpulse);
 		walkingBackwards = true;
 	}
 
@@ -271,7 +208,11 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 
 
 void CPlayerObject::update(float dT) {
+	CEntity::update(dT);
+
+
 	this->dT = dT;
+
 
 	if (!visible && visibilityCooldown < 3.0f) {
 		visibilityCooldown += dT;
@@ -285,10 +226,9 @@ void CPlayerObject::update(float dT) {
 
 	updateWalkCycle();
 
-	buildWorldMatrix();
 	oldMoveDir = moveDir;
 	moveDir = moveNone;
-
+	oldWorldPos = transform->worldPos;
 }
 
 void CPlayerObject::setTargetAngle(float angle) {
@@ -302,7 +242,8 @@ void CPlayerObject::setRotation(glm::vec3& vec) {
 }
 
 glm::vec3 CPlayerObject::getRotation() {
-	return { cos(rotation), -sin(rotation),0 };
+	return transform->getUpperBodyRotationVec();
+	//TO DO: check this still gets used
 }
 
 void CPlayerObject::setUpperBodyRotation(float angle) {
@@ -315,16 +256,17 @@ void CPlayerObject::setUpperBodyRotation(glm::vec3& vec) {
 }
 
 float CPlayerObject::getUpperBodyRotation() {
-	return upperBodyRotation;
+	return transform->getUpperBodyRotation();
 }
 
 glm::vec3 CPlayerObject::getUpperBodyRotationVec() {
-	return  { cos(upperBodyRotation), -sin(upperBodyRotation),0 };
+	return  transform->getUpperBodyRotationVec();
+	//TO DO: check still needed
 }
 
 void CPlayerObject::setMouseDir(glm::vec3& mouseVec) {
 	this->mouseVec = mouseVec;
-	setUpperBodyRotation(mouseVec);
+	transform->setUpperBodyRotation(mouseVec);
 
 	if (moveDir != moveNone)
 		return;
@@ -340,10 +282,10 @@ void CPlayerObject::setMouseDir(glm::vec3& mouseVec) {
 
 	sectorNormal = glm::normalize(sectorNormal);
 
-	if (glm::dot(sectorNormal,getRotation()) < 0.9f)
+	if (glm::dot(sectorNormal,transform->getRotationVec()) < 0.9f)
 		startTurnCycle();
 
-	setRotation(sectorNormal);
+	transform->setRotation(sectorNormal);
 }
 
 void CPlayerObject::addToInventory(CEntity* item) {
@@ -365,7 +307,7 @@ void CPlayerObject::setArmour(CEntity* armour) {
 
 /** Check if the given segment intersects us. */
 std::tuple<bool, glm::vec3> CPlayerObject::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
-	if (model.BBcollision(segA, segB))
+	if (modelCmp->model.BBcollision(segA, segB))
 		return { true, glm::vec3() };
 
 	return { false, glm::vec3() };
@@ -395,6 +337,7 @@ void CPlayerObject::updateWalkCycle() {
 	f = (f - 0.5f) * 2; //-1 to 1 oscillation
 
 	footExtension = f * maxFootExtension;
+	transform->setWalkTranslation(glm::vec3(footExtension,0,0));
 
 	return;
 }

@@ -5,6 +5,7 @@
 
 /** Basic 'info graphic' class, for arrows, boxes etc. */
 class CHexRender;
+
 class CGraphic {
 public:
 	CGraphic() {};

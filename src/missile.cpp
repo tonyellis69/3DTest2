@@ -19,19 +19,21 @@ void CMissile::setPosition(glm::vec3& pos, float rotation) {
 	//CSprite::setPosition(pos, rotation);
 
 	worldPos = pos;
-	this->setRotation(rotation);
+	transform->setPos(pos);
+	transform->setRotation(rotation);
 	buildWorldMatrix();
 
 
 
-	dirVec =  glm::normalize( model.getMainMesh()->matrix * glm::vec4(1, 0, 0, 0));
-	leadingPoint = worldPos + dirVec * distToPoint;
+	dirVec =  glm::normalize(modelCmp->model.getMainMesh()->matrix * glm::vec4(1, 0, 0, 0));
+	leadingPoint = getPos() + dirVec * distToPoint;
 	leadingPointLastHex = leadingPoint;
 	lastLeadingPointHex = worldSpaceToHex(pos);
 	startingPos = pos;
 }
 
 void CMissile::update(float dT) {
+	CEntity::update(dT);
 	if (collided) {
 		spawnExplosion();
 		//world.destroySprite(*this);
@@ -59,11 +61,19 @@ void CMissile::setSpeed(float speed) {
 void CMissile::approachDestHex() {
 	glm::vec3 moveVec = dirVec * missileMoveSpeed * dT;
 	worldPos += moveVec;
+	transform->worldPos += moveVec;
 	leadingPoint += moveVec;
 
 	collisionCheck(moveVec);
 
 	buildWorldMatrix();
+}
+
+void CMissile::buildWorldMatrix() {
+	
+	modelCmp->translateAll(getPos());
+	modelCmp->rotate(transform->rotation);
+
 }
 
 /** Check for a collision along the line segment from the leading point's last known
@@ -85,7 +95,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 				if (entity->collider) {
 					auto [hit, intersection] = entity->collider->segCollisionCheck(startingPos, leadingPoint);
 					if (hit) {
-						collisionPt = entity->worldPos;
+						collisionPt = entity->getPos();
 						collidee = entity;
 						entity->receiveDamage(*owner, 5);
 						collided = true;
@@ -102,6 +112,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 			if (game.map->getHexArray()->getHexCube(hex.first).content == solidHex) {
 				collided = true;
 				worldPos = hex.second - (moveVec * distToPoint);
+				transform->worldPos = hex.second - (moveVec * distToPoint);
 				collisionPt = hex.second;
 				return true;
 			}

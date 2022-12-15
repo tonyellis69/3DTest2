@@ -20,15 +20,14 @@ struct TObstacle { glm::vec3 pos = glm::vec3(0); float radius; CRobot* bot = nul
 class CRobot : public CEntity {
 public:
 	CRobot();
-	void setModel(CModel& model);
+	//void setModel(CModel& model);
 	void update(float dT);
 	void setState(TRobotState newState, CEntity* entity = NULL);
-	void setRotation(float angle);
-	void rotate(float angle);
-	void setUpperRotation(float angle);
-	void rotateUpper(float angle);
-	void initDrawFn();
-	void draw();
+	//void setRotation(float angle);
+	//void rotate(float angle);
+	//void setUpperRotation(float angle);
+	//void rotateUpper(float angle);
+
 
 	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
 	void buildWorldMatrix();
@@ -52,7 +51,6 @@ public:
 	void headTo(glm::vec3& pos);
 
 	float upperBodyRotation = 0;
-	bool upperBodyLocked = true; ///<If true, rotate upper body with base.
 
 	float maxAvoidanceDist = 2.5f; ///<Arbitrary check-ahead distance.
 

@@ -19,6 +19,7 @@ void CGun::fire(float firingAngle) {
 }
 
 void CGun::update(float dT) {
+	CEntity::update(dT);
 	if (gunType->lastFired > 0)
 		gunType->lastFired -= dT;
 }
