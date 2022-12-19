@@ -25,7 +25,7 @@ void CDestinationGraphic::update(float dT) {
 
 
 
-	verts[1].v = entity->worldPos;
+	verts[1].v = entity->getPos();
 	verts[2].v =  *dest;
 	verts[0].v = 2.0f * verts[1].v - verts[2].v;
 	verts[3].v = 2.0f * verts[2].v - verts[1].v;

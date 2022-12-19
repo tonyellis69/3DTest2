@@ -62,7 +62,7 @@ void CPlayerObject::dropItem(int entityNo) {
 	inventory.erase(it);
 
 	float dropDist = 0.75f;
-	glm::vec3 dropPoint = worldPos + (getUpperBodyRotationVec() * dropDist);
+	glm::vec3 dropPoint = getPos() + (getUpperBodyRotationVec() * dropDist);
 	item->setPosition(dropPoint);
 	item->drop();
 	item->parent = nullptr;
@@ -106,7 +106,7 @@ void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
 		dead = true;
 		visible = false;
 		//game.onPlayerDeath();
-		
+		spawn::explosion("explosion", getPos(), 1.5f);
 
 		CGameEvent e;
 		lis::event(e);
@@ -326,7 +326,7 @@ void CPlayerObject::updateWalkCycle() {
 		walkCycle += dT * 2;
 	}
 	else {
-		float moveDist = glm::distance(worldPos, oldWorldPos);
+		float moveDist = glm::distance(getPos(), oldWorldPos);
 		walkCycle += moveDist;
 	}
 

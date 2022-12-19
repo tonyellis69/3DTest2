@@ -159,7 +159,7 @@ void CMap::save(std::ostream& out) {
 	file::writeObject(numEnts, out);
 	for (auto& ent : entities) {
 		file::writeObject(ent->entityType, out);
-		file::writeObject(ent->worldPos, out);
+		file::writeObject(ent->getPos(), out);
 	}
 }
 

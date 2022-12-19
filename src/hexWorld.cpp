@@ -288,7 +288,7 @@ void CHexWorld::onKeyDown(int key, long mod) {
 
 	if (key == 'F') {
 		hexRendr2.toggleFollowCam();
-		hexRendr2.followTarget(playerObj->worldPos);
+		hexRendr2.followTarget(playerObj->getPos());
 	}
 
 	if (key == 'R') {
@@ -382,7 +382,7 @@ void CHexWorld::calcMouseWorldPos() {
 	auto [mouseHex, mouseWS] = hexRendr2.pickHex(mousePos.x, mousePos.y);
 	lastMouseWorldPos = mouseWorldPos;
 	mouseWorldPos = mouseWS;
-	glm::vec3 mouseVec = mouseWorldPos - playerObj->worldPos;
+	glm::vec3 mouseVec = mouseWorldPos - playerObj->getPos();
 	playerObj->setMouseDir(glm::normalize(mouseVec));
 
 	if (mouseHex != hexCursor->hexPosition) {
@@ -708,7 +708,7 @@ void CHexWorld::updateCameraPosition() {
 	
 	if (cameraMode == camFollow) {
 		if (pFollowCamEnt) {
-			 hexRender.setCameraPos(pFollowCamEnt->worldPos.x, pFollowCamEnt->worldPos.y);
+			 hexRender.setCameraPos(pFollowCamEnt->getPos().x, pFollowCamEnt->getPos().y);
 		}
 
 
@@ -851,7 +851,7 @@ void CHexWorld::removeEntities() {
 }
 
 void CHexWorld::onPlayerDeath() {
-	fixedCam(playerObj->worldPos.x, playerObj->worldPos.y);
+	fixedCam(playerObj->getPos().x, playerObj->getPos().y);
 	map->removeEntity(playerObj);
 
 	for (auto& entity : map->entities) {

@@ -55,7 +55,7 @@ void CTransformCmp::rotateUpperBody(float angle) {
 void CTransformCmp::setPos(glm::vec3& pos) {
 	//parentEntity->modelCmp->translateAll(pos);
 	worldPos = pos;
-	parentEntity->worldPos = pos;
+	//parentEntity->worldPos = pos;
 }
 
 
@@ -63,7 +63,7 @@ void CTransformCmp::setPos(glm::vec3& pos) {
 void CTransformCmp::updatePos(glm::vec3& dPos) {
 	glm::vec3 oldWorldPos = worldPos;
 	worldPos += dPos;
-	parentEntity->worldPos = worldPos; //temp until worldPos banished
+	//parentEntity->worldPos = worldPos; //temp until worldPos banished
 
 	CHex newHexPosition = worldSpaceToHex(worldPos);
 	if (newHexPosition != parentEntity->hexPosition) {

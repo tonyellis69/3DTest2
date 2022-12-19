@@ -22,9 +22,7 @@ struct TSolidDraw {
 };
 
 struct TSplodeDraw {
-	//CBuf2* buf;
-	//glm::mat4* matrix;
-	glm::vec3* pos;
+	glm::vec3 pos;
 	float* lifeTime;
 	float* size;
 	float* timeOut;

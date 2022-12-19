@@ -12,11 +12,11 @@ void CNearWin::update(float dT)
 
 	float nearDist = 1.0f;
 	bool nearItemsChanged = false;
-	glm::vec3 playerPos = game.player->worldPos;
+	glm::vec3 playerPos = game.player->getPos();
 
 	//check if any items are no longer near
 	for (auto& item = nearItems.begin(); item != nearItems.end();) {
-		if (glm::distance(playerPos, (*item)->worldPos) > nearDist ) {
+		if (glm::distance(playerPos, (*item)->getPos()) > nearDist ) {
 			item = nearItems.erase(item);
 			nearItemsChanged = true;
 		}
@@ -29,7 +29,7 @@ void CNearWin::update(float dT)
 	//clear and rebuild list every time.
 	for (auto& entity : game.map->entities) {
 		if (entity->isItem && ((CItem*)entity.get())->parent == nullptr
-			&& glm::distance(playerPos, entity->worldPos) < nearDist) {
+			&& glm::distance(playerPos, entity->getPos()) < nearDist) {
 			if (std::find(nearItems.begin(), nearItems.end(), (CItem*)entity.get()) == nearItems.end()) {
 				nearItems.push_back((CItem*)entity.get());
 				nearItemsChanged = true;

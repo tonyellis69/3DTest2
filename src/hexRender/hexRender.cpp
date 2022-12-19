@@ -370,7 +370,7 @@ void CHexRender::drawExplosionList() {
 	splodeShader->setUniform(hExpMVP, pCamera->clipMatrix);
 
 	for (auto& draw : explosionDrawList) {
-		splodeShader->setUniform(hPos, *draw.pos);
+		splodeShader->setUniform(hPos, draw.pos);
 		splodeShader->setUniform(hLifeTime, *draw.lifeTime);
 		splodeShader->setUniform(hSize, *draw.size);
 		splodeShader->setUniform(hTimeOut, *draw.timeOut);

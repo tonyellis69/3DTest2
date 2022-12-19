@@ -18,7 +18,7 @@ CMissile::CMissile() {
 void CMissile::setPosition(glm::vec3& pos, float rotation) {
 	//CSprite::setPosition(pos, rotation);
 
-	worldPos = pos;
+	//worldPos = pos;
 	transform->setPos(pos);
 	transform->setRotation(rotation);
 	buildWorldMatrix();
@@ -60,7 +60,7 @@ void CMissile::setSpeed(float speed) {
 /** Move realtime in the current  direction. */
 void CMissile::approachDestHex() {
 	glm::vec3 moveVec = dirVec * missileMoveSpeed * dT;
-	worldPos += moveVec;
+	//worldPos += moveVec;
 	transform->worldPos += moveVec;
 	leadingPoint += moveVec;
 
@@ -96,7 +96,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 					auto [hit, intersection] = entity->collider->segCollisionCheck(startingPos, leadingPoint);
 					if (hit) {
 						collisionPt = entity->getPos();
-						collidee = entity;
+						collidee = std::make_shared<CEntity>(*entity);
 						entity->receiveDamage(*owner, 5);
 						collided = true;
 						return true;
@@ -111,7 +111,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 		for (auto& hex : intersectedHexes) {
 			if (game.map->getHexArray()->getHexCube(hex.first).content == solidHex) {
 				collided = true;
-				worldPos = hex.second - (moveVec * distToPoint);
+				//transform->worldPos = hex.second - (moveVec * distToPoint);
 				transform->worldPos = hex.second - (moveVec * distToPoint);
 				collisionPt = hex.second;
 				return true;
@@ -134,7 +134,8 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 void CMissile::spawnExplosion() {
 	CExplosion* splode = (CExplosion *) spawn::explosion("explosion", collisionPt, 1).get();
 	if (collidee)
-		splode->setCollidee(collidee);
+		splode->setCollidee(collidee.get());
+
 }
 
 

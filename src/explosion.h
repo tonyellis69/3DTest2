@@ -15,7 +15,8 @@ public:
 	float timeOut = 3.0f;
 	float size;
 	int particleCount;
-	CEntity* collidee = nullptr; ///<Entity hit, if any.
+	//CEntity* collidee = nullptr; ///<Entity hit, if any.
+	std::shared_ptr<CEntity> collidee;
 	glm::vec3 relativePos; ///<From collidee.
 
 	const float maxSize = 10;

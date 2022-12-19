@@ -39,7 +39,8 @@ private:
 	bool collided = false;
 
 	CEntity* owner;
-	CEntity* collidee = nullptr; ///<Entity collided with, if any.
+	//CEntity* collidee = nullptr; ///<Entity collided with, if any.
+	std::shared_ptr<CEntity> collidee;
 
 	glm::vec3 collisionPt;
 

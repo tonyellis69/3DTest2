@@ -72,7 +72,7 @@ void CHexPhysics::broadphase() {
 
 		//scenery collisions
 		glm::vec3 hexPos = cubeToWorldSpace(entity->hexPosition);
-		glm::vec3 relativePos = entity->worldPos - hexPos;
+		glm::vec3 relativePos = entity->getPos() - hexPos;
 		for (int dir = 0; dir < 6 ; dir++) {
 			CHex neighbour = getNeighbour(entity->hexPosition, THexDir(dir));
 			if (hexArray->getHexCube(neighbour).content == solidHex) {
@@ -183,7 +183,7 @@ std::tuple<float, glm::vec3> CHexPhysics::findSceneryCollision(CEntity* body, gl
 	//float radius = body->physics.boundingRadius;
 	float radius = body->collider->boundingRadius;
 
-	glm::vec3 bodyOrigin = body->worldPos;
+	glm::vec3 bodyOrigin = body->getPos();
 
 	glm::vec3 PA = segA - bodyOrigin;
 	glm::vec3 segVec = (segB - segA); 

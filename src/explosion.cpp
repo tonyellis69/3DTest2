@@ -22,8 +22,9 @@ void CExplosion::update(float dT) {
 	lifeTime += dT;
 
 	if (collidee) {
-		worldPos = collidee->worldPos + relativePos;
+		transform->setPos(collidee->getPos() + relativePos);
 	}
+	//error here: collidee out of scope
 
 	if (lifeTime > timeOut) {
 		game.deleteEntity(*this);
@@ -37,8 +38,9 @@ void CExplosion::update(float dT) {
 
 /** If we hit a moving target, this allows us to move with it. */
 void CExplosion::setCollidee(CEntity* collidee) {
-	this->collidee = collidee;
-	relativePos = worldPos - collidee->worldPos;
+	//this->collidee = collidee;
+	this->collidee = std::make_shared<CEntity>(*collidee);
+	relativePos = getPos() - collidee->getPos();
 }
 
 

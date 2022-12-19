@@ -218,7 +218,7 @@ void CMapEdit::shapeWheel(float delta) {
 void CMapEdit::addEntity(glm::vec3& mousePos) {
 	for (auto it = pMap->entities.begin(); it != pMap->entities.end();) {
 		TEntity entity = *it;
-		if (glm::distance(entity->worldPos, mousePos) < 0.5f) {
+		if (glm::distance(entity->getPos(), mousePos) < 0.5f) {
 			pMap->removeEntity(*it);
 			if (game.player == (*it).get())
 				game.player = nullptr;
@@ -326,7 +326,7 @@ void CMapEdit::onMouseMove(glm::vec3& mouseWPos) {
 	entIdStr = "";
 	for (auto& it = pMap->entities.begin(); it != pMap->entities.end(); it++) {
 		TEntity entity = *it;
-		if (glm::distance(entity->worldPos, mouseWPos) < 0.5f) {
+		if (glm::distance(entity->getPos(), mouseWPos) < 0.5f) {
 			entIdStr = std::to_string(entity->id);
 			break;
 		}

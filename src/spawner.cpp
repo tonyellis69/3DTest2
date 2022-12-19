@@ -115,7 +115,8 @@ TEntity CSpawn::explosion(const std::string& name, glm::vec3& pos, float scale) 
 	explode->modelCmp->drawFn = std::make_shared<CSplodeDraw>(explode.get());
 	explode->modelCmp->setPalette(pPalettes->at("explosion")); 
 	explode->modelCmp->initDrawFn();
-	explode->worldPos = pos;
+	//explode->worldPos = pos;
+	explode->transform->setPos(pos);
 
 	pMap->addEntity(explode);
 	return explode;

@@ -53,7 +53,7 @@ void CEntity::setPosition(glm::vec3& worldPos) {
 
 	transform->setPos(worldPos);
 
-	this->worldPos = worldPos;
+	//this->worldPos = worldPos;
 	//TO DO: phase out entity worldPos!
 
 	//buildWorldMatrix();

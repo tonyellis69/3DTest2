@@ -118,27 +118,7 @@ std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& s
 
 void CRobot::buildWorldMatrix() {
 	return;
-	modelCmp->translateAll(transform->worldPos);
-	modelCmp->rotateUpper(upperBodyRotation);
-	modelCmp->rotateLower(rotation);
-	modelCmp->retranslateLower(glm::vec3(-treadTranslate, 0, 0));
-	return;
 
-
-
-	glm::mat4 worldM = glm::translate(glm::mat4(1), worldPos);
-
-	upperBody->matrix = worldM;
-	upperBody->matrix = glm::rotate(worldM, upperBodyRotation, glm::vec3(0, 0, -1));
-
-	upperBodyMask->matrix = upperBody->matrix;
-
-	worldM = glm::rotate(worldM, rotation, glm::vec3(0, 0, -1));
-
-	base->matrix = worldM;
-
-	treads->matrix = glm::translate(worldM, glm::vec3(-treadTranslate, 0, 0));
-	robaseMask->matrix = base->matrix;
 }
 
 void CRobot::startTracking(CEntity* target) {
@@ -168,12 +148,12 @@ void CRobot::receiveDamage(CEntity& attacker, int damage) {
 	hp--;
 	if (hp == 0) {
 		game.killEntity(*this);
-		spawn::explosion("explosion", transform->worldPos, 1.5f);
+		spawn::explosion("explosion", getPos(), 1.5f);
 		toRemove = true;
 	}
 	else {
 		if (canSeeEnemy() == false) {
-			currentState = std::make_shared<CTurnToSee>(this, glm::normalize(attacker.worldPos - transform->worldPos));
+			currentState = std::make_shared<CTurnToSee>(this, glm::normalize(attacker.getPos() - getPos()));
 		}
 	}
 }
@@ -203,7 +183,7 @@ float CRobot::speedFor(glm::vec3& dest) {
 
 /** Return true if we can draw a line to the target without hitting anything. */
 bool CRobot::clearLineTo(CEntity* target) {
-	return clearLineTo(target->worldPos);
+	return clearLineTo(target->getPos());
 }
 
 bool CRobot::clearLineTo(const glm::vec3& p) {
@@ -219,7 +199,7 @@ bool CRobot::clearLineTo(const glm::vec3& p) {
 
 
 bool CRobot::inFov(CEntity* target) {
-	glm::vec3 targetDir = target->worldPos - transform->worldPos;
+	glm::vec3 targetDir = target->getPos() - getPos();
 	targetDir = glm::normalize(targetDir);
 
 	//find upper body rotation as a vector
@@ -227,8 +207,8 @@ bool CRobot::inFov(CEntity* target) {
 	if ((glm::dot(rotVec, targetDir)) < cos(rad50))
 		return false;
 
-	if ( glm::distance(transform->worldPos, target->worldPos) <= 12 && 
-		clearLineTo(target->worldPos) )
+	if ( glm::distance(transform->worldPos, target->getPos()) <= 12 && 
+		clearLineTo(target->getPos()) )
 			return true;
 	
 	return false;
@@ -280,7 +260,7 @@ void CRobot::abortDestination() {
 }
 
 void CRobot::fireMissile(CEntity* target) {
-	glm::vec3 targetVec = target->worldPos - getPos();
+	glm::vec3 targetVec = target->getPos() - getPos();
 	float targetAngle = glm::orientedAngle(glm::normalize(targetVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 
 	auto missile = (CMissile*) spawn::missile("missile",getPos(), targetAngle).get();
