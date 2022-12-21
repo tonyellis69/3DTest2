@@ -362,12 +362,12 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 	lastMousePos = mousePos;
 	mousePos = { x,y };
 
-	CHex lastMouseHex = hexCursor->hexPosition;
+	CHex lastMouseHex = hexCursor->transform->hexPosition;
 
 	calcMouseWorldPos();
 	
 	if (key == GLFW_MOUSE_BUTTON_RIGHT && 
-		hexCursor->hexPosition != lastMouseHex &&  editMode)
+		hexCursor->transform->hexPosition != lastMouseHex &&  editMode)
 		mapEdit.onRightDrag();
 
 	if (key == GLFW_MOUSE_BUTTON_LEFT && editMode) {
@@ -385,9 +385,9 @@ void CHexWorld::calcMouseWorldPos() {
 	glm::vec3 mouseVec = mouseWorldPos - playerObj->getPos();
 	playerObj->setMouseDir(glm::normalize(mouseVec));
 
-	if (mouseHex != hexCursor->hexPosition) {
+	if (mouseHex != hexCursor->transform->hexPosition) {
 		CMouseExitHex msg;
-		msg.leavingHex = hexCursor->hexPosition;
+		msg.leavingHex = hexCursor->transform->hexPosition;
 		onNewMouseHex(mouseHex);
 	}
 }
@@ -615,13 +615,13 @@ void CHexWorld::createCursorObject() {
 	hexCursor = new CEntity();
 
 	//hexCursor->setModel(spawn::models["cursor"]);
-	hexCursor->setPosition(CHex(0, 0, 0));
+	hexCursor->setPosition(glm::vec3(0, 0, 0));
 }
 
 
 /** Respond to mouse cursor moving to a new hex. */
 void CHexWorld::onNewMouseHex(CHex& mouseHex) {
-	hexCursor->setPosition(mouseHex);
+	hexCursor->setPosition(cubeToWorldSpace(mouseHex));
 
 
 	/*if (!lineOfSight)
@@ -852,7 +852,8 @@ void CHexWorld::removeEntities() {
 
 void CHexWorld::onPlayerDeath() {
 	fixedCam(playerObj->getPos().x, playerObj->getPos().y);
-	map->removeEntity(playerObj);
+	//map->removeEntity(playerObj);
+	playerObj->setPosition(glm::vec3(0));
 
 	for (auto& entity : map->entities) {
 		if (entity->isRobot) {

@@ -71,10 +71,10 @@ void CHexPhysics::broadphase() {
 		std::vector<CHex> openHexes;
 
 		//scenery collisions
-		glm::vec3 hexPos = cubeToWorldSpace(entity->hexPosition);
+		glm::vec3 hexPos = cubeToWorldSpace(entity->transform->hexPosition);
 		glm::vec3 relativePos = entity->getPos() - hexPos;
 		for (int dir = 0; dir < 6 ; dir++) {
-			CHex neighbour = getNeighbour(entity->hexPosition, THexDir(dir));
+			CHex neighbour = getNeighbour(entity->transform->hexPosition, THexDir(dir));
 			if (hexArray->getHexCube(neighbour).content == solidHex) {
 				CBodyPairKey key(entity, &tmpMapObj, dir);
 				auto [penetration,normal] = findSceneryCollision(entity,hexPos,dir);
@@ -95,8 +95,8 @@ void CHexPhysics::broadphase() {
 		//entity-entity collisions
 		for (unsigned int e2 = e1 + 1; e2 < entities.size(); e2++) {
 			auto entity2 = entities[e2];
-			if (entity->hexPosition == entity2->hexPosition ||
-				std::count(openHexes.begin(), openHexes.end(), entity2->hexPosition)) {
+			if (entity->transform->hexPosition == entity2->transform->hexPosition ||
+				std::count(openHexes.begin(), openHexes.end(), entity2->transform->hexPosition)) {
 				CBodyPairKey key(entity, entity2);
 				auto [penetration2, normal2] = entity->collider->entCollisionCheck(entity2);
 				if (penetration2 > 0) {

@@ -271,9 +271,9 @@ void CRobot::fireMissile(CEntity* target) {
 }
 
 
-void CRobot::onMovedHex()
-{
-}
+//void CRobot::onMovedHex()
+//{
+//}
 
 /** Continue turning toward dir, if not facing it. */
 bool CRobot::turnToward(glm::vec3& dir) {

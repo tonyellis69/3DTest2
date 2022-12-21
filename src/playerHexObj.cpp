@@ -116,33 +116,33 @@ void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
 
 
 
-/** Called when player has arrived at a new hex.*/
-void CPlayerObject::onMovedHex() {
-	//CActorMovedHex msg(hexPosition, this);
-	//send(msg);
-	//eventually calls hexWorld alertEntitiesInPlayerFov, which notifies entities
-	//if they're now in view of the player. Find a more direct way to do this
-
-	//updateViewField();
-	//turned off 30/8/22 - needed?
-
-	//gWin::clearText("con");
-	//tmpFloorItems.clear();
-	itemSelected = -1;
-	inventoryOn = false;
-	
-
-
-}
+///** Called when player has arrived at a new hex.*/
+//void CPlayerObject::onMovedHex() {
+//	//CActorMovedHex msg(hexPosition, this);
+//	//send(msg);
+//	//eventually calls hexWorld alertEntitiesInPlayerFov, which notifies entities
+//	//if they're now in view of the player. Find a more direct way to do this
+//
+//	//updateViewField();
+//	//turned off 30/8/22 - needed?
+//
+//	//gWin::clearText("con");
+//	//tmpFloorItems.clear();
+//	itemSelected = -1;
+//	inventoryOn = false;
+//	
+//
+//
+//}
 
 
 void CPlayerObject::updateViewField() {
 	//update view field
-	viewField.update(hexPosition);
+	viewField.update(transform->hexPosition);
 	//CCalcVisionField calcFieldMsg(hexPosition, viewField.ringHexes, true);
 	//send(calcFieldMsg);
 
-	THexList visibleHexes = game.map->findVisibleHexes(hexPosition, viewField.ringHexes, true);
+	THexList visibleHexes = game.map->findVisibleHexes(transform->hexPosition, viewField.ringHexes, true);
 
 	std::vector<CHex> unvisibledHexes;
 	for (auto hex : viewField.visibleHexes) {
@@ -236,10 +236,10 @@ void CPlayerObject::setTargetAngle(float angle) {
 
 }
 
-void CPlayerObject::setRotation(glm::vec3& vec) {
-	rotation = glm::orientedAngle(vec, glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
-
-}
+//void CPlayerObject::setRotation(glm::vec3& vec) {
+//	rotation = glm::orientedAngle(vec, glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+//
+//}
 
 glm::vec3 CPlayerObject::getRotation() {
 	return transform->getUpperBodyRotationVec();

@@ -7,6 +7,9 @@
 
 void CNearWin::update(float dT)
 {
+	return;
+	//scraping so scrap
+
 	if (game.player == nullptr)
 		return;
 

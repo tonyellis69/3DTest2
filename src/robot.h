@@ -76,7 +76,7 @@ public:
 
 private:
 	bool inFov(CEntity* target);
-	void onMovedHex();
+	//void onMovedHex();
 
 	void trackTarget();
 

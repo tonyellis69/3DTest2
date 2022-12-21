@@ -19,7 +19,7 @@
 //! temporary fix - will need doing better
 CEntity* CMap::getEntityAt2(const CHex& hex) {
 	for (auto& entity : entities) {
-		if (entity->hexPosition == hex)
+		if (entity->transform->hexPosition == hex)
 			return entity.get();
 	}
 
@@ -31,7 +31,7 @@ CEntity* CMap::getEntityAt2(const CHex& hex) {
 CEntities CMap::getEntitiesAt(const CHex& hex) {
 	CEntities hexEntities;
 	for (auto& entity : entities) {
-		if (entity->hexPosition == hex)
+		if (entity->transform->hexPosition == hex)
 			hexEntities.push_back(entity.get());
 	}
 
@@ -85,11 +85,11 @@ void CMap::updateVisibility(THexList& visibleHexes, THexList& unvisibledHexes) {
 }
 
 
-/** Register this entity as being on the map at the given hex.*/
-void CMap::addEntity(TEntity entity, CHex& hex) {
-	entity->setPosition(hex);
-	entities.push_back(entity);
-}
+///** Register this entity as being on the map at the given hex.*/
+//void CMap::addEntity(TEntity entity, CHex& hex) {
+//	entity->setPosition(hex);
+//	entities.push_back(entity);
+//}
 
 /** Basic add-to-world without specifying a location. For items in
 	posession of another entity, not yet in play, etc.*/
@@ -97,22 +97,17 @@ void CMap::addEntity(TEntity entity) {
 	entities.push_back(entity);
 }
 
-void CMap::addExistingEntity(CEntity* entity, CHex& hex)
-{
-	entity->setPosition(hex);
+//void CMap::addExistingEntity(CEntity* entity, CHex& hex)
+//{
+//	entity->setPosition(hex);
+//
+//}
 
-}
 
-
-void CMap::removeEntity(CEntity* entity) {
-	//for (auto& it = entityMap.begin(); it != entityMap.end(); it++) {
-	//	if (it->second == entity) {
-	//		it = entityMap.erase(it);
-	//		break;
-	//	}
-	//}
-	entity->setPosition(CHex(-1));
-}
+//void CMap::removeEntity(CEntity* entity) {
+//
+//	//entity->setPosition(CHex(-1));
+//}
 
 void CMap::removeEntity(TEntity entity) {
 	entity->deleteMe = true;

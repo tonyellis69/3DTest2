@@ -7,6 +7,9 @@
 
 
 void CInventoryWin::refresh() {
+	return;
+	//scrapping so scrap
+
 	if (game.player == nullptr)
 		return;
 	//TO DO: messy! Shouldn't have to keep making that check here

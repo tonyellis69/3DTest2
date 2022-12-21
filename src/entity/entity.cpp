@@ -38,25 +38,19 @@ void CEntity::update(float dT) {
 }
 
 
-
-/** Set position using hex cube coordinates. */
-void CEntity::setPosition(CHex& hex) {
-	setPosition(cubeToWorldSpace(hex));
-}
+//
+///** Set position using hex cube coordinates. */
+//void CEntity::setPosition(CHex& hex) {
+//	setPosition(cubeToWorldSpace(hex));
+//}
 //TO DO: phase out the old hex-based usage!
 
 void CEntity::setPosition(glm::vec3& worldPos) {
-	hexPosition = worldSpaceToHex(worldPos);
-	destination = hexPosition;
-
-	glm::i32vec2 axial = hexPosition.getAxial();
+	//hexPosition = worldSpaceToHex(worldPos);
+//	destination = hexPosition;
 
 	transform->setPos(worldPos);
 
-	//this->worldPos = worldPos;
-	//TO DO: phase out entity worldPos!
-
-	//buildWorldMatrix();
 }
 
 
@@ -66,12 +60,12 @@ glm::vec3 CEntity::getPos()
 	return transform->worldPos;
 }
 
-/** Set the rotation and facing direction of this object. */
-void CEntity::setHexDirection(THexDir direction) {
-	facing = direction;
-	transform->setRotation(dirToAngle(direction));
-	//buildWorldMatrix();
-}
+///** Set the rotation and facing direction of this object. */
+//void CEntity::setHexDirection(THexDir direction) {
+//	facing = direction;
+//	transform->setRotation(dirToAngle(direction));
+//	//buildWorldMatrix();
+//}
 
 
 /** Construct this object's world matrix from its known position and rotation.*/
@@ -117,11 +111,11 @@ std::tuple<float, glm::vec3> CEntity::collisionCheck(CEntity* e2) {
 
 
 
-
-/** True if entity on screen. */
-bool CEntity::isOnScreen() {
-	return hexRendr2.isOnScreen(getPos());
-}
+//
+///** True if entity on screen. */
+//bool CEntity::isOnScreen() {
+//	return hexRendr2.isOnScreen(getPos());
+//}
 
 
 std::string CEntity::getShortDesc() {

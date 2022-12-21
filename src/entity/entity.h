@@ -32,46 +32,25 @@ public:
 	CEntity();
 	virtual ~CEntity() {}
 	virtual void update(float dT);
-	void setPosition(CHex& hex);
 	void setPosition(glm::vec3& worldPos);
-	//virtual void setBoundingRadius();
 	glm::vec3 getPos();
-	void setHexDirection(THexDir direction);
-	THexDir getDirection() {
-		return facing;
-	}
-	//virtual void buildWorldMatrix();
-
-	//virtual void updateMatrices(TModelData& model);
-
 	virtual void receiveDamage(CEntity& attacker, int damage) {};
-	virtual void onMovedHex() {};
 	virtual std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB) {
 		return std::tuple<bool, glm::vec3>();
 	}
 	std::tuple<float, glm::vec3> collisionCheck(CEntity* e2);
 
 
-	bool isOnScreen();
+//	bool isOnScreen();
 	
 	virtual std::string getShortDesc();
-
-
-	//virtual void setPalette(std::vector<glm::vec4>& palette);
-
 	
 	
 	float dT;
 
-	//CModel model;
 
-	CHex hexPosition = CHex(-1); ///<Position on a hex grid in cube coordinates.
-	THexDir facing = hexEast; ///<Direction entity is facing.
-	//glm::vec3 worldPos = { 0,0,0 }; ///<Position in world space.
-	//glm::vec3 oldWorldPos = { 0,0,0 };
+	//CHex hexPosition = CHex(-1); ///<Position on a hex grid in cube coordinates.
 
-	THexList travelPath; ///<Route for movement.
-	CHex destination; ///<The hex we're travelling to.
 
 	//components
 	CPhys physics;
@@ -91,10 +70,6 @@ public:
 	std::string name;
 	unsigned int id; 
 
-	//std::shared_ptr<CDrawFunc> drawFn;
-
-	//std::vector<glm::vec4>* pPalette;
-
 	std::string diagnostic;
 
 	bool toRemove = false;
@@ -104,8 +79,6 @@ public:
 	std::shared_ptr<ColliderCmp> collider;
 	std::shared_ptr<CModelCmp> modelCmp;
 
-	float rotation = 0.0f; ///<Angle of object's z-rotation in world space.
-	glm::vec3 scale = glm::vec3(1);
 protected:
 
 

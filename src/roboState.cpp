@@ -27,7 +27,7 @@ CRoboWander::CRoboWander(CRobot* bot) : CRoboState(bot) {
 	int dist = 5;
 	do {
 		int giveUp = 0;
-		ring = findRing(dist, bot->hexPosition);
+		ring = findRing(dist, bot->transform->hexPosition);
 		do {
 			randHex = ring[rnd::dice(ring.size()) - 1];
 			//can we los randHex?

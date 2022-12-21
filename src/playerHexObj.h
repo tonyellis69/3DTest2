@@ -31,7 +31,7 @@ public:
 
 	void receiveDamage(CEntity& attacker, int damage);
 
-	void onMovedHex();
+	//void onMovedHex();
 
 	void updateViewField();
 
@@ -41,7 +41,7 @@ public:
 	void update(float dT);
 
 	void setTargetAngle(float angle);
-	void setRotation(glm::vec3& vec);
+	//void setRotation(glm::vec3& vec);
 	glm::vec3 getRotation();
 	void setUpperBodyRotation(float n);
 	void setUpperBodyRotation(glm::vec3& vec);

@@ -3,6 +3,8 @@
 
 #include <glm/glm.hpp>
 
+#include "hex/hex.h"
+
 #include "component.h"
 
 class CTransformCmp : public CEntityCmp {
@@ -34,6 +36,8 @@ public:
 	glm::vec3 worldPos;
 	glm::vec3 scale;
 	glm::vec3 walk;
+
+	CHex hexPosition = CHex(-1);
 
 	bool upperBodyLocked = true; ///<If true, rotate upper body with base.
 
