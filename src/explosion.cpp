@@ -31,10 +31,7 @@ void CExplosion::update(float dT) {
 	}
 }
 
-//void CExplosion::draw() {
-//	TExplode exp = { worldPos,lifeTime, size, timeOut, particleCount, seed };
-//	hexRendr2.drawExplosion(exp);
-//}
+
 
 /** If we hit a moving target, this allows us to move with it. */
 void CExplosion::setCollidee(CEntity* collidee) {

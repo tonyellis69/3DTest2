@@ -22,7 +22,7 @@ public:
 	void update(float dT);
 	void removeDeletedEntities();
 	void removeDeadEntities();
-	void removeEntities();
+	//void removeEntities();
 
 private:
 	void broadphase();

@@ -458,7 +458,7 @@ void CHexWorld::draw() {
 
 	}
 
-	if (pBotZero && pBotZero->toRemove == false)
+	if (pBotZero && pBotZero->deleteMe == false)
 		imRendr::drawText(600, 80, pBotZero->diagnostic);
 
 }
@@ -531,7 +531,7 @@ void CHexWorld::update(float dt) {
 	realtimeKeyChecks();
 	realtimeMouseButtons();
 
-	removeEntities();
+	//removeEntities();
 
 }
 
@@ -826,29 +826,29 @@ void CHexWorld::drawReticule() {
 	hexRender.drawModelAt(reticule, mouseWorldPos);	
 }
 
-/** Remove marked entities from the game. */
-void CHexWorld::removeEntities() {
-	physics.removeDeadEntities();
-
-	for (auto& gra = hexRender.graphics.begin(); gra != hexRender.graphics.end();) {
-		if (gra->get()->entity && gra->get()->entity.get()->toRemove == true)
-			gra = hexRender.graphics.erase(gra);
-		else
-			gra++;
-	}
-
-	for (auto& ent = map->entities.begin(); ent != map->entities.end();) {
-		if (ent->get()->toRemove == true) {
-			if (pBotZero && pBotZero->id == ent->get()->id) {
-				pBotZero = nullptr;
-			}
-			ent = map->entities.erase(ent);
-		}
-		else
-			ent++;
-	}
-
-}
+///** Remove marked entities from the game. */
+//void CHexWorld::removeEntities() {
+//	physics.removeDeadEntities();
+//
+//	for (auto& gra = hexRender.graphics.begin(); gra != hexRender.graphics.end();) {
+//		if (gra->get()->entity && gra->get()->entity.get()->toRemove == true)
+//			gra = hexRender.graphics.erase(gra);
+//		else
+//			gra++;
+//	}
+//
+//	for (auto& ent = map->entities.begin(); ent != map->entities.end();) {
+//		if (ent->get()->toRemove == true) {
+//			if (pBotZero && pBotZero->id == ent->get()->id) {
+//				pBotZero = nullptr;
+//			}
+//			ent = map->entities.erase(ent);
+//		}
+//		else
+//			ent++;
+//	}
+//
+//}
 
 void CHexWorld::onPlayerDeath() {
 	fixedCam(playerObj->getPos().x, playerObj->getPos().y);

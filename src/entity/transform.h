@@ -34,7 +34,7 @@ public:
 	float rotation;
 	float upperBodyRotation;
 	glm::vec3 worldPos;
-	glm::vec3 scale;
+	glm::vec3 scale = glm::vec3(1);
 	glm::vec3 walk;
 
 	CHex hexPosition = CHex(-1);

@@ -104,7 +104,7 @@ private:
 	void realtimeKeyChecks();
 	void realtimeMouseButtons();
 	void drawReticule();
-	void removeEntities();
+	//void removeEntities();
 	void onPlayerDeath();
 
 	CMap* map;

@@ -11,5 +11,6 @@ public:
 	std::tuple<bool, glm::vec3> segCollisionCheck(glm::vec3& segA, glm::vec3& segB);
 	std::tuple<bool, glm::vec3> entCollisionCheck(CEntity* ent2);
 
+
 	float boundingRadius;
 };

@@ -304,14 +304,14 @@ void CPlayerObject::setArmour(CEntity* armour) {
 	this->armour = (CArmour*) armour;
 	this->armour->setParent(this);
 }
-
-/** Check if the given segment intersects us. */
-std::tuple<bool, glm::vec3> CPlayerObject::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
-	if (modelCmp->model.BBcollision(segA, segB))
-		return { true, glm::vec3() };
-
-	return { false, glm::vec3() };
-}
+//
+///** Check if the given segment intersects us. */
+//std::tuple<bool, glm::vec3> CPlayerObject::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
+//	if (modelCmp->model.BBcollision(segA, segB))
+//		return { true, glm::vec3() };
+//
+//	return { false, glm::vec3() };
+//}
 
 void CPlayerObject::startTurnCycle() {
 	turningCycle = 0.125f;

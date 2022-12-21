@@ -18,11 +18,11 @@ void CGameState::addSprite(std::shared_ptr<CEntity> sprite) {
 }
 
 
-void CGameState::destroySprite(CEntity& deadSprite) {
-	//spriteDeathlist.push_back(&deadSprite);
-	//deadSprite.killMe = true;
-	deadSprite.deleteMe = true;
-}
+//void CGameState::destroySprite(CEntity& deadSprite) {
+//	//spriteDeathlist.push_back(&deadSprite);
+//	//deadSprite.killMe = true;
+//	deadSprite.deleteMe = true;
+//}
 
 void CGameState::deleteEntity(CEntity& entity) {
 	map->deleteEntity(entity);

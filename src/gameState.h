@@ -17,7 +17,7 @@ public:
 	void setMap(CMap* map);
 	bool isBlocked(CHex& pos, CHex& dest);
 	void addSprite(std::shared_ptr<CEntity> sprite);
-	void destroySprite(CEntity& sprite);
+	//void destroySprite(CEntity& sprite);
 	void deleteEntity(CEntity& entity);
 	void killEntity(CEntity& entity);
 	void update(float dT);

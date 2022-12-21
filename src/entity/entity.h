@@ -35,10 +35,8 @@ public:
 	void setPosition(glm::vec3& worldPos);
 	glm::vec3 getPos();
 	virtual void receiveDamage(CEntity& attacker, int damage) {};
-	virtual std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB) {
-		return std::tuple<bool, glm::vec3>();
-	}
-	std::tuple<float, glm::vec3> collisionCheck(CEntity* e2);
+
+	//std::tuple<float, glm::vec3> collisionCheck(CEntity* e2);
 
 
 //	bool isOnScreen();
@@ -72,14 +70,13 @@ public:
 
 	std::string diagnostic;
 
-	bool toRemove = false;
+	//bool toRemove = false;
 
 	std::shared_ptr<CTransformCmp> transform;
 	std::shared_ptr<CEntityCmp> item;
 	std::shared_ptr<ColliderCmp> collider;
 	std::shared_ptr<CModelCmp> modelCmp;
 
-protected:
 
 
 private:

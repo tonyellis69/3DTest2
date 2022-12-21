@@ -92,22 +92,22 @@ glm::vec3 CEntity::getPos()
 //		updateMatrices(childModel);
 //}
 
-std::tuple<float, glm::vec3> CEntity::collisionCheck(CEntity* e2) {
-	//get bounding-sphere radii
-	float radius1 = modelCmp->model.getRadius();
-	float radius2 = e2->modelCmp->model.getRadius();
-	
-	//check for overlap
-	float entDist = glm::distance(getPos(), e2->getPos());
-	if (entDist > radius1 + radius2)
-		return { 0, {0,0,0} };
-	else {
-		float collisionDist = entDist - radius2;
-		glm::vec3 collisionNormal = glm::normalize(e2->getPos() - getPos());
-		return { collisionDist, collisionNormal};
-	}
-
-}
+//std::tuple<float, glm::vec3> CEntity::collisionCheck(CEntity* e2) {
+//	//get bounding-sphere radii
+//	float radius1 = modelCmp->model.getRadius();
+//	float radius2 = e2->modelCmp->model.getRadius();
+//	
+//	//check for overlap
+//	float entDist = glm::distance(getPos(), e2->getPos());
+//	if (entDist > radius1 + radius2)
+//		return { 0, {0,0,0} };
+//	else {
+//		float collisionDist = entDist - radius2;
+//		glm::vec3 collisionNormal = glm::normalize(e2->getPos() - getPos());
+//		return { collisionDist, collisionNormal};
+//	}
+//
+//}
 
 
 

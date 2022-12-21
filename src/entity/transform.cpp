@@ -70,7 +70,6 @@ void CTransformCmp::updatePos(glm::vec3& dPos) {
 		hexPosition = newHexPosition;
 		//parentEntity->transform->hexPosition = newHexPosition;
 	}
-	//TODO!!! hexposition should become a transform property (has to go somewhere)
 }
 
 void CTransformCmp::setScale(glm::vec3& scaleVec) {

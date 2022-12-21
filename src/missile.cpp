@@ -21,12 +21,14 @@ void CMissile::setPosition(glm::vec3& pos, float rotation) {
 	//worldPos = pos;
 	transform->setPos(pos);
 	transform->setRotation(rotation);
-	buildWorldMatrix();
 
+	//modelCmp->translateAll(getPos());
+	//modelCmp->rotate(transform->rotation);
 
+	//dirVec =  glm::normalize(modelCmp->model.getMainMesh()->matrix * glm::vec4(1, 0, 0, 0));
+	dirVec =  { cos(rotation), -sin(rotation),0 }; 
 
-	dirVec =  glm::normalize(modelCmp->model.getMainMesh()->matrix * glm::vec4(1, 0, 0, 0));
-	leadingPoint = getPos() + dirVec * distToPoint;
+	leadingPoint = pos + dirVec * distToPoint;
 	leadingPointLastHex = leadingPoint;
 	lastLeadingPointHex = worldSpaceToHex(pos);
 	startingPos = pos;
@@ -60,21 +62,24 @@ void CMissile::setSpeed(float speed) {
 /** Move realtime in the current  direction. */
 void CMissile::approachDestHex() {
 	glm::vec3 moveVec = dirVec * missileMoveSpeed * dT;
-	//worldPos += moveVec;
-	transform->worldPos += moveVec;
+
+	glm::vec3 currentWPos = transform->worldPos;
+	transform->setPos(getPos() + moveVec);
+
+
 	leadingPoint += moveVec;
 
 	collisionCheck(moveVec);
 
-	buildWorldMatrix();
+	//buildWorldMatrix();
 }
-
-void CMissile::buildWorldMatrix() {
-	
-	modelCmp->translateAll(getPos());
-	modelCmp->rotate(transform->rotation);
-
-}
+//
+//void CMissile::buildWorldMatrix() {
+//	return;
+//	modelCmp->translateAll(getPos());
+//	modelCmp->rotate(transform->rotation);
+//
+//}
 
 /** Check for a collision along the line segment from the leading point's last known
 	position to where it is now. */
@@ -91,7 +96,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 		//CEntity* entity = game.map->getEntityAt2(hex.first);
 		CEntities entities = game.map->getEntitiesAt(hex.first);
 		for (auto& entity : entities) {
-			if (entity && entity != owner && entity->live) {
+			if (entity && entity != this && entity != owner && entity->live) {
 				if (entity->collider) {
 					auto [hit, intersection] = entity->collider->segCollisionCheck(startingPos, leadingPoint);
 					if (hit) {
@@ -112,7 +117,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 			if (game.map->getHexArray()->getHexCube(hex.first).content == solidHex) {
 				collided = true;
 				//transform->worldPos = hex.second - (moveVec * distToPoint);
-				transform->worldPos = hex.second - (moveVec * distToPoint);
+				transform->setPos( hex.second - (moveVec * distToPoint));
 				collisionPt = hex.second;
 				return true;
 			}

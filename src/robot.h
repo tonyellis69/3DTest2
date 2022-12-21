@@ -29,8 +29,7 @@ public:
 	//void rotateUpper(float angle);
 
 
-	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
-	void buildWorldMatrix();
+	//std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
 	void startTracking(CEntity* target);
 	void startTracking(glm::vec3& pos);
 	void stopTracking();
@@ -50,7 +49,6 @@ public:
 	std::tuple<TObstacle, glm::vec3> findCollidable(std::vector<TObstacle>& obstacles, glm::vec3& aheadSegBegin, glm::vec3& aheadSegEnd);
 	void headTo(glm::vec3& pos);
 
-	float upperBodyRotation = 0;
 
 	float maxAvoidanceDist = 2.5f; ///<Arbitrary check-ahead distance.
 

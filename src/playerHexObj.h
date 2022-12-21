@@ -75,10 +75,10 @@ public:
 	//TODO: do I gain anything using a smartpointer here?
 
 private:
-	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
+//	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
 	void startTurnCycle();
 	void updateWalkCycle();
-	void nearItemUpdate();
+	//void nearItemUpdate();
 
 
 

@@ -67,7 +67,7 @@ void CRobot::update(float dT) {
 		//amIStuck(); //FIX: crudely geared to destination only
 	//FIX: temp removed to track bugs
 
-	buildWorldMatrix();
+	//buildWorldMatrix();
 }
 
 
@@ -109,17 +109,14 @@ void CRobot::setState(TRobotState newState, CEntity* entity)
 
 
 
-/** Check if the given segment intersects this robot. */
-std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
-	if (modelCmp->model.BBcollision(segA, segB))
-		return { true, glm::vec3() };
-	return { false, glm::vec3()};
-}
+///** Check if the given segment intersects this robot. */
+//std::tuple<bool, glm::vec3> CRobot::collisionCheck(glm::vec3& segA, glm::vec3& segB) {
+//	if (modelCmp->model.BBcollision(segA, segB))
+//		return { true, glm::vec3() };
+//	return { false, glm::vec3()};
+//}
 
-void CRobot::buildWorldMatrix() {
-	return;
 
-}
 
 void CRobot::startTracking(CEntity* target) {
 	trackingState = trackEntity;
@@ -149,7 +146,7 @@ void CRobot::receiveDamage(CEntity& attacker, int damage) {
 	if (hp == 0) {
 		game.killEntity(*this);
 		spawn::explosion("explosion", getPos(), 1.5f);
-		toRemove = true;
+		//toRemove = true;
 	}
 	else {
 		if (canSeeEnemy() == false) {
