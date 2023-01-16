@@ -118,6 +118,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp" />
+    <ClCompile Include="src\entity\aiCmp.cpp" />
+    <ClCompile Include="src\entity\botAiCmp.cpp" />
     <ClCompile Include="src\entity\botTreadsModelCmp.cpp" />
     <ClCompile Include="src\entity\collider.cpp" />
     <ClCompile Include="src\entity\entity.cpp" />
@@ -169,6 +171,8 @@
   <ItemGroup>
     <ClInclude Include="..\TC\Debug\tigConst.h" />
     <ClInclude Include="src\3DtestApp.h" />
+    <ClInclude Include="src\entity\aiCmp.h" />
+    <ClInclude Include="src\entity\botAiCmp.h" />
     <ClInclude Include="src\entity\botTreadsModelCmp.h" />
     <ClInclude Include="src\entity\collider.h" />
     <ClInclude Include="src\entity\component.h" />

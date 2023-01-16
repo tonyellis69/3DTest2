@@ -12,10 +12,10 @@ void CGameState::setMap(CMap* map) {
 
 
 
-void CGameState::addSprite(std::shared_ptr<CEntity> sprite) {
-	//addSpritesList.push_back(sprite);
-	map->entities.push_back(sprite);
-}
+//void CGameState::addSprite(std::shared_ptr<CEntity> sprite) {
+//	//addSpritesList.push_back(sprite);
+//	map->entities.push_back(sprite);
+//}
 
 
 //void CGameState::destroySprite(CEntity& deadSprite) {

@@ -17,6 +17,7 @@
 
 #include "entity/playerModelCmp.h"
 #include "entity/botTreadsModelCmp.h"
+#include "entity/botAiCmp.h"
 
 std::unordered_map<std::string, CModel> CSpawn::models;
 std::unordered_map<std::string, std::vector<glm::vec4> >* CSpawn::pPalettes;
@@ -64,6 +65,7 @@ TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	robot->modelCmp->setPalette(pPalettes->at("basic")); 
 	robot->modelCmp->drawFn = std::make_shared<CMultiDraw>(robot.get());
 	robot->modelCmp->initDrawFn();
+	robot->ai = std::make_shared<CBotAiCmp>(robot.get());
 
 	robot->setPosition(pos);
 

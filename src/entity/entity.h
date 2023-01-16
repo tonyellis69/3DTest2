@@ -13,7 +13,7 @@
 #include "transform.h"
 #include "collider.h"
 #include "modelCmp.h"
-
+#include "aiCmp.h"
 
 
 struct TFov { //describes a fov shape
@@ -76,7 +76,7 @@ public:
 	std::shared_ptr<CEntityCmp> item;
 	std::shared_ptr<ColliderCmp> collider;
 	std::shared_ptr<CModelCmp> modelCmp;
-
+	std::shared_ptr<CAiCmp> ai;
 
 
 private:

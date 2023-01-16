@@ -29,6 +29,8 @@ CEntity::CEntity() {
 
 void CEntity::update(float dT) {
 	//update various components here
+	if (ai)
+		ai->update(dT);
 	if (item)
 		item->update(dT);
 	if (transform)
