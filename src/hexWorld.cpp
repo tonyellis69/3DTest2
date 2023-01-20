@@ -857,7 +857,8 @@ void CHexWorld::onPlayerDeath() {
 
 	for (auto& entity : map->entities) {
 		if (entity->isRobot) {
-			((CRobot*)entity.get())->setState(robotWander3);
+			//((CRobot*)entity.get())->setState(robotWander3);
+			entity->ai = std::make_shared<CRoboWander>((CRobot*)entity.get());
 		}
 	}
 }

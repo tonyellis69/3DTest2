@@ -180,9 +180,6 @@
     <ClCompile Include="src\entity\aiCmp.cpp">
       <Filter>Source Files\entity</Filter>
     </ClCompile>
-    <ClCompile Include="src\entity\botAiCmp.cpp">
-      <Filter>Source Files\entity</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -348,9 +345,6 @@
       <Filter>Source Files\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\entity\aiCmp.h">
-      <Filter>Source Files\entity</Filter>
-    </ClInclude>
-    <ClInclude Include="src\entity\botAiCmp.h">
       <Filter>Source Files\entity</Filter>
     </ClInclude>
   </ItemGroup>

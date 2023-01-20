@@ -28,6 +28,9 @@ CEntity::CEntity() {
 }
 
 void CEntity::update(float dT) {
+	this->dT = dT;
+	diagnostic = "";
+
 	//update various components here
 	if (ai)
 		ai->update(dT);
