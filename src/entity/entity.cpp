@@ -13,6 +13,9 @@
 
 #include "../hexRender/entityDraw.h"
 
+#include "listen/listen.h"
+#include "..\physEvent.h"
+
 
 const float rad360 = M_PI * 2;
 
@@ -65,72 +68,17 @@ glm::vec3 CEntity::getPos()
 	return transform->worldPos;
 }
 
-///** Set the rotation and facing direction of this object. */
-//void CEntity::setHexDirection(THexDir direction) {
-//	facing = direction;
-//	transform->setRotation(dirToAngle(direction));
-//	//buildWorldMatrix();
-//}
+void CEntity::addComponent(std::shared_ptr<CPhys> phys) {
+	this->phys = phys;
 
-
-/** Construct this object's world matrix from its known position and rotation.*/
-//void CEntity::buildWorldMatrix() {
-//	modelCmp->translateAll(worldPos);
-//	modelCmp->rotate(rotation);
-//	//return;
-//
-//	//!!!!!!!!still need for missile currently:
-//	glm::mat4 tmpMatrix = glm::translate(glm::mat4(1), worldPos);
-//	tmpMatrix = glm::rotate(tmpMatrix, rotation, glm::vec3(0, 0, -1));
-//	tmpMatrix = glm::scale(tmpMatrix, scale);
-//	
-//	//NB: we use a CW system for angles
-//	for (auto& mesh : model.meshes)
-//		mesh.matrix = tmpMatrix;
-//	//Kludgy, but we will usually want to move all meshes.
-//}
-
-//void CEntity::updateMatrices(TModelData& model) {
-//	model.matrix = glm::translate(glm::mat4(1), worldPos);
-//
-//	for (auto& childModel : model.subModels)
-//		updateMatrices(childModel);
-//}
-
-//std::tuple<float, glm::vec3> CEntity::collisionCheck(CEntity* e2) {
-//	//get bounding-sphere radii
-//	float radius1 = modelCmp->model.getRadius();
-//	float radius2 = e2->modelCmp->model.getRadius();
-//	
-//	//check for overlap
-//	float entDist = glm::distance(getPos(), e2->getPos());
-//	if (entDist > radius1 + radius2)
-//		return { 0, {0,0,0} };
-//	else {
-//		float collisionDist = entDist - radius2;
-//		glm::vec3 collisionNormal = glm::normalize(e2->getPos() - getPos());
-//		return { collisionDist, collisionNormal};
-//	}
-//
-//}
-
-
-
-//
-///** True if entity on screen. */
-//bool CEntity::isOnScreen() {
-//	return hexRendr2.isOnScreen(getPos());
-//}
-
-
-std::string CEntity::getShortDesc() {
-	//TO DO: placeholder! Short description may not always = name
-
-	std::string hotDesc = "\\h{ item " + std::to_string(id) + "}"
-		+ name + "\\h";
-	
-	return hotDesc;
+	CPhysicsEvent e;
+	e.entity = this;
+	lis::event<CPhysicsEvent>(e);
 }
+
+
+
+
 
 
 

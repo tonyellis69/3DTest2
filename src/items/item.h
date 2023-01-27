@@ -17,7 +17,10 @@ public:
 	virtual std::string getMenuTextInv();
 	virtual std::string getMenuTextNear();
 
-
+	std::string getShortDesc() {
+		return std::string("tmp");
+	}
+	//FIXME: above only here to fix error
 
 	CEntity* parent = nullptr; ///<Enity wielding, carrying, etc, this item
 	bool itemMenuOpen = false;

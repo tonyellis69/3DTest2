@@ -31,6 +31,9 @@
     <Filter Include="Source Files\entity">
       <UniqueIdentifier>{42e3b2ce-2539-4ad5-8c2f-a156aa3b4bb1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ai">
+      <UniqueIdentifier>{20f2beda-ba9e-4d91-bbd0-82786ac0a428}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp">
@@ -178,6 +181,12 @@
       <Filter>Source Files\entity</Filter>
     </ClCompile>
     <ClCompile Include="src\entity\aiCmp.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ai\dropAI.cpp">
+      <Filter>Source Files\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity\sceneryCollider.cpp">
       <Filter>Source Files\entity</Filter>
     </ClCompile>
   </ItemGroup>
@@ -345,6 +354,15 @@
       <Filter>Source Files\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\entity\aiCmp.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ai\dropAI.h">
+      <Filter>Source Files\ai</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physEvent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\sceneryCollider.h">
       <Filter>Source Files\entity</Filter>
     </ClInclude>
   </ItemGroup>

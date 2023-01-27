@@ -55,6 +55,7 @@ CHexWorld::CHexWorld() {
 	
 	lis::subscribe<CGUIevent>(this);
 	lis::subscribe<CGameEvent>(this);
+	lis::subscribe<CPhysicsEvent>(this);
 
 	hexPosLbl = gui::addLabel("xxx", 10, 10);
 	hexPosLbl->setTextColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -135,6 +136,9 @@ void CHexWorld::onEvent(CGameEvent& e) {
 
 }
 
+void CHexWorld::onEvent(CPhysicsEvent& e) {
+	physics.add(e.entity);
+}
 
 
 /**	Load a multipart mesh for storage under the given name. */

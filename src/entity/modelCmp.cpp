@@ -9,6 +9,9 @@ CModelCmp::CModelCmp(CEntity* parent) : CEntityCmp(parent) {
 }
 
 void CModelCmp::loadModel(CModel& pModel) {
+	if (pModel.meshes.empty()) {
+		int fail = 1;
+	}
 	model = pModel;
 
 	

@@ -86,7 +86,7 @@ void CRoboState::updateTreadCycle() {
 
 	float treadLoop = 0.3f;
 
-	float velocityMod = 1.0f; //glm::length(physics.velocity) / 1.7f; //1.7f = usual max
+	float velocityMod = 1.0f; //glm::length(phys->velocity) / 1.7f; //1.7f = usual max
 	//scaling by velocity doesn't seem to have a visible effect. Shelf for now.
 
 	treadCycle += dT * velocityMod;
@@ -122,14 +122,14 @@ float CRoboState::speedFor(glm::vec3& dest) {
 
 void CRoboState::stopMoving() {
 	moving = false;
-	pBot->physics.moveImpulse = { 0,0,0 };
+	pBot->phys->moveImpulse = { 0,0,0 };
 }
 
 
 void CRoboState::headTo(glm::vec3& destinationPos) {
 	if (backingUp > 0) {
 		backingUp -= dT;
-		pBot->physics.moveImpulse = -pBot->transform->getRotationVec() * defaultSpeed;
+		pBot->phys->moveImpulse = -pBot->transform->getRotationVec() * defaultSpeed;
 		return;
 	}
 
@@ -142,7 +142,7 @@ void CRoboState::headTo(glm::vec3& destinationPos) {
 	glm::vec3 impulse(0);
 	if (abs(desiredTurn) < rad90)
 		impulse = pBot->transform->getRotationVec() * speed;
-	pBot->physics.moveImpulse = impulse;
+	pBot->phys->moveImpulse = impulse;
 
 	auto [avoidanceNeeded, risk] = findAvoidance();
 
@@ -173,7 +173,7 @@ void CRoboState::headTo(glm::vec3& destinationPos) {
 		}
 	}
 
-	pBot->physics.moveImpulse *= 1.0f - risk;
+	pBot->phys->moveImpulse *= 1.0f - risk;
 }
 
 

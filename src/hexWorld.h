@@ -33,6 +33,7 @@
 #include "hexRender/hexRender.h"
 
 #include "gameEvent.h"
+#include "physEvent.h"
 
 enum TViewMode {gameView, devView};
 enum TMsgType {msgId,msgId2,msgId3};
@@ -45,6 +46,7 @@ public:
 	CHexWorld();
 	void onEvent(CGUIevent& e);
 	void onEvent(CGameEvent& e);
+	void onEvent(CPhysicsEvent& e);
 	void addMesh(const std::string& name, const std::string& fileName);
 	void addHexTile(const std::string& name, const std::string& fileName, std::vector<glm::vec4>& colours);
 	void makeMap();

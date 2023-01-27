@@ -3,7 +3,8 @@
 #include "utils/log.h"
 
 CHexPhysics::CHexPhysics() {
-	tmpMapObj.physics.invMass = 0;// FLT_MAX;
+	tmpMapObj.phys = std::make_shared <CPhys>(&tmpMapObj, 0.0f);
+	//TODO: this is really hacky! Probably the map should be an entity or something
 }
 
 void CHexPhysics::add(CEntity* entity) {
@@ -23,7 +24,7 @@ void CHexPhysics::update(float dT) {
 
 	broadphase();
 	integrateForces();
-	resolveContacts();
+	resolveContacts(); //happens here
 	integrateVelocities();
 
 }
@@ -64,6 +65,7 @@ void CHexPhysics::broadphase() {
 
 	for (unsigned int e1=0; e1<entities.size(); e1++) {
 		auto entity = entities[e1];
+
 		if (!entity->collider)
 			continue;
 
@@ -92,9 +94,16 @@ void CHexPhysics::broadphase() {
 
 		}
 
+		if (entity->collider->sceneryOnly)
+			continue;
+
+
 		//entity-entity collisions
 		for (unsigned int e2 = e1 + 1; e2 < entities.size(); e2++) {
 			auto entity2 = entities[e2];
+			if (entity2->collider->sceneryOnly)
+				continue;
+
 			if (entity->transform->hexPosition == entity2->transform->hexPosition ||
 				std::count(openHexes.begin(), openHexes.end(), entity2->transform->hexPosition)) {
 				CBodyPairKey key(entity, entity2);
@@ -116,7 +125,7 @@ void CHexPhysics::broadphase() {
 /** Find velocities of all entities. */
 void CHexPhysics::integrateForces() {
 	for (auto& entity : entities) {
-		CPhys* ent = &entity->physics;
+		CPhys* ent = entity->phys.get();
 		glm::vec3 a = ent->invMass * ent->moveImpulse;
 		ent->velocity += a * dT;
 		ent->moveImpulse = { 0, 0, 0};
@@ -136,8 +145,8 @@ void CHexPhysics::integrateForces() {
 void CHexPhysics::resolveContacts() {
 	for (int i = 0; i < 10; i++) {
 		for (auto& [key,bodyPair] : bodyPairs) {
-			CPhys* physA = &bodyPair.A->physics;
-			CPhys* physB = &bodyPair.B->physics;
+			CPhys* physA = bodyPair.A->phys.get();
+			CPhys* physB = bodyPair.B->phys.get();
 
 			glm::vec3 relativeVelocity = physB->velocity - physA->velocity;
 			float velocityAlongNormal = glm::dot(relativeVelocity, bodyPair.normal);
@@ -169,7 +178,7 @@ void CHexPhysics::resolveContacts() {
 /** Find new position of all entities from velocity. */
 void CHexPhysics::integrateVelocities() {
 	for (auto& entity : entities) {
-		entity->transform->updatePos(entity->physics.velocity * dT);
+		entity->transform->updatePos(entity->phys->velocity * dT);
 
 	}
 }

@@ -36,14 +36,14 @@ public:
 	glm::vec3 getPos();
 	virtual void receiveDamage(CEntity& attacker, int damage) {};
 
-	//std::tuple<float, glm::vec3> collisionCheck(CEntity* e2);
+	template <typename T>
+	void addComponent(T t) {
+		//TODO: handle default components here
+	}
+	void addComponent(std::shared_ptr<CPhys> phys);
 
 
-//	bool isOnScreen();
-	
-	virtual std::string getShortDesc();
-	
-	
+
 	float dT;
 
 
@@ -51,7 +51,7 @@ public:
 
 
 	//components
-	CPhys physics;
+	//CPhys physics;
 	
 	bool isItem = false; //temp cludge!
 	bool isRobot = false; //temp cludge!
@@ -77,7 +77,7 @@ public:
 	std::shared_ptr<ColliderCmp> collider;
 	std::shared_ptr<CModelCmp> modelCmp;
 	std::shared_ptr<CAiCmp> ai;
-
+	std::shared_ptr<CPhys> phys;
 
 private:
 	static unsigned int nextId;

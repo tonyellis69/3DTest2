@@ -37,7 +37,7 @@ CPlayerObject::CPlayerObject() {
 	viewField.setField(10);
 
 
-	physics.invMass = 1.0f/80.0f; //temp!
+	//phys->invMass = 1.0f/80.0f; //temp!
 
 	//setBoundingRadius(); //temp?
 	entityType = entPlayer;
@@ -173,14 +173,14 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 
 	const float accel = 4000;
 	switch (commandDir) {
-	case moveNorth:  physics.moveImpulse = { 0,1,0 }; break;
-	case moveNE: physics.moveImpulse = { sin30, sin60, 0 }; break;
-	case moveEast: physics.moveImpulse = { 1,0,0 }; break;
-	case moveSE: physics.moveImpulse = { sin30, -sin60, 0 }; break;
-	case moveSouth: physics.moveImpulse = { 0,-1,0 }; break;
-	case moveSW: physics.moveImpulse = { -sin30, -sin60, 0 }; break;
-	case moveWest: physics.moveImpulse = { -1,0,0 }; break;
-	case moveNW: physics.moveImpulse = { -sin30, sin60, 0 }; break;
+	case moveNorth:  phys->moveImpulse = { 0,1,0 }; break;
+	case moveNE: phys->moveImpulse = { sin30, sin60, 0 }; break;
+	case moveEast: phys->moveImpulse = { 1,0,0 }; break;
+	case moveSE: phys->moveImpulse = { sin30, -sin60, 0 }; break;
+	case moveSouth: phys->moveImpulse = { 0,-1,0 }; break;
+	case moveSW: phys->moveImpulse = { -sin30, -sin60, 0 }; break;
+	case moveWest: phys->moveImpulse = { -1,0,0 }; break;
+	case moveNW: phys->moveImpulse = { -sin30, sin60, 0 }; break;
 	}
 
 
@@ -191,15 +191,15 @@ void CPlayerObject::moveCommand(TMoveDir commandDir) {
 	walkingBackwards = false;
 	//glm::vec3 upperRotation = getUpperBodyRotationVec();
 	glm::vec3 upperRotation = transform->getUpperBodyRotationVec();
-	if (glm::dot(physics.moveImpulse, upperRotation) >= 0) {
-		transform->setRotation(physics.moveImpulse);
+	if (glm::dot(phys->moveImpulse, upperRotation) >= 0) {
+		transform->setRotation(phys->moveImpulse);
 	}
 	else {
-		transform->setRotation(-physics.moveImpulse);
+		transform->setRotation(-phys->moveImpulse);
 		walkingBackwards = true;
 	}
 
-	physics.moveImpulse *= accel;
+	phys->moveImpulse *= accel;
 
 
 	//if (moveDir != oldMoveDir)
@@ -222,7 +222,7 @@ void CPlayerObject::update(float dT) {
 
 	//kludge to stop sharply
 	if (moveDir == moveNone)
-		physics.velocity *= 45.0f *dT;
+		phys->velocity *= 45.0f *dT;
 
 	updateWalkCycle();
 

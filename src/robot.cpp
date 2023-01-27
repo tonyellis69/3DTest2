@@ -27,7 +27,7 @@
 
 CRobot::CRobot() {
 	isRobot = true;
-	physics.invMass = 1.0f / 80.0f; //temp!
+	//physics.invMass = 1.0f / 80.0f; //temp!
 }
 
 
@@ -42,7 +42,15 @@ void CRobot::receiveDamage(CEntity& attacker, int damage) {
 	if (hp == 0) {
 		game.killEntity(*this);
 		spawn::explosion("explosion", getPos(), 1.5f);
-		//toRemove = true;
+
+		//make a random angle
+		float angle = rnd::rand(rad360);
+		glm::vec3 v = angle2vec(angle) * 5.0f;
+
+		auto drop = spawn::drop("drop", getPos());
+		drop->phys->velocity = v;
+		drop->tmpId = 57;
+
 	}
 	else {
 		if ( ((CRoboState*)ai.get())->canSeeEnemy() == false) {

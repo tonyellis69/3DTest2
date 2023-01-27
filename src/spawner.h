@@ -30,6 +30,8 @@ public:
 
 	static CEntity* shield(const std::string& name);
 
+	static TEntity drop(const std::string& name, glm::vec3& pos);
+
 
 
 	static std::unordered_map<std::string, CModel> models;

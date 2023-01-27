@@ -118,12 +118,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp" />
+    <ClCompile Include="src\ai\dropAI.cpp" />
     <ClCompile Include="src\entity\aiCmp.cpp" />
     <ClCompile Include="src\entity\botTreadsModelCmp.cpp" />
     <ClCompile Include="src\entity\collider.cpp" />
     <ClCompile Include="src\entity\entity.cpp" />
     <ClCompile Include="src\entity\modelCmp.cpp" />
     <ClCompile Include="src\entity\playerModelCmp.cpp" />
+    <ClCompile Include="src\entity\sceneryCollider.cpp" />
     <ClCompile Include="src\entity\transform.cpp" />
     <ClCompile Include="src\gameGui.cpp" />
     <ClCompile Include="src\explosion.cpp" />
@@ -170,12 +172,14 @@
   <ItemGroup>
     <ClInclude Include="..\TC\Debug\tigConst.h" />
     <ClInclude Include="src\3DtestApp.h" />
+    <ClInclude Include="src\ai\dropAI.h" />
     <ClInclude Include="src\entity\aiCmp.h" />
     <ClInclude Include="src\entity\botTreadsModelCmp.h" />
     <ClInclude Include="src\entity\collider.h" />
     <ClInclude Include="src\entity\component.h" />
     <ClInclude Include="src\entity\modelCmp.h" />
     <ClInclude Include="src\entity\playerModelCmp.h" />
+    <ClInclude Include="src\entity\sceneryCollider.h" />
     <ClInclude Include="src\entity\transform.h" />
     <ClInclude Include="src\gameEvent.h" />
     <ClInclude Include="src\gameGui.h" />
@@ -210,6 +214,7 @@
     <ClInclude Include="src\mapEdit\mapEdit.h" />
     <ClInclude Include="src\mapEdit\mapPatch.h" />
     <ClInclude Include="src\missile.h" />
+    <ClInclude Include="src\physEvent.h" />
     <ClInclude Include="src\physics\hexPhysics.h" />
     <ClInclude Include="src\physics\phys.h" />
     <ClInclude Include="src\playerHexObj.h" />
