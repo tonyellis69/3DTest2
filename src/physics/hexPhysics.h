@@ -17,12 +17,13 @@ class CHexPhysics {
 public:
 	CHexPhysics();
 	void add(CEntity* entity);
+	void remove(CEntity* entity);
 	void setMap(CHexArray* hexArray);
 	void clearEntities();
 	void update(float dT);
 	void removeDeletedEntities();
 	void removeDeadEntities();
-	//void removeEntities();
+
 
 private:
 	void broadphase();
@@ -30,6 +31,8 @@ private:
 	void resolveContacts();
 	void integrateVelocities();
 	std::tuple<float, glm::vec3> findSceneryCollision(CEntity* a, glm::vec3& hexPos, int dir);
+	std::tuple<float, glm::vec3> findEntityCollision(CEntity* entA, CEntity* entB);
+	std::tuple<float, glm::vec3> findSceneryCollision2(CEntity* entity, int dir);
 
 	std::vector<CEntity*> entities;
 	float dT;

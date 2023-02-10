@@ -45,11 +45,20 @@ void CRobot::receiveDamage(CEntity& attacker, int damage) {
 
 		//make a random angle
 		float angle = rnd::rand(rad360);
-		glm::vec3 v = angle2vec(angle) * 5.0f;
-
 		auto drop = spawn::drop("drop", getPos());
-		drop->phys->velocity = v;
+		glm::vec3 v = angle2vec(angle);
+		drop->phys->velocity = v * 5.0f + rnd::rand(2.0f);
 		drop->tmpId = 57;
+	
+		drop = spawn::drop("drop", getPos());
+		v = angle2vec(angle + rad120  + rnd::rand(-rad20,rad20));
+		drop->phys->velocity = v * 5.0f + rnd::rand(2.0f);
+
+		drop = spawn::drop("drop", getPos());
+		v = angle2vec(angle - rad120 + rnd::rand(-rad20, rad20));
+		drop->phys->velocity = v * 5.0f + rnd::rand(2.0f);
+
+
 
 	}
 	else {
@@ -65,7 +74,8 @@ void CRobot::fireMissile(CEntity* target) {
 	float targetAngle = glm::orientedAngle(glm::normalize(targetVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 
 	auto missile = (CMissile*) spawn::missile("missile",getPos(), targetAngle).get();
-	missile->setOwner(this);
+	missile->setOwner(this); //FIXME: phasing out
+	missile->setParent(this);
 	missile->setSpeed(15);// 7.0f);
 
 	snd::play("shoot");

@@ -35,13 +35,25 @@ public:
 	void setPosition(glm::vec3& worldPos);
 	glm::vec3 getPos();
 	virtual void receiveDamage(CEntity& attacker, int damage) {};
+	virtual void onSpawn();
+	void destroyMe();
+	void setParent(CEntity* parent);
+	CEntity* getParent();
 
 	template <typename T>
-	void addComponent(T t) {
+	void addComponent(std::shared_ptr<T> t) {
 		//TODO: handle default components here
+
 	}
 	void addComponent(std::shared_ptr<CPhys> phys);
+	void addAIComponent(std::shared_ptr<CAiCmp> ai);
 
+	template <typename T>
+	T* removeComponent() {
+		//TODO: handle default components here
+		return nullptr;
+	}
+	void removePhysComponent();
 
 
 	float dT;
@@ -79,8 +91,12 @@ public:
 	std::shared_ptr<CAiCmp> ai;
 	std::shared_ptr<CPhys> phys;
 
+
+
 private:
 	static unsigned int nextId;
+
+	std::shared_ptr<CEntity> parentEntity;
 };
 
 using TEntity = std::shared_ptr<CEntity>;

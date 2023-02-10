@@ -189,6 +189,9 @@
     <ClCompile Include="src\entity\sceneryCollider.cpp">
       <Filter>Source Files\entity</Filter>
     </ClCompile>
+    <ClCompile Include="src\entity\missileCollider.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -363,6 +366,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\entity\sceneryCollider.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\missileCollider.h">
       <Filter>Source Files\entity</Filter>
     </ClInclude>
   </ItemGroup>

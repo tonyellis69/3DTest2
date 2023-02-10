@@ -34,7 +34,7 @@ void CPlayerModelCmp::loadModel(CModel& pModel) {
 			footRmask = &mesh;
 	}
 
-	parentEntity->collider->boundingRadius = glm::length(model.extents.furthestVert);
+	thisEntity->collider->boundingRadius = glm::length(model.extents.furthestVert);
 
 }
 
@@ -61,7 +61,7 @@ void CPlayerModelCmp::initDrawFn() {
 }
 
 void CPlayerModelCmp::update(float dT) {
-	auto transform = parentEntity->transform.get();
+	auto transform = thisEntity->transform.get();
 	translateAll(transform->worldPos);
 	rotateUpper(transform->upperBodyRotation);
 	rotateLower(transform->rotation);

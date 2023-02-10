@@ -38,8 +38,7 @@ void CMissile::update(float dT) {
 	CEntity::update(dT);
 	if (collided) {
 		spawnExplosion();
-		//world.destroySprite(*this);
-		game.deleteEntity(*this);
+		destroyMe();
 		return;
 	}
 	this->dT = dT;
@@ -61,25 +60,21 @@ void CMissile::setSpeed(float speed) {
 
 /** Move realtime in the current  direction. */
 void CMissile::approachDestHex() {
-	glm::vec3 moveVec = dirVec * missileMoveSpeed * dT;
+	glm::vec3 moveVec = dirVec * missileMoveSpeed * 1000.0f;
 
-	glm::vec3 currentWPos = transform->worldPos;
-	transform->setPos(getPos() + moveVec);
+	phys->moveImpulse = moveVec ;
 
 
-	leadingPoint += moveVec;
+
+//	glm::vec3 currentWPos = transform->worldPos;
+//	transform->setPos(getPos() + moveVec);
+
+
+	leadingPoint = getPos() + dirVec * distToPoint;
 
 	collisionCheck(moveVec);
 
-	//buildWorldMatrix();
 }
-//
-//void CMissile::buildWorldMatrix() {
-//	return;
-//	modelCmp->translateAll(getPos());
-//	modelCmp->rotate(transform->rotation);
-//
-//}
 
 /** Check for a collision along the line segment from the leading point's last known
 	position to where it is now. */
@@ -91,15 +86,15 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 		intersectedHexes = getIntersectedHexes(leadingPointLastHex, leadingPoint);
 	}
 
-	//Check if we've collided with a robot in one of those hexes
+	//Check if we've collided with an entity in one of those hexes
 	for (auto& hex: intersectedHexes) {
-		//CEntity* entity = game.map->getEntityAt2(hex.first);
 		CEntities entities = game.map->getEntitiesAt(hex.first);
 		for (auto& entity : entities) {
 			if (entity && entity != this && entity != owner && entity->live) {
-				if (entity->collider) {
+				if (entity->collider && !entity->collider->sceneryOnly) {
 					auto [hit, intersection] = entity->collider->segCollisionCheck(startingPos, leadingPoint);
 					if (hit) {
+						return true;
 						collisionPt = entity->getPos();
 						collidee = std::make_shared<CEntity>(*entity);
 						entity->receiveDamage(*owner, 5);

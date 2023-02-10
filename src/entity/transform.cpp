@@ -19,7 +19,7 @@ void CTransformCmp::setRotation(float angle) {
 		upperBodyRotation = fmod(upperBodyRotation + rad360, rad360);
 	}
 
-	//parentEntity->modelCmp->rotate(angle); ///Temp remove!!!
+	//thisEntity->modelCmp->rotate(angle); ///Temp remove!!!
 	rotation = angle;
 }
 
@@ -53,7 +53,7 @@ void CTransformCmp::rotateUpperBody(float angle) {
 }
 
 void CTransformCmp::setPos(glm::vec3& pos) {
-	//parentEntity->modelCmp->translateAll(pos);
+	//thisEntity->modelCmp->translateAll(pos);
 	worldPos = pos;
 	hexPosition = worldSpaceToHex(worldPos);
 }
@@ -63,17 +63,17 @@ void CTransformCmp::setPos(glm::vec3& pos) {
 void CTransformCmp::updatePos(glm::vec3& dPos) {
 	glm::vec3 oldWorldPos = worldPos;
 	worldPos += dPos;
-	//parentEntity->worldPos = worldPos; //temp until worldPos banished
+	//thisEntity->worldPos = worldPos; //temp until worldPos banished
 
 	CHex newHexPosition = worldSpaceToHex(worldPos);
 	if (newHexPosition != hexPosition) {
 		hexPosition = newHexPosition;
-		//parentEntity->transform->hexPosition = newHexPosition;
+		//thisEntity->transform->hexPosition = newHexPosition;
 	}
 }
 
 void CTransformCmp::setScale(glm::vec3& scaleVec) {
-	//parentEntity->modelCmp->scale(scaleVec);
+	//thisEntity->modelCmp->scale(scaleVec);
 	scale = scaleVec;
 }
 

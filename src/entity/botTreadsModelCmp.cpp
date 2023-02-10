@@ -26,7 +26,7 @@ void CBotTreadsModelCmp::loadModel(CModel& pModel) {
 		if (mesh.name == "treads")
 			treads = &mesh;
 	}
-	parentEntity->collider->boundingRadius = glm::length(model.extents.furthestVert);
+	thisEntity->collider->boundingRadius = glm::length(model.extents.furthestVert);
 }
 
 void CBotTreadsModelCmp::draw(CHexRender& hexRender) {
@@ -54,8 +54,8 @@ void CBotTreadsModelCmp::initDrawFn() {
 }
 
 void CBotTreadsModelCmp::update(float dT) {
-	auto transform = parentEntity->transform.get();
-	translateAll(parentEntity->getPos());
+	auto transform = thisEntity->transform.get();
+	translateAll(thisEntity->getPos());
 	rotateUpper(transform->upperBodyRotation);
 	rotateLower(transform->rotation);
 	retranslateLower(transform->walk);

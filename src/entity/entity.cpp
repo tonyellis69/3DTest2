@@ -16,6 +16,7 @@
 #include "listen/listen.h"
 #include "..\physEvent.h"
 
+#include "../gameState.h"
 
 const float rad360 = M_PI * 2;
 
@@ -34,6 +35,9 @@ void CEntity::update(float dT) {
 	this->dT = dT;
 	diagnostic = "";
 
+	if (tmpId == 57)
+		int b = 0;
+
 	//update various components here
 	if (ai)
 		ai->update(dT);
@@ -43,6 +47,8 @@ void CEntity::update(float dT) {
 		transform->update(dT);  //TO DO: may not need
 	if (modelCmp)
 		modelCmp->update(dT);
+	if (collider)
+		collider->update(dT);
 }
 
 
@@ -62,10 +68,39 @@ void CEntity::setPosition(glm::vec3& worldPos) {
 }
 
 
+void CEntity::onSpawn() {
+	if (ai)
+		ai->onSpawn();
+	if (item)
+		item->onSpawn();
+	if (transform)
+		transform->onSpawn();  //TO DO: may not need
+	if (modelCmp)
+		modelCmp->onSpawn();
+	if (collider)
+		collider->onSpawn();
+	if (phys)
+		collider->onSpawn();
+}
+
 
 glm::vec3 CEntity::getPos()
 {
 	return transform->worldPos;
+}
+
+void CEntity::destroyMe() {
+	live = false;
+	deleteMe = true;
+	game.map->entitiesToKill = true;
+}
+
+void CEntity::setParent(CEntity* parent) {
+	parentEntity = std::make_shared<CEntity>(*parent);
+}
+
+CEntity* CEntity::getParent() {
+	return parentEntity.get();
 }
 
 void CEntity::addComponent(std::shared_ptr<CPhys> phys) {
@@ -73,10 +108,22 @@ void CEntity::addComponent(std::shared_ptr<CPhys> phys) {
 
 	CPhysicsEvent e;
 	e.entity = this;
+	e.action = physAdd;
 	lis::event<CPhysicsEvent>(e);
 }
 
+void CEntity::addAIComponent(std::shared_ptr<CAiCmp> ai) {
+	this->ai = ai;
+}
 
+void CEntity::removePhysComponent() {
+	phys = nullptr;
+
+	CPhysicsEvent e;
+	e.entity = this;
+	e.action = physRemove;
+	lis::event<CPhysicsEvent>(e);
+}
 
 
 

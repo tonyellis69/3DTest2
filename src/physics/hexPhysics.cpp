@@ -2,13 +2,26 @@
 
 #include "utils/log.h"
 
+#include "../entity/sceneryCollider.h"
+
 CHexPhysics::CHexPhysics() {
 	tmpMapObj.phys = std::make_shared <CPhys>(&tmpMapObj, 0.0f);
+	tmpMapObj.collider = std::make_shared<CSceneryColliderCmp>(&tmpMapObj);
+
 	//TODO: this is really hacky! Probably the map should be an entity or something
 }
 
 void CHexPhysics::add(CEntity* entity) {
 	entities.push_back(entity);
+}
+
+void CHexPhysics::remove(CEntity* removeEntity) {
+	for (auto& entity = entities.begin(); entity != entities.end(); entity++) {
+		if (*entity == removeEntity) {
+			entities.erase(entity);
+			return;
+		}
+	}
 }
 
 void CHexPhysics::setMap(CHexArray* hexArray) {
@@ -60,8 +73,6 @@ void CHexPhysics::removeDeadEntities() {
 /** Look for possible collisions between scenery and pairs of bodies. */
 void CHexPhysics::broadphase() {
 	bodyPairs.clear();
-	//std::vector<CHex> openHexes;
-	//openHexes.reserve(6);
 
 	for (unsigned int e1=0; e1<entities.size(); e1++) {
 		auto entity = entities[e1];
@@ -79,7 +90,7 @@ void CHexPhysics::broadphase() {
 			CHex neighbour = getNeighbour(entity->transform->hexPosition, THexDir(dir));
 			if (hexArray->getHexCube(neighbour).content == solidHex) {
 				CBodyPairKey key(entity, &tmpMapObj, dir);
-				auto [penetration,normal] = findSceneryCollision(entity,hexPos,dir);
+				auto [penetration,normal] = findSceneryCollision2(entity,dir);
 				if (penetration > 0) {				
 					CBodyPair bodyPair(entity, &tmpMapObj, penetration, normal);
 					bodyPairs[key] = bodyPair;
@@ -101,13 +112,13 @@ void CHexPhysics::broadphase() {
 		//entity-entity collisions
 		for (unsigned int e2 = e1 + 1; e2 < entities.size(); e2++) {
 			auto entity2 = entities[e2];
-			if (entity2->collider->sceneryOnly)
+			if (!entity2->collider || entity2->collider->sceneryOnly)
 				continue;
 
 			if (entity->transform->hexPosition == entity2->transform->hexPosition ||
 				std::count(openHexes.begin(), openHexes.end(), entity2->transform->hexPosition)) {
 				CBodyPairKey key(entity, entity2);
-				auto [penetration2, normal2] = entity->collider->entCollisionCheck(entity2);
+				auto [penetration2, normal2] = findEntityCollision(entity, entity2);
 				if (penetration2 > 0) {
 					CBodyPair bodyPair(entity, entity2, penetration2, normal2);
 					bodyPairs[key] = bodyPair;
@@ -126,15 +137,15 @@ void CHexPhysics::broadphase() {
 void CHexPhysics::integrateForces() {
 	for (auto& entity : entities) {
 		CPhys* ent = entity->phys.get();
-		glm::vec3 a = ent->invMass * ent->moveImpulse;
-		ent->velocity += a * dT;
+		glm::vec3 a = (ent->invMass * ent->moveImpulse) * dT;
+		ent->velocity += a;
 		ent->moveImpulse = { 0, 0, 0};
 
 		//drag
 		ent->velocity *= std::pow(ent->drag, dT);
 		//bigger time-gap = smaller fraction by which we scale velocity
 		//so over time velocity will never rise above a certain value for a given acceleration
-		//larger drag, slower falloff = larger fraction by which we scale velocity
+		//The closer drag is to 0, the faster we slow down
 
 
 	}
@@ -216,6 +227,31 @@ std::tuple<float, glm::vec3> CHexPhysics::findSceneryCollision(CEntity* body, gl
 	contactNormal = point -  bodyOrigin; //this is better for rounding corners
 	return { radius - dist, glm::normalize(contactNormal) };
 
+}
+
+std::tuple<float, glm::vec3> CHexPhysics::findEntityCollision(CEntity* entA, CEntity* entB) {
+	if (entA->collider->colliderType == missileCollider)
+		return entA->collider->entCollisionCheck(entB);
+	if (entB->collider->colliderType == missileCollider)
+		return entB->collider->entCollisionCheck(entA);
+	//FIXME: naive! There will be other combinations
+
+
+
+
+	if (entA->collider->colliderType == rigidBodyCollider
+		&& entB->collider->colliderType == rigidBodyCollider) {
+		return entA->collider->entCollisionCheck(entB);
+	}
+	return { 0, {0,0,0} };
+}
+
+std::tuple<float, glm::vec3> CHexPhysics::findSceneryCollision2(CEntity* entity,  int dir) {
+	//checks for collider types go here
+	return tmpMapObj.collider->sceneryCollisionCheck(entity, dir);
+
+
+	return { 0, {0,0,0} };
 }
 
 

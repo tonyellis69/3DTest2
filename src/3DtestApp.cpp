@@ -109,7 +109,7 @@ void C3DtestApp::keyCheck() {
 		else {
 
 			if (moveKeyDown)
-				moveKeyChangeTimer += dT;
+				moveKeyChangeTimer += float(dT);
 			
 			if (moveKeyChangeTimer < 0.05f)
 				return;

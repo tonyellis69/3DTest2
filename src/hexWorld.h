@@ -106,6 +106,7 @@ private:
 	void realtimeKeyChecks();
 	void realtimeMouseButtons();
 	void drawReticule();
+	void removeDeadEntities();
 	//void removeEntities();
 	void onPlayerDeath();
 

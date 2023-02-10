@@ -66,7 +66,8 @@ void CSmallGun::fire(float firingAngle) {
 
 
 	auto missile = (CMissile*) spawn::missile("missile", gun->parent->getPos(), firingAngle).get();
-	missile->setOwner(gun->parent);
+	missile->setOwner(gun->parent); //FIXME phasing out
+	missile->setParent(gun->parent);
 
 	snd::play("shoot");
 }

@@ -123,6 +123,7 @@
     <ClCompile Include="src\entity\botTreadsModelCmp.cpp" />
     <ClCompile Include="src\entity\collider.cpp" />
     <ClCompile Include="src\entity\entity.cpp" />
+    <ClCompile Include="src\entity\missileCollider.cpp" />
     <ClCompile Include="src\entity\modelCmp.cpp" />
     <ClCompile Include="src\entity\playerModelCmp.cpp" />
     <ClCompile Include="src\entity\sceneryCollider.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="src\entity\botTreadsModelCmp.h" />
     <ClInclude Include="src\entity\collider.h" />
     <ClInclude Include="src\entity\component.h" />
+    <ClInclude Include="src\entity\missileCollider.h" />
     <ClInclude Include="src\entity\modelCmp.h" />
     <ClInclude Include="src\entity\playerModelCmp.h" />
     <ClInclude Include="src\entity\sceneryCollider.h" />

@@ -137,7 +137,10 @@ void CHexWorld::onEvent(CGameEvent& e) {
 }
 
 void CHexWorld::onEvent(CPhysicsEvent& e) {
-	physics.add(e.entity);
+	if (e.action == physAdd)
+		physics.add(e.entity);
+	else if (e.action == physRemove)
+		physics.remove(e.entity);
 }
 
 
@@ -510,11 +513,10 @@ void CHexWorld::update(float dt) {
 	//if (game.map->entitiesToDelete)
 	//	physics.removeDeletedEntities();
 
-	////TO DO: this should come to replace above
-	//if (game.map->entitiesToKill) {
-	//	physics.removeDeadEntities();
-	//	game.map->entitiesToKill = false;
-	//}
+	//TO DO: this should come to replace above
+	if (game.map->entitiesToKill) {
+		removeDeadEntities();
+	}
 
 
 	game.update(dT);
@@ -828,6 +830,20 @@ void CHexWorld::realtimeMouseButtons() {
 
 void CHexWorld::drawReticule() {
 	hexRender.drawModelAt(reticule, mouseWorldPos);	
+}
+
+void CHexWorld::removeDeadEntities() {
+	physics.removeDeadEntities();
+
+	for (auto& ent = map->entities.begin(); ent != map->entities.end();) {
+		if (ent->get()->deleteMe)
+			ent = map->entities.erase(ent);
+		else
+			ent++;
+	}
+
+
+	game.map->entitiesToKill = false;
 }
 
 ///** Remove marked entities from the game. */

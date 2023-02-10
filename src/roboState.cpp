@@ -465,7 +465,7 @@ std::shared_ptr<CRoboState> CRoboWander::updateState(float dT) {
 
 
 CGlanceAround::CGlanceAround(CRobot* bot) : CRoboState(bot) {
-	//bot = (CRobot*)parentEntity;
+	//bot = (CRobot*)thisEntity;
 	float leftLimit = fmod(rad360 + pBot->transform->getUpperBodyRotation() - rad90, rad360);
 	float rightLimit = fmod(rad360+ pBot->transform->getUpperBodyRotation() + rad90, rad360);
 	cumulativeRotation = 0;

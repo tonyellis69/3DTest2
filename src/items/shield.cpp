@@ -15,7 +15,7 @@
 void CShieldComponent::update(float dT) {
 	const float rad90 = float(M_PI) / 2;
 
-	CTransformCmp* transform = parentEntity->transform.get();
+	CTransformCmp* transform = thisEntity->transform.get();
 
 	transform->setPos(itemOwner->getPos());
 	transform->setRotation(rad90);
@@ -34,7 +34,7 @@ void CShieldComponent::update(float dT) {
 
 	float damageRatio = hp / maxHp;
 	glm::vec4 shieldColour = glm::mix(flatColour, chargedColour, damageRatio);
-	parentEntity->modelCmp->model.palette[0] = shieldColour;
+	thisEntity->modelCmp->model.palette[0] = shieldColour;
 
 }
 

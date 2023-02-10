@@ -23,8 +23,8 @@ void CModelCmp::draw(CHexRender& hexRender) {
 }
 
 void CModelCmp::update(float dT) {
-	auto transform = parentEntity->transform.get();
-	translateAll(parentEntity->getPos());
+	auto transform = thisEntity->transform.get();
+	translateAll(thisEntity->getPos());
 	rotate(transform->rotation);
 	scale(transform->scale);
 }

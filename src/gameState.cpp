@@ -11,25 +11,13 @@ void CGameState::setMap(CMap* map) {
 
 
 
-
-//void CGameState::addSprite(std::shared_ptr<CEntity> sprite) {
-//	//addSpritesList.push_back(sprite);
-//	map->entities.push_back(sprite);
-//}
-
-
-//void CGameState::destroySprite(CEntity& deadSprite) {
-//	//spriteDeathlist.push_back(&deadSprite);
-//	//deadSprite.killMe = true;
-//	deadSprite.deleteMe = true;
-//}
-
 void CGameState::deleteEntity(CEntity& entity) {
 	map->deleteEntity(entity);
 }
 
 void CGameState::killEntity(CEntity& entity) {
 	entity.live = false; 
+	entity.deleteMe = true;
 	map->entitiesToKill = true;
 }
 
