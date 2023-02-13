@@ -6,6 +6,8 @@
 
 #include "collider.h"
 
+#include "hex/hex.h"
+
 
 struct TMissileCollision {
 	CEntity* ent;
@@ -26,9 +28,17 @@ public:
 
 	void update(float dT);
 
+private:
+	std::tuple<bool, glm::vec3> sceneryCollisionCheck(glm::vec3& segA, glm::vec3& segB);
+
 
 	float distToPoint = 0.1f;
 	glm::vec3 startingPos;
+	glm::vec3 leadingPoint;
+	glm::vec3 oldLeadingPoint;
+
+
+	CHex newHex;
 
 	std::vector<TMissileCollision> collisions;
 };

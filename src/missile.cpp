@@ -80,6 +80,7 @@ void CMissile::approachDestHex() {
 	position to where it is now. */
 bool CMissile::collisionCheck(glm::vec3& moveVec) 
 {	
+	return true; //
 	//first, collect any new unique hexes that we've intersected
 	CHex leadingPointHex = worldSpaceToHex(leadingPoint);
 	if (leadingPointHex != lastLeadingPointHex) { //we've moved at least one hex on

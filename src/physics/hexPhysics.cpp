@@ -247,6 +247,9 @@ std::tuple<float, glm::vec3> CHexPhysics::findEntityCollision(CEntity* entA, CEn
 }
 
 std::tuple<float, glm::vec3> CHexPhysics::findSceneryCollision2(CEntity* entity,  int dir) {
+	if (entity->collider->colliderType == missileCollider)
+		return { 0, {0,0,0} }; //no physics collision to resolve, leave to collider.
+
 	//checks for collider types go here
 	return tmpMapObj.collider->sceneryCollisionCheck(entity, dir);
 
