@@ -15,7 +15,7 @@
 #include "renderer/mesh.h"
 #include "model.h"
 
-#include "gameHexArray.h"
+#include "level.h"
 
 
 /** A class to tidy away the creation of entities. */
@@ -37,7 +37,7 @@ public:
 	static std::unordered_map<std::string, CModel> models;
 	static std::unordered_map<std::string, std::vector<glm::vec4> >* pPalettes;
 
-	static CMap* pMap; ///<The map we're spawning to.
+	static CLevel* pMap; ///<The map we're spawning to.
 
 };
 	

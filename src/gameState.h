@@ -5,7 +5,7 @@
 
 //#include "gameEvents.h"
 #include "playerHexObj.h"
-#include "gameHexArray.h"
+#include "level.h"
 
 
 
@@ -14,19 +14,25 @@
 class CGameState   {
 public:
 
-	void setMap(CMap* map);
+	void setLevel(CLevel* level);
 //	void addSprite(std::shared_ptr<CEntity> sprite);
 	//void destroySprite(CEntity& sprite);
+	CEntities getEntitiesAt(const CHex& hex);
+	CEntity* getEntity(int idNo);
+	void addEntity(TEntity entity);
 	void deleteEntity(CEntity& entity);
 	void killEntity(CEntity& entity);
+	void tidyEntityLists();
 	void update(float dT);
+	void save(std::ostream& out);
 	void togglePause();
+	void load(std::istream& in);
 	void toggleUImode(bool onOff);
 
 
 	CPlayerObject* player = nullptr;
 	//std::shared_ptr< CPlayerObject> player;
-	CMap* map;
+	CLevel* level;
 
 
 	bool paused = true;
@@ -34,7 +40,11 @@ public:
 	bool speeded = false;
 	bool uiMode = false;
 
-private:
+//private:
+
+	TEntities entities; ///<The grand list of entities in the map.
+	bool entitiesToDelete = false;
+	bool entitiesToKill = false;
 
 };
 

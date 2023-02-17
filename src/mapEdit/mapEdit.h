@@ -2,13 +2,13 @@
 
 #include <memory>
 
-#include "../gameHexArray.h"
+#include "../level.h"
 #include "mapPatch.h"
 
 /* For editing game maps. */
 class CMapEdit {
 public:
-	void setMap(CMap* map);
+	void setMap(CLevel* map);
 	bool resize(float delta, int key);
 	void onNewMouseHex(CHex& mouseHex);
 	void createRing();
@@ -44,7 +44,7 @@ public:
 private:
 	void updateMap();
 
-	CMap* pMap;
+	CLevel* pMap;
 	CHexArray workingArray; 
 
 	std::shared_ptr<CMapPatch> currentPatch;

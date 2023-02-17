@@ -10,7 +10,7 @@
 #include "utils/log.h"
 #include "gameTextWin.h"
 #include "gameState.h"
-#include "hexRenderer.h"
+//#include "hexRenderer.h"
 
 #include "sound/sound.h"
 
@@ -42,16 +42,18 @@
 
 #include "items/shield.h"
 
+#include  "importer/importer.h"
+
 CHexWorld::CHexWorld() {
 	game.paused = true;
 
 	hexRender.init();
 
-	hexRendr2.init();
-	hexRender.pCamera = &hexRendr2.camera;
+	//killMeOldHexRenderer.init();
+	//hexRender.pCamera = &killMeOldHexRenderer.camera;
 	//hexRender.pLineShader = hexRendr2.lineShader;
 
-	imRendr::setMatrix(&hexRendr2.camera.clipMatrix);
+	imRendr::setMatrix(&hexRender.camera.clipMatrix);
 	
 	lis::subscribe<CGUIevent>(this);
 	lis::subscribe<CGameEvent>(this);
@@ -163,48 +165,46 @@ void CHexWorld::addHexTile(const std::string& name, const std::string& fileName,
 /** Create a map using the data in the given Tig file. */
 void CHexWorld::makeMap() {
 
-	//map = mapMaker.makeMap(tigMap);
 
-	map = new CMap();
-	map->init(100,40);
+	level = new CLevel();
+	level->init(100,40);
 
 	for (int y = 0; y < 40; y++) {
 		for (int x = 0; x < 100; x++) {
-			map->getHexOffset(x, y).content = emptyHex;
+			level->getHexOffset(x, y).content = emptyHex;
 		}
 	}
 
-	hexRendr2.setMap(map->getHexArray());
-	mapEdit.setMap(map);
+	mapEdit.setMap(level);
 }
 
 void CHexWorld::deleteMap() {
-	delete map;
+	delete level;
 }
 
 
 /** Required each time we restart. */
 void CHexWorld::startGame() {
 
-	hexRendr2.setMap(map->getHexArray());
+	//killMeOldHexRenderer.setMap(level->getHexArray());
 
-	game.setMap(map);
+	game.setLevel(level);
 	physics.clearEntities();
 
-	physics.setMap(map->getHexArray());
+	physics.setMap(level->getHexArray());
 
 	mapEdit.load();
-	hexRender.loadMap(map->getHexArray());
+	hexRender.loadMap(level->getHexArray());
 	prepMapEntities();
 
 	if (hexCursor == NULL)
 		createCursorObject();
 
-	map->getHexArray()->effectsNeedUpdate = true;
+	level->getHexArray()->effectsNeedUpdate = true;
 
 	setViewMode(gameView);
 
-	map->getHexArray()->effectsNeedUpdate = true; //old code! Replace
+	level->getHexArray()->effectsNeedUpdate = true; //old code! Replace
 
 	gWin::pInv->refresh();
 
@@ -216,7 +216,7 @@ void CHexWorld::startGame() {
 	//game.slowed = true;
 
 	pBotZero = nullptr;
-	for (auto& entity : map->entities) {
+	for (auto& entity : game.entities) {
 		if (entity->isRobot && entity->id == 7) {
 			if (pBotZero == NULL)
 				pBotZero = entity.get();
@@ -294,15 +294,15 @@ void CHexWorld::onKeyDown(int key, long mod) {
 
 
 	if (key == 'F') {
-		hexRendr2.toggleFollowCam();
-		hexRendr2.followTarget(playerObj->getPos());
+		/*killMeOldHexRenderer.toggleFollowCam();
+		killMeOldHexRenderer.followTarget(playerObj->getPos());*/
 	}
 
 	if (key == 'R') {
-		hexRendr2.hexLineShader->recompile();
-		hexRendr2.lineShader->recompile();
-		hexRendr2.hexSolidShader->recompile();
-		hexRendr2.visibilityShader->recompile();
+		//killMeOldHexRenderer.hexLineShader->recompile();
+		//killMeOldHexRenderer.lineShader->recompile();
+		//killMeOldHexRenderer.hexSolidShader->recompile();
+		//killMeOldHexRenderer.visibilityShader->recompile();
 	}
 
 	if (key == 'L') {
@@ -339,7 +339,7 @@ void CHexWorld::onMouseWheel(float delta, int key) {
 			return;
 		}
 		if (!mapEdit.resize(delta, key)) {
-			if (hexRendr2.dollyCamera(delta * zoomScale))
+			if (hexRender.dollyCamera(delta * zoomScale))
 				adjustZoomScale(delta);
 		}
 		return;
@@ -348,11 +348,11 @@ void CHexWorld::onMouseWheel(float delta, int key) {
 
 
 	if (key == GLFW_KEY_LEFT_SHIFT) {
-		hexRendr2.pitchCamera(delta);
+		hexRender.pitchCamera(delta);
 	}
 	else {
 		if (key == GLFW_KEY_LEFT_CONTROL) {
-			if (hexRendr2.dollyCamera(delta * zoomScale) )
+			if (hexRender.dollyCamera(delta * zoomScale) )
 				adjustZoomScale(delta);
 		}
 		else {
@@ -386,7 +386,7 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 }
 
 void CHexWorld::calcMouseWorldPos() {
-	auto [mouseHex, mouseWS] = hexRendr2.pickHex(mousePos.x, mousePos.y);
+	auto [mouseHex, mouseWS] = hexRender.pickHex(mousePos.x, mousePos.y);
 	lastMouseWorldPos = mouseWorldPos;
 	mouseWorldPos = mouseWS;
 	glm::vec3 mouseVec = mouseWorldPos - playerObj->getPos();
@@ -405,7 +405,7 @@ void CHexWorld::draw() {
 
 	hexRender.resetDrawLists();
 
-	for (auto& entity : map->entities) {
+	for (auto& entity : game.entities) {
 		if (entity->name == "basicShield")
 			int b = 0;
 		if (entity->live) 
@@ -475,7 +475,7 @@ void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 	float defFov = glm::radians(45.0f);
 	float defaultScreenH = 800.0f;
 	float newFov = asin(sin(defFov / 2.0f) * ratio.y / defaultScreenH) * 2.0f;
-	hexRendr2.setCameraAspectRatio(ratio,newFov);
+	hexRender.setCameraAspectRatio(ratio,newFov);
 	hexRender.setScreenSize(ratio);
 }
 
@@ -501,30 +501,30 @@ void CHexWorld::update(float dt) {
 	physics.update(dT);
 
 	if (!editMode)
-		for (int n = 0; n < map->entities.size(); n++) {
-			auto& entity = map->entities[n];
+		for (int n = 0; n < game.entities.size(); n++) {
+			auto& entity = game.entities[n];
 			if (entity->live)
-				map->entities[n]->update(dT);
+				game.entities[n]->update(dT);
 		}
 
 
 
 
-	//if (game.map->entitiesToDelete)
+	//if (game.entitiesToDelete)
 	//	physics.removeDeletedEntities();
 
 	//TO DO: this should come to replace above
-	if (game.map->entitiesToKill) {
+	if (game.entitiesToKill) {
 		removeDeadEntities();
 	}
 
 
 	game.update(dT);
 
-	if (map->mapUpdated) {
-		//hexRendr2.setMap(map->getHexArray()); //temp to refresh map
-		hexRender.loadMap(map->getHexArray());
-		map->mapUpdated = false;
+	if (level->mapUpdated) {
+		//hexRendr2.setMap(level->getHexArray()); //temp to refresh map
+		hexRender.loadMap(level->getHexArray());
+		level->mapUpdated = false;
 	}
 
 	gWin::update(dT);
@@ -597,7 +597,7 @@ void CHexWorld::onRedo() {
 void CHexWorld::prepMapEntities() {
 	physics.clearEntities();
 
-	for (auto& entity : map->entities) {
+	for (auto& entity : game.entities) {
 		if (entity->isRobot)
 			physics.add(entity.get());
 
@@ -631,7 +631,7 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 
 
 	/*if (!lineOfSight)
-		cursorPath = map->aStarPath(playerObj->hexPosition, hexCursor->hexPosition, true);
+		cursorPath = level->aStarPath(playerObj->hexPosition, hexCursor->hexPosition, true);
 	else
 		cursorPath = *hexLine2(playerObj->hexPosition, hexCursor->hexPosition);*/
 
@@ -639,11 +639,11 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
 	glm::i32vec2 offset = cubeToOffset(mouseHex);
 	coords << "  offset " << offset.x << ", " << offset.y;
-	glm::i32vec2 index = map->getHexArray()->cubeToIndex(mouseHex);
+	glm::i32vec2 index = level->getHexArray()->cubeToIndex(mouseHex);
 	coords << " index " << index.x << " " << index.y;
 	glm::vec3 worldSpace = cubeToWorldSpace(mouseHex);
 	coords << " worldPos " << worldSpace.x << " " << worldSpace.y << " " << worldSpace.z;
-	coords << " " << map->getHexArray()->getHexCube(mouseHex).content;
+	coords << " " << level->getHexArray()->getHexCube(mouseHex).content;
 	//glm::vec2 screenPos = hexRenderer.worldPosToScreen(worldSpace);
 	coords << " wsMouse " << mouseWorldPos.x << " " << mouseWorldPos.y;
 	coords << " scrnMouse " << mousePos.x << " " << mousePos.y;
@@ -732,12 +732,12 @@ void CHexWorld::setViewMode(TViewMode mode) {
 	viewMode = mode;
 
 	if (mode == gameView) {
-		hexRendr2.pointCamera(glm::vec3(0, 0, -1));
-		hexRendr2.setCameraHeight(15);
+		hexRender.pointCamera(glm::vec3(0, 0, -1));
+		hexRender.setCameraHeight(15);
 	}
 	else if (mode == devView) {
-		hexRendr2.setCameraPos(glm::vec3(0, -0, 12));
-		hexRendr2.setCameraPitch(45);
+		hexRender.setCameraPos(glm::vec3(0, -0, 12));
+		hexRender.setCameraPitch(45);
 
 	}
 
@@ -756,7 +756,7 @@ void CHexWorld::onMapDrag() {
 	cumulativeMapDrag += glm::length(mouseVec);
 	if (cumulativeMapDrag < 0.5f)
 		return;
-	hexRendr2.moveCamera(-mouseVec);
+	hexRender.moveCamera(-mouseVec);
 	//cumulativeMapDrag = 0;
 	mapDragging = true;
 }
@@ -765,7 +765,7 @@ void CHexWorld::toggleDirectionGraphics() {
 	directionGraphicsOn = !directionGraphicsOn;
 
 	if (directionGraphicsOn) {
-		for (auto& entity : map->entities) {
+		for (auto& entity : game.entities) {
 			if (entity->isRobot) {
 				auto graphic = std::make_shared<CAvoidGraphic>();
 				graphic->entity = entity;
@@ -799,7 +799,7 @@ void CHexWorld::freeCam(float x, float y) {
 
 void CHexWorld::freeCam() {
 	cameraMode = camFree;
-	freeCamPos = glm::vec2(hexRender.pCamera->getPos().x, hexRender.pCamera->getPos().y);
+	freeCamPos = glm::vec2(hexRender.camera.getPos().x, hexRender.camera.getPos().y);
 }
 
 void CHexWorld::fixedCam(float x, float y) {
@@ -835,15 +835,15 @@ void CHexWorld::drawReticule() {
 void CHexWorld::removeDeadEntities() {
 	physics.removeDeadEntities();
 
-	for (auto& ent = map->entities.begin(); ent != map->entities.end();) {
+	for (auto& ent = game.entities.begin(); ent != game.entities.end();) {
 		if (ent->get()->deleteMe)
-			ent = map->entities.erase(ent);
+			ent = game.entities.erase(ent);
 		else
 			ent++;
 	}
 
 
-	game.map->entitiesToKill = false;
+	game.entitiesToKill = false;
 }
 
 ///** Remove marked entities from the game. */
@@ -857,12 +857,12 @@ void CHexWorld::removeDeadEntities() {
 //			gra++;
 //	}
 //
-//	for (auto& ent = map->entities.begin(); ent != map->entities.end();) {
+//	for (auto& ent = game.entities.begin(); ent != game.entities.end();) {
 //		if (ent->get()->toRemove == true) {
 //			if (pBotZero && pBotZero->id == ent->get()->id) {
 //				pBotZero = nullptr;
 //			}
-//			ent = map->entities.erase(ent);
+//			ent = game.entities.erase(ent);
 //		}
 //		else
 //			ent++;
@@ -872,10 +872,10 @@ void CHexWorld::removeDeadEntities() {
 
 void CHexWorld::onPlayerDeath() {
 	fixedCam(playerObj->getPos().x, playerObj->getPos().y);
-	//map->removeEntity(playerObj);
+	//level->removeEntity(playerObj);
 	playerObj->setPosition(glm::vec3(0));
 
-	for (auto& entity : map->entities) {
+	for (auto& entity : game.entities) {
 		if (entity->isRobot) {
 			//((CRobot*)entity.get())->setState(robotWander3);
 			entity->ai = std::make_shared<CRoboWander>((CRobot*)entity.get());

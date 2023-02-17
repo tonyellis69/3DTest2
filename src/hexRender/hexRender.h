@@ -44,6 +44,7 @@ public:
 	void drawGlow();
 	void setScreenSize(glm::vec2& ratio);
 
+
 	void resizeBlurTextures();
 
 	void setCameraPos(float x, float y);
@@ -58,7 +59,22 @@ public:
 	void loadLowerMaskList(TSolidDraw& listEntry);
 	void loadExplosionDrawList(TSplodeDraw& listEntry);
 
-	CCamera* pCamera;///<Old renderer's camera - replace with own!
+	bool dollyCamera(float delta);
+	void pitchCamera(float delta);
+	void moveCamera(glm::vec3& move);
+	void pointCamera(glm::vec3& dir);
+	void setCameraHeight(float z);
+	void setCameraPos(glm::vec3& pos);
+	void setCameraPitch(float pitch);
+	void setCameraAspectRatio(glm::vec2& ratio, float fov);
+	std::tuple <CHex, glm::vec3> pickHex(int screenX, int screenY);
+	glm::vec3 castFromCamToHexPlane(glm::vec3& ray);
+
+
+	//CCamera* pCamera;///<Old renderer's camera - replace with own!
+	CCamera camera;
+	float cameraPitch;
+
 
 	CShader* lineShader;
 	unsigned int hMVP;
@@ -115,6 +131,7 @@ public:
 
 	float sceneryLine = 4;
 	float modelLine = 2; // 1.5f;
+
 
 private:
 	void addToMapBuf(std::vector<vc>& v, std::vector<unsigned int>& i, CHex& hex, int tile);

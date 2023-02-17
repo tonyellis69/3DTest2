@@ -16,7 +16,7 @@
 
 
 
-void CMapEdit::setMap(CMap* map) {
+void CMapEdit::setMap(CLevel* map) {
 	pMap = map;
 	currentPatch = nullptr;
 	lastPatch = nullptr;
@@ -184,7 +184,7 @@ void CMapEdit::save() {
 	std::string filename = file::getDataPath() + "manyMapTest.map";
 	std::ofstream saveFile(filename);
 	updateMap();
-	pMap->save(saveFile);
+	game.save(saveFile);
 	saveFile.close();
 }
 
@@ -192,7 +192,7 @@ void CMapEdit::load() {
 	std::string filename = file::getDataPath() + "manyMapTest.map";// "oneMapTest.map";
 	std::ifstream loadFile(filename);
 	assert(loadFile.is_open());
-	pMap->load(loadFile);
+	game.load(loadFile);
 	loadFile.close();
 	setMap(pMap);
 	pMap->mapUpdated = true;
@@ -216,10 +216,10 @@ void CMapEdit::shapeWheel(float delta) {
 }
 
 void CMapEdit::addEntity(glm::vec3& mousePos) {
-	for (auto it = pMap->entities.begin(); it != pMap->entities.end();) {
+	for (auto it = game.entities.begin(); it != game.entities.end();) {
 		TEntity entity = *it;
 		if (glm::distance(entity->getPos(), mousePos) < 0.5f) {
-			pMap->removeEntity(*it);
+			game.deleteEntity(*it->get());
 			if (game.player == (*it).get())
 				game.player = nullptr;
 			return;
@@ -324,7 +324,7 @@ void CMapEdit::onMouseMove(glm::vec3& mouseWPos) {
 	
 	//on an entity?
 	entIdStr = "";
-	for (auto& it = pMap->entities.begin(); it != pMap->entities.end(); it++) {
+	for (auto& it = game.entities.begin(); it != game.entities.end(); it++) {
 		TEntity entity = *it;
 		if (glm::distance(entity->getPos(), mouseWPos) < 0.5f) {
 			entIdStr = std::to_string(entity->id);

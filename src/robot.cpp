@@ -6,7 +6,7 @@
 
 #include "utils/log.h"
 
-#include "hexRenderer.h"
+//#include "hexRenderer.h"
 
 #include "gameState.h"
 #include "missile.h"

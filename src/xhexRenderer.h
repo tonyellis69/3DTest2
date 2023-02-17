@@ -33,12 +33,12 @@ public:
 	CHexRenderer();
 	void init();
 	void setMap(CHexArray* hexArray);
-	void drawFloorPlan();
-	void drawPath(THexList* path, glm::vec4& pathStartColour, glm::vec4& pathEndColour);
+	//void drawFloorPlan();
+//	void drawPath(THexList* path, glm::vec4& pathStartColour, glm::vec4& pathEndColour);
 	bool dollyCamera(float delta);
 	void pitchCamera(float delta);
-	void moveCamera(glm::vec3& move);
-	void setCameraAspectRatio(glm::vec2 ratio, float fov);
+	//void moveCamera(glm::vec3& move);
+//	void setCameraAspectRatio(glm::vec2 ratio, float fov);
 	std::tuple <CHex, glm::vec3> pickHex(int screenX, int screenY);
 	void setCursorPath(CHex& playerPos, CHex& cursorPos);
 	void setCursorPath(THexList& path);
@@ -59,19 +59,19 @@ public:
 
 	void updateFogBuffer();
 
-	void updateMapVerts();
+	//void updateMapVerts();
 
-	void drawSightLine(glm::vec3& posA, glm::vec3& posB);
+//	void drawSightLine(glm::vec3& posA, glm::vec3& posB);
 
-	void drawExplosion(TExplode& e);
+	//void drawExplosion(TExplode& e);
 
 	//void drawLineModel(TModelMesh& mesh);
 	//void drawSolidModel(TModelMesh& model);
 
-	void pointCamera(glm::vec3& dir);
-	void setCameraHeight(float z);
-	void setCameraPos(glm::vec3& pos);
-	void setCameraPitch(float pitch);
+	//void pointCamera(glm::vec3& dir);
+	//void setCameraHeight(float z);
+	//void setCameraPos(glm::vec3& pos);
+	//void setCameraPitch(float pitch);
 
 	bool isOnScreen(glm::vec3& pos);
 
@@ -87,23 +87,23 @@ public:
 	const int numExplosionParticles = 200;
 	
 private:
-	void tmpCreateHexagonModel();
+	//void tmpCreateHexagonModel();
 
-	void fillFloorplanLineBuffer();
-	void fillFloorplanSolidBuffer(CBuf2& buf, int drawValue, float scale);
-	void createSolidHexModel();
-	void createLineShader();
-	void createHexShader();
-	void createVisibilityShader();
+	//void fillFloorplanLineBuffer();
+	//void fillFloorplanSolidBuffer(CBuf2& buf, int drawValue, float scale);
+	//void createSolidHexModel();
+	//void createLineShader();
+	//void createHexShader();
+	//void createVisibilityShader();
 
-	void createExplosionShader();
-	void createFilledShader();
+	//void createExplosionShader();
+	//void createFilledShader();
 
 	//TO DO: scrap this, but currently it's used in highLightHex
 	//void drawModel(TModelData& node, glm::mat4& parentMatrix, CBuf2* buf, glm::vec4& colour);
 
 	
-	void createFogBuffer(int w, int h);
+//	void createFogBuffer(int w, int h);
 
 	unsigned int hFogBuffer;
 	unsigned int hFogTex;
@@ -153,9 +153,9 @@ private:
 	unsigned int hFillMVP;
 	unsigned int hFillColour;
 
-	glm::vec4 floorplanLineColour;
-	glm::vec4 floorplanSpaceColour;
-	glm::vec4 floorplanSolidColour;
+	//glm::vec4 floorplanLineColour;
+	//glm::vec4 floorplanSpaceColour;
+	//glm::vec4 floorplanSolidColour;
 
 
 	float cameraPitch;
@@ -174,13 +174,13 @@ private:
 
 	CBuf2 hexShaderBuf;
 
-	CBuf2 unitLineBuf; //Should be temp, holds verts to draw sightline
+	//CBuf2 unitLineBuf; //Should be temp, holds verts to draw sightline
 
-	CBuf2 explosionBuf; //Holds dummy verts for draw calls
+//	CBuf2 explosionBuf; //Holds dummy verts for draw calls
 
 	std::vector<glm::vec4> testColours;
 };
 
 
 
-extern CHexRenderer hexRendr2;
+//extern CHexRenderer killMeOldHexRenderer;

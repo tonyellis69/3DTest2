@@ -3,11 +3,11 @@
 #include <random>
 
 
-#include "gameHexArray.h"
+#include "level.h"
 
 //#include "mapMaker.h"
 
-#include "hexRenderer.h"
+//#include "hexRenderer.h"
 
 #include "robot.h"
 #include "playerHexObj.h"
@@ -110,7 +110,7 @@ private:
 	//void removeEntities();
 	void onPlayerDeath();
 
-	CMap* map;
+	CLevel* level;
 
 	CHexRender hexRender; ///<New hex renderer.
 

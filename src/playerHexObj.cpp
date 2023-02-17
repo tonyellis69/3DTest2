@@ -16,7 +16,7 @@
 
 #include "spawner.h"
 
-#include "..\3Dtest\src\hexRenderer.h"
+//#include "..\3Dtest\src\hexRenderer.h"
 
 #include "gameWin.h"
 
@@ -56,7 +56,7 @@ CPlayerObject::~CPlayerObject() {
 
 
 void CPlayerObject::dropItem(int entityNo) {
-	CItem* item = (CItem*)game.map->getEntity(entityNo);
+	CItem* item = (CItem*)game.getEntity(entityNo);
 
 	auto it = std::find(inventory.begin(), inventory.end(), item);
 	inventory.erase(it);
@@ -102,7 +102,7 @@ void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
 	hp -= finalDamage;
 
 	if (hp < 1) {
-		//game.map->removeEntity(this);
+		//game.level->removeEntity(this);
 		dead = true;
 		visible = false;
 		//game.onPlayerDeath();
@@ -142,7 +142,7 @@ void CPlayerObject::updateViewField() {
 	//CCalcVisionField calcFieldMsg(hexPosition, viewField.ringHexes, true);
 	//send(calcFieldMsg);
 
-	THexList visibleHexes = game.map->findVisibleHexes(transform->hexPosition, viewField.ringHexes, true);
+	THexList visibleHexes = game.level->findVisibleHexes(transform->hexPosition, viewField.ringHexes, true);
 
 	std::vector<CHex> unvisibledHexes;
 	for (auto hex : viewField.visibleHexes) {
@@ -158,10 +158,10 @@ void CPlayerObject::updateViewField() {
 	//CUpdateFog fogMsg(visibleHexes, unvisibledHexes);
 //	send(fogMsg);
 
-	game.map->updateVisibility(visibleHexes, unvisibledHexes);
+	game.level->updateVisibility(visibleHexes, unvisibledHexes);
 
 	//hexRendr->updateFogBuffer();
-	game.map->getHexArray()->effectsNeedUpdate = true;
+	game.level->getHexArray()->effectsNeedUpdate = true;
 
 }
 

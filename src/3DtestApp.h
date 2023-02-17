@@ -66,7 +66,7 @@ public:
 
 	std::string dataPath; ///<Filepath to the Data folder
 
-	CHexRenderer hexRenderer;
+	//CHexRenderer hexRenderer;
 	CHexWorld hexWorld; 
 
 	TAppMode appMode;

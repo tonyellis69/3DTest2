@@ -30,7 +30,7 @@ void CNearWin::update(float dT)
 	//add any newly near items
 	//TO DO: if we're looping through all entities/items every tick, may as well 
 	//clear and rebuild list every time.
-	for (auto& entity : game.map->entities) {
+	for (auto& entity : game.entities) {
 		if (entity->isItem && ((CItem*)entity.get())->parent == nullptr
 			&& glm::distance(playerPos, entity->getPos()) < nearDist) {
 			if (std::find(nearItems.begin(), nearItems.end(), (CItem*)entity.get()) == nearItems.end()) {

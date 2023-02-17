@@ -19,4 +19,7 @@ public:
 
 	const float maxSize = 10;
 	float seed; 
+
+
+	const int numExplosionParticles = 200; 
 };

@@ -12,20 +12,13 @@ using TRange = std::pair<TMapIt, TMapIt>;
 
 
 
-class CMap  {
+class CLevel  {
 public:
 	void init(int x, int y) {
 		hexArray.init(x, y);
 	}
-	CEntity* getEntityAt2(const CHex& hex);
-	CEntities getEntitiesAt(const CHex& hex);
 	THexList findVisibleHexes(CHex& apex, THexList& perimeterHexes, bool obsessive);
 	void updateVisibility(THexList& visibleHexes, THexList& unvisibleHexes);
-	//void addEntity(TEntity entity, CHex& hex);
-	void addEntity(TEntity entity);
-	//void addExistingEntity(CEntity* entity, CHex& hex);
-	//void removeEntity(CEntity*  entity);
-	void removeEntity(TEntity entity);
 	CHexArray* getHexArray() {
 		return &hexArray;
 	}
@@ -35,17 +28,6 @@ public:
 	CHexElement& getHexOffset(int x, int y) {
 		return hexArray.getHexOffset(x, y);
 	}
-	void deleteEntity(CEntity& entity);
-
-	void tidyEntityLists();
-	
-	void save(std::ostream& out);
-	void load(std::istream& in);
-
-	CEntity* getEntity(int idNo);
-
-
-	TEntities entities; ///<The grand list of entities in the map.
 	
 	bool entitiesToDelete = false;
 	bool entitiesToKill = false;
@@ -53,8 +35,10 @@ public:
 
 	bool mapUpdated = false;
 
-private:
+//private:
 	CHexArray hexArray;
+
+
 };
 
 class CMapHeader {

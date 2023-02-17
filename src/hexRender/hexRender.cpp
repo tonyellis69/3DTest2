@@ -132,10 +132,10 @@ void CHexRender::drawMap() {
 //	renderer.setShader(pLineShader);
 	lineShader->activate();
 
-	glm::mat4 mvp = pCamera->clipMatrix;
+	glm::mat4 mvp = camera.clipMatrix;
 
 	lineShader->setUniform(hMVP, mvp);
-	lineShader->setUniform(hWinSize, pCamera->getView());
+	lineShader->setUniform(hWinSize, camera.getView());
 	lineShader->setUniform(hColour, glm::vec4(1, 0, 0, 0));
 	glUniform4fv(hPalette, 4, (float*)(uniqueTileColours.data()));
 	lineShader->setUniform(hChannel, 0.0f);
@@ -192,7 +192,7 @@ void CHexRender::resetDrawLists() {
 
 void CHexRender::drawLineList() {
 	lineShader->activate();
-	lineShader->setUniform(hWinSize, pCamera->getView());
+	lineShader->setUniform(hWinSize, camera.getView());
 	lineShader->setUniform(hChannel, 1.0f);
 	lineShader->setUniform(hThickness, tmpLineThickness);
 	lineShader->setUniform(hSmoothing, tmpLineSmooth);
@@ -205,19 +205,19 @@ void CHexRender::drawLineList() {
 
 	for (auto& draw : lineDrawList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix *draw.matrix;
+		glm::mat4 mvp = camera.clipMatrix *draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
 	}
 
-//	sysLog << "\n" << pCamera->clipMatrix * glm::vec4(-77.2343, 10.2631, 0,1);
+//	sysLog << "\n" << camera.clipMatrix * glm::vec4(-77.2343, 10.2631, 0,1);
 
 	//lineShader->setUniform(hChannel, 2.0f);
 	//lineShader->setUniform(hThickness, 20);
 	//for (auto& draw : lineDrawList) {
 	//	draw.buf->setVAO();
-	//	glm::mat4 mvp = pCamera->clipMatrix * *draw.matrix;
+	//	glm::mat4 mvp = camera.clipMatrix * *draw.matrix;
 	//	lineShader->setUniform(hMVP, mvp);
 	//	lineShader->setUniform(hPalette, *draw.palette);
 	//	drawMeshLine(*draw.meshRec);
@@ -233,7 +233,7 @@ void CHexRender::drawLineList() {
 void CHexRender::drawLineListDBG() {
 	//return;
 	lineShader->activate();
-	lineShader->setUniform(hWinSize, pCamera->getView());
+	lineShader->setUniform(hWinSize, camera.getView());
 	lineShader->setUniform(hChannel, 1.0f);
 	lineShader->setUniform(hThickness, tmpLineThickness);
 	lineShader->setUniform(hSmoothing, tmpLineSmooth);
@@ -249,7 +249,7 @@ void CHexRender::drawLineListDBG() {
 
 	for (auto& draw : lineDrawListDBG) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
+		glm::mat4 mvp = camera.clipMatrix * draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
@@ -265,14 +265,14 @@ void CHexRender::drawLineListDBG() {
 
 void CHexRender::drawUpperLineList() {
 	lineShader->activate();
-	lineShader->setUniform(hWinSize, pCamera->getView());
+	lineShader->setUniform(hWinSize, camera.getView());
 	lineShader->setUniform(hChannel, 1.0f);
 	lineShader->setUniform(hThickness, tmpLineThickness);
 	lineShader->setUniform(hSmoothing, tmpLineSmooth);
 
 	for (auto& draw : upperLineList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
+		glm::mat4 mvp = camera.clipMatrix * draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
@@ -291,7 +291,7 @@ void CHexRender::makeGlowShapes() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	lineShader->activate();
-	lineShader->setUniform(hWinSize, pCamera->getView());
+	lineShader->setUniform(hWinSize, camera.getView());
 	lineShader->setUniform(hChannel, 1.0f);
 	lineShader->setUniform(hThickness, 20.0f);
 	lineShader->setUniform(hSmoothing, 0);
@@ -300,7 +300,7 @@ void CHexRender::makeGlowShapes() {
 
 	for (auto& draw : lineDrawList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
+		glm::mat4 mvp = camera.clipMatrix * draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
@@ -308,7 +308,7 @@ void CHexRender::makeGlowShapes() {
 
 	for (auto& draw : upperLineList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
+		glm::mat4 mvp = camera.clipMatrix * draw.matrix;
 		lineShader->setUniform(hMVP, mvp);
 		lineShader->setUniform(hPalette, *draw.palette);
 		drawMeshLine(*draw.meshRec);
@@ -324,7 +324,7 @@ void CHexRender::drawSolidList() {
 
 	for (auto& draw : solidDrawList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
+		glm::mat4 mvp = camera.clipMatrix * draw.matrix;
 		filledShader->setUniform(hMVPF, mvp);
 		filledShader->setUniform(hPaletteF, *draw.palette);
 		drawMeshSolid(*draw.meshRec);
@@ -346,7 +346,7 @@ void CHexRender::drawMaskList() {
 
 	for (auto& draw : maskList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
+		glm::mat4 mvp = camera.clipMatrix * draw.matrix;
 		maskShader->setUniform(hMaskMVP, mvp);
 		drawMeshSolid(*draw.meshRec);
 	}
@@ -358,7 +358,7 @@ void CHexRender::drawMaskList() {
 
 	for (auto& draw : lowerMaskList) {
 		draw.buf->setVAO();
-		glm::mat4 mvp = pCamera->clipMatrix * draw.matrix;
+		glm::mat4 mvp = camera.clipMatrix * draw.matrix;
 		maskShader->setUniform(hMaskMVP, mvp);
 		drawMeshSolid(*draw.meshRec);
 	}
@@ -367,7 +367,7 @@ void CHexRender::drawMaskList() {
 
 void CHexRender::drawExplosionList() {
 	splodeShader->activate();
-	splodeShader->setUniform(hExpMVP, pCamera->clipMatrix);
+	splodeShader->setUniform(hExpMVP, camera.clipMatrix);
 
 	for (auto& draw : explosionDrawList) {
 		splodeShader->setUniform(hPos, draw.pos);
@@ -532,13 +532,13 @@ void CHexRender::resizeBlurTextures() {
 }
 
 void CHexRender::setCameraPos(float x, float y) {
-	float camZ = pCamera->getPos().z; //FIX: just store cam height
-	pCamera->setPos(glm::vec3(x, y, camZ));
+	float camZ = camera.getPos().z; //FIX: just store cam height
+	camera.setPos(glm::vec3(x, y, camZ));
 }
 
 void CHexRender::drawModelAt(CModel& model, glm::vec3& pos) {
 	lineShader->activate();
-	lineShader->setUniform(hWinSize, pCamera->getView());
+	lineShader->setUniform(hWinSize, camera.getView());
 	lineShader->setUniform(hChannel, 1.0f);
 	lineShader->setUniform(hThickness, 0.5f);////FIXME! User should control these, or (better) model should
 	lineShader->setUniform(hSmoothing, tmpLineSmooth);
@@ -549,7 +549,7 @@ void CHexRender::drawModelAt(CModel& model, glm::vec3& pos) {
 
 	model.buf.setVAO();
 
-	glm::mat4 mvp = pCamera->clipMatrix * glm::translate(glm::mat4(1), pos);
+	glm::mat4 mvp = camera.clipMatrix * glm::translate(glm::mat4(1), pos);
 	lineShader->setUniform(hMVP, mvp);
 	lineShader->setUniform(hPalette, model.palette);
 	drawMeshLine(model.getMainMesh()->meshRec);
@@ -590,6 +590,85 @@ void CHexRender::loadLowerMaskList(TSolidDraw& listEntry) {
 void CHexRender::loadExplosionDrawList(TSplodeDraw& listEntry) {
 	explosionDrawList.emplace_back(listEntry);
 	explosionDrawSize++;
+}
+
+bool CHexRender::dollyCamera(float delta) {
+	camera.dolly(delta);
+	glm::vec3 pos = camera.getPos();
+	if (pos.z <= 0) {
+		pos.z = 1;
+		camera.setPos(pos);
+		return false;
+	}
+	return true;
+}
+
+void CHexRender::pitchCamera(float delta) {
+	cameraPitch += delta;
+	camera.pitch(delta);
+}
+
+void CHexRender::moveCamera(glm::vec3& move) {
+	camera.translate(move);
+}
+
+/** Point the camera in the given direction. Eg, top-down. */
+void CHexRender::pointCamera(glm::vec3& dir) {
+	camera.lookAt(dir);
+}
+
+void CHexRender::setCameraHeight(float z) {
+	glm::vec3 newPos = camera.getPos();
+	newPos.z = z;
+	camera.setPos(newPos);
+}
+
+void CHexRender::setCameraPos(glm::vec3& pos) {
+	camera.setPos(pos);
+}
+
+void CHexRender::setCameraPitch(float pitch) {
+	cameraPitch = pitch;
+	camera.pitch(pitch);
+}
+
+void CHexRender::setCameraAspectRatio(glm::vec2& ratio, float fov) {
+	camera.setAspectRatio(ratio, fov);
+}
+
+/** Return the hex coordinates and worldspace pos for the given screen positon. */
+std::tuple <CHex, glm::vec3> CHexRender::pickHex(int screenX, int screenY) {
+	//convert to clip coordinates
+	glm::vec2 screenSize = camera.getView();
+	glm::vec4 clip((2.0f * screenX) / screenSize.x - 1.0f, 1.0f - (2.0f * screenY) / screenSize.y, -1.0f, 1.0f);
+
+	//undo perspective 
+	glm::vec4 view = glm::inverse(camera.perspectiveMatrix) * clip;
+	view.z = -1.0f;
+	view.w = 0.0f;
+
+	//undo view (camera position)
+	glm::vec4 worldPos = camera.worldMatrix * view;
+	glm::vec3 ray = glm::normalize(glm::vec3(worldPos));
+
+	//this should be a ray, projecting from 0,0,0 in the given direction.
+
+	glm::vec3 p = castFromCamToHexPlane(ray);
+
+	CHex hexPos = worldSpaceToHex(p);
+
+	return { hexPos, p };
+}
+
+glm::vec3 CHexRender::castFromCamToHexPlane(glm::vec3& ray) {
+	glm::vec3 planeN(0, 0, 1); //normal of plane on which hexes lie.
+	float d = 0; //distance of plane from origin
+	float t = -(glm::dot(camera.getPos(), planeN) + d)
+		/ glm::dot(ray, planeN);
+	//t = distance from camera to plane for this ray
+
+	return camera.getPos() + ray * t; //extend ray to find where it hits plane.
+
 }
 
 /** Add the verts for tile tileNo to the given arrays, offset to position hex.

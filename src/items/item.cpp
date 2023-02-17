@@ -1,7 +1,7 @@
 
 #include "item.h"
 
-#include "..\3Dtest\src\hexRenderer.h"
+//#include "..\3Dtest\src\hexRenderer.h"
 
 #include "..\playerHexObj.h"
 

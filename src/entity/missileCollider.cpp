@@ -75,7 +75,7 @@ std::tuple<bool, glm::vec3> CMissileColliderCmp::sceneryCollisionCheck(glm::vec3
 	TIntersections intersectedHexes = getIntersectedHexes(segA, segB);
 	
 	for (auto& hex : intersectedHexes) {
-		if (game.map->getHexArray()->getHexCube(hex.first).content == solidHex) 
+		if (game.level->getHexArray()->getHexCube(hex.first).content == solidHex) 
 			return { true, {hex.second} };
 	}
 	return { false, {0,0,0} };

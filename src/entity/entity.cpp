@@ -5,7 +5,7 @@
 
 #include "utils\log.h"
 
-#include "..\3Dtest\src\hexRenderer.h"
+//#include "..\3Dtest\src\hexRenderer.h"
 
 #include <glm/gtc/matrix_transform.hpp>	
 
@@ -92,7 +92,7 @@ glm::vec3 CEntity::getPos()
 void CEntity::destroyMe() {
 	live = false;
 	deleteMe = true;
-	game.map->entitiesToKill = true;
+	game.entitiesToKill = true;
 }
 
 void CEntity::setParent(CEntity* parent) {

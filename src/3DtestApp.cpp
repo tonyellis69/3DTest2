@@ -377,7 +377,6 @@ void C3DtestApp::initHexWorld() {
 	hexWorld.addHexTile("largeHex", dataPath + "models\\largeHex.dae", largerHex);
 
 
-	//ITigObj* tigMapTemplate = vm.getObject("testRoom");
 	hexWorld.makeMap();
 	hexWorld.startGame();
 }

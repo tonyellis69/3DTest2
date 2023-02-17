@@ -57,7 +57,7 @@
     <ClCompile Include="src\playerHexObj.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\gameHexArray.cpp">
+    <ClCompile Include="src\level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gameWin.cpp">
@@ -73,9 +73,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\missile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\hexRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\explosion.cpp">
@@ -215,7 +212,7 @@
     <ClInclude Include="..\TC\Debug\tigConst.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\gameHexArray.h">
+    <ClInclude Include="src\level.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gameWin.h">
@@ -240,9 +237,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\missile.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\hexRenderer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\explosion.h">

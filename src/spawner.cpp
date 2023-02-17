@@ -22,12 +22,15 @@
 #include "entity/sceneryCollider.h"
 #include "entity/missileCollider.h"
 
+#include "gameState.h"
+
+
 
 
 std::unordered_map<std::string, CModel> CSpawn::models;
 std::unordered_map<std::string, std::vector<glm::vec4> >* CSpawn::pPalettes;
 
-CMap* CSpawn::pMap;
+CLevel* CSpawn::pMap;
 
 
 TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
@@ -59,7 +62,7 @@ TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 	player->shield = equippedShield;
 
 
-	pMap->addEntity(player);
+	game.addEntity(player);
 	player->onSpawn();
 	return player;
 }
@@ -104,7 +107,7 @@ TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 
 	robot->name = "robot";
 
-	pMap->addEntity(robot);
+	game.addEntity(robot);
 	robot->onSpawn();
 	return robot;
 }
@@ -120,7 +123,7 @@ TEntity CSpawn::missile(const std::string& name, glm::vec3& pos, float angle) {
 	missile->addComponent( std::make_shared <CPhys>(missile.get(), 1.0f / 80.0f) );
 	missile->setPosition(pos,angle);
 
-	pMap->addEntity(missile);
+	game.addEntity(missile);
 	missile->onSpawn();
 	return missile;
 }
@@ -134,7 +137,7 @@ TEntity CSpawn::explosion(const std::string& name, glm::vec3& pos, float scale) 
 	//explode->worldPos = pos;
 	explode->transform->setPos(pos);
 
-	pMap->addEntity(explode);
+	game.addEntity(explode);
 	explode->onSpawn();
 	return explode;
 }
@@ -155,7 +158,7 @@ CEntity* CSpawn::gun(const std::string& name, glm::vec3& pos ) {
 	gun->gunType = std::make_shared<CSmallGun>(gun.get());
 	gun->name = "gun";
 
-	pMap->addEntity(gun);
+	game.addEntity(gun);
 	gun->onSpawn();
 	return gun.get();
 }
@@ -175,7 +178,7 @@ CEntity* CSpawn::armour(const std::string& name, glm::vec3& pos) {
 	armour->armourType = std::make_shared<CBasicArmour>(armour.get());
 	armour->name = "armour";
 
-	pMap->addEntity(armour);
+	game.addEntity(armour);
 	armour->onSpawn();
 	return armour.get();
 }
@@ -191,7 +194,7 @@ CEntity* CSpawn::shield(const std::string& name) {
 	shieldEnt->item = std::make_shared<CShieldComponent>(shieldEnt.get());
 	shieldEnt->name = name;
 
-	pMap->addEntity(shieldEnt);
+	game.addEntity(shieldEnt);
 	shieldEnt->onSpawn();
 	return shieldEnt.get();
 }
@@ -210,7 +213,7 @@ TEntity CSpawn::drop(const std::string& name, glm::vec3& pos) {
 	drop->addAIComponent(std::make_shared<CDropAI>(drop.get()) );
 	drop->addComponent( std::make_shared<CPhys>(drop.get(), 1.0f / 80.0f) );
 
-	pMap->addEntity(drop);
+	game.addEntity(drop);
 
 	drop->onSpawn();
 	return drop;

@@ -5,7 +5,7 @@
 #include "gameState.h"
 #include "utils/log.h"
 
-#include "hexRenderer.h"
+//#include "hexRenderer.h"
 
 #include "explosion.h"
 
@@ -89,7 +89,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 
 	//Check if we've collided with an entity in one of those hexes
 	for (auto& hex: intersectedHexes) {
-		CEntities entities = game.map->getEntitiesAt(hex.first);
+		CEntities entities = game.getEntitiesAt(hex.first);
 		for (auto& entity : entities) {
 			if (entity && entity != this && entity != owner && entity->live) {
 				if (entity->collider && !entity->collider->sceneryOnly) {
@@ -110,7 +110,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 	//still here? Check if we've collided with scenery - but only if we've entered a new hex.
 	if (leadingPointHex != lastLeadingPointHex) {
 		for (auto& hex : intersectedHexes) {
-			if (game.map->getHexArray()->getHexCube(hex.first).content == solidHex) {
+			if (game.level->getHexArray()->getHexCube(hex.first).content == solidHex) {
 				collided = true;
 				//transform->worldPos = hex.second - (moveVec * distToPoint);
 				transform->setPos( hex.second - (moveVec * distToPoint));
