@@ -49,10 +49,6 @@ CHexWorld::CHexWorld() {
 
 	hexRender.init();
 
-	//killMeOldHexRenderer.init();
-	//hexRender.pCamera = &killMeOldHexRenderer.camera;
-	//hexRender.pLineShader = hexRendr2.lineShader;
-
 	imRendr::setMatrix(&hexRender.camera.clipMatrix);
 	
 	lis::subscribe<CGUIevent>(this);
@@ -68,10 +64,24 @@ CHexWorld::CHexWorld() {
 
 	initPalettes();
 
-	//lis::unsubscribe<CEvent>(this);
 }
 
 void CHexWorld::onEvent(CGUIevent& e) {
+	if (procTestMode) {
+		if (e.type == eMouseWheel) {
+			levelGen.resize(int(e.f2));
+			makeMap();
+			startGame();
+			//startGame could respond smartly, pulling camera back for bigger maps
+			//or, don't use startGame at all, since we're not playing a game.
+			//take a look at what startGame does, may want to start splitting it up.
+		}
+
+
+	}
+
+
+
 	if (e.type == eKeyDown) {
 		if (e.i1 == GLFW_KEY_F2)
 			toggleDirectionGraphics();
@@ -128,6 +138,8 @@ void CHexWorld::onEvent(CGUIevent& e) {
 
 
 
+
+
 }
 
 void CHexWorld::onEvent(CGameEvent& e) {
@@ -162,49 +174,42 @@ void CHexWorld::addHexTile(const std::string& name, const std::string& fileName,
 
 }
 
-/** Create a map using the data in the given Tig file. */
+
 void CHexWorld::makeMap() {
-
-
-	level = new CLevel();
-	level->init(100,40);
-
-	for (int y = 0; y < 40; y++) {
-		for (int x = 0; x < 100; x++) {
-			level->getHexOffset(x, y).content = emptyHex;
-		}
-	}
-
-	mapEdit.setMap(level);
+	//levelGen.setSize(40, 30);
+	auto level = levelGen.makeLevel();
+	game.setLevel(std::move(level));
 }
 
 void CHexWorld::deleteMap() {
-	delete level;
+	//delete level;
 }
 
 
 /** Required each time we restart. */
 void CHexWorld::startGame() {
+	procTestMode = true;
 
-	//killMeOldHexRenderer.setMap(level->getHexArray());
-
-	game.setLevel(level);
+//	game.setLevel(level);
 	physics.clearEntities();
 
-	physics.setMap(level->getHexArray());
+	physics.setMap(game.level->getHexArray());
 
-	mapEdit.load();
-	hexRender.loadMap(level->getHexArray());
+//	mapEdit.load();
+	//!!!!!!!!!Previous point where map file was loaded
+
+
+	hexRender.loadMap(game.level->getHexArray());
 	prepMapEntities();
 
 	if (hexCursor == NULL)
 		createCursorObject();
 
-	level->getHexArray()->effectsNeedUpdate = true;
+	game.level->getHexArray()->effectsNeedUpdate = true;
 
 	setViewMode(gameView);
 
-	level->getHexArray()->effectsNeedUpdate = true; //old code! Replace
+	game.level->getHexArray()->effectsNeedUpdate = true; //old code! Replace
 
 	gWin::pInv->refresh();
 
@@ -389,8 +394,10 @@ void CHexWorld::calcMouseWorldPos() {
 	auto [mouseHex, mouseWS] = hexRender.pickHex(mousePos.x, mousePos.y);
 	lastMouseWorldPos = mouseWorldPos;
 	mouseWorldPos = mouseWS;
-	glm::vec3 mouseVec = mouseWorldPos - playerObj->getPos();
-	playerObj->setMouseDir(glm::normalize(mouseVec));
+	if (playerObj) {
+		glm::vec3 mouseVec = mouseWorldPos - playerObj->getPos();
+		playerObj->setMouseDir(glm::normalize(mouseVec));
+	} //needed for playerObj orientation etc
 
 	if (mouseHex != hexCursor->transform->hexPosition) {
 		CMouseExitHex msg;
@@ -437,19 +444,21 @@ void CHexWorld::draw() {
 
 	hexRender.drawExplosionList();
 
-	if (!game.player->dead) {
+	if (game.player && !game.player->dead) {
 		//imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 1.0f });
 		//imRendr::drawLine(playerObj->worldPos, mouseWorldPos);
 		//hexCursor->draw();
 		drawReticule();
 	}
 
-	int sh = ((CShieldComponent*)game.player->shield->item.get())->hp;
+	if (game.player) {
+		int sh = ((CShieldComponent*)game.player->shield->item.get())->hp;
 
-	imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp)  
-		+ " Shield: " + std::to_string(sh)
+		imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp)
+			+ " Shield: " + std::to_string(sh)
 
-	);
+		);
+	}
 
 	//imRendr::drawText(300, 70, "thickness: " + std::to_string(hexRender.tmpLineThickness)
 	//	+ " smoothing: " + std::to_string(hexRender.tmpLineSmooth));
@@ -521,10 +530,10 @@ void CHexWorld::update(float dt) {
 
 	game.update(dT);
 
-	if (level->mapUpdated) {
+	if (game.level->mapUpdated) {
 		//hexRendr2.setMap(level->getHexArray()); //temp to refresh map
-		hexRender.loadMap(level->getHexArray());
-		level->mapUpdated = false;
+		hexRender.loadMap(game.level->getHexArray());
+		game.level->mapUpdated = false;
 	}
 
 	gWin::update(dT);
@@ -568,6 +577,7 @@ void CHexWorld::toggleView() {
 void CHexWorld::toggleEditMode() {
 	editMode = !editMode;
 	if (editMode) {
+		mapEdit.setMap(game.level.get());
 		freeCam();
 		gWin::pNear->hideWin();
 		CWin::showMouse(true);
@@ -639,11 +649,11 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
 	glm::i32vec2 offset = cubeToOffset(mouseHex);
 	coords << "  offset " << offset.x << ", " << offset.y;
-	glm::i32vec2 index = level->getHexArray()->cubeToIndex(mouseHex);
+	glm::i32vec2 index = game.level->getHexArray()->cubeToIndex(mouseHex);
 	coords << " index " << index.x << " " << index.y;
 	glm::vec3 worldSpace = cubeToWorldSpace(mouseHex);
 	coords << " worldPos " << worldSpace.x << " " << worldSpace.y << " " << worldSpace.z;
-	coords << " " << level->getHexArray()->getHexCube(mouseHex).content;
+	coords << " " << game.level->getHexArray()->getHexCube(mouseHex).content;
 	//glm::vec2 screenPos = hexRenderer.worldPosToScreen(worldSpace);
 	coords << " wsMouse " << mouseWorldPos.x << " " << mouseWorldPos.y;
 	coords << " scrnMouse " << mousePos.x << " " << mousePos.y;
@@ -707,17 +717,11 @@ int CHexWorld::tigCall(int memberId) {
 }
 
 
-void CHexWorld::updateCameraPosition() {
-	//if (viewMode == gameView && !editMode && !game.player->dead )
-		//hexRendr2.followTarget(playerObj->worldPos);
-		//old version
-	
+void CHexWorld::updateCameraPosition() {	
 	if (cameraMode == camFollow) {
 		if (pFollowCamEnt) {
 			 hexRender.setCameraPos(pFollowCamEnt->getPos().x, pFollowCamEnt->getPos().y);
 		}
-
-
 	}
 	else if (cameraMode == camFree) {
 		hexRender.setCameraPos(freeCamPos.x, freeCamPos.y);

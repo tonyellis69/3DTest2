@@ -15,8 +15,8 @@ class CGameState   {
 public:
 
 	void setLevel(CLevel* level);
-//	void addSprite(std::shared_ptr<CEntity> sprite);
-	//void destroySprite(CEntity& sprite);
+	void setLevel(std::unique_ptr<CLevel> level);
+
 	CEntities getEntitiesAt(const CHex& hex);
 	CEntity* getEntity(int idNo);
 	void addEntity(TEntity entity);
@@ -31,8 +31,8 @@ public:
 
 
 	CPlayerObject* player = nullptr;
-	//std::shared_ptr< CPlayerObject> player;
-	CLevel* level;
+
+	std::unique_ptr<CLevel> level;
 
 
 	bool paused = true;

@@ -189,6 +189,9 @@
     <ClCompile Include="src\entity\missileCollider.cpp">
       <Filter>Source Files\entity</Filter>
     </ClCompile>
+    <ClCompile Include="src\levelGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -364,6 +367,9 @@
     </ClInclude>
     <ClInclude Include="src\entity\missileCollider.h">
       <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\levelGen.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

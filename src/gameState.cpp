@@ -10,7 +10,14 @@ CGameState game;
 
 
 void CGameState::setLevel(CLevel* level) {
-	this->level = level;
+	//std::unique_ptr<CLevel> ptr(level);
+	//this->level = std::move(ptr);
+	this->level =  std::unique_ptr<CLevel> (level);
+}
+
+void CGameState::setLevel(std::unique_ptr<CLevel> level)
+{
+	this->level = std::move(level);
 }
 
 

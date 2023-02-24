@@ -152,6 +152,7 @@
     <ClCompile Include="src\items\item.cpp" />
     <ClCompile Include="src\items\item2.cpp" />
     <ClCompile Include="src\items\shield.cpp" />
+    <ClCompile Include="src\levelGen.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mapEdit\mapEdit.cpp" />
     <ClCompile Include="src\mapEdit\mapPatch.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="src\items\item.h" />
     <ClInclude Include="src\items\item2.h" />
     <ClInclude Include="src\items\shield.h" />
+    <ClInclude Include="src\levelGen.h" />
     <ClInclude Include="src\mapEdit\mapEdit.h" />
     <ClInclude Include="src\mapEdit\mapPatch.h" />
     <ClInclude Include="src\missile.h" />

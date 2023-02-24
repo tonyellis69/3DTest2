@@ -35,6 +35,8 @@
 #include "gameEvent.h"
 #include "physEvent.h"
 
+#include "levelGen.h"
+
 enum TViewMode {gameView, devView};
 enum TMsgType {msgId,msgId2,msgId3};
 
@@ -83,6 +85,7 @@ public:
 	CDrawText drawTxtTest; //temp!
 
 	bool editMode = false;
+	bool procTestMode = false;
 
 	//CListener listTmp;
 
@@ -110,7 +113,7 @@ private:
 	//void removeEntities();
 	void onPlayerDeath();
 
-	CLevel* level;
+//	CLevel* level;
 
 	CHexRender hexRender; ///<New hex renderer.
 
@@ -154,6 +157,8 @@ private:
 	CEntity* pBotZero = NULL;
 
 	CModel reticule;
+
+	CRandLevel levelGen;
 };
 
 
