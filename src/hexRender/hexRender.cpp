@@ -129,7 +129,8 @@ void CHexRender::addHexTile(const std::string& name, TVertData& vertData, std::v
 
 
 void CHexRender::drawMap() {
-//	renderer.setShader(pLineShader);
+
+
 	lineShader->activate();
 
 	glm::mat4 mvp = camera.clipMatrix;
@@ -636,8 +637,8 @@ void CHexRender::setCameraAspectRatio(glm::vec2& ratio, float fov) {
 	camera.setAspectRatio(ratio, fov);
 }
 
-/** Return the hex coordinates and worldspace pos for the given screen positon. */
-std::tuple <CHex, glm::vec3> CHexRender::pickHex(int screenX, int screenY) {
+/** Return the worldspace pos on the hex plane for the given screen positon. */
+glm::vec3 CHexRender::screenToWS(int screenX, int screenY) {
 	//convert to clip coordinates
 	glm::vec2 screenSize = camera.getView();
 	glm::vec4 clip((2.0f * screenX) / screenSize.x - 1.0f, 1.0f - (2.0f * screenY) / screenSize.y, -1.0f, 1.0f);
@@ -653,11 +654,8 @@ std::tuple <CHex, glm::vec3> CHexRender::pickHex(int screenX, int screenY) {
 
 	//this should be a ray, projecting from 0,0,0 in the given direction.
 
-	glm::vec3 p = castFromCamToHexPlane(ray);
+	return castFromCamToHexPlane(ray);
 
-	CHex hexPos = worldSpaceToHex(p);
-
-	return { hexPos, p };
 }
 
 glm::vec3 CHexRender::castFromCamToHexPlane(glm::vec3& ray) {

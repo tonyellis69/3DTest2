@@ -5,7 +5,7 @@
 
 #include "hex/hexArray.h"
 
-#include "entity\entity.h"
+#include "..\entity\entity.h"
 
 using TMapIt = std::unordered_multimap<CHex, CEntity*>::iterator;
 using TRange = std::pair<TMapIt, TMapIt>;
@@ -28,6 +28,10 @@ public:
 	CHexElement& getHexOffset(int x, int y) {
 		return hexArray.getHexOffset(x, y);
 	}
+	CHex indexToCube(glm::i32vec2& index) {
+		return hexArray.indexToCube(index);
+	}
+	glm::i32vec2 getGridSize();
 	
 	bool entitiesToDelete = false;
 	bool entitiesToKill = false;

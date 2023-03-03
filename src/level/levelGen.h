@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "level.h"
+#include "hexQuad.h"
 
 /** Creates a CLevel object with a populated, randomly generated map. */
 class CRandLevel {
@@ -12,8 +13,14 @@ public:
 		size = {x,y};
 	}
 	void resize(int dSize);
+	void draw(CHexQuad* quad);
+	void subdivide();
 
 private:
-	glm::i32vec2 size = { 10,10 };
+	void fillLine(glm::i32vec2& a, glm::i32vec2& b);
+
+	std::unique_ptr<CLevel> level;
+	glm::i32vec2 size = { 30,30 };
+	std::shared_ptr<CHexQuad> rootQuad;
 
 };

@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "../level.h"
+#include "../level/level.h"
 #include "mapPatch.h"
 
 /* For editing game maps. */

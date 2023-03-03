@@ -3,7 +3,7 @@
 #include <random>
 
 
-#include "level.h"
+#include "level\level.h"
 
 //#include "mapMaker.h"
 
@@ -35,9 +35,9 @@
 #include "gameEvent.h"
 #include "physEvent.h"
 
-#include "levelGen.h"
+#include "level\levelGen.h"
 
-enum TViewMode {gameView, devView};
+enum TViewMode {gameView, devView, keepView};
 enum TMsgType {msgId,msgId2,msgId3};
 
 enum TCameraMode {camNone, camFollow, camFree, camFixed};
@@ -54,6 +54,7 @@ public:
 	void makeMap();
 	void deleteMap();
 	void startGame();
+	void startProcTest();
 	void moveCamera(glm::vec3& direction);
 
 	void onFireKey(bool released, int mods);
@@ -112,6 +113,7 @@ private:
 	void removeDeadEntities();
 	//void removeEntities();
 	void onPlayerDeath();
+	void zoomToFit();
 
 //	CLevel* level;
 
@@ -159,6 +161,7 @@ private:
 	CModel reticule;
 
 	CRandLevel levelGen;
+	bool zoom2fit = false;
 };
 
 

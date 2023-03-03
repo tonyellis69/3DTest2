@@ -130,7 +130,6 @@
     <ClCompile Include="src\entity\transform.cpp" />
     <ClCompile Include="src\gameGui.cpp" />
     <ClCompile Include="src\explosion.cpp" />
-    <ClCompile Include="src\level.cpp" />
     <ClCompile Include="src\gameState.cpp" />
     <ClCompile Include="src\gameTextWin.cpp" />
     <ClCompile Include="src\gameWin.cpp" />
@@ -152,7 +151,9 @@
     <ClCompile Include="src\items\item.cpp" />
     <ClCompile Include="src\items\item2.cpp" />
     <ClCompile Include="src\items\shield.cpp" />
-    <ClCompile Include="src\levelGen.cpp" />
+    <ClCompile Include="src\level\hexQuad.cpp" />
+    <ClCompile Include="src\level\level.cpp" />
+    <ClCompile Include="src\level\levelGen.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mapEdit\mapEdit.cpp" />
     <ClCompile Include="src\mapEdit\mapPatch.cpp" />
@@ -187,7 +188,6 @@
     <ClInclude Include="src\gameGui.h" />
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\explosion.h" />
-    <ClInclude Include="src\level.h" />
     <ClInclude Include="src\gameMsg.h" />
     <ClInclude Include="src\gameState.h" />
     <ClInclude Include="src\gameTextWin.h" />
@@ -212,7 +212,9 @@
     <ClInclude Include="src\items\item.h" />
     <ClInclude Include="src\items\item2.h" />
     <ClInclude Include="src\items\shield.h" />
-    <ClInclude Include="src\levelGen.h" />
+    <ClInclude Include="src\level\hexQuad.h" />
+    <ClInclude Include="src\level\level.h" />
+    <ClInclude Include="src\level\levelGen.h" />
     <ClInclude Include="src\mapEdit\mapEdit.h" />
     <ClInclude Include="src\mapEdit\mapPatch.h" />
     <ClInclude Include="src\missile.h" />

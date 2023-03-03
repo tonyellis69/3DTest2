@@ -34,6 +34,9 @@
     <Filter Include="Source Files\ai">
       <UniqueIdentifier>{20f2beda-ba9e-4d91-bbd0-82786ac0a428}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\level">
+      <UniqueIdentifier>{178c9233-6c9b-4424-a8cd-13957d48fc67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\3DtestApp.cpp">
@@ -55,9 +58,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\playerHexObj.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gameWin.cpp">
@@ -189,8 +189,14 @@
     <ClCompile Include="src\entity\missileCollider.cpp">
       <Filter>Source Files\entity</Filter>
     </ClCompile>
-    <ClCompile Include="src\levelGen.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\level\level.cpp">
+      <Filter>Source Files\level</Filter>
+    </ClCompile>
+    <ClCompile Include="src\level\levelGen.cpp">
+      <Filter>Source Files\level</Filter>
+    </ClCompile>
+    <ClCompile Include="src\level\hexQuad.cpp">
+      <Filter>Source Files\level</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -214,9 +220,6 @@
     </ClInclude>
     <ClInclude Include="..\TC\Debug\tigConst.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\level.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gameWin.h">
       <Filter>Source Files</Filter>
@@ -368,8 +371,14 @@
     <ClInclude Include="src\entity\missileCollider.h">
       <Filter>Source Files\entity</Filter>
     </ClInclude>
-    <ClInclude Include="src\levelGen.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="src\level\level.h">
+      <Filter>Source Files\level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\level\levelGen.h">
+      <Filter>Source Files\level</Filter>
+    </ClInclude>
+    <ClInclude Include="src\level\hexQuad.h">
+      <Filter>Source Files\level</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

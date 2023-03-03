@@ -71,12 +71,15 @@ void CHexWorld::onEvent(CGUIevent& e) {
 		if (e.type == eMouseWheel) {
 			levelGen.resize(int(e.f2));
 			makeMap();
-			startGame();
-			//startGame could respond smartly, pulling camera back for bigger maps
-			//or, don't use startGame at all, since we're not playing a game.
-			//take a look at what startGame does, may want to start splitting it up.
+			startProcTest();
 		}
-
+		if (e.type == eKeyDown) {
+			if (e.i1 == 'L') {
+				levelGen.subdivide();
+				makeMap();
+				startProcTest();
+			}
+		}
 
 	}
 
@@ -188,16 +191,13 @@ void CHexWorld::deleteMap() {
 
 /** Required each time we restart. */
 void CHexWorld::startGame() {
-	procTestMode = true;
 
-//	game.setLevel(level);
+
 	physics.clearEntities();
-
 	physics.setMap(game.level->getHexArray());
 
 //	mapEdit.load();
 	//!!!!!!!!!Previous point where map file was loaded
-
 
 	hexRender.loadMap(game.level->getHexArray());
 	prepMapEntities();
@@ -205,11 +205,7 @@ void CHexWorld::startGame() {
 	if (hexCursor == NULL)
 		createCursorObject();
 
-	game.level->getHexArray()->effectsNeedUpdate = true;
-
 	setViewMode(gameView);
-
-	game.level->getHexArray()->effectsNeedUpdate = true; //old code! Replace
 
 	gWin::pInv->refresh();
 
@@ -238,6 +234,21 @@ void CHexWorld::startGame() {
 
 	CWin::fullScreen();
 
+}
+
+void CHexWorld::startProcTest() {
+	procTestMode = true;
+	hexRender.loadMap(game.level->getHexArray());
+	if (hexCursor == NULL)
+		createCursorObject();
+	if (hexRender.camera.getPos() == glm::vec3(0))
+		setViewMode(gameView);
+	else
+		setViewMode(keepView);
+	game.paused = false;
+	freeCam();
+	CWin::fullScreen();
+	zoom2fit = true;
 }
 
 
@@ -391,7 +402,8 @@ void CHexWorld::onMouseMove(int x, int y, int key) {
 }
 
 void CHexWorld::calcMouseWorldPos() {
-	auto [mouseHex, mouseWS] = hexRender.pickHex(mousePos.x, mousePos.y);
+	glm::vec3 mouseWS = hexRender.screenToWS(mousePos.x, mousePos.y);
+	CHex mouseHex = worldSpaceToHex(mouseWS);
 	lastMouseWorldPos = mouseWorldPos;
 	mouseWorldPos = mouseWS;
 	if (playerObj) {
@@ -727,6 +739,9 @@ void CHexWorld::updateCameraPosition() {
 		hexRender.setCameraPos(freeCamPos.x, freeCamPos.y);
 	}
 
+	if (zoom2fit)
+		zoomToFit();
+
 }
 
 
@@ -742,7 +757,6 @@ void CHexWorld::setViewMode(TViewMode mode) {
 	else if (mode == devView) {
 		hexRender.setCameraPos(glm::vec3(0, -0, 12));
 		hexRender.setCameraPitch(45);
-
 	}
 
 }
@@ -885,6 +899,28 @@ void CHexWorld::onPlayerDeath() {
 			entity->ai = std::make_shared<CRoboWander>((CRobot*)entity.get());
 		}
 	}
+}
+
+/** Progressively zoom while the map doesn't fit the screen. */
+void CHexWorld::zoomToFit() {
+	glm::vec3 gridTL = abs(cubeToWorldSpace(game.level->indexToCube( glm::i32vec2{ 0,0 })));
+	glm::vec3 gridBR = abs(cubeToWorldSpace(game.level->indexToCube(game.level->getGridSize())));
+
+	glm::i32vec2 scnSize = hexRender.getScreenSize();
+	glm::vec3 scnTL = abs(hexRender.screenToWS(0, 0));
+	glm::vec3 scnBR = abs(hexRender.screenToWS(scnSize.x, scnSize.y));
+
+	glm::vec3 margin(2, 2, 0);
+
+	if (glm::any(glm::greaterThan(gridTL + margin, scnTL))) {
+		hexRender.dollyCamera(-1.0f);
+	} 
+	else	if (glm::all(glm::lessThanEqual(gridTL , scnTL - margin * 1.5f))) {
+		hexRender.dollyCamera(1.0f);
+	}
+	else
+		zoom2fit = false;
+
 }
 
 /** TO DO: ultimately this should be automated via a Tig

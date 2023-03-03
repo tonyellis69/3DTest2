@@ -9,9 +9,9 @@
 
 #include "utils/files.h"
 
-#include "robot.h"
+#include "..\robot.h"
 
-#include "spawner.h"
+#include "..\spawner.h"
 
 
 THexList CLevel::findVisibleHexes(CHex& apex, THexList& perimeterHexes, bool obsessive) {
@@ -57,6 +57,10 @@ void CLevel::updateVisibility(THexList& visibleHexes, THexList& unvisibledHexes)
 	for (auto& unvisibledHex : unvisibledHexes) {
 		hexArray.setVisibility(unvisibledHex, 0.5f);
 	}
+}
+
+glm::i32vec2 CLevel::getGridSize() {
+	return glm::i32vec2(hexArray.width,hexArray.height);
 }
 
 

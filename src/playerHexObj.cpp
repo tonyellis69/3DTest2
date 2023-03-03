@@ -161,7 +161,7 @@ void CPlayerObject::updateViewField() {
 	game.level->updateVisibility(visibleHexes, unvisibledHexes);
 
 	//hexRendr->updateFogBuffer();
-	game.level->getHexArray()->effectsNeedUpdate = true;
+	//game.level->getHexArray()->effectsNeedUpdate = true;
 
 }
 

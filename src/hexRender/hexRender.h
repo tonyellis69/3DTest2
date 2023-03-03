@@ -43,7 +43,9 @@ public:
 	void drawSceneLayers();
 	void drawGlow();
 	void setScreenSize(glm::vec2& ratio);
-
+	glm::i32vec2 getScreenSize() {
+		return screenSize;
+	}
 
 	void resizeBlurTextures();
 
@@ -67,7 +69,7 @@ public:
 	void setCameraPos(glm::vec3& pos);
 	void setCameraPitch(float pitch);
 	void setCameraAspectRatio(glm::vec2& ratio, float fov);
-	std::tuple <CHex, glm::vec3> pickHex(int screenX, int screenY);
+	glm::vec3 screenToWS(int screenX, int screenY);
 	glm::vec3 castFromCamToHexPlane(glm::vec3& ray);
 
 
