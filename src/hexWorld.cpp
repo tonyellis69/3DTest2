@@ -79,6 +79,12 @@ void CHexWorld::onEvent(CGUIevent& e) {
 				makeMap();
 				startProcTest();
 			}
+			if (e.i1 == 'R') {
+				levelGen.quadRemovals();
+				makeMap();
+				startProcTest();
+
+			}
 		}
 
 	}

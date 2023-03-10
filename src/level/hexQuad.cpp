@@ -8,11 +8,17 @@ CHexQuad::CHexQuad(glm::i32vec2& pos, glm::i32vec2& size) {
 }
 
 /** Recursively split this quad or its children. */
-void CHexQuad::split() {
+void CHexQuad::split(bool horiz) {
 	if (!childA && !childB) {
-		bool horiz = rnd::dice(2) - 1;
+		horiz = rnd::dice(2) - 1;
 		if (horiz) {
-			int newX = size.x / 2;
+			int freeSpace = size.x - 1;
+			if (freeSpace < 6)
+				return;
+
+			int var = rnd::dice(freeSpace - 4);
+			int newX = 2 + var;
+
 			glm::i32vec2 newSize(newX, size.y);
 			childA = std::make_shared<CHexQuad>(pos, newSize);
 			glm::i32vec2 newPos(pos.x + newX, pos.y);
@@ -20,7 +26,12 @@ void CHexQuad::split() {
 			childB = std::make_shared<CHexQuad>(newPos, newSize);
 		}
 		else {
-			int newY = size.y / 2;
+			int freeSpace = size.y - 1;
+			if (freeSpace < 6)
+				return;
+			int var = rnd::dice(freeSpace - 4);
+			int newY = 2 + var;
+
 			glm::i32vec2 newSize(size.x, newY);
 			childA = std::make_shared<CHexQuad>(pos, newSize);
 			glm::i32vec2 newPos(pos.x, pos.y + newY);
@@ -31,14 +42,10 @@ void CHexQuad::split() {
 
 	}
 	else {
-		childA->split();
-		childB->split();
+		childA->split(horiz);
+		childB->split(!horiz);
 
 	}
 
 }
 
-void CHexQuad::draw() {
-	//draw lines of hexes between the four corners.
-
-}

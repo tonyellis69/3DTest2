@@ -7,8 +7,7 @@
 class CHexQuad {
 public:
 	CHexQuad(glm::i32vec2& pos, glm::i32vec2& size);
-	void split();
-	void draw();
+	void split(bool horiz);
 
 	glm::i32vec2 pos;
 	glm::i32vec2 size;
