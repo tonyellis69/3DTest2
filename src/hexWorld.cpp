@@ -185,9 +185,25 @@ void CHexWorld::addHexTile(const std::string& name, const std::string& fileName,
 
 
 void CHexWorld::makeMap() {
-	//levelGen.setSize(40, 30);
-	auto level = levelGen.makeLevel();
-	game.setLevel(std::move(level));
+	//makemap old
+	//level = new CLevel();
+	//level->init(100, 40);
+	auto level = std::make_unique<CLevel>();
+	level->init(100, 40);
+
+
+	for (int y = 0; y < 40; y++) {
+		for (int x = 0; x < 100; x++) {
+			level->getHexOffset(x, y).content = emptyHex;
+		}
+	}
+
+	mapEdit.setMap(level.get());
+	game.setLevel(std::move(level)); //added!
+
+	//makemap new
+	//auto level = levelGen.makeLevel();
+	//game.setLevel(std::move(level));
 }
 
 void CHexWorld::deleteMap() {
@@ -198,11 +214,12 @@ void CHexWorld::deleteMap() {
 /** Required each time we restart. */
 void CHexWorld::startGame() {
 
+	//game.setLevel(level); //old
 
 	physics.clearEntities();
 	physics.setMap(game.level->getHexArray());
 
-//	mapEdit.load();
+	mapEdit.load();
 	//!!!!!!!!!Previous point where map file was loaded
 
 	hexRender.loadMap(game.level->getHexArray());

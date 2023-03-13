@@ -378,8 +378,8 @@ void C3DtestApp::initHexWorld() {
 
 
 	hexWorld.makeMap();
-//	hexWorld.startGame();
-	hexWorld.startProcTest();
+	hexWorld.startGame();
+//	hexWorld.startProcTest();
 }
 
 glm::i32vec2 C3DtestApp::getMousePos() {
