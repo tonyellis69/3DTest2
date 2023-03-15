@@ -170,9 +170,6 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 
 
 
-		if (key == GLFW_KEY_ENTER && !hexWorld.editMode)
-			hexWorld.enterKeyDown();
-
 		if (key == 'V') {
 			hexWorld.toggleView();
 		}
@@ -191,7 +188,6 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 			hexWorld.onRedo();
 		}
 
-		hexWorld.onKeyDown(key, mod);
 		return;
 	}
 
@@ -216,7 +212,7 @@ void C3DtestApp::onKeyUp(int key, long mod) {
 		if (moveKeyDown != prev)
 			moveKeyChangeTimer = 0;
 
-		hexWorld.onKeyUp(key, mod);
+
 
 
 
@@ -226,35 +222,12 @@ void C3DtestApp::onKeyUp(int key, long mod) {
 }
 
 
-void C3DtestApp::onMouseButton(int button, int action, int mods) {
-	if (appMode == hexMode) {
-		if (button == GLFW_MOUSE_BUTTON_LEFT) {
-			if (action == GLFW_PRESS)
-				hexWorld.onFireKey(true,mods);
-			else
-				hexWorld.onFireKey(false,mods);
 
-			
-
-
-		}
-
-
-		if (button == GLFW_MOUSE_BUTTON_RIGHT) {
-			if (action == GLFW_PRESS)
-				hexWorld.onRightKey(true, mods);
-			else
-				hexWorld.onRightKey(false, mods);
-		}
-
-	}
-};
 
 
 /** Called when mouse moves. */
 void C3DtestApp::mouseMove(int x, int y, int key) {
-	if (appMode == hexMode)
-		hexWorld.onMouseMove(x, y, key);
+
 }
 
 
@@ -399,14 +372,14 @@ bool C3DtestApp::OnMouseWheelMsg(float xoffset, float yoffset) {
 	bool handled = CBaseApp::OnMouseWheelMsg(xoffset, yoffset);
 
 	if (!handled) {
-		if (appMode == hexMode) {
+		if (appMode == hexMode) { //kill this, handled by hexWorld directly
 			if (keyNow(GLFW_KEY_LEFT_SHIFT))
 				keyState = GLFW_KEY_LEFT_SHIFT;
 			if (keyNow(GLFW_KEY_LEFT_CONTROL))
 				keyState = GLFW_KEY_LEFT_CONTROL;
 			if (keyNow(GLFW_KEY_LEFT_ALT))
 				keyState = GLFW_KEY_LEFT_ALT;
-			hexWorld.onMouseWheel(yoffset,keyState);
+			//hexWorld.onMouseWheel(yoffset,keyState);
 			handled = true; //cheeky
 		}
 	}

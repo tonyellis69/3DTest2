@@ -37,6 +37,8 @@
 
 #include "level\levelGen.h"
 
+#include "modules/gameMode.h"
+
 enum TViewMode {gameView, devView, keepView};
 enum TMsgType {msgId,msgId2,msgId3};
 
@@ -57,18 +59,10 @@ public:
 	void startProcTest();
 	void moveCamera(glm::vec3& direction);
 
-	void onFireKey(bool released, int mods);
-	void onRightKey(bool released, int mods);
-	void onKeyDown(int key, long mod);
-	void onKeyUp(int key, long mod);
-	void onMouseWheel(float delta, int key);
-	void onMouseMove(int x, int y, int key);
 	void calcMouseWorldPos();
 	void draw();
 	void setAspectRatio(glm::vec2& ratio);
 	void update(float dt);
-	void onCtrlLMouse();
-	void enterKeyDown();
 	void toggleView();
 	void toggleEditMode();
 	void onUndo();
@@ -88,39 +82,62 @@ public:
 	bool editMode = false;
 	bool procTestMode = false;
 
-	//CListener listTmp;
+	//FIXME: stuff moved to make accessible to working module
+	CHexRender hexRender; ///<New hex renderer.
+	CEntity* hexCursor = NULL;;
+	bool zoom2fit = false;
+	CHexPhysics physics;
+	CPlayerObject* playerObj = NULL;
+	CEntity* pBotZero = NULL;
+	CModel reticule;
+	float zoomScale = 1.0f;
+	bool mapDragging = false;
+	glm::i32vec2 mousePos;
+	glm::i32vec2 lastMousePos;
+	glm::vec3 mouseWorldPos; ///<Mouse position on the worldspace XY plane
+	float cumulativeMapDrag = 0;///<Ensures we don't drag for tiny amounts
+	glm::vec3 lastMouseWorldPos;
+	bool directionGraphicsOn = false;
+	TCameraMode cameraMode = camNone;
+
+	void createCursorObject();
+	void setViewMode(TViewMode mode);
+	void freeCam();
+	void onPlayerDeath();
+	void followCam(CEntity* ent);
+	void adjustZoomScale(float delta);
+
 
 private:
 
-	void createCursorObject();
+
 	void onNewMouseHex(CHex& mouseHex);
 	int tigCall(int memberId) ;
 	void updateCameraPosition();
-	void setViewMode(TViewMode mode);
-	void adjustZoomScale(float delta);
-	void onMapDrag();
+
+
+
 	void initPalettes();
 
 	void toggleDirectionGraphics();
 
-	void followCam(CEntity* ent);
+
 	void freeCam(float x, float y);
-	void freeCam();
+
 	void fixedCam(float x, float y);
-	void realtimeKeyChecks();
-	void realtimeMouseButtons();
+
 	void drawReticule();
 	void removeDeadEntities();
 	//void removeEntities();
-	void onPlayerDeath();
+
 	void zoomToFit();
 
 //	CLevel* level;
 
-	CHexRender hexRender; ///<New hex renderer.
 
-	CPlayerObject* playerObj = NULL;
-	CEntity* hexCursor = NULL;;
+
+
+	
 	
 	float dT; ///<Interval since last app loop.
 
@@ -129,39 +146,41 @@ private:
 	//CMapMaker mapMaker;
 
 
-	glm::i32vec2 mousePos;
-	glm::i32vec2 lastMousePos;
+
 
 
 	THexList cursorPath;
 
 	bool lineOfSight = false;
-	glm::vec3 mouseWorldPos; ///<Mouse position on the worldspace XY plane
-	glm::vec3 lastMouseWorldPos;
-	bool mapDragging = false;
-	float cumulativeMapDrag = 0;///<Ensures we don't drag for tiny amounts
+
+
 	
 	TViewMode viewMode; ///<Camera mode, etc.
 
-	CHexPhysics physics;
+
 
 	CMapEdit mapEdit;
-	float zoomScale = 1.0f;
+
 	float zoomAdjust = 0.0f;
 
 	int highlitInvItem = 0;
 
-	bool directionGraphicsOn = false;
+
 
 	CEntity* pFollowCamEnt = NULL;
-	TCameraMode cameraMode = camNone;
-	glm::vec2 freeCamPos = { 0,0 };
-	CEntity* pBotZero = NULL;
 
-	CModel reticule;
+	glm::vec2 freeCamPos = { 0,0 };
+
+
+
 
 	CRandLevel levelGen;
-	bool zoom2fit = false;
+
+
+	//engine mode stuff
+	CGameMode* mode; //<Current engine mode.
+
+	std::unique_ptr<CGameMode> workingMode;
 };
 
 

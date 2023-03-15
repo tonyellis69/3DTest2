@@ -44,6 +44,8 @@
 
 #include  "importer/importer.h"
 
+#include "modules/workingMode.h"
+
 CHexWorld::CHexWorld() {
 	game.paused = true;
 
@@ -64,33 +66,15 @@ CHexWorld::CHexWorld() {
 
 	initPalettes();
 
+	//temp, do this more formally
+	workingMode = std::make_unique<CWorkingMode>(this);
+	mode = workingMode.get();
 }
 
 void CHexWorld::onEvent(CGUIevent& e) {
-	if (procTestMode) {
-		if (e.type == eMouseWheel) {
-			levelGen.resize(int(e.f2));
-			makeMap();
-			startProcTest();
-		}
-		if (e.type == eKeyDown) {
-			if (e.i1 == 'L') {
-				levelGen.subdivide();
-				makeMap();
-				startProcTest();
-			}
-			if (e.i1 == 'R') {
-				levelGen.quadRemovals();
-				makeMap();
-				startProcTest();
+	mode->guiHandler(e);
 
-			}
-		}
-
-	}
-
-
-
+	//!!!Keep for now, not replicated in module
 	if (e.type == eKeyDown) {
 		if (e.i1 == GLFW_KEY_F2)
 			toggleDirectionGraphics();
@@ -141,22 +125,12 @@ void CHexWorld::onEvent(CGUIevent& e) {
 		else if (e.i1 == 'R')
 			hexRender.recompileShader();
 
-
-
 	}
-
-
-
-
 
 }
 
 void CHexWorld::onEvent(CGameEvent& e) {
-	//if (e.type == eGameEvent) {
-		//catch player death here
-		onPlayerDeath();
-//	}
-
+	mode->gameEventHandler(e);
 }
 
 void CHexWorld::onEvent(CPhysicsEvent& e) {
@@ -185,25 +159,7 @@ void CHexWorld::addHexTile(const std::string& name, const std::string& fileName,
 
 
 void CHexWorld::makeMap() {
-	//makemap old
-	//level = new CLevel();
-	//level->init(100, 40);
-	auto level = std::make_unique<CLevel>();
-	level->init(100, 40);
-
-
-	for (int y = 0; y < 40; y++) {
-		for (int x = 0; x < 100; x++) {
-			level->getHexOffset(x, y).content = emptyHex;
-		}
-	}
-
-	mapEdit.setMap(level.get());
-	game.setLevel(std::move(level)); //added!
-
-	//makemap new
-	//auto level = levelGen.makeLevel();
-	//game.setLevel(std::move(level));
+	mode->makeMap();
 }
 
 void CHexWorld::deleteMap() {
@@ -213,65 +169,11 @@ void CHexWorld::deleteMap() {
 
 /** Required each time we restart. */
 void CHexWorld::startGame() {
-
-	//game.setLevel(level); //old
-
-	physics.clearEntities();
-	physics.setMap(game.level->getHexArray());
-
-	mapEdit.load();
-	//!!!!!!!!!Previous point where map file was loaded
-
-	hexRender.loadMap(game.level->getHexArray());
-	prepMapEntities();
-
-	if (hexCursor == NULL)
-		createCursorObject();
-
-	setViewMode(gameView);
-
-	gWin::pInv->refresh();
-
-	game.paused = false;
-
-	followCam(playerObj);
-	//freeCam(-76, 15);
-//	toggleDirectionGraphics();
-	//game.slowed = true;
-
-	pBotZero = nullptr;
-	for (auto& entity : game.entities) {
-		if (entity->isRobot && entity->id == 7) {
-			if (pBotZero == NULL)
-				pBotZero = entity.get();
-			else
-				;// ((CRobot*)entity.get())->setState(robotDoNothing);
-		}
-	}
-	CWin::showMouse(false);
-
-	//FIXME: this (and prob other stuff above) should be run once only in a hexWorld.init(). 
-	reticule = spawn::models["reticule"]; 
-	reticule.palette[0] = { 1,1,1,1 };
-
-
-	CWin::fullScreen();
-
+	mode->startGame();
 }
 
 void CHexWorld::startProcTest() {
-	procTestMode = true;
-	hexRender.loadMap(game.level->getHexArray());
-	if (hexCursor == NULL)
-		createCursorObject();
-	if (hexRender.camera.getPos() == glm::vec3(0))
-		setViewMode(gameView);
-	else
-		setViewMode(keepView);
-	game.paused = false;
-	freeCam();
-	CWin::fullScreen();
-	zoom2fit = true;
+	mode->startProcTest();
 }
 
 
@@ -282,147 +184,8 @@ void CHexWorld::moveCamera(glm::vec3& direction) {
 	freeCamPos.x += vector.x; freeCamPos.y += vector.y;
 }
 
-/** Called *when* a key is pressed. */
-void CHexWorld::onKeyDown(int key, long mod) {
-
-	//temp user interface stuff!
-	msg::emit(msg::tmpMsg, key); //temp!
-
-	if (editMode) { //editmode key operations
-		if (key == 'R') {
-			mapEdit.createRing();
-		}
-
-		if (key == 'P') {
-			mapEdit.createParagram();
-		}
-
-		if (key == 'C') {
-			mapEdit.createRect();
-		}
-
-		if (key == 'T') {
-			//mapEdit.createTri();
-			mapEdit.createTrap();
-		}
-
-		if (key == 'S' && mod == GLFW_MOD_CONTROL)
-			mapEdit.save();
-
-		if (key == 'L' && mod == GLFW_MOD_CONTROL) {
-			physics.clearEntities();
-			mapEdit.load();
-		}
-
-		if (key == GLFW_KEY_LEFT_ALT)
-			mapEdit.onEntityMode(true);
-
-		if (key == 'Z')
-			mapEdit.onShapeMode(true);
-
-		if (key == GLFW_KEY_DELETE)
-			mapEdit.onDelKey();
-		return;
-	}
 
 
-
-//	if (key == 'I')
-	//	playerObj->showInventory();
-
-
-
-	if (key == 'F') {
-		/*killMeOldHexRenderer.toggleFollowCam();
-		killMeOldHexRenderer.followTarget(playerObj->getPos());*/
-	}
-
-	if (key == 'R') {
-		//killMeOldHexRenderer.hexLineShader->recompile();
-		//killMeOldHexRenderer.lineShader->recompile();
-		//killMeOldHexRenderer.hexSolidShader->recompile();
-		//killMeOldHexRenderer.visibilityShader->recompile();
-	}
-
-	if (key == 'L') {
-		lineOfSight = !lineOfSight;
-
-	}
-
-	if (key == GLFW_KEY_LEFT_CONTROL) {
-		game.toggleUImode(true);
-	}
- 
-}
-
-void CHexWorld::onKeyUp(int key, long mod) {
-	if (editMode) {
-		mapEdit.onEntityMode(false);
-		mapEdit.onShapeMode(false);
-	}
-	else {
-		if (key == GLFW_KEY_LEFT_CONTROL) {
-			game.toggleUImode(false);
-		}
-	}
-}
-
-void CHexWorld::onMouseWheel(float delta, int key) {
-	if (editMode) {
-		if (key == GLFW_KEY_LEFT_ALT) {
-			mapEdit.altWheel(delta);
-			return;
-		}
-		if (mapEdit.shapeMode) {
-			mapEdit.shapeWheel(delta);
-			return;
-		}
-		if (!mapEdit.resize(delta, key)) {
-			if (hexRender.dollyCamera(delta * zoomScale))
-				adjustZoomScale(delta);
-		}
-		return;
-	}
-
-
-
-	if (key == GLFW_KEY_LEFT_SHIFT) {
-		hexRender.pitchCamera(delta);
-	}
-	else {
-		if (key == GLFW_KEY_LEFT_CONTROL) {
-			if (hexRender.dollyCamera(delta * zoomScale) )
-				adjustZoomScale(delta);
-		}
-		else {
-			;
-		}
-	}
-}
-
-void CHexWorld::onMouseMove(int x, int y, int key) {
-	if (game.paused)
-		return;
-
-	mapDragging = false;
-	lastMousePos = mousePos;
-	mousePos = { x,y };
-
-	CHex lastMouseHex = hexCursor->transform->hexPosition;
-
-	calcMouseWorldPos();
-	
-	if (key == GLFW_MOUSE_BUTTON_RIGHT && 
-		hexCursor->transform->hexPosition != lastMouseHex &&  editMode)
-		mapEdit.onRightDrag();
-
-	if (key == GLFW_MOUSE_BUTTON_LEFT && editMode) {
-		onMapDrag();
-	}
-
-	if (editMode)
-		mapEdit.onMouseMove(mouseWorldPos);
-}
 
 void CHexWorld::calcMouseWorldPos() {
 	glm::vec3 mouseWS = hexRender.screenToWS(mousePos.x, mousePos.y);
@@ -527,16 +290,9 @@ void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 /** Called every frame to get the hex world up to date.*/
 void CHexWorld::update(float dt) {
 
-	if (game.paused)
-		return;
+	mode->update(dT);
 
 	this->dT = dt;
-
-	if (game.slowed)
-		this->dT = dt * 0.1f;
-	if (game.speeded)
-		this->dT = dt * 4.0f;
-
 
 	updateCameraPosition();
 
@@ -544,20 +300,7 @@ void CHexWorld::update(float dt) {
 
 	physics.update(dT);
 
-	if (!editMode)
-		for (int n = 0; n < game.entities.size(); n++) {
-			auto& entity = game.entities[n];
-			if (entity->live)
-				game.entities[n]->update(dT);
-		}
 
-
-
-
-	//if (game.entitiesToDelete)
-	//	physics.removeDeletedEntities();
-
-	//TO DO: this should come to replace above
 	if (game.entitiesToKill) {
 		removeDeadEntities();
 	}
@@ -578,29 +321,10 @@ void CHexWorld::update(float dt) {
 	}
 
 
-	realtimeKeyChecks();
-	realtimeMouseButtons();
 
-	//removeEntities();
 
 }
 
-
-
-/** User has triggered the ctrl left mouse  event. */
-void CHexWorld::onCtrlLMouse() {
-	
-}
-
-
-/** Player has pressed the enter key. */
-void CHexWorld::enterKeyDown() {
-	deleteMap();
-	//entitiesToDraw.clear();
-
-	makeMap();
-	startGame();
-}
 
 void CHexWorld::toggleView() {
 	if (viewMode == gameView)
@@ -708,34 +432,6 @@ void CHexWorld::onNewMouseHex(CHex& mouseHex) {
 
 
 
-void CHexWorld::onFireKey(bool stillPressed, int mods) {
-	if (editMode) {
-		if (!stillPressed) {
-			if (mods == GLFW_MOD_CONTROL)
-				mapEdit.onCtrlLClick();
-			else if (mods == GLFW_MOD_ALT)
-				mapEdit.addEntity(mouseWorldPos);
-			else if (!mapDragging)
-				mapEdit.onLeftClick(stillPressed, mods);
-		}
-		if (mapDragging && !stillPressed) {
-			mapDragging = false;
-			cumulativeMapDrag = 0;
-		}
-	}
-	//else if (!game.uiMode)
-	//	playerObj->onFireKey(stillPressed);
-}
-
-void CHexWorld::onRightKey(bool released, int mods) {
-	if (editMode) {
-		if (mods == GLFW_MOD_CONTROL)
-			mapEdit.onCtrlRClick();
-		else
-			mapEdit.onRightClick();
-	}
-}
-
 
 /** Handle an 'external function call' from Tig. */
 int CHexWorld::tigCall(int memberId) {
@@ -790,17 +486,7 @@ void CHexWorld::adjustZoomScale(float delta) {
 	zoomScale = 1.0f + (std::pow(zoomAdjust, 0.5f) * 10);
 }
 
-/** User dragging map around with mouse, ie, in edit mode.*/
-void CHexWorld::onMapDrag() {
-	glm::vec3 mouseVec = mouseWorldPos - lastMouseWorldPos;
-	//liveLog << "\n" << glm::length(mouseVec);
-	cumulativeMapDrag += glm::length(mouseVec);
-	if (cumulativeMapDrag < 0.5f)
-		return;
-	hexRender.moveCamera(-mouseVec);
-	//cumulativeMapDrag = 0;
-	mapDragging = true;
-}
+
 
 void CHexWorld::toggleDirectionGraphics() {
 	directionGraphicsOn = !directionGraphicsOn;
@@ -848,26 +534,7 @@ void CHexWorld::fixedCam(float x, float y) {
 	hexRender.setCameraPos(x, y);
 }
 
-void CHexWorld::realtimeKeyChecks() {
-	if (CWin::keyPressed('T')) {
-		startGame();
-	}
 
-	if (cameraMode == camFree) {
-		if (CWin::keyPressed('W')) moveCamera(glm::vec3{ 0, 1, 0 });
-		if (CWin::keyPressed('S')) moveCamera(glm::vec3{ 0, -1, 0 });
-		if (CWin::keyPressed('A')) moveCamera(glm::vec3{ -1,0,0 });
-		if (CWin::keyPressed('D')) moveCamera(glm::vec3{ 1,0,0 });
-	}
-}
-
-void CHexWorld::realtimeMouseButtons() {
-	if (CWin::mouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-		playerObj->onFireKey(true);
-
-	}
-
-}
 
 void CHexWorld::drawReticule() {
 	hexRender.drawModelAt(reticule, mouseWorldPos);	

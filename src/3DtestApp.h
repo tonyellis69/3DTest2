@@ -42,7 +42,6 @@ public:
 	void mouseMove(int x, int y, int key);
 	void onKeyDown( int key, long mod);
 	void onKeyUp(int key, long mod);
-	void onMouseButton(int button, int action, int mods);
 
 	void draw();
 	void Update();
