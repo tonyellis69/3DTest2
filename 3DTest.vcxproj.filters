@@ -201,10 +201,13 @@
     <ClCompile Include="src\level\hexQuad.cpp">
       <Filter>Source Files\level</Filter>
     </ClCompile>
-    <ClCompile Include="src\modules\gameMode.cpp">
+    <ClCompile Include="src\modules\baseModule.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
     <ClCompile Include="src\modules\workingMode.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\gameMode.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
   </ItemGroup>
@@ -389,10 +392,13 @@
     <ClInclude Include="src\level\hexQuad.h">
       <Filter>Source Files\level</Filter>
     </ClInclude>
-    <ClInclude Include="src\modules\gameMode.h">
+    <ClInclude Include="src\modules\baseModule.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="src\modules\workingMode.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\gameMode.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
   </ItemGroup>

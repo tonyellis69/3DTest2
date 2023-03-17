@@ -1,17 +1,19 @@
 #pragma once
 
+#include "baseModule.h"
+
 #include "ui/guiEvent.h"
 #include "../gameEvent.h"
 
-class CHexWorld;
-/** Base class for the different hexWorld plug-in modules. */
 
-class CGameMode {
+
+/** The hexWorld plugin that provides the actual game. */
+
+class CGameMode : public CBaseModule {
 public:
-	CGameMode(CHexWorld* engine) {
-		pHexWorld = engine;
-	}
-	virtual void guiHandler(CGUIevent& e) {}
+	CGameMode(CHexWorld* engine) : CBaseModule(engine) {}
+	void start();
+	void guiHandler(CGUIevent& e);
 	virtual void gameEventHandler(CGameEvent& e) {}
 
 	virtual void makeMap() {}
@@ -19,10 +21,10 @@ public:
 	virtual void startGame() {}
 
 
-	virtual void update(float dt) {}
+	void update(float dt);
 
 
+	void loadLevel(const std::string& fileName);
+	
 
-	CHexWorld* pHexWorld;
-	float dT;
 };

@@ -15,8 +15,9 @@ void CGameState::setLevel(CLevel* level) {
 	this->level =  std::unique_ptr<CLevel> (level);
 }
 
-void CGameState::setLevel(std::unique_ptr<CLevel> level)
-{
+void CGameState::setLevel(std::unique_ptr<CLevel> level) {
+	//TODO: finesse this re persistence of player entity and others:
+	entities.clear();
 	this->level = std::move(level);
 }
 

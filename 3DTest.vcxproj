@@ -158,6 +158,7 @@
     <ClCompile Include="src\mapEdit\mapEdit.cpp" />
     <ClCompile Include="src\mapEdit\mapPatch.cpp" />
     <ClCompile Include="src\missile.cpp" />
+    <ClCompile Include="src\modules\baseModule.cpp" />
     <ClCompile Include="src\modules\gameMode.cpp" />
     <ClCompile Include="src\modules\workingMode.cpp" />
     <ClCompile Include="src\physics\hexPhysics.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="src\mapEdit\mapEdit.h" />
     <ClInclude Include="src\mapEdit\mapPatch.h" />
     <ClInclude Include="src\missile.h" />
+    <ClInclude Include="src\modules\baseModule.h" />
     <ClInclude Include="src\modules\gameMode.h" />
     <ClInclude Include="src\modules\workingMode.h" />
     <ClInclude Include="src\physEvent.h" />

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gameMode.h"
+#include "baseModule.h"
 
 #include "../mapEdit/mapEdit.h"
 #include "../level/levelGen.h"
@@ -8,9 +8,9 @@
 /** Tempory module to replicate current hexWorld hodgepodge.
 	To be split and deleted. */
 
-class CWorkingMode : public CGameMode {
+class CWorkingMode : public CBaseModule {
 public:
-	CWorkingMode(CHexWorld* engine) : CGameMode(engine) {}
+	CWorkingMode(CHexWorld* engine) : CBaseModule(engine) {}
 	void guiHandler(CGUIevent& e);
 	void gameEventHandler(CGameEvent& e);
 

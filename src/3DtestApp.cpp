@@ -350,8 +350,9 @@ void C3DtestApp::initHexWorld() {
 	hexWorld.addHexTile("largeHex", dataPath + "models\\largeHex.dae", largerHex);
 
 
-	hexWorld.makeMap();
-	hexWorld.startGame();
+
+	hexWorld.start();
+//	hexWorld.makeMap();
 //	hexWorld.startProcTest();
 }
 

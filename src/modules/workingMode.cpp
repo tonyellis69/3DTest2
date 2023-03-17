@@ -133,12 +133,12 @@ void CWorkingMode::guiHandler(CGUIevent& e) {
 		pHexWorld->lastMousePos = pHexWorld->mousePos;
 		pHexWorld->mousePos = e.pos;
 
-		CHex lastMouseHex = pHexWorld->hexCursor->transform->hexPosition;
+		//CHex lastMouseHex = pHexWorld->hexCursor->transform->hexPosition;
 
 		pHexWorld->calcMouseWorldPos();
 
 		if (CWin::mouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT) &&
-			pHexWorld->hexCursor->transform->hexPosition != lastMouseHex && pHexWorld->editMode)
+			pHexWorld->mouseHex != pHexWorld->lastMouseHex && pHexWorld->editMode)
 			mapEdit.onRightDrag();
 
 		if (CWin::mouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)  && pHexWorld->editMode ) {
@@ -218,8 +218,8 @@ void CWorkingMode::makeMap() {
 void CWorkingMode::startProcTest() {
 	procTestMode = true;
 	pHexWorld->hexRender.loadMap(game.level->getHexArray());
-	if (pHexWorld->hexCursor == NULL)
-		pHexWorld->createCursorObject();
+	/*if (pHexWorld->hexCursor == NULL)
+		pHexWorld->createCursorObject();*/
 	if (pHexWorld->hexRender.camera.getPos() == glm::vec3(0))
 		pHexWorld->setViewMode(gameView);
 	else
@@ -243,8 +243,8 @@ void CWorkingMode::startGame() {
 	pHexWorld->hexRender.loadMap(game.level->getHexArray());
 	pHexWorld->prepMapEntities();
 
-	if (pHexWorld->hexCursor == NULL)
-		pHexWorld->createCursorObject();
+	//if (pHexWorld->hexCursor == NULL)
+	//	pHexWorld->createCursorObject();
 
 	pHexWorld->setViewMode(gameView);
 

@@ -37,7 +37,7 @@
 
 #include "level\levelGen.h"
 
-#include "modules/gameMode.h"
+#include "modules/baseModule.h"
 
 enum TViewMode {gameView, devView, keepView};
 enum TMsgType {msgId,msgId2,msgId3};
@@ -55,7 +55,7 @@ public:
 	void addHexTile(const std::string& name, const std::string& fileName, std::vector<glm::vec4>& colours);
 	void makeMap();
 	void deleteMap();
-	void startGame();
+	void start();
 	void startProcTest();
 	void moveCamera(glm::vec3& direction);
 
@@ -84,7 +84,9 @@ public:
 
 	//FIXME: stuff moved to make accessible to working module
 	CHexRender hexRender; ///<New hex renderer.
-	CEntity* hexCursor = NULL;;
+	//CEntity* hexCursor = NULL;;
+	CHex mouseHex;
+	CHex lastMouseHex;
 	bool zoom2fit = false;
 	CHexPhysics physics;
 	CPlayerObject* playerObj = NULL;
@@ -100,7 +102,7 @@ public:
 	bool directionGraphicsOn = false;
 	TCameraMode cameraMode = camNone;
 
-	void createCursorObject();
+	//void createCursorObject();
 	void setViewMode(TViewMode mode);
 	void freeCam();
 	void onPlayerDeath();
@@ -111,7 +113,7 @@ public:
 private:
 
 
-	void onNewMouseHex(CHex& mouseHex);
+	void onNewMouseHex();
 	int tigCall(int memberId) ;
 	void updateCameraPosition();
 
@@ -178,9 +180,10 @@ private:
 
 
 	//engine mode stuff
-	CGameMode* mode; //<Current engine mode.
+	CBaseModule* mode; //<Current engine mode.
 
-	std::unique_ptr<CGameMode> workingMode;
+	std::unique_ptr<CBaseModule> workingMode;
+	std::unique_ptr<CBaseModule> gameMode;
 };
 
 

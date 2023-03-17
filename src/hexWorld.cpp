@@ -44,7 +44,8 @@
 
 #include  "importer/importer.h"
 
-#include "modules/workingMode.h"
+#include "modules/workingMode.h" //remove
+#include "modules/gameMode.h"
 
 CHexWorld::CHexWorld() {
 	game.paused = true;
@@ -66,9 +67,9 @@ CHexWorld::CHexWorld() {
 
 	initPalettes();
 
-	//temp, do this more formally
-	workingMode = std::make_unique<CWorkingMode>(this);
-	mode = workingMode.get();
+
+
+
 }
 
 void CHexWorld::onEvent(CGUIevent& e) {
@@ -167,9 +168,18 @@ void CHexWorld::deleteMap() {
 }
 
 
-/** Required each time we restart. */
-void CHexWorld::startGame() {
-	mode->startGame();
+/** Start a new session. */
+//FIXME: is this for restarts too? 
+void CHexWorld::start() {
+
+	reticule = spawn::models["reticule"];
+	reticule.palette[0] = { 1,1,1,1 };
+
+
+	//default: game mode
+	gameMode = std::make_unique<CGameMode>(this);
+	mode = gameMode.get();
+	mode->start();
 }
 
 void CHexWorld::startProcTest() {
@@ -189,7 +199,7 @@ void CHexWorld::moveCamera(glm::vec3& direction) {
 
 void CHexWorld::calcMouseWorldPos() {
 	glm::vec3 mouseWS = hexRender.screenToWS(mousePos.x, mousePos.y);
-	CHex mouseHex = worldSpaceToHex(mouseWS);
+	mouseHex = worldSpaceToHex(mouseWS);
 	lastMouseWorldPos = mouseWorldPos;
 	mouseWorldPos = mouseWS;
 	if (playerObj) {
@@ -197,10 +207,11 @@ void CHexWorld::calcMouseWorldPos() {
 		playerObj->setMouseDir(glm::normalize(mouseVec));
 	} //needed for playerObj orientation etc
 
-	if (mouseHex != hexCursor->transform->hexPosition) {
-		CMouseExitHex msg;
-		msg.leavingHex = hexCursor->transform->hexPosition;
-		onNewMouseHex(mouseHex);
+	if (mouseHex != lastMouseHex) {
+		//CMouseExitHex msg;
+		//msg.leavingHex = hexCursor->transform->hexPosition;
+		lastMouseHex = mouseHex;
+		onNewMouseHex();
 	}
 }
 
@@ -211,8 +222,6 @@ void CHexWorld::draw() {
 	hexRender.resetDrawLists();
 
 	for (auto& entity : game.entities) {
-		if (entity->name == "basicShield")
-			int b = 0;
 		if (entity->live) 
 			//entity->drawFn.get()->draw(hexRender);
 			entity->modelCmp->draw(hexRender);
@@ -386,17 +395,17 @@ void CHexWorld::prepMapEntities() {
 
 /////////////public - private devide
 
-void CHexWorld::createCursorObject() {
-	hexCursor = new CEntity();
-
-	//hexCursor->setModel(spawn::models["cursor"]);
-	hexCursor->setPosition(glm::vec3(0, 0, 0));
-}
+//void CHexWorld::createCursorObject() {
+//	hexCursor = new CEntity();
+//
+//	//hexCursor->setModel(spawn::models["cursor"]);
+//	hexCursor->setPosition(glm::vec3(0, 0, 0));
+//}
 
 
 /** Respond to mouse cursor moving to a new hex. */
-void CHexWorld::onNewMouseHex(CHex& mouseHex) {
-	hexCursor->setPosition(cubeToWorldSpace(mouseHex));
+void CHexWorld::onNewMouseHex() {
+	//hexCursor->setPosition(cubeToWorldSpace(mouseHex));
 
 
 	/*if (!lineOfSight)
