@@ -41,7 +41,7 @@ CPlayerObject::CPlayerObject() {
 
 	//setBoundingRadius(); //temp?
 	entityType = entPlayer;
-
+	visible = true;
 }
 
 CPlayerObject::~CPlayerObject() {
@@ -109,6 +109,7 @@ void CPlayerObject::receiveDamage(CEntity& attacker, int damage) {
 		spawn::explosion("explosion", getPos(), 1.5f);
 
 		CGameEvent e;
+		e.type = gamePlayerDeath;
 		lis::event(e);
 
 	}

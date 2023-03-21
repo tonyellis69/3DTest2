@@ -115,28 +115,28 @@ void C3DtestApp::keyCheck() {
 				return;
 
 
-			if (keyNow('A')) {
-				if (keyNow('W'))
-					game.player->moveCommand(moveNW);
-				else if (keyNow('S'))
-					game.player->moveCommand(moveSW);
-				else
-					game.player->moveCommand(moveWest);
-			}
-			else if (keyNow('D')) {
-				if (keyNow('W'))
-					game.player->moveCommand(moveNE);
-				else if (keyNow('S'))
-					game.player->moveCommand(moveSE);
-				else
-					game.player->moveCommand(moveEast);
-			}
-			else if (keyNow('W')) {
-				game.player->moveCommand(moveNorth);
-			}
-			else if (keyNow('S')) {
-				game.player->moveCommand(moveSouth);
-			}
+			//if (keyNow('A')) {
+			//	if (keyNow('W'))
+			//		game.player->moveCommand(moveNW);
+			//	else if (keyNow('S'))
+			//		game.player->moveCommand(moveSW);
+			//	else
+			//		game.player->moveCommand(moveWest);
+			//}
+			//else if (keyNow('D')) {
+			//	if (keyNow('W'))
+			//		game.player->moveCommand(moveNE);
+			//	else if (keyNow('S'))
+			//		game.player->moveCommand(moveSE);
+			//	else
+			//		game.player->moveCommand(moveEast);
+			//}
+			//else if (keyNow('W')) {
+			//	game.player->moveCommand(moveNorth);
+			//}
+			//else if (keyNow('S')) {
+			//	game.player->moveCommand(moveSouth);
+			//}
 		
 		}
 

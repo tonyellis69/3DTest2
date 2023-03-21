@@ -210,6 +210,9 @@
     <ClCompile Include="src\modules\gameMode.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
+    <ClCompile Include="src\modules\procGenMode.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -399,6 +402,9 @@
       <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="src\modules\gameMode.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\procGenMode.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
   </ItemGroup>

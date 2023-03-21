@@ -46,6 +46,7 @@
 
 #include "modules/workingMode.h" //remove
 #include "modules/gameMode.h"
+#include "modules/procGenMode.h"
 
 CHexWorld::CHexWorld() {
 	game.paused = true;
@@ -67,7 +68,8 @@ CHexWorld::CHexWorld() {
 
 	initPalettes();
 
-
+	reticule = spawn::models["reticule"];
+	reticule.palette[0] = { 1,1,1,1 };
 
 
 }
@@ -128,10 +130,58 @@ void CHexWorld::onEvent(CGUIevent& e) {
 
 	}
 
+
+	if (e.type == eMouseMove) {
+		if (game.paused)
+			return;
+		
+		lastMousePos = mousePos;
+		mousePos = e.pos;
+		calcMouseWorldPos();
+	}
+
+
+	if (e.type == eMouseWheel) {
+
+		if (CWin::keyPressed(GLFW_KEY_LEFT_SHIFT)) {
+			hexRender.pitchCamera(e.dy);
+		}
+		else {
+			if (CWin::keyPressed(GLFW_KEY_LEFT_CONTROL)) {
+				if (hexRender.dollyCamera(e.dy * zoomScale))
+					adjustZoomScale(e.dy);
+			}
+			else {
+				;
+			}
+		}
+	}
+
+
+
+
+
+	if (e.key == GLFW_KEY_ENTER && e.type == eKeyDown) {
+
+		start();
+	}
+
+
+
 }
 
 void CHexWorld::onEvent(CGameEvent& e) {
 	mode->gameEventHandler(e);
+	if (e.type == gamePlayerDeath) {
+		onPlayerDeath();
+	}
+	else if (e.type == gameLevelChange) {
+		physics.clearEntities();
+		physics.setMap(game.level->getHexArray());
+		hexRender.loadMap(game.level->getHexArray());
+		prepMapEntities();
+		setViewMode(mode->viewMode);
+	}
 }
 
 void CHexWorld::onEvent(CPhysicsEvent& e) {
@@ -159,10 +209,6 @@ void CHexWorld::addHexTile(const std::string& name, const std::string& fileName,
 }
 
 
-void CHexWorld::makeMap() {
-	mode->makeMap();
-}
-
 void CHexWorld::deleteMap() {
 	//delete level;
 }
@@ -172,14 +218,34 @@ void CHexWorld::deleteMap() {
 //FIXME: is this for restarts too? 
 void CHexWorld::start() {
 
-	reticule = spawn::models["reticule"];
-	reticule.palette[0] = { 1,1,1,1 };
+
 
 
 	//default: game mode
-	gameMode = std::make_unique<CGameMode>(this);
-	mode = gameMode.get();
+	if (!mode) {
+		//gameMode = std::make_unique<CGameMode>(this);
+		//mode = gameMode.get();
+		procGenMode = std::make_unique<CProcGenMode>(this);
+		mode = procGenMode.get();
+	}
 	mode->start();
+
+	//setViewMode(mode->viewMode); 
+
+
+	game.paused = false;
+
+	pBotZero = nullptr;
+	for (auto& entity : game.entities) {
+		if (entity->isRobot && entity->id == 7) {
+			if (pBotZero == NULL)
+				pBotZero = entity.get();
+			else
+				;// ((CRobot*)entity.get())->setState(robotDoNothing);
+		}
+	}
+
+
 }
 
 void CHexWorld::startProcTest() {
@@ -475,16 +541,21 @@ void CHexWorld::updateCameraPosition() {
 
 
 /** Whether we're in standard follow-cam mode or not, etc. */
-void CHexWorld::setViewMode(TViewMode mode) {
-	viewMode = mode;
+void CHexWorld::setViewMode(TViewMode vMode) {
+	viewMode = vMode;
 
-	if (mode == gameView) {
+	if (viewMode == gameView) {
 		hexRender.pointCamera(glm::vec3(0, 0, -1));
 		hexRender.setCameraHeight(15);
+		followCam(game.player);
 	}
-	else if (mode == devView) {
+	else if (viewMode == devView) {
 		hexRender.setCameraPos(glm::vec3(0, -0, 12));
 		hexRender.setCameraPitch(45);
+	}
+	else if (viewMode == keepView) {
+		zoom2fit = true;
+		freeCam();
 	}
 
 }
@@ -612,7 +683,7 @@ void CHexWorld::zoomToFit() {
 	glm::vec3 margin(2, 2, 0);
 
 	if (glm::any(glm::greaterThan(gridTL + margin, scnTL))) {
-		hexRender.dollyCamera(-1.0f);
+		hexRender.dollyCamera(-4.0f);
 	} 
 	else	if (glm::all(glm::lessThanEqual(gridTL , scnTL - margin * 1.5f))) {
 		hexRender.dollyCamera(1.0f);

@@ -189,11 +189,12 @@ void CMapEdit::save() {
 }
 
 void CMapEdit::load() {
-	std::string filename = file::getDataPath() + "manyMapTest.map";// "oneMapTest.map";
-	std::ifstream loadFile(filename);
-	assert(loadFile.is_open());
-	game.load(loadFile);
-	loadFile.close();
+	//std::string filename = file::getDataPath() + "manyMapTest.map";// "oneMapTest.map";
+	//std::ifstream loadFile(filename);
+	//assert(loadFile.is_open());
+	//game.load(loadFile);
+	//loadFile.close();
+	game.loadLevel("manyMapTest.map");
 	setMap(pMap);
 	pMap->mapUpdated = true;
 }

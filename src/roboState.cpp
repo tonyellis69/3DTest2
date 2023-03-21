@@ -604,7 +604,7 @@ std::shared_ptr<CRoboState> CMelee::updateState(float dT) {
 	if (timer < lungeEnd) {
 		float step = targetDist /(lungeEnd - timer) ;
 		step *= dT;
-		pBot->getPos() += lungeVec * step * adj;
+		pBot->transform->setPos(pBot->getPos() + lungeVec * step * adj);
 		return nullptr;
 	}
 

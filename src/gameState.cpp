@@ -5,6 +5,8 @@
 #include "utils/files.h"
 #include "spawner.h"
 
+#include "gameEvent.h"
+#include "listen/listen.h"
 
 CGameState game;
 
@@ -17,8 +19,11 @@ void CGameState::setLevel(CLevel* level) {
 
 void CGameState::setLevel(std::unique_ptr<CLevel> level) {
 	//TODO: finesse this re persistence of player entity and others:
-	entities.clear();
+	//entities.clear();
 	this->level = std::move(level);
+	CGameEvent e; 
+	e.type = gameLevelChange;
+	lis::event(e);
 }
 
 
@@ -109,7 +114,12 @@ void CGameState::togglePause() {
 }
 
 
-void CGameState::load(std::istream& in) {
+void CGameState::loadLevel(const std::string& fileName) {
+
+	std::string fullPath = file::getDataPath() + fileName;// "oneMapTest.map";
+	std::ifstream in(fullPath);
+	assert(in.is_open());
+
 	int version;
 	file::readObject(version, in);
 
@@ -117,12 +127,19 @@ void CGameState::load(std::istream& in) {
 	file::readObject(header, in);
 
 	int numHexes = header.height * header.width;
+
+	auto level = std::make_unique<CLevel>();
+	level->init(header.width, header.height);
+
+	//FIXME: ugh
 	TFlatArray flatArray(numHexes);
 	for (auto& hex : flatArray) {
 		file::readObject(hex, in);
 	}
 	level->hexArray.setArray(flatArray);
 
+
+	this->level = std::move(level);
 	entities.clear();
 
 	int numEnts;
@@ -140,10 +157,13 @@ void CGameState::load(std::istream& in) {
 		case entShootBot: spawn::robot("shooter bot", pos); break;
 		case entGun: spawn::gun("gun", pos); break;
 		}
-
-
-
 	}
+
+	in.close();
+
+	CGameEvent e;
+	e.type = gameLevelChange;
+	lis::event(e);
 }
 
 void CGameState::toggleUImode(bool onOff) {

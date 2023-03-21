@@ -22,7 +22,7 @@ public:
 
 	void onMapDrag();
 	void realtimeKeyChecks();
-	void realtimeMouseButtons();
+	//void realtimeMouseButtons();
 	
 
 

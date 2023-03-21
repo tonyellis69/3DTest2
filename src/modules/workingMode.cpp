@@ -227,7 +227,7 @@ void CWorkingMode::startProcTest() {
 	game.paused = false;
 	pHexWorld->freeCam();
 	CWin::fullScreen();
-	pHexWorld->zoom2fit = true;
+//	pHexWorld->zoom2fit = true;
 }
 
 void CWorkingMode::startGame() {
@@ -306,7 +306,7 @@ void CWorkingMode::update(float dt) {
 
 
 	realtimeKeyChecks();
-	realtimeMouseButtons();
+	//realtimeMouseButtons();
 }
 
 
@@ -335,10 +335,3 @@ void CWorkingMode::realtimeKeyChecks() {
 	}
 }
 
-void CWorkingMode::realtimeMouseButtons() {
-	if (CWin::mouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-		pHexWorld->playerObj->onFireKey(true);
-
-	}
-
-}

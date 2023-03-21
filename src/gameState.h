@@ -26,7 +26,7 @@ public:
 	void update(float dT);
 	void save(std::ostream& out);
 	void togglePause();
-	void load(std::istream& in);
+	void loadLevel(const std::string& fileName);
 	void toggleUImode(bool onOff);
 
 

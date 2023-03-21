@@ -14,7 +14,7 @@ public:
 	CGameMode(CHexWorld* engine) : CBaseModule(engine) {}
 	void start();
 	void guiHandler(CGUIevent& e);
-	virtual void gameEventHandler(CGameEvent& e) {}
+	void gameEventHandler(CGameEvent& e);
 
 	virtual void makeMap() {}
 	virtual void startProcTest() {}

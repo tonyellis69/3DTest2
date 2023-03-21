@@ -39,7 +39,7 @@
 
 #include "modules/baseModule.h"
 
-enum TViewMode {gameView, devView, keepView};
+
 enum TMsgType {msgId,msgId2,msgId3};
 
 enum TCameraMode {camNone, camFollow, camFree, camFixed};
@@ -53,7 +53,6 @@ public:
 	void onEvent(CPhysicsEvent& e);
 	void addMesh(const std::string& name, const std::string& fileName);
 	void addHexTile(const std::string& name, const std::string& fileName, std::vector<glm::vec4>& colours);
-	void makeMap();
 	void deleteMap();
 	void start();
 	void startProcTest();
@@ -180,10 +179,11 @@ private:
 
 
 	//engine mode stuff
-	CBaseModule* mode; //<Current engine mode.
+	CBaseModule* mode = nullptr; //<Current engine mode.
 
 	std::unique_ptr<CBaseModule> workingMode;
 	std::unique_ptr<CBaseModule> gameMode;
+	std::unique_ptr<CBaseModule> procGenMode;
 };
 
 

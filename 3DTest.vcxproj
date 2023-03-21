@@ -160,6 +160,7 @@
     <ClCompile Include="src\missile.cpp" />
     <ClCompile Include="src\modules\baseModule.cpp" />
     <ClCompile Include="src\modules\gameMode.cpp" />
+    <ClCompile Include="src\modules\procGenMode.cpp" />
     <ClCompile Include="src\modules\workingMode.cpp" />
     <ClCompile Include="src\physics\hexPhysics.cpp" />
     <ClCompile Include="src\physics\phys.cpp" />
@@ -223,6 +224,7 @@
     <ClInclude Include="src\missile.h" />
     <ClInclude Include="src\modules\baseModule.h" />
     <ClInclude Include="src\modules\gameMode.h" />
+    <ClInclude Include="src\modules\procGenMode.h" />
     <ClInclude Include="src\modules\workingMode.h" />
     <ClInclude Include="src\physEvent.h" />
     <ClInclude Include="src\physics\hexPhysics.h" />
