@@ -7,10 +7,9 @@
 class CItemCmp : public CEntityCmp {
 public:
 	CItemCmp(CEntity* parent) : CEntityCmp(parent) {}
-	void setOwner(CEntity* owner) {
-		this->itemOwner = owner;
-	}
+	void setOwner(CEntity* owner);
+	void onSpawn();
 
 	CEntity* itemOwner = nullptr;
-
+	int ownerId;
 };

@@ -35,7 +35,7 @@ public:
 	void setPosition(glm::vec3& worldPos);
 	glm::vec3 getPos();
 	virtual void receiveDamage(CEntity& attacker, int damage) {};
-	virtual void onSpawn();
+	virtual void init();
 	void destroyMe();
 	void setParent(CEntity* parent);
 	CEntity* getParent();

@@ -83,3 +83,8 @@ void CModelCmp::retranslateLower(glm::vec3& translate) {
 	//footR->matrix = Rtran;
 	//footRmask->matrix = Rtran;
 }
+
+void CModelCmp::onSpawn() {
+	//Fudge for when entities get restored. Lose this when drawFuncs become true components
+	drawFn->pOwner = thisEntity;
+}

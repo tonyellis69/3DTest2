@@ -133,7 +133,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 }
 
 void CMissile::spawnExplosion() {
-	CExplosion* splode = (CExplosion *) spawn::explosion("explosion", collisionPt, 1).get();
+	CExplosion* splode = (CExplosion *) spawn::explosion("explosion", collisionPt, 1);
 	if (collidee)
 		splode->setCollidee(collidee.get());
 

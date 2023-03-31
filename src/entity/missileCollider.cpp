@@ -44,7 +44,7 @@ void CMissileColliderCmp::update(float dT) {
 			[](TMissileCollision& A, TMissileCollision& B) { return A.dist < B.dist; } );
 		
 		auto collision = collisions.begin();
-		CExplosion* splode = (CExplosion*)spawn::explosion("explosion", collision->collisionPt, 1).get();
+		CExplosion* splode = (CExplosion*)spawn::explosion("explosion", collision->collisionPt, 1);
 		if (collision->ent) {
 			splode->setCollidee(collision->ent);
 			collision->ent->receiveDamage(*thisEntity->getParent(), 5);
@@ -62,7 +62,7 @@ void CMissileColliderCmp::update(float dT) {
 		//now check for collisions along this path. 
 		auto [impact, collisionPt] = sceneryCollisionCheck(oldLeadingPoint, leadingPoint);
 		if (impact) {
-			CExplosion* splode = (CExplosion*)spawn::explosion("explosion", collisionPt, 1).get();
+			CExplosion* splode = (CExplosion*)spawn::explosion("explosion", collisionPt, 1);
 			thisEntity->destroyMe();
 			return;
 		}

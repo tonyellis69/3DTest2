@@ -29,6 +29,10 @@ public:
 	void loadLevel(const std::string& fileName);
 	void toggleUImode(bool onOff);
 
+	void updatePlayerPtr();
+
+	void restoreEntities(TEntities& entVec);
+
 
 	CPlayerObject* player = nullptr;
 

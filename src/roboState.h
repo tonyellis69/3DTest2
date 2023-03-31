@@ -16,8 +16,8 @@ struct TObstacle { glm::vec3 pos = glm::vec3(0); float radius; CRobot* bot = nul
 
 class CRoboState : public CAiCmp {
 public:
-	CRoboState(CRobot* bot)  : CAiCmp((CEntity*)bot) {
-		this->pBot =bot;
+	CRoboState(CEntity* bot)  : CAiCmp((CEntity*)bot) {
+		//this->pBot =bot;
 	}
 	void update(float dT);
 	void trackTarget();
@@ -101,7 +101,7 @@ public:
 
 class CRoboWander : public CRoboState {
 public:
-	CRoboWander(CRobot* bot);
+	CRoboWander(CEntity* bot);
 	//void update(float dT);
 	std::shared_ptr<CRoboState> updateState(float dT);
 
@@ -122,7 +122,7 @@ struct TGlance {
 
 class CGlanceAround : public CRoboState {
 public:
-	CGlanceAround(CRobot* bot);
+	CGlanceAround(CEntity* bot);
 	std::shared_ptr<CRoboState> updateState(float dT);
 
 	std::vector<TGlance> glances;
@@ -138,7 +138,7 @@ public:
 
 class CCharge : public CRoboState {
 public:
-	CCharge(CRobot* bot, CEntity* targetEntity);
+	CCharge(CEntity* bot, CEntity* targetEntity);
 	std::shared_ptr<CRoboState> updateState(float dT);
 
 
@@ -152,7 +152,7 @@ public:
 
 class CMelee : public CRoboState {
 public:
-	CMelee(CRobot* bot, CEntity* targetEntity);
+	CMelee(CEntity* bot, CEntity* targetEntity);
 	std::shared_ptr<CRoboState> updateState(float dT);
 
 	CEntity* targetEntity;
@@ -169,7 +169,7 @@ public:
 
 class CCloseAndShoot : public CRoboState {
 public:
-	CCloseAndShoot(CRobot* bot, CEntity* targetEntity);
+	CCloseAndShoot(CEntity* bot, CEntity* targetEntity);
 	std::shared_ptr<CRoboState> updateState(float dT);
 	//glm::vec3 getDestination();
 
@@ -185,7 +185,7 @@ public:
 
 class CGoTo : public CRoboState {
 public:
-	CGoTo(CRobot* bot, glm::vec3& dest);
+	CGoTo(CEntity* bot, glm::vec3& dest);
 	std::shared_ptr<CRoboState> updateState(float dT);
 
 	float speed = 2000.0f;
@@ -195,7 +195,7 @@ public:
 
 class CDoNothing : public CRoboState {
 public:
-	CDoNothing(CRobot* bot) : CRoboState(bot) {}
+	CDoNothing(CEntity* bot) : CRoboState(bot) {}
 	std::shared_ptr<CRoboState> updateState(float dT) {
 		return nullptr;
 	};
@@ -204,7 +204,7 @@ public:
 
 class CGoToHunting : public CGoTo {
 public:
-	CGoToHunting(CRobot* bot, glm::vec3& dest, CEntity* quarry);
+	CGoToHunting(CEntity* bot, glm::vec3& dest, CEntity* quarry);
 	std::shared_ptr<CRoboState> updateState(float dT);
 
 	CEntity* targetEntity;
@@ -213,7 +213,7 @@ public:
 
 class CTurnToSee : public CRoboState {
 public:
-	CTurnToSee(CRobot* bot, glm::vec3& dest);
+	CTurnToSee(CEntity* bot, glm::vec3& dest);
 	std::shared_ptr<CRoboState> updateState(float dT);
 
 	glm::vec3 dir;

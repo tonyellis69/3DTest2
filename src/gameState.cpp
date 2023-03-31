@@ -27,6 +27,8 @@ void CGameState::setLevel(std::unique_ptr<CLevel> level) {
 }
 
 
+
+
 //Temporary fix - consider map etc for speed, quadtree
 CEntities CGameState::getEntitiesAt(const CHex& hex)
 {
@@ -115,8 +117,7 @@ void CGameState::togglePause() {
 
 
 void CGameState::loadLevel(const std::string& fileName) {
-
-	std::string fullPath = file::getDataPath() + fileName;// "oneMapTest.map";
+	std::string fullPath = file::getDataPath() + fileName;
 	std::ifstream in(fullPath);
 	assert(in.is_open());
 
@@ -128,18 +129,18 @@ void CGameState::loadLevel(const std::string& fileName) {
 
 	int numHexes = header.height * header.width;
 
-	auto level = std::make_unique<CLevel>();
-	level->init(header.width, header.height);
+	auto newLevel = std::make_unique<CLevel>();
+	newLevel->init(header.width, header.height);
 
 	//FIXME: ugh
 	TFlatArray flatArray(numHexes);
 	for (auto& hex : flatArray) {
 		file::readObject(hex, in);
 	}
-	level->hexArray.setArray(flatArray);
+	newLevel->hexArray.setArray(flatArray);
 
 
-	this->level = std::move(level);
+	this->level = std::move(newLevel);
 	entities.clear();
 
 	int numEnts;
@@ -150,7 +151,6 @@ void CGameState::loadLevel(const std::string& fileName) {
 
 		glm::vec3 pos;
 		file::readObject(pos, in);
-
 		switch (entType) {
 		case entPlayer: spawn::player("player", pos); break;
 		case entMeleeBot: spawn::robot("melee bot", pos); break;
@@ -161,6 +161,7 @@ void CGameState::loadLevel(const std::string& fileName) {
 
 	in.close();
 
+
 	CGameEvent e;
 	e.type = gameLevelChange;
 	lis::event(e);
@@ -168,4 +169,32 @@ void CGameState::loadLevel(const std::string& fileName) {
 
 void CGameState::toggleUImode(bool onOff) {
 	uiMode = onOff;
+}
+
+void CGameState::updatePlayerPtr() {
+	for (auto& ent : entities) {
+		if (ent->entityType == entPlayer) {
+			auto tmp = ent.get();
+			player = (CPlayerObject*)tmp;
+			return;
+		}
+	}
+}
+
+void CGameState::restoreEntities(TEntities& entVec) {
+	entities.clear();
+	for (auto& ent : entVec) {
+		entities.push_back(std::make_shared<CEntity>(*ent.get()));
+	}
+
+	for (auto& ent : entities) {
+		ent->init();
+	}
+
+	updatePlayerPtr();
+	game.player->init(); //FIXME: fudge!!!!
+
+	CGameEvent e;
+	e.type = gameLevelChange;
+	lis::event(e);
 }

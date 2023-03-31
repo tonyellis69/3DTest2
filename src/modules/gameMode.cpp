@@ -9,7 +9,12 @@
 void CGameMode::start() {
 	viewMode = gameView;
 
-	game.loadLevel("manyMapTest.map");
+	if (entityState.empty()) {
+		saveEntityState();
+	}
+	else {
+		restoreEntityState();
+	}
 
 	CWin::showMouse(false);
 

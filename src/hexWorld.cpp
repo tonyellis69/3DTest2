@@ -68,8 +68,6 @@ CHexWorld::CHexWorld() {
 
 	initPalettes();
 
-	reticule = spawn::models["reticule"];
-	reticule.palette[0] = { 1,1,1,1 };
 
 
 }
@@ -219,18 +217,21 @@ void CHexWorld::deleteMap() {
 void CHexWorld::start() {
 
 
+	reticule = spawn::models["reticule"];
+	reticule.palette[0] = { 1,1,1,1 };
 
 
 	//default: game mode
 	if (!mode) {
-		//gameMode = std::make_unique<CGameMode>(this);
-		//mode = gameMode.get();
-		procGenMode = std::make_unique<CProcGenMode>(this);
-		mode = procGenMode.get();
+		gameMode = std::make_unique<CGameMode>(this);
+		mode = gameMode.get();
+		game.loadLevel("manyMapTest.map");
+		//procGenMode = std::make_unique<CProcGenMode>(this);
+		//mode = procGenMode.get();
 	}
 	mode->start();
 
-	//setViewMode(mode->viewMode); 
+	setViewMode(mode->viewMode); 
 
 
 	game.paused = false;
@@ -268,10 +269,10 @@ void CHexWorld::calcMouseWorldPos() {
 	mouseHex = worldSpaceToHex(mouseWS);
 	lastMouseWorldPos = mouseWorldPos;
 	mouseWorldPos = mouseWS;
-	if (playerObj) {
-		glm::vec3 mouseVec = mouseWorldPos - playerObj->getPos();
-		playerObj->setMouseDir(glm::normalize(mouseVec));
-	} //needed for playerObj orientation etc
+	if (game.player) {
+		glm::vec3 mouseVec = mouseWorldPos - game.player->getPos();
+		game.player->setMouseDir(glm::normalize(mouseVec));
+	} //needed for game.player orientation etc
 
 	if (mouseHex != lastMouseHex) {
 		//CMouseExitHex msg;
@@ -319,7 +320,7 @@ void CHexWorld::draw() {
 
 	if (game.player && !game.player->dead) {
 		//imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 1.0f });
-		//imRendr::drawLine(playerObj->worldPos, mouseWorldPos);
+		//imRendr::drawLine(game.player->worldPos, mouseWorldPos);
 		//hexCursor->draw();
 		drawReticule();
 	}
@@ -417,7 +418,7 @@ void CHexWorld::toggleEditMode() {
 		CWin::showMouse(true);
 	}
 	else {
-		followCam(playerObj);
+		followCam(game.player);
 		gWin::pNear->showWin();
 		prepMapEntities();
 		CWin::showMouse(false);
@@ -447,7 +448,7 @@ void CHexWorld::prepMapEntities() {
 
 		if (entity->entityType == entPlayer) {
 			game.player = (CPlayerObject*)entity.get();
-			playerObj = (CPlayerObject*)entity.get();
+//			game.player = (Cgame.playerect*)entity.get();
 			physics.add(entity.get());
 		}
 
@@ -475,9 +476,9 @@ void CHexWorld::onNewMouseHex() {
 
 
 	/*if (!lineOfSight)
-		cursorPath = level->aStarPath(playerObj->hexPosition, hexCursor->hexPosition, true);
+		cursorPath = level->aStarPath(game.player->hexPosition, hexCursor->hexPosition, true);
 	else
-		cursorPath = *hexLine2(playerObj->hexPosition, hexCursor->hexPosition);*/
+		cursorPath = *hexLine2(game.player->hexPosition, hexCursor->hexPosition);*/
 
 
 	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
@@ -659,9 +660,9 @@ void CHexWorld::removeDeadEntities() {
 //}
 
 void CHexWorld::onPlayerDeath() {
-	fixedCam(playerObj->getPos().x, playerObj->getPos().y);
-	//level->removeEntity(playerObj);
-	playerObj->setPosition(glm::vec3(0));
+	fixedCam(game.player->getPos().x, game.player->getPos().y);
+	//level->removeEntity(game.player);
+	game.player->setPosition(glm::vec3(0));
 
 	for (auto& entity : game.entities) {
 		if (entity->isRobot) {

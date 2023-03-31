@@ -33,7 +33,7 @@ std::unordered_map<std::string, std::vector<glm::vec4> >* CSpawn::pPalettes;
 CLevel* CSpawn::pMap;
 
 
-TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
+CEntity* CSpawn::player(const std::string& name, glm::vec3& pos) {
 	auto player = std::make_shared<CPlayerObject>();
 
 	player->collider = std::make_shared<ColliderCmp>(player.get());
@@ -57,18 +57,19 @@ TEntity CSpawn::player(const std::string& name, glm::vec3& pos) {
 	player->name = "player";
 
 	CEntity* equippedShield = shield("basicShield");
-	CItemCmp* item = (CItemCmp*)equippedShield->item.get();
-	item->setOwner(player.get());
-	player->shield = equippedShield;
+	player->setShield(equippedShield);
+	//CItemCmp* item = (CItemCmp*)equippedShield->item.get();
+	//item->setOwner(player.get());
+	//player->shield = equippedShield;
 
 
 	game.addEntity(player);
-	player->onSpawn();
-	return player;
+	player->init();
+	return player.get();
 }
 
 /** Create the given entity, and notify the registered callback-handler. */
-TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
+CEntity* CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	auto robot = std::make_shared<CRobot>();
 	robot->collider = std::make_shared<ColliderCmp>(robot.get());
 	robot->modelCmp = std::make_shared<CBotTreadsModelCmp>(robot.get());
@@ -108,11 +109,11 @@ TEntity CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	robot->name = "robot";
 
 	game.addEntity(robot);
-	robot->onSpawn();
-	return robot;
+	robot->init();
+	return robot.get();
 }
 
-TEntity CSpawn::missile(const std::string& name, glm::vec3& pos, float angle) {
+CEntity* CSpawn::missile(const std::string& name, glm::vec3& pos, float angle) {
 	auto missile = std::make_shared<CMissile>();
 	missile->collider = std::make_shared<CMissileColliderCmp>(missile.get());
 	missile->collider->colliderType = missileCollider;
@@ -124,11 +125,11 @@ TEntity CSpawn::missile(const std::string& name, glm::vec3& pos, float angle) {
 	missile->setPosition(pos,angle);
 
 	game.addEntity(missile);
-	missile->onSpawn();
-	return missile;
+	missile->init();
+	return missile.get();
 }
 
-TEntity CSpawn::explosion(const std::string& name, glm::vec3& pos, float scale) {
+CEntity* CSpawn::explosion(const std::string& name, glm::vec3& pos, float scale) {
 	auto explode = std::make_shared<CExplosion>(scale);
 
 	explode->modelCmp->drawFn = std::make_shared<CSplodeDraw>(explode.get());
@@ -138,8 +139,8 @@ TEntity CSpawn::explosion(const std::string& name, glm::vec3& pos, float scale) 
 	explode->transform->setPos(pos);
 
 	game.addEntity(explode);
-	explode->onSpawn();
-	return explode;
+	explode->init();
+	return explode.get();
 }
 
 
@@ -159,7 +160,7 @@ CEntity* CSpawn::gun(const std::string& name, glm::vec3& pos ) {
 	gun->name = "gun";
 
 	game.addEntity(gun);
-	gun->onSpawn();
+	gun->init();
 	return gun.get();
 }
 
@@ -179,7 +180,7 @@ CEntity* CSpawn::armour(const std::string& name, glm::vec3& pos) {
 	armour->name = "armour";
 
 	game.addEntity(armour);
-	armour->onSpawn();
+	armour->init();
 	return armour.get();
 }
 
@@ -195,12 +196,12 @@ CEntity* CSpawn::shield(const std::string& name) {
 	shieldEnt->name = name;
 
 	game.addEntity(shieldEnt);
-	shieldEnt->onSpawn();
+	shieldEnt->init();
 	return shieldEnt.get();
 }
 
 
-TEntity CSpawn::drop(const std::string& name, glm::vec3& pos) {
+CEntity* CSpawn::drop(const std::string& name, glm::vec3& pos) {
 	auto drop = std::make_shared<CEntity>();
 	drop->collider = std::make_shared<ColliderCmp>(drop.get());
 	drop->collider->sceneryOnly = true;
@@ -215,6 +216,6 @@ TEntity CSpawn::drop(const std::string& name, glm::vec3& pos) {
 
 	game.addEntity(drop);
 
-	drop->onSpawn();
-	return drop;
+	drop->init();
+	return drop.get();
 }

@@ -88,7 +88,7 @@ public:
 	CHex lastMouseHex;
 	bool zoom2fit = false;
 	CHexPhysics physics;
-	CPlayerObject* playerObj = NULL;
+	//CPlayerObject* playerObj = NULL;
 	CEntity* pBotZero = NULL;
 	CModel reticule;
 	float zoomScale = 1.0f;

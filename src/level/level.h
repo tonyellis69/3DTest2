@@ -42,7 +42,6 @@ public:
 //private:
 	CHexArray hexArray;
 
-
 };
 
 class CMapHeader {

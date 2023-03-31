@@ -305,6 +305,18 @@ void CPlayerObject::setArmour(CEntity* armour) {
 	this->armour = (CArmour*) armour;
 	this->armour->setParent(this);
 }
+
+void CPlayerObject::setShield(CEntity* shield) {
+	CItemCmp* item = (CItemCmp*)shield->item.get();
+	item->setOwner(this);
+	this->shield = shield;
+	shieldId = shield->id;
+}
+
+void CPlayerObject::init() {
+	CEntity::init();
+	shield = game.getEntity(shieldId);
+}
 //
 ///** Check if the given segment intersects us. */
 //std::tuple<bool, glm::vec3> CPlayerObject::collisionCheck(glm::vec3& segA, glm::vec3& segB) {

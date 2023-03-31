@@ -73,7 +73,7 @@ void CRobot::fireMissile(CEntity* target) {
 	glm::vec3 targetVec = target->getPos() - getPos();
 	float targetAngle = glm::orientedAngle(glm::normalize(targetVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 
-	auto missile = (CMissile*) spawn::missile("missile",getPos(), targetAngle).get();
+	auto missile = (CMissile*) spawn::missile("missile",getPos(), targetAngle);
 	missile->setOwner(this); //FIXME: phasing out
 	missile->setParent(this);
 	missile->setSpeed(15);// 7.0f);

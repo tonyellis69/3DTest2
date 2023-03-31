@@ -22,7 +22,7 @@ public:
 	virtual void rotateLower(float angle);
 	virtual void retranslateLower(glm::vec3& translate);
 
-
+	void onSpawn();
 
 	CModel model;
 	std::shared_ptr<CDrawFunc> drawFn;

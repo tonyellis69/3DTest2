@@ -68,19 +68,31 @@ void CEntity::setPosition(glm::vec3& worldPos) {
 }
 
 
-void CEntity::onSpawn() {
-	if (ai)
+void CEntity::init() {
+	if (ai) {
+		ai->thisEntity = this;
 		ai->onSpawn();
-	if (item)
+	}
+	if (item) {
+		item->thisEntity = this;
 		item->onSpawn();
-	if (transform)
+	}
+	if (transform) {
+		transform->thisEntity = this;
 		transform->onSpawn();  //TO DO: may not need
-	if (modelCmp)
+	}
+	if (modelCmp) {
+		modelCmp->thisEntity = this;
 		modelCmp->onSpawn();
-	if (collider)
+	}
+	if (collider) {
+		collider->thisEntity = this;
 		collider->onSpawn();
-	if (phys)
-		collider->onSpawn();
+	}
+	if (phys) {
+		phys->thisEntity = this;
+		phys->onSpawn();
+	}
 }
 
 

@@ -51,6 +51,8 @@ public:
 	void addToInventory(CEntity* item);
 	void setGun(CEntity* gun);
 	void setArmour(CEntity* armour);
+	void setShield(CEntity* shield);
+	virtual void init();
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
 	
@@ -72,7 +74,7 @@ public:
 	std::vector<CItem*> inventory; ///<Carried items.
 
 	CEntity* shield = nullptr;
-	//TODO: do I gain anything using a smartpointer here?
+	int shieldId; 
 
 private:
 //	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);

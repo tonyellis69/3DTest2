@@ -252,7 +252,7 @@ void CWorkingMode::startGame() {
 
 	game.paused = false;
 
-	pHexWorld->followCam(pHexWorld->playerObj);
+	pHexWorld->followCam(game.player);
 	//freeCam(-76, 15);
 //	toggleDirectionGraphics();
 	//game.slowed = true;
@@ -269,8 +269,8 @@ void CWorkingMode::startGame() {
 	CWin::showMouse(false);
 
 	//FIXME: this (and prob other stuff above) should be run once only in a hexWorld.init(). 
-	pHexWorld->reticule = spawn::models["reticule"];
-	pHexWorld->reticule.palette[0] = { 1,1,1,1 };
+	/*pHexWorld->reticule = spawn::models["reticule"];
+	pHexWorld->reticule.palette[0] = { 1,1,1,1 };*/
 
 
 	CWin::fullScreen();

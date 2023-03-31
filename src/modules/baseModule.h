@@ -2,6 +2,7 @@
 
 #include "ui/guiEvent.h"
 #include "../gameEvent.h"
+#include "../entity/entity.h"
 
 enum TViewMode { gameView, devView, keepView };
 
@@ -22,11 +23,16 @@ public:
 	virtual void startGame() {}
 
 	virtual void update(float dt) {}
+	void saveEntityState();
+	void restoreEntityState();
 
 	TViewMode viewMode;///<Whether to use followcam, screen controls, etc, with this module
 
 	CHexWorld* pHexWorld;
 	float dT;
+
+	//std::vector<CEntity> entityState; ///<Latest preserved entity states for this module
+	TEntities entityState;
 
 
 };
