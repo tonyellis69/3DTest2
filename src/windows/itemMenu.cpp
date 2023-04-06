@@ -102,7 +102,7 @@ void CItemMenu::update(float dT) {
 /** Catch a click on drop/examine, etc. */
 void CItemMenu::onRichTextClick(const std::string& msg) {
 	if (msg == "drop") {
-		game.player->dropItem(currentItem);
+		game.player->playerC->dropItem(currentItem);
 		//CItem* item = (CItem*)game.getEntity(currentItem);
 		//item->drop();
 	} 

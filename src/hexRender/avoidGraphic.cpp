@@ -1,6 +1,6 @@
 #include "avoidGraphic.h"
 
-#include "../robot.h"
+//#include "../robot.h"
 #include "../roboState.h"
 
 #include "hexRender.h"
@@ -13,7 +13,7 @@ CAvoidGraphic::CAvoidGraphic() {
 }
 
 void CAvoidGraphic::update(float dT) {
-	CRobot* pRobot = (CRobot*)entity.get();
+	CEntity* pRobot = entity.get();
 
 	std::fill(verts.begin(), verts.end() - 4, vc3({ { 0,0,0 }, { 1 } } ));
 

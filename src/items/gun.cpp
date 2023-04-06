@@ -26,16 +26,16 @@ void CGun::update(float dT) {
 
 void CGun::drop() {
 	CItem::drop();
-	CPlayerObject* player = (CPlayerObject*) parent;
-	if (player->gun == this)
-		player->gun = nullptr;
+	CEntity* player = parent;
+	if (parent->playerC->gun == this)
+		parent->playerC->gun = nullptr;
 	parent = nullptr;
 }
 
 std::string CGun::getShortDesc() {
 	if (parent) {
-		CPlayerObject* player = (CPlayerObject*)parent;
-		if (player->gun == this)
+		CEntity* player = parent;
+		if (parent->playerC->gun == this)
 			return CItem::getShortDesc() + " (equipped)";
 	}
 	return CItem::getShortDesc();
@@ -46,8 +46,8 @@ std::string CGun::getMenuTextInv() {
 	std::string menu = CItem::getMenuTextInv();
 
 	if (parent) {
-		CPlayerObject* player = (CPlayerObject*)parent;
-		if (player->gun != this) {
+		CEntity* player = parent;
+		if (parent->playerC->gun != this) {
 			menu += "\n\\h{equip}Equip\\h";
 		}
 	}

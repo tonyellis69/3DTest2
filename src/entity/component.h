@@ -12,4 +12,5 @@ public:
 
 	CEntity* thisEntity;
 
+	float dT; //NB currently not updated by default;
 };

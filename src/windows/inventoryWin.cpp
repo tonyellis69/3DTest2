@@ -5,6 +5,7 @@
 #include "../gameTextWin.h"
 #include "../gameState.h"
 
+#include "../items/item.h"
 
 void CInventoryWin::refresh() {
 	return;
@@ -15,7 +16,7 @@ void CInventoryWin::refresh() {
 	//TO DO: messy! Shouldn't have to keep making that check here
 
 	pWin->clearText();
-	for (auto& item : game.player->inventory) {
+	for (auto& item : game.player->playerC->inventory) {
 		pWin->addText(item->getShortDesc());
 		pWin->addText("\n");
 	}

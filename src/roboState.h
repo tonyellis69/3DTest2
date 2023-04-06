@@ -9,15 +9,15 @@
 
 enum TrackingState { trackNone, trackEntity, trackPos, trackEnding };
 
-class CRobot;
+//class CRobot;
 class CEntity;
 
-struct TObstacle { glm::vec3 pos = glm::vec3(0); float radius; CRobot* bot = nullptr; };
+struct TObstacle { glm::vec3 pos = glm::vec3(0); float radius; CEntity* bot = nullptr; };
 
 class CRoboState : public CAiCmp {
 public:
 	CRoboState(CEntity* bot)  : CAiCmp((CEntity*)bot) {
-		//this->pBot =bot;
+		this->pBot = bot;
 	}
 	void update(float dT);
 	void trackTarget();
@@ -51,7 +51,7 @@ public:
 
 	glm::vec3 destination = { 0,0,0 };
 
-	CRobot* pBot; //helpfully points to parent entity as a robot.
+	CEntity* pBot; //helpfully points to parent entity as a robot.
 	float dT;
 
 	TrackingState trackingState = trackNone; ///<What, if anything, we're keeping upper body pointing at.
@@ -74,7 +74,7 @@ public:
 	float stuckCheck = 0; ///<Seconds since last check
 	float destinationDist = FLT_MAX; ///<Distance to destination on last check.
 
-	CRobot* pRoboCollidee;
+	CEntity* pRoboCollidee;
 	float backingUp = 0;
 	float maxAvoidanceDist = 2.5f; ///<Arbitrary check-ahead distance.
 

@@ -14,6 +14,9 @@
 #include "collider.h"
 #include "modelCmp.h"
 #include "aiCmp.h"
+#include "playerCmp.h"
+#include "playerHealthC.h"
+#include "botHealthC.h"
 
 
 struct TFov { //describes a fov shape
@@ -34,7 +37,7 @@ public:
 	virtual void update(float dT);
 	void setPosition(glm::vec3& worldPos);
 	glm::vec3 getPos();
-	virtual void receiveDamage(CEntity& attacker, int damage) {};
+	//virtual void receiveDamage(CEntity& attacker, int damage) {};
 	virtual void init();
 	void destroyMe();
 	void setParent(CEntity* parent);
@@ -46,6 +49,10 @@ public:
 
 	}
 	void addComponent(std::shared_ptr<CPhys> phys);
+	void addComponent(std::shared_ptr<CPlayerC> playerC);
+	void addComponent(std::shared_ptr<CHealthC> healthC);
+	void addComponent(std::shared_ptr<CPlayerHealthC> playerHealthC);
+	void addComponent(std::shared_ptr<CBotHealthC> botHealthC);
 	void addAIComponent(std::shared_ptr<CAiCmp> ai);
 
 	template <typename T>
@@ -73,6 +80,8 @@ public:
 
 	bool live = true; ///<Entities are ignored when false.
 
+	bool visible = true; //TODO: move to a component?
+
 	int tmpId;
 
 	TEntityType entityType;
@@ -90,7 +99,8 @@ public:
 	std::shared_ptr<CModelCmp> modelCmp;
 	std::shared_ptr<CAiCmp> ai;
 	std::shared_ptr<CPhys> phys;
-
+	std::shared_ptr<CPlayerC> playerC;
+	std::shared_ptr<CHealthC> healthC;
 
 
 private:

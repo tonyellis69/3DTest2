@@ -1,6 +1,6 @@
 #include "armour.h"
 
-#include "..\playerHexObj.h"
+//#include "..\playerHexObj.h"
 
 CArmour::CArmour() {
 	equippable = true;
@@ -13,17 +13,17 @@ int CArmour::reduceDamage(int damage) {
 
 void CArmour::drop() {
 	CItem::drop();
-	CPlayerObject* player = (CPlayerObject*)parent;
-	if (player->armour == this)
-		player->armour = nullptr;
+	CEntity* player = parent;
+	if (player->playerC->armour == this)
+		player->playerC->armour = nullptr;
 	parent = nullptr;
 }
 
 
 std::string CArmour::getShortDesc() {
 	if (parent) {
-		CPlayerObject* player = (CPlayerObject*)parent;
-		if (player->armour == this)
+		CEntity* player = parent;
+		if (player->playerC->armour == this)
 			return CItem::getShortDesc() + " (worn)";
 	}
 	return CItem::getShortDesc();
@@ -33,8 +33,8 @@ std::string CArmour::getMenuTextInv() {
 	std::string menu = CItem::getMenuTextInv();
 
 	if (parent) {
-		CPlayerObject* player = (CPlayerObject*)parent;
-		if (player->armour != this) {
+		CEntity* player = parent;
+		if (player->playerC->armour != this) {
 			menu += "\n\\h{equip}Equip\\h";
 		}
 	}

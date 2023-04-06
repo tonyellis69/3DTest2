@@ -4,7 +4,7 @@
 #include <memory>
 
 //#include "gameEvents.h"
-#include "playerHexObj.h"
+//#include "playerHexObj.h"
 #include "level\level.h"
 
 
@@ -34,7 +34,8 @@ public:
 	void restoreEntities(TEntities& entVec);
 
 
-	CPlayerObject* player = nullptr;
+	//CPlayerObject* player = nullptr;
+	CEntity* player = nullptr;
 
 	std::unique_ptr<CLevel> level;
 

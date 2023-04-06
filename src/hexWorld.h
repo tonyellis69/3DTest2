@@ -9,8 +9,8 @@
 
 //#include "hexRenderer.h"
 
-#include "robot.h"
-#include "playerHexObj.h"
+//#include "robot.h"
+//#include "playerHexObj.h"
 
 #include "UI/GUIlabel2.h"
 

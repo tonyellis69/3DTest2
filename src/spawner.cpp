@@ -1,6 +1,6 @@
 #include "spawner.h"
 
-#include "robot.h"
+//#include "robot.h"
 #include "missile.h"
 
 #include "items/gun.h"
@@ -8,6 +8,7 @@
 #include "gameGui.h"
 
 #include "items/shield.h"
+#include "items/armour.h"
 #include "items/item2.h"
 
 #include "hexRender/solidDraw.h"
@@ -21,10 +22,14 @@
 #include "ai/dropAI.h"
 #include "entity/sceneryCollider.h"
 #include "entity/missileCollider.h"
+#include "entity/playerCmp.h"
+#include "entity/botHealthC.h"
+#include "entity/playerHealthC.h"
+#include "hexRender/multiDraw.h"
 
 #include "gameState.h"
 
-
+#include "roboState.h"
 
 
 std::unordered_map<std::string, CModel> CSpawn::models;
@@ -34,7 +39,7 @@ CLevel* CSpawn::pMap;
 
 
 CEntity* CSpawn::player(const std::string& name, glm::vec3& pos) {
-	auto player = std::make_shared<CPlayerObject>();
+	auto player = std::make_shared<CEntity>();
 
 	player->collider = std::make_shared<ColliderCmp>(player.get());
 	player->modelCmp = std::make_shared<CPlayerModelCmp>(player.get());
@@ -46,18 +51,22 @@ CEntity* CSpawn::player(const std::string& name, glm::vec3& pos) {
 
 	player->phys = std::make_shared <CPhys>(player.get(), 1.0f / 80.0f);
 
+	player->addComponent(std::make_shared<CPlayerC>(player.get()));
+	player->addComponent(std::make_shared<CPlayerHealthC>(player.get()));
 
 	CEntity* equippedGun = gun("guntype1");
-	player->setGun(equippedGun);
-	player->addToInventory(equippedGun);
+	player->playerC->setGun(equippedGun);
+	player->playerC->addToInventory(equippedGun);
 
 	CEntity* equippedArmour = armour("basicArmour");
-	player->setArmour(equippedArmour);
-	player->addToInventory(equippedArmour);
+	player->playerC->setArmour(equippedArmour);
+	player->playerC->addToInventory(equippedArmour);
 	player->name = "player";
 
+	player->entityType = entPlayer;
+
 	CEntity* equippedShield = shield("basicShield");
-	player->setShield(equippedShield);
+	player->playerC->setShield(equippedShield);
 	//CItemCmp* item = (CItemCmp*)equippedShield->item.get();
 	//item->setOwner(player.get());
 	//player->shield = equippedShield;
@@ -70,7 +79,7 @@ CEntity* CSpawn::player(const std::string& name, glm::vec3& pos) {
 
 /** Create the given entity, and notify the registered callback-handler. */
 CEntity* CSpawn::robot(const std::string& name, glm::vec3& pos) {
-	auto robot = std::make_shared<CRobot>();
+	auto robot = std::make_shared<CEntity>();
 	robot->collider = std::make_shared<ColliderCmp>(robot.get());
 	robot->modelCmp = std::make_shared<CBotTreadsModelCmp>(robot.get());
 	robot->modelCmp->loadModel(models["robot"]);
@@ -80,9 +89,12 @@ CEntity* CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	robot->ai = std::make_shared<CRoboWander>(robot.get());
 	robot->phys = std::make_shared <CPhys>(robot.get(), 1.0f / 80.0f);
 
+	robot->addComponent(std::make_shared<CBotHealthC>(robot.get()));
+	robot->healthC->hp = 3;
 
 	robot->setPosition(pos);
 
+	robot->isRobot = true;
 
 	//if (name == "melee bot") {
 	//	robot->setState(robotWander3);

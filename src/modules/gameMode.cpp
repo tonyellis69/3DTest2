@@ -55,31 +55,31 @@ void CGameMode::update(float dt)
 
 	//Needed for continous fire. GLFW callbacks only trigger once.
 	if (CWin::mouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-		game.player->onFireKey(true);
+		game.player->playerC->onFireKey(true);
 	}
 
 
 	//handle movement
 	if (CWin::keyPressed('A')) {
 		if (CWin::keyPressed('W'))
-			game.player->moveCommand(moveNW);
+			game.player->playerC->moveCommand(moveNW);
 		else if (CWin::keyPressed('S'))
-			game.player->moveCommand(moveSW);
+			game.player->playerC->moveCommand(moveSW);
 		else
-			game.player->moveCommand(moveWest);
+			game.player->playerC->moveCommand(moveWest);
 	}
 	else if (CWin::keyPressed('D')) {
 		if (CWin::keyPressed('W'))
-			game.player->moveCommand(moveNE);
+			game.player->playerC->moveCommand(moveNE);
 		else if (CWin::keyPressed('S'))
-			game.player->moveCommand(moveSE);
+			game.player->playerC->moveCommand(moveSE);
 		else
-			game.player->moveCommand(moveEast);
+			game.player->playerC->moveCommand(moveEast);
 	}
 	else if (CWin::keyPressed('W')) {
-		game.player->moveCommand(moveNorth);
+		game.player->playerC->moveCommand(moveNorth);
 	}
 	else if (CWin::keyPressed('S')) {
-		game.player->moveCommand(moveSouth);
+		game.player->playerC->moveCommand(moveSouth);
 	}
 }

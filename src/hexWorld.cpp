@@ -48,6 +48,8 @@
 #include "modules/gameMode.h"
 #include "modules/procGenMode.h"
 
+#include "roboState.h"
+
 CHexWorld::CHexWorld() {
 	game.paused = true;
 
@@ -271,7 +273,7 @@ void CHexWorld::calcMouseWorldPos() {
 	mouseWorldPos = mouseWS;
 	if (game.player) {
 		glm::vec3 mouseVec = mouseWorldPos - game.player->getPos();
-		game.player->setMouseDir(glm::normalize(mouseVec));
+		game.player->playerC->setMouseDir(glm::normalize(mouseVec));
 	} //needed for game.player orientation etc
 
 	if (mouseHex != lastMouseHex) {
@@ -318,7 +320,7 @@ void CHexWorld::draw() {
 
 	hexRender.drawExplosionList();
 
-	if (game.player && !game.player->dead) {
+	if (game.player && !game.player->playerC->dead) {
 		//imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 1.0f });
 		//imRendr::drawLine(game.player->worldPos, mouseWorldPos);
 		//hexCursor->draw();
@@ -326,9 +328,9 @@ void CHexWorld::draw() {
 	}
 
 	if (game.player) {
-		int sh = ((CShieldComponent*)game.player->shield->item.get())->hp;
+		int sh = ((CShieldComponent*)game.player->playerC->shield->item.get())->hp;
 
-		imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->hp)
+		imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->healthC->hp)
 			+ " Shield: " + std::to_string(sh)
 
 		);
@@ -365,10 +367,9 @@ void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 
 /** Called every frame to get the hex world up to date.*/
 void CHexWorld::update(float dt) {
+	this->dT = dt;
 
 	mode->update(dT);
-
-	this->dT = dt;
 
 	updateCameraPosition();
 
@@ -447,7 +448,7 @@ void CHexWorld::prepMapEntities() {
 			physics.add(entity.get());
 
 		if (entity->entityType == entPlayer) {
-			game.player = (CPlayerObject*)entity.get();
+			game.player = entity.get();
 //			game.player = (Cgame.playerect*)entity.get();
 			physics.add(entity.get());
 		}
@@ -667,7 +668,7 @@ void CHexWorld::onPlayerDeath() {
 	for (auto& entity : game.entities) {
 		if (entity->isRobot) {
 			//((CRobot*)entity.get())->setState(robotWander3);
-			entity->ai = std::make_shared<CRoboWander>((CRobot*)entity.get());
+			entity->ai = std::make_shared<CRoboWander>(entity.get());
 		}
 	}
 }

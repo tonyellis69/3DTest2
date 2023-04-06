@@ -1,6 +1,6 @@
 #include "gameState.h"
 
-#include "robot.h"
+//#include "robot.h"
 
 #include "utils/files.h"
 #include "spawner.h"
@@ -175,7 +175,7 @@ void CGameState::updatePlayerPtr() {
 	for (auto& ent : entities) {
 		if (ent->entityType == entPlayer) {
 			auto tmp = ent.get();
-			player = (CPlayerObject*)tmp;
+			player = tmp;
 			return;
 		}
 	}

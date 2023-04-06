@@ -47,7 +47,8 @@ void CMissileColliderCmp::update(float dT) {
 		CExplosion* splode = (CExplosion*)spawn::explosion("explosion", collision->collisionPt, 1);
 		if (collision->ent) {
 			splode->setCollidee(collision->ent);
-			collision->ent->receiveDamage(*thisEntity->getParent(), 5);
+			if (collision->ent->healthC)
+				collision->ent->healthC->receiveDamage(*thisEntity->getParent(), 5);
 		}
 		thisEntity->destroyMe();
 		return;

@@ -49,6 +49,10 @@ void CEntity::update(float dT) {
 		modelCmp->update(dT);
 	if (collider)
 		collider->update(dT);
+	if (playerC)
+		playerC->update(dT);
+	if (healthC)
+		healthC->update(dT);
 }
 
 
@@ -93,6 +97,14 @@ void CEntity::init() {
 		phys->thisEntity = this;
 		phys->onSpawn();
 	}
+	if (playerC) {
+		playerC->thisEntity = this;
+		playerC->onSpawn();
+	}
+	if (healthC) {
+		healthC->thisEntity = this;
+		healthC->onSpawn();
+	}
 }
 
 
@@ -124,8 +136,21 @@ void CEntity::addComponent(std::shared_ptr<CPhys> phys) {
 	lis::event<CPhysicsEvent>(e);
 }
 
+void CEntity::addComponent(std::shared_ptr<CPlayerC> playerC) {
+	this->playerC = playerC;
+}
+
+
 void CEntity::addAIComponent(std::shared_ptr<CAiCmp> ai) {
 	this->ai = ai;
+}
+
+void CEntity::addComponent(std::shared_ptr<CBotHealthC> healthC) {
+	this->healthC = healthC;
+}
+
+void CEntity::addComponent(std::shared_ptr<CPlayerHealthC> healthC) {
+	this->healthC = healthC;
 }
 
 void CEntity::removePhysComponent() {

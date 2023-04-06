@@ -13,10 +13,7 @@
 
 #include "items/item2.h"
 
-enum TMoveDir {
-	moveNone, moveEast, moveWest, moveNE, moveSE,
-	moveSW, moveNW, moveNorth, moveSouth, moveNS2, moveNS2blocked
-};
+
 
 /** A class describing characteristics and behaviour unique to
 	the player hex-world object. */
@@ -26,32 +23,32 @@ public:
 	~CPlayerObject();
 
 
-	void dropItem(int entityNo);
-	void onFireKey(bool pressed);
+	//void dropItem(int entityNo);
+	//void onFireKey(bool pressed);
 
-	void receiveDamage(CEntity& attacker, int damage);
+	//void receiveDamage(CEntity& attacker, int damage);
 
 	//void onMovedHex();
 
-	void updateViewField();
+	//void updateViewField();
 
-	void moveCommand(TMoveDir commandDir);
+	//void moveCommand(TMoveDir commandDir);
 
 
 	void update(float dT);
 
-	void setTargetAngle(float angle);
+	/*void setTargetAngle(float angle);*/
 	//void setRotation(glm::vec3& vec);
-	glm::vec3 getRotation();
-	void setUpperBodyRotation(float n);
-	void setUpperBodyRotation(glm::vec3& vec);
-	float getUpperBodyRotation();
-	glm::vec3 getUpperBodyRotationVec();
-	void setMouseDir(glm::vec3& mouseVec);
-	void addToInventory(CEntity* item);
-	void setGun(CEntity* gun);
-	void setArmour(CEntity* armour);
-	void setShield(CEntity* shield);
+//	glm::vec3 getRotation();
+//	void setUpperBodyRotation(float n);
+//	void setUpperBodyRotation(glm::vec3& vec);
+	//float getUpperBodyRotation();
+	//glm::vec3 getUpperBodyRotationVec();
+	//void setMouseDir(glm::vec3& mouseVec);
+//	void addToInventory(CEntity* item);
+//	void setGun(CEntity* gun);
+//	void setArmour(CEntity* armour);
+//	void setShield(CEntity* shield);
 	virtual void init();
 
 	TEntities playerItems; ///<Items temporarily taken out of hex world by player
@@ -69,17 +66,17 @@ public:
 
 	int hp = 1;// 30;
 
-	CGun* gun; ///<Currently equipped gun.
-	CArmour* armour; ///<Currently worn armour;
-	std::vector<CItem*> inventory; ///<Carried items.
+	//CGun* gun; ///<Currently equipped gun.
+	//CArmour* armour; ///<Currently worn armour;
+	//std::vector<CItem*> inventory; ///<Carried items.
 
-	CEntity* shield = nullptr;
-	int shieldId; 
+	//CEntity* shield = nullptr;
+	//int shieldId; 
 
 private:
 //	std::tuple<bool, glm::vec3> collisionCheck(glm::vec3& segA, glm::vec3& segB);
-	void startTurnCycle();
-	void updateWalkCycle();
+	//void startTurnCycle();
+	//void updateWalkCycle();
 	//void nearItemUpdate();
 
 

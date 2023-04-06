@@ -20,8 +20,8 @@ class CRobot : public CEntity {
 public:
 	CRobot();
 	void update(float dT);
-	void receiveDamage(CEntity& attacker, int damage);
-	void fireMissile(CEntity* target);
+//	void receiveDamage(CEntity& attacker, int damage);
+	//void fireMissile(CEntity* target);
 	
 	int hp = 3; 
 

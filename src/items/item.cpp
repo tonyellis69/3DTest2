@@ -3,7 +3,7 @@
 
 //#include "..\3Dtest\src\hexRenderer.h"
 
-#include "..\playerHexObj.h"
+//#include "..\playerHexObj.h"
 
 #include "..\gameGui.h"
 
@@ -21,8 +21,8 @@ void CItem::drop() {
 
 void CItem::take(CEntity* taker) {
 	//TO DO: assumption! Taker may not always be the player. Amend if necessary.
-	CPlayerObject* takerEnt = (CPlayerObject*) taker;
-	takerEnt->addToInventory(this);
+	CEntity* takerEnt =  taker;
+	takerEnt->playerC->addToInventory(this);
 	gWin::pNear->removeItem(id);
 	//drawFn = std::make_shared<CDrawFunc>(nullptr);
 	//TO DO: needs component-handling

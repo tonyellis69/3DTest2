@@ -1,6 +1,7 @@
 #include "destGraphic.h"
 
-#include "../robot.h"
+//#include "../robot.h"
+#include "../roboState.h"
 
 #include "hexRender.h"
 
@@ -19,7 +20,7 @@ CDestinationGraphic::CDestinationGraphic() {
 
 /** Create the verts. */
 void CDestinationGraphic::update(float dT) {
-	CRobot* pRobot = (CRobot*)entity.get();
+	CEntity* pRobot = entity.get();
 
 	dest = &((CRoboState*) pRobot->ai.get())->getDestination();
 

@@ -98,7 +98,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 						return true;
 						collisionPt = entity->getPos();
 						collidee = std::make_shared<CEntity>(*entity);
-						entity->receiveDamage(*owner, 5);
+						entity->healthC->receiveDamage(*owner, 5);
 						collided = true;
 						return true;
 					}

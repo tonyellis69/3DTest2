@@ -57,12 +57,6 @@
     <ClCompile Include="src\hexWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\robot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\playerHexObj.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\gameWin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -213,6 +207,18 @@
     <ClCompile Include="src\modules\procGenMode.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
+    <ClCompile Include="src\entity\playerCmp.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity\healthC.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity\botHealthC.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entity\playerHealthC.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -225,12 +231,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\hexWorld.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\robot.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\playerHexObj.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\TC\Debug\tigConst.h">
@@ -406,6 +406,21 @@
     </ClInclude>
     <ClInclude Include="src\modules\procGenMode.h">
       <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\playerCmp.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\healthC.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\botHealthC.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\playerHealthC.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\entity.h">
+      <Filter>Source Files\entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

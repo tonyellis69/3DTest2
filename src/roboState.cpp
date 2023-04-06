@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-#include "robot.h"
+//#include "robot.h"
 
 #include "utils/random.h"
 #include "gameState.h"
@@ -15,6 +15,9 @@
 
 #include "intersect.h"
 
+#include "spawner.h"
+
+#include "sound/sound.h"
 
 void CRoboState::update(float dT) {
 	this->dT = dT;
@@ -296,7 +299,7 @@ std::vector<TObstacle> CRoboState::findNearObstacles(glm::vec3& centre) {
 			CEntities entities = game.getEntitiesAt(hex);
 			for (auto& entity : entities) {
 				if (entity->isRobot && entity != thisEntity) {
-					obstacles.push_back({ entity->getPos(),0.8f /* entity->getRadius()*/, (CRobot*)entity });
+					obstacles.push_back({ entity->getPos(),0.8f /* entity->getRadius()*/, entity });
 				}
 			}
 		}
@@ -400,7 +403,7 @@ bool CRoboState::clearLineTo(const glm::vec3& p) {
 bool CRoboState::canSeeEnemy() {
 	if (game.player == nullptr)
 		return false;
-	return game.player->visible && !game.player->dead && inFov(game.player);
+	return game.player->visible && !game.player->playerC->dead && inFov(game.player);
 }
 
 
@@ -609,7 +612,7 @@ std::shared_ptr<CRoboState> CMelee::updateState(float dT) {
 	}
 
 	if (!hit) {
-		targetEntity->receiveDamage(*thisEntity, 10);
+		targetEntity->healthC->receiveDamage(*thisEntity, 10);
 		hit = true;
 		return nullptr;
 	}
@@ -646,9 +649,21 @@ std::shared_ptr<CRoboState> CCloseAndShoot::updateState(float dT) {
 		lastSighting = targetEntity->getPos();
 
 		if (missileCooldown > 1.0f) {
-			((CRobot*)thisEntity)->fireMissile(targetEntity);
+			//((CRobot*)thisEntity)->fireMissile(targetEntity);
 			//FIXME: ugh horrible cludge!!!!!!!!!!!!!!!!!!!
 			//can prob fire missile here in bot AI
+
+			glm::vec3 targetVec = targetEntity->getPos() - thisEntity->getPos();
+			float targetAngle = glm::orientedAngle(glm::normalize(targetVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
+
+			auto missile = (CMissile*)spawn::missile("missile", thisEntity->getPos(), targetAngle);
+			missile->setOwner(thisEntity); //FIXME: phasing out
+			missile->setParent(thisEntity);
+			missile->setSpeed(15);// 7.0f);
+
+			snd::play("shoot");
+
+
 			missileCooldown = 0;
 		}
 
