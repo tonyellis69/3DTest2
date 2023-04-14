@@ -1,0 +1,8 @@
+*** Friday April 14, 2023  time: 16:58:49 ***
+
+BaseApp constructor starting...
+Using GLEW 2.1.0
+OpenGL version: 4.6.0 NVIDIA 528.24
+Has NPOT
+glsl version: 4.60 NVIDIA
+BaseApp constructor finished. Yay!

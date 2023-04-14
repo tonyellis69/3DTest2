@@ -14,7 +14,9 @@ public:
 	CBaseModule(CHexWorld* engine) {
 		pHexWorld = engine;
 	}
+	virtual void init() {}
 	virtual void start() {}
+	virtual void restart() {}
 	virtual void guiHandler(CGUIevent& e) {}
 	virtual void gameEventHandler(CGameEvent& e) {}
 
@@ -24,7 +26,7 @@ public:
 
 	virtual void update(float dt) {}
 	void saveEntityState();
-	void restoreEntityState();
+	//void restoreEntityState();
 
 	TViewMode viewMode;///<Whether to use followcam, screen controls, etc, with this module
 

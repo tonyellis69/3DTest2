@@ -39,6 +39,7 @@ public:
 	void draw(CHexQuad* quad);
 	void subdivide();
 	void quadRemovals();
+	void reset();
 
 private:
 	void storeQuad( CHexQuad* quad);

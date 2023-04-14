@@ -8,6 +8,23 @@
 
 #include "win/win.h"
 
+void CProcGenMode::init() {
+	viewMode = keepView;
+	CWin::showMouse(false);
+	CWin::fullScreen();
+}
+
+/** Called every time we start a new session. */
+void CProcGenMode::start() {
+		makeMap();
+}
+
+void CProcGenMode::restart(){
+	//game.clearEntities();
+	levelGen.reset();
+	start();
+}
+
 void CProcGenMode::guiHandler(CGUIevent& e) {
 
 		if (e.type == eMouseWheel ) {
@@ -33,15 +50,7 @@ void CProcGenMode::gameEventHandler(CGameEvent& e) {
 
 
 
-void CProcGenMode::start() {
-	viewMode = keepView;
 
-	if (!game.level)
-		makeMap();
-
-	game.paused = false;
-	CWin::fullScreen();
-}
 
 void CProcGenMode::makeMap() {
 	auto level = levelGen.makeLevel();

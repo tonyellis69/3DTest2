@@ -181,10 +181,15 @@ void CGameState::updatePlayerPtr() {
 	}
 }
 
-void CGameState::restoreEntities(TEntities& entVec) {
-	entities.clear();
-	for (auto& ent : entVec) {
-		entities.push_back(std::make_shared<CEntity>(*ent.get()));
+void CGameState::restoreEntities() {
+
+	for (auto& entRec : level->entityRecs) {
+		switch (entRec.entType) {
+		case entPlayer: spawn::player("player", entRec.pos); break;
+		case entMeleeBot: spawn::robot("melee bot", entRec.pos); break;
+		case entShootBot: spawn::robot("shooter bot", entRec.pos); break;
+		case entGun: spawn::gun("gun", entRec.pos); break;
+		}
 	}
 
 	for (auto& ent : entities) {
@@ -197,4 +202,8 @@ void CGameState::restoreEntities(TEntities& entVec) {
 	CGameEvent e;
 	e.type = gameLevelChange;
 	lis::event(e);
+}
+
+void CGameState::clearEntities() {
+	entities.clear();
 }

@@ -11,6 +11,6 @@ void CBaseModule::saveEntityState() {
 }
 
 /** Set the state of the game's entities to what we have stored. */
-void CBaseModule::restoreEntityState() {
-	game.restoreEntities(entityState);
-}
+//void CBaseModule::restoreEntityState() {
+//	game.restoreEntities(entityState);
+//}

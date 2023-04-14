@@ -74,6 +74,19 @@ CHexWorld::CHexWorld() {
 
 }
 
+void CHexWorld::init() {
+	reticule = spawn::models["reticule"];
+	reticule.palette[0] = { 1,1,1,1 };
+
+	//gameMode = std::make_unique<CGameMode>(this);
+	//mode = gameMode.get();
+	procGenMode = std::make_unique<CProcGenMode>(this);
+	mode = procGenMode.get();
+
+	mode->init();
+
+}
+
 void CHexWorld::onEvent(CGUIevent& e) {
 	mode->guiHandler(e);
 
@@ -163,7 +176,7 @@ void CHexWorld::onEvent(CGUIevent& e) {
 
 	if (e.key == GLFW_KEY_ENTER && e.type == eKeyDown) {
 
-		start();
+		restart();
 	}
 
 
@@ -215,22 +228,8 @@ void CHexWorld::deleteMap() {
 
 
 /** Start a new session. */
-//FIXME: is this for restarts too? 
 void CHexWorld::start() {
 
-
-	reticule = spawn::models["reticule"];
-	reticule.palette[0] = { 1,1,1,1 };
-
-
-	//default: game mode
-	if (!mode) {
-		gameMode = std::make_unique<CGameMode>(this);
-		mode = gameMode.get();
-		game.loadLevel("manyMapTest.map");
-		//procGenMode = std::make_unique<CProcGenMode>(this);
-		//mode = procGenMode.get();
-	}
 	mode->start();
 
 	setViewMode(mode->viewMode); 
@@ -249,6 +248,12 @@ void CHexWorld::start() {
 	}
 
 
+}
+
+/** Terminate an existing session to start a new one. */
+void CHexWorld::restart() {
+	mode->restart();
+//	mode->start();
 }
 
 void CHexWorld::startProcTest() {

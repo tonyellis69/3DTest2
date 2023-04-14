@@ -10,7 +10,10 @@
 using TMapIt = std::unordered_multimap<CHex, CEntity*>::iterator;
 using TRange = std::pair<TMapIt, TMapIt>;
 
-
+struct TEntityRec {
+	TEntityType entType;
+	glm::vec3 pos;
+};
 
 class CLevel  {
 public:
@@ -41,6 +44,8 @@ public:
 
 //private:
 	CHexArray hexArray;
+
+	std::vector<TEntityRec> entityRecs; ///<Initial state of entities.
 
 };
 

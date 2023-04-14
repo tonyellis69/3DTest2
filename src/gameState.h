@@ -31,7 +31,8 @@ public:
 
 	void updatePlayerPtr();
 
-	void restoreEntities(TEntities& entVec);
+	void restoreEntities();
+	void clearEntities();
 
 
 	//CPlayerObject* player = nullptr;

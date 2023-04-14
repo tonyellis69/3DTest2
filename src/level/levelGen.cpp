@@ -55,6 +55,13 @@ void CRandLevel::quadRemovals() {
         removalChance = 1;
 }
 
+void CRandLevel::reset() {
+    size = { 50,50 };
+    removalChance = 1;
+    rootQuad = nullptr;
+    divCount = 1;
+}
+
 
 
 void CRandLevel::storeQuad( CHexQuad* quad) {

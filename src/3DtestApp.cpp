@@ -350,10 +350,9 @@ void C3DtestApp::initHexWorld() {
 	hexWorld.addHexTile("largeHex", dataPath + "models\\largeHex.dae", largerHex);
 
 
-
+	hexWorld.init(); //TODO: maybe the meshloading above goes in init? Is one-off setup stuff.
 	hexWorld.start();
-//	hexWorld.makeMap();
-//	hexWorld.startProcTest();
+
 }
 
 glm::i32vec2 C3DtestApp::getMousePos() {
