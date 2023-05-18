@@ -14,6 +14,7 @@
 
 #include "vertBufs.h" 
 
+
 /** Load shaders, etc. */
 void CHexRender::init() {
 	recompileShader();
@@ -93,6 +94,12 @@ void CHexRender::recompileShader() {
 	sceneLayerShader = shader::create("sceneLayer");
 	hBlur = sceneLayerShader->getUniform("blurTexture");
 	hFade = sceneLayerShader->getUniform("fade");
+}
+
+void CHexRender::onEvent(CGameEvent& e) {
+	if (e.type == gameLevelChange) {
+		loadMap(e.hexArray);
+	}
 }
 
 
@@ -316,7 +323,7 @@ void CHexRender::makeGlowShapes() {
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER,0);
-	//screenMask.savePNG("d://shapes.png");
+	//screenMask.savePNG("d://screenMask.png");
 }
 
 

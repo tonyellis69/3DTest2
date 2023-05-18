@@ -15,11 +15,14 @@
 #include "drawData.h"
 #include "graphics.h"
 
+#include "../gameEvent.h"
+
 struct THexTile;
 class CHexRender {
 public:
 	void init();
 	void recompileShader();
+	void onEvent(CGameEvent& e);
 	void loadMap(CHexArray* hexArray);
 	void addHexTile(const std::string& name, TVertData& vertData, std::vector<glm::vec4>& colours);
 	void drawMap();

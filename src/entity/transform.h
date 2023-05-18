@@ -7,9 +7,9 @@
 
 #include "component.h"
 
-class CTransformCmp : public CEntityCmp {
+class CTransformCmp : public CDerivedC<CTransformCmp> {
 public:
-	CTransformCmp(CEntity* parent) : CEntityCmp(parent) {}
+	CTransformCmp(CEntity* parent) : CDerivedC(parent) {}
 	void setRotation(float angle);
 	void setRotation(glm::vec3& vec);
 	void rotate(float angle);

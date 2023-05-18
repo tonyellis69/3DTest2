@@ -351,7 +351,7 @@ void C3DtestApp::initHexWorld() {
 
 
 	hexWorld.init(); //TODO: maybe the meshloading above goes in init? Is one-off setup stuff.
-	hexWorld.start();
+	//hexWorld.start();
 
 }
 

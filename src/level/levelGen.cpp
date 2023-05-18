@@ -10,7 +10,7 @@ std::unique_ptr<CLevel> CRandLevel::makeLevel() {
     if (!rootQuad)
         rootQuad = std::make_shared<CHexQuad>(glm::i32vec2{ 0,0 }, size);
 
-    drawLevel();
+    updateHexGrid();
 
     return std::move(level);
 }
@@ -25,25 +25,40 @@ void CRandLevel::resize(int dSize) {
     removalChance = 1;
 }
 
-void CRandLevel::drawLevel() {
+void CRandLevel::updateHexGrid() {
     uniqueLines.clear();
-    draw(rootQuad.get());
-    drawLines();
+    makeQuadLines(rootQuad.get());
+
+    //randomly remove some lines
+    //for (auto& line = uniqueLines.begin(); line != uniqueLines.end();) {
+    //    if (rnd::dice(maxRemovals) < removalChance) {
+    //        line = uniqueLines.erase(line);
+    //    }
+    //    else
+    //        line++;
+    //}
+
+    //add outline lines
+    storeUniqueQuadLines(rootQuad.get());
+
+    makeHexLines();
 }
 
-void CRandLevel::draw(CHexQuad* quad) {
+
+void CRandLevel::makeQuadLines(CHexQuad* quad) {
     if (quad->childA && quad->childB) {
         divCount++;
-        draw(quad->childA.get());
-        draw(quad->childB.get());
+        makeQuadLines(quad->childA.get());
+        makeQuadLines(quad->childB.get());
     }
-    else if ( rnd::dice(maxRemovals) >= removalChance ) {
-        storeQuad(quad);
+    else 
+    {
+        storeUniqueQuadLines(quad);
     }
 
 }
 
-/** Subdivided all existing quads. */
+/** Subdivide all leaf quads. */
 void CRandLevel::subdivide() {
     split(rootQuad.get(), true);
 
@@ -53,6 +68,10 @@ void CRandLevel::quadRemovals() {
     removalChance++;
     if (removalChance > maxRemovals) 
         removalChance = 1;
+    //else remove *more* lines 
+
+    //now clear and refill the array somehow
+
 }
 
 void CRandLevel::reset() {
@@ -62,53 +81,59 @@ void CRandLevel::reset() {
     divCount = 1;
 }
 
+glm::vec3 CRandLevel::findPlayerPos()
+{
+    return glm::vec3(0,0,0);
+}
+
+void CRandLevel::makeDoors() {
+
+}
 
 
-void CRandLevel::storeQuad( CHexQuad* quad) {
+
+void CRandLevel::storeUniqueQuadLines( CHexQuad* quad) {
     uniqueLines.emplace(quad->pos, glm::i32vec2{ quad->pos.x + quad->size.x,quad->pos.y });
     uniqueLines.emplace(glm::i32vec2{ quad->pos.x + quad->size.x,quad->pos.y }, quad->pos + quad->size);
     uniqueLines.emplace( glm::i32vec2{ quad->pos.x,quad->pos.y + quad->size.y }, quad->pos + quad->size);
     uniqueLines.emplace(quad->pos, glm::i32vec2{ quad->pos.x,quad->pos.y + quad->size.y });
 }
 
-/** Fill the line of hexes between these points. */
-void CRandLevel::fillLine(const glm::i32vec2& a, const glm::i32vec2& b) {
+/** Create the strings of hexes that will make our lines. */
+std::vector<glm::i32vec2> CRandLevel::makeHexLine(const glm::i32vec2& a, const glm::i32vec2& b) {
+    std::vector<glm::i32vec2> lineHexes;
     glm::i32vec2 dir = b - a;
     int dist = std::max(abs(dir.x), abs(dir.y));
     if (dist == 0)
-        return;
+        return lineHexes;
     dir = dir / dist;
     glm::i32vec2 hex = a;
-    for (int c = 0; c < dist; c++) {
-        level->hexArray.getHexOffset(hex.x, hex.y).content = solidHex;
-        hex += dir;
 
+    for (int c = 0; c < dist; c++) {
+        lineHexes.push_back(hex);;
+        hex += dir;
     }
+
+    //remove 2 hexes to make a door.
+    //if (lineHexes.size() > 5) {
+    //    int midPt = lineHexes.size() / 2;
+    //    lineHexes.erase(lineHexes.begin() + midPt, lineHexes.begin() + midPt + 2);
+    //}
+
+    return lineHexes;
 }
 
-void CRandLevel::drawLines() {
-    for (auto& line = uniqueLines.begin(); line != uniqueLines.end();) {
-        if (rnd::dice(maxRemovals) < removalChance) {
-            line = uniqueLines.erase(line);
-        }
-        else
-            line++;
-    }
-
-    //add outline lines
-    storeQuad(rootQuad.get());
-
-    // draw to array
+void CRandLevel::makeHexLines() {
+    hexLines.clear();
     for (auto const& line : uniqueLines) {
-        fillLine(line.A, line.B);
+        hexLines.push_back(makeHexLine(line.A, line.B));
     }
 
 }
 
 void CRandLevel::split(CHexQuad* quad, bool splitHoriz) {
-    if (!quad->childA && !quad->childB) {
-        //force-split long quads
-        if (quad->size.x > 2 * quad->size.y)
+    if (!quad->childA && !quad->childB) {    
+        if (quad->size.x > 2 * quad->size.y)   //force-split long quads
             splitHoriz = true;
         else if (quad->size.y > 2 * quad->size.x)
             splitHoriz = false;

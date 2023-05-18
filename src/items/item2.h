@@ -4,9 +4,9 @@
 
 //CEntityCmp version of item baseclass
 
-class CItemCmp : public CEntityCmp {
+class CItemCmp : public CDerivedC<CItemCmp> {
 public:
-	CItemCmp(CEntity* parent) : CEntityCmp(parent) {}
+	CItemCmp(CEntity* parent) : CDerivedC(parent) {}
 	void setOwner(CEntity* owner);
 	void onSpawn();
 

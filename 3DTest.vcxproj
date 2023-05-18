@@ -123,6 +123,7 @@
     <ClCompile Include="src\entity\botHealthC.cpp" />
     <ClCompile Include="src\entity\botTreadsModelCmp.cpp" />
     <ClCompile Include="src\entity\collider.cpp" />
+    <ClCompile Include="src\entity\component.cpp" />
     <ClCompile Include="src\entity\entity.cpp" />
     <ClCompile Include="src\entity\healthC.cpp" />
     <ClCompile Include="src\entity\missileCollider.cpp" />
@@ -197,9 +198,7 @@
     <ClInclude Include="src\entity\transform.h" />
     <ClInclude Include="src\gameEvent.h" />
     <ClInclude Include="src\gameGui.h" />
-    <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\explosion.h" />
-    <ClInclude Include="src\gameMsg.h" />
     <ClInclude Include="src\gameState.h" />
     <ClInclude Include="src\gameTextWin.h" />
     <ClInclude Include="src\gameWin.h" />

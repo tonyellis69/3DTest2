@@ -2,6 +2,7 @@
 
 //#include "robot.h"
 #include "missile.h"
+#include "explosion.h"
 
 #include "items/gun.h"
 
@@ -15,6 +16,7 @@
 #include "hexRender/entityDraw.h"
 #include "hexRender/splodeDraw.h"
 #include "hexRender/itemDraw.h"
+
 
 #include "entity/playerModelCmp.h"
 #include "entity/botTreadsModelCmp.h"
@@ -32,29 +34,32 @@
 #include "roboState.h"
 
 
-std::unordered_map<std::string, CModel> CSpawn::models;
-std::unordered_map<std::string, std::vector<glm::vec4> >* CSpawn::pPalettes;
-
-CLevel* CSpawn::pMap;
-
-
 CEntity* CSpawn::player(const std::string& name, glm::vec3& pos) {
 	auto player = std::make_shared<CEntity>();
 
+	//player->addComponentTest<CTransformCmp>();
+	//player->transform = std::make_shared<CTransformCmp>(player.get());
+
+	//player->addComponentTest<ColliderCmp>();
 	player->collider = std::make_shared<ColliderCmp>(player.get());
+
 	player->modelCmp = std::make_shared<CPlayerModelCmp>(player.get());
-	player->modelCmp->loadModel(models[name]);
-	player->modelCmp->setPalette(pPalettes->at("basic"));
+
+	player->modelCmp->loadModel(game.models[name]);
+	player->modelCmp->setPalette(game.pPalettes->at("basic"));
 	player->modelCmp->drawFn = std::make_shared<CMultiDraw>(player.get());
 	player->modelCmp->initDrawFn();
 	player->setPosition(pos);
 
+	//player->addComponentTest<CPhys>(1.0f/80.0f);
 	player->phys = std::make_shared <CPhys>(player.get(), 1.0f / 80.0f);
-
+	//player->addComponentTest<CPlayerC>();
 	player->addComponent(std::make_shared<CPlayerC>(player.get()));
+	//player->addComponentTest<CPlayerHealthC>();
 	player->addComponent(std::make_shared<CPlayerHealthC>(player.get()));
 
 	CEntity* equippedGun = gun("guntype1");
+	equippedGun->tmpId = 42;
 	player->playerC->setGun(equippedGun);
 	player->playerC->addToInventory(equippedGun);
 
@@ -67,10 +72,6 @@ CEntity* CSpawn::player(const std::string& name, glm::vec3& pos) {
 
 	CEntity* equippedShield = shield("basicShield");
 	player->playerC->setShield(equippedShield);
-	//CItemCmp* item = (CItemCmp*)equippedShield->item.get();
-	//item->setOwner(player.get());
-	//player->shield = equippedShield;
-
 
 	game.addEntity(player);
 	player->init();
@@ -82,8 +83,8 @@ CEntity* CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	auto robot = std::make_shared<CEntity>();
 	robot->collider = std::make_shared<ColliderCmp>(robot.get());
 	robot->modelCmp = std::make_shared<CBotTreadsModelCmp>(robot.get());
-	robot->modelCmp->loadModel(models["robot"]);
-	robot->modelCmp->setPalette(pPalettes->at("basic")); 
+	robot->modelCmp->loadModel(game.models["robot"]);
+	robot->modelCmp->setPalette(game.pPalettes->at("basic"));
 	robot->modelCmp->drawFn = std::make_shared<CMultiDraw>(robot.get());
 	robot->modelCmp->initDrawFn();
 	robot->ai = std::make_shared<CRoboWander>(robot.get());
@@ -110,9 +111,9 @@ CEntity* CSpawn::robot(const std::string& name, glm::vec3& pos) {
 		robot->ai = std::make_shared<CRoboWander>(robot.get());
 		robot->entityType = entMeleeBot;
 	}
-	else  
+	else
 	{
-		robot->ai = std::make_shared<CRoboWander>(robot.get()); 
+		robot->ai = std::make_shared<CRoboWander>(robot.get());
 		robot->entityType = entShootBot;
 	}
 	r++;
@@ -130,11 +131,11 @@ CEntity* CSpawn::missile(const std::string& name, glm::vec3& pos, float angle) {
 	missile->collider = std::make_shared<CMissileColliderCmp>(missile.get());
 	missile->collider->colliderType = missileCollider;
 	missile->modelCmp->drawFn = std::make_shared<CEntityDraw>(missile.get());
-	missile->modelCmp->loadModel(models["bolt"]);
-	missile->modelCmp->setPalette(pPalettes->at("basic")); 
+	missile->modelCmp->loadModel(game.models["bolt"]);
+	missile->modelCmp->setPalette(game.pPalettes->at("basic"));
 	missile->modelCmp->initDrawFn();
-	missile->addComponent( std::make_shared <CPhys>(missile.get(), 1.0f / 80.0f) );
-	missile->setPosition(pos,angle);
+	missile->addComponent(std::make_shared <CPhys>(missile.get(), 1.0f / 80.0f));
+	missile->setPosition(pos, angle);
 
 	game.addEntity(missile);
 	missile->init();
@@ -145,7 +146,7 @@ CEntity* CSpawn::explosion(const std::string& name, glm::vec3& pos, float scale)
 	auto explode = std::make_shared<CExplosion>(scale);
 
 	explode->modelCmp->drawFn = std::make_shared<CSplodeDraw>(explode.get());
-	explode->modelCmp->setPalette(pPalettes->at("explosion")); 
+	explode->modelCmp->setPalette(game.pPalettes->at("explosion"));
 	explode->modelCmp->initDrawFn();
 	//explode->worldPos = pos;
 	explode->transform->setPos(pos);
@@ -159,14 +160,14 @@ CEntity* CSpawn::explosion(const std::string& name, glm::vec3& pos, float scale)
 CEntity* CSpawn::gun(const std::string& name, glm::vec3& pos ) {
 	auto gun = std::make_shared<CGun>();
 
-	gun->modelCmp->loadModel(models["gun"]);
+	gun->modelCmp->loadModel(game.models["gun"]);
 	gun->modelCmp->drawFn = std::make_shared<CItemDraw>(gun.get());
-	gun->modelCmp->setPalette(pPalettes->at("gun")); 
+	gun->modelCmp->setPalette(game.pPalettes->at("gun"));
 	gun->modelCmp->initDrawFn();
 
 	gun->modelCmp->model.meshes[0].colour = glm::vec4(0, 1, 1.0, 0.45f);
-	if (pos != glm::vec3(0,0,0) )
- 		gun->setPosition(pos);
+	if (pos != glm::vec3(0, 0, 0))
+		gun->setPosition(pos);
 
 	gun->gunType = std::make_shared<CSmallGun>(gun.get());
 	gun->name = "gun";
@@ -179,9 +180,9 @@ CEntity* CSpawn::gun(const std::string& name, glm::vec3& pos ) {
 CEntity* CSpawn::armour(const std::string& name, glm::vec3& pos) {
 	auto armour = std::make_shared<CArmour>();
 
-	armour->modelCmp->loadModel(models["armour"]);
+	armour->modelCmp->loadModel(game.models["armour"]);
 	armour->modelCmp->drawFn = std::make_shared<CItemDraw>(armour.get());
-	armour->modelCmp->setPalette(pPalettes->at("armour"));
+	armour->modelCmp->setPalette(game.pPalettes->at("armour"));
 	armour->modelCmp->initDrawFn();
 
 	armour->modelCmp->model.meshes[0].colour = glm::vec4(1, 0, 1.0, 0.45f);
@@ -199,8 +200,8 @@ CEntity* CSpawn::armour(const std::string& name, glm::vec3& pos) {
 CEntity* CSpawn::shield(const std::string& name) {
 	auto shieldEnt = std::make_shared<CEntity>();
 
-	shieldEnt->modelCmp->loadModel(models["solidHex"]);
-	shieldEnt->modelCmp->setPalette(pPalettes->at("shield")); 
+	shieldEnt->modelCmp->loadModel(game.models["solidHex"]);
+	shieldEnt->modelCmp->setPalette(game.pPalettes->at("shield"));
 	shieldEnt->modelCmp->drawFn = std::make_shared<CSolidDraw>(shieldEnt.get());
 	shieldEnt->modelCmp->initDrawFn();
 
@@ -217,14 +218,14 @@ CEntity* CSpawn::drop(const std::string& name, glm::vec3& pos) {
 	auto drop = std::make_shared<CEntity>();
 	drop->collider = std::make_shared<ColliderCmp>(drop.get());
 	drop->collider->sceneryOnly = true;
-	drop->modelCmp->loadModel(models["hex"]);
+	drop->modelCmp->loadModel(game.models["hex"]);
 	drop->modelCmp->drawFn = std::make_shared<CEntityDraw>(drop.get());
-	drop->modelCmp->setPalette(pPalettes->at("basic"));
+	drop->modelCmp->setPalette(game.pPalettes->at("basic"));
 	drop->modelCmp->initDrawFn();
 	drop->transform->setScale(glm::vec3{ 0.05f });
 	drop->setPosition(pos);
-	drop->addAIComponent(std::make_shared<CDropAI>(drop.get()) );
-	drop->addComponent( std::make_shared<CPhys>(drop.get(), 1.0f / 80.0f) );
+	drop->addAIComponent(std::make_shared<CDropAI>(drop.get()));
+	drop->addComponent(std::make_shared<CPhys>(drop.get(), 1.0f / 80.0f));
 
 	game.addEntity(drop);
 

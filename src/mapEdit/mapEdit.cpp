@@ -7,9 +7,6 @@
 
 #include "utils/files.h"
 
-//#include "../robot.h"
-
-#include "../spawner.h"
 
 #include "../gameState.h" //for player obj, not ideal
 #include "utils/log.h"
@@ -23,7 +20,7 @@ void CMapEdit::setMap(CLevel* map) {
 	redoPatch = nullptr;
 	deleteRect = nullptr;
 	workingArray = *pMap->getHexArray();
-	spawn::pMap = map;
+	//spawn::pMap = map;
 }
 
 /** Currently called if the user mousewheels. */
@@ -231,15 +228,15 @@ void CMapEdit::addEntity(glm::vec3& mousePos) {
 	switch (currentEntity) {
 	case editPlayer: {
 		if (game.player == nullptr)
-			spawn::player("player", mousePos); 
+			game.spawn("player", mousePos); 
 		else {
 			game.player->setPosition(mousePos);
 		}
 		break;
 	}
-	case editMeleeBot: spawn::robot("melee bot", mousePos); break;
-	case editShooterBot: spawn::robot("shooter bot", mousePos); break;
-	case editGun: spawn::gun("gun", mousePos); break;
+	case editMeleeBot: game.spawn("melee bot", mousePos); break;
+	case editShooterBot: game.spawn("shooter bot", mousePos); break;
+	case editGun: game.spawn("gun", mousePos); break;
 
 	}
 

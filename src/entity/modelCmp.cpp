@@ -5,8 +5,7 @@
 #include "..\hexRender\drawFunc.h"
 #include "..\hexRender\multiDraw.h"
 
-CModelCmp::CModelCmp(CEntity* parent) : CEntityCmp(parent) {
-}
+
 
 void CModelCmp::loadModel(CModel& pModel) {
 	if (pModel.meshes.empty()) {
@@ -40,6 +39,11 @@ void CModelCmp::setPalette(std::vector<glm::vec4>& pal) {
 	model.palette = pal;
 
 }
+
+void CModelCmp::setVisible(bool onOff) {
+	drawFn->visible = onOff;
+}
+
 
 void CModelCmp::translateAll(glm::vec3& pos) {
 	tmpWorldM = glm::translate(glm::mat4(1), pos);

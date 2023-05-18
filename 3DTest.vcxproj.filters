@@ -219,6 +219,9 @@
     <ClCompile Include="src\entity\playerHealthC.cpp">
       <Filter>Source Files\entity</Filter>
     </ClCompile>
+    <ClCompile Include="src\entity\component.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -246,9 +249,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\hexMsg.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\gameMsg.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\viewField.h">
@@ -342,9 +342,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\entity\component.h">
-      <Filter>Source Files\entity</Filter>
-    </ClInclude>
-    <ClInclude Include="src\entity.h">
       <Filter>Source Files\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\items\item2.h">

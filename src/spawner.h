@@ -2,20 +2,9 @@
 
 #include <glm/glm.hpp>
 #include <string>
-#include <functional>
-#include <unordered_map>
 
 #include "entity\entity.h"
-#include "missile.h"
-//#include "robot.h"
-#include "explosion.h"
-//#include "playerHexObj.h"
 
-#include "buf2.h"
-#include "renderer/mesh.h"
-#include "model.h"
-
-#include "level\level.h"
 
 
 /** A class to tidy away the creation of entities. */
@@ -33,11 +22,6 @@ public:
 	static CEntity* drop(const std::string& name, glm::vec3& pos);
 
 
-
-	static std::unordered_map<std::string, CModel> models;
-	static std::unordered_map<std::string, std::vector<glm::vec4> >* pPalettes;
-
-	static CLevel* pMap; ///<The map we're spawning to.
 
 };
 	

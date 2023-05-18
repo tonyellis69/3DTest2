@@ -9,9 +9,6 @@
 
 #include "utils/files.h"
 
-//#include "..\robot.h"
-
-#include "..\spawner.h"
 
 
 THexList CLevel::findVisibleHexes(CHex& apex, THexList& perimeterHexes, bool obsessive) {

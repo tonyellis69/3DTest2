@@ -4,27 +4,26 @@
 #include "utils/files.h"
 #include "win/win.h"
 
-#include "../spawner.h"
 
 void CGameMode::init() {
-	//for now, hardcode reading file
-	loadLevel("manyMapTest.map");
+	if (!game.level) {
+		loadLevel("manyMapTest.map");
+		game.restoreEntities();
+	}
+
+
+
 	viewMode = gameView;
 	CWin::showMouse(false);
 
 	CWin::fullScreen();
 }
 
-/** Called every time we start a new session. */
-void CGameMode::start() {
 
-	//spawn entity recs as entities in the game
-	game.restoreEntities();
-}
 
 void CGameMode::restart() {
 	game.clearEntities();
-	start();
+	game.restoreEntities();
 }
 
 void CGameMode::guiHandler(CGUIevent& e) {
@@ -136,7 +135,8 @@ void CGameMode::loadLevel(const std::string& fileName) {
 
 	game.setLevel(std::move(newLevel));
 
-	CGameEvent e;
-	e.type = gameLevelChange;
-	lis::event(e);
+	//CGameEvent e;
+	//e.type = gameLevelChange;
+	//e.hexArray = 
+	//lis::event(e);
 }

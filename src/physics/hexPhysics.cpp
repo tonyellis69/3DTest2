@@ -7,8 +7,20 @@
 CHexPhysics::CHexPhysics() {
 	tmpMapObj.phys = std::make_shared <CPhys>(&tmpMapObj, 0.0f);
 	tmpMapObj.collider = std::make_shared<CSceneryColliderCmp>(&tmpMapObj);
+	//tmpMapObj.addComponentTest<CSceneryColliderCmp>();
 
 	//TODO: this is really hacky! Probably the map should be an entity or something
+}
+
+void CHexPhysics::onEvent(CGameEvent& e) {
+	if (e.type == gameLevelChange) {
+		setMap(e.hexArray);
+	}
+}
+
+void CHexPhysics::onEvent(CEntityEvent& e) {
+	if (e.eventType == entAdd && e.entity->phys)
+		add(e.entity);
 }
 
 void CHexPhysics::add(CEntity* entity) {

@@ -16,6 +16,7 @@ public:
 
 	void setLevel(CLevel* level);
 	void setLevel(std::unique_ptr<CLevel> level);
+	CLevel* getLevel();
 
 	CEntities getEntitiesAt(const CHex& hex);
 	CEntity* getEntity(int idNo);
@@ -34,6 +35,8 @@ public:
 	void restoreEntities();
 	void clearEntities();
 
+	CEntity* spawn(const std::string& name, glm::vec3& pos, float angle=0);
+
 
 	//CPlayerObject* player = nullptr;
 	CEntity* player = nullptr;
@@ -45,6 +48,9 @@ public:
 	bool slowed = false;
 	bool speeded = false;
 	bool uiMode = false;
+
+	std::unordered_map<std::string, CModel> models;
+	std::unordered_map<std::string, std::vector<glm::vec4> >* pPalettes;
 
 //private:
 

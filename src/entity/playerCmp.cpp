@@ -17,7 +17,7 @@
 constexpr float sin30 = 0.5f;
 constexpr float sin60 = 0.86602540378443;
 
-CPlayerC::CPlayerC(CEntity* parent) : CEntityCmp(parent) {
+CPlayerC::CPlayerC(CEntity* parent) : CDerivedC(parent) {
 
 }
 
@@ -166,6 +166,7 @@ void CPlayerC::setMouseDir(glm::vec3& _mouseVec) {
 
 void CPlayerC::addToInventory(CEntity* item) {
 	CItem* takenEnt = (CItem*)item;
+	takenEnt->modelCmp->setVisible(false);
 	inventory.push_back(takenEnt);
 	takenEnt->parent = thisEntity;
 	gWin::pInv->refresh();

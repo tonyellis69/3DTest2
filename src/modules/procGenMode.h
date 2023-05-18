@@ -18,10 +18,14 @@ public:
 	void guiHandler(CGUIevent& e);
 	void gameEventHandler(CGameEvent& e);
 
-	void makeMap();
+	void makeLevel();
 	
 
 	void update(float dt);
 
+	void writeGridToLevel();
+
 	CRandLevel levelGen;
+
+	glm::vec3 playerPos;
 };

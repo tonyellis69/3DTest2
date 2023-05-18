@@ -17,8 +17,6 @@
 
 #include "hexWorld.h" 
 
-#include "gameMsg.h"
-
 #include "gameTextWin.h"
 
 

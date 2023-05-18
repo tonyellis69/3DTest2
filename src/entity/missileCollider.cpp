@@ -8,7 +8,6 @@
 #include "entity.h"
 
 #include "../explosion.h"
-#include "../spawner.h"
 
 #include "../gameState.h"
 
@@ -44,7 +43,7 @@ void CMissileColliderCmp::update(float dT) {
 			[](TMissileCollision& A, TMissileCollision& B) { return A.dist < B.dist; } );
 		
 		auto collision = collisions.begin();
-		CExplosion* splode = (CExplosion*)spawn::explosion("explosion", collision->collisionPt, 1);
+		CExplosion* splode = (CExplosion*)game.spawn("explosion", collision->collisionPt, 1);
 		if (collision->ent) {
 			splode->setCollidee(collision->ent);
 			if (collision->ent->healthC)
@@ -63,7 +62,7 @@ void CMissileColliderCmp::update(float dT) {
 		//now check for collisions along this path. 
 		auto [impact, collisionPt] = sceneryCollisionCheck(oldLeadingPoint, leadingPoint);
 		if (impact) {
-			CExplosion* splode = (CExplosion*)spawn::explosion("explosion", collisionPt, 1);
+			CExplosion* splode = (CExplosion*)game.spawn("explosion", collisionPt, 1);
 			thisEntity->destroyMe();
 			return;
 		}

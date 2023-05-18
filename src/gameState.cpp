@@ -23,7 +23,13 @@ void CGameState::setLevel(std::unique_ptr<CLevel> level) {
 	this->level = std::move(level);
 	CGameEvent e; 
 	e.type = gameLevelChange;
+	e.hexArray = &this->level->hexArray;
 	lis::event(e);
+}
+
+/** Returns a short-term convenience pointer to the level. */
+CLevel* CGameState::getLevel() {
+	return level.get();
 }
 
 
@@ -152,10 +158,10 @@ void CGameState::loadLevel(const std::string& fileName) {
 		glm::vec3 pos;
 		file::readObject(pos, in);
 		switch (entType) {
-		case entPlayer: spawn::player("player", pos); break;
-		case entMeleeBot: spawn::robot("melee bot", pos); break;
-		case entShootBot: spawn::robot("shooter bot", pos); break;
-		case entGun: spawn::gun("gun", pos); break;
+		case entPlayer: game.spawn("player", pos); break;
+		case entMeleeBot: game.spawn("melee bot", pos); break;
+		case entShootBot: game.spawn("shooter bot", pos); break;
+		case entGun: game.spawn("gun", pos); break;
 		}
 	}
 
@@ -185,10 +191,10 @@ void CGameState::restoreEntities() {
 
 	for (auto& entRec : level->entityRecs) {
 		switch (entRec.entType) {
-		case entPlayer: spawn::player("player", entRec.pos); break;
-		case entMeleeBot: spawn::robot("melee bot", entRec.pos); break;
-		case entShootBot: spawn::robot("shooter bot", entRec.pos); break;
-		case entGun: spawn::gun("gun", entRec.pos); break;
+		case entPlayer: spawn("player", entRec.pos); break;
+		case entMeleeBot: spawn("melee bot", entRec.pos); break;
+		case entShootBot: spawn("shooter bot", entRec.pos); break;
+		case entGun: spawn("gun", entRec.pos); break;
 		}
 	}
 
@@ -201,9 +207,38 @@ void CGameState::restoreEntities() {
 
 	CGameEvent e;
 	e.type = gameLevelChange;
+	e.hexArray = &level->hexArray;
 	lis::event(e);
+	//FIXME:If we need this event at all, it should be gameEntitiesRestored or something
 }
 
 void CGameState::clearEntities() {
 	entities.clear();
+}
+
+CEntity* CGameState::spawn(const std::string& name, glm::vec3& pos, float f1) {
+	CEntity* ent = nullptr;
+
+	if (name == "player")
+		ent = spawn::player("player", pos); 
+	else if (name == "melee bot")
+		ent = spawn::robot("melee bot", pos); 
+	else if (name == "shooter bot")
+		ent = spawn::robot("shooter bot", pos);
+	else if (name == "gun")
+		ent = spawn::gun("gun", pos);
+	else if (name == "missile")
+		ent = spawn::missile("missile", pos, f1);
+	else if (name == "explosion")
+		ent = spawn::explosion("explosion", pos, f1);
+	else if (name == "drop")
+		ent = spawn::drop("drop", pos);
+
+	if (ent) {
+		CEntityEvent e = { entAdd,ent };
+		lis::event(e);
+
+	}
+
+	return ent;
 }

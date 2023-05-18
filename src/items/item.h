@@ -1,9 +1,10 @@
 #pragma once
 
-#include "..\entity\entity.h"
+#include "../entity/entity.h"
 
 /** Items are a distinct class of entity that the player can
 	use and typically carry. */
+
 class CItem : public CEntity {
 public:
 	CItem() { isItem = true; }; //TO DO: temp! Find better way!

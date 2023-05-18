@@ -15,7 +15,6 @@ public:
 		pHexWorld = engine;
 	}
 	virtual void init() {}
-	virtual void start() {}
 	virtual void restart() {}
 	virtual void guiHandler(CGUIevent& e) {}
 	virtual void gameEventHandler(CGameEvent& e) {}

@@ -3,9 +3,9 @@
 #include "component.h"
 
 
-class CAiCmp : public CEntityCmp {
+class CAiCmp : public CDerivedC<CAiCmp> {
 public:
-	CAiCmp(CEntity* parent) : CEntityCmp(parent) {}
+	CAiCmp(CEntity* parent) : CDerivedC(parent) {}
 
 
 

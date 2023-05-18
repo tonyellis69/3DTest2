@@ -9,8 +9,6 @@
 
 #include "explosion.h"
 
-#include "spawner.h"
-
 CMissile::CMissile() {
 	entityType = entMissile;
 }
@@ -133,7 +131,7 @@ bool CMissile::collisionCheck(glm::vec3& moveVec)
 }
 
 void CMissile::spawnExplosion() {
-	CExplosion* splode = (CExplosion *) spawn::explosion("explosion", collisionPt, 1);
+	CExplosion* splode = (CExplosion *) game.spawn("explosion", collisionPt, 1);
 	if (collidee)
 		splode->setCollidee(collidee.get());
 

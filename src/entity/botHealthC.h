@@ -1,5 +1,6 @@
 #pragma once
 
+#include "component.h"
 #include "healthC.h"
 
 

@@ -26,8 +26,6 @@
 
 #include "GLFW/glfw3.h"
 
-#include "spawner.h"
-
 #include "hexRender/drawFunc.h"
 
 #include "hexRender/destGraphic.h"
@@ -61,6 +59,10 @@ CHexWorld::CHexWorld() {
 	lis::subscribe<CGameEvent>(this);
 	lis::subscribe<CPhysicsEvent>(this);
 
+	lis::subscribe<CGameEvent>(&hexRender);
+	lis::subscribe<CGameEvent>(&physics);
+	lis::subscribe<CEntityEvent>(&physics);
+
 	hexPosLbl = gui::addLabel("xxx", 10, 10);
 	hexPosLbl->setTextColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
@@ -75,15 +77,31 @@ CHexWorld::CHexWorld() {
 }
 
 void CHexWorld::init() {
-	reticule = spawn::models["reticule"];
+	reticule = game.models["reticule"];
 	reticule.palette[0] = { 1,1,1,1 };
 
-	//gameMode = std::make_unique<CGameMode>(this);
-	//mode = gameMode.get();
-	procGenMode = std::make_unique<CProcGenMode>(this);
-	mode = procGenMode.get();
+	gameMode = std::make_unique<CGameMode>(this);
+	mode = gameMode.get();
+	//procGenMode = std::make_unique<CProcGenMode>(this);
+	//mode = procGenMode.get();
 
 	mode->init();
+
+
+	setViewMode(mode->viewMode);
+
+
+	game.paused = false;
+
+	pBotZero = nullptr;
+	for (auto& entity : game.entities) {
+		if (entity->isRobot && entity->id == 7) {
+			if (pBotZero == NULL)
+				pBotZero = entity.get();
+			else
+				;// ((CRobot*)entity.get())->setState(robotDoNothing);
+		}
+	}
 
 }
 
@@ -114,8 +132,8 @@ void CHexWorld::onEvent(CGUIevent& e) {
 		else if (e.i1 == 'P')
 			hexRender.tmpLineSolid += 0.05f;
 
-		else if (e.i1 == 'L')
-			hexRender.tmpKernel -= 2;
+	/*	else if (e.i1 == 'L')
+			hexRender.tmpKernel -= 2;*/
 		else if (e.i1 == ';')
 			hexRender.tmpKernel += 2;
 		else if (e.i1 == '\'')
@@ -175,11 +193,12 @@ void CHexWorld::onEvent(CGUIevent& e) {
 
 
 	if (e.key == GLFW_KEY_ENTER && e.type == eKeyDown) {
-
 		restart();
 	}
 
-
+	if (e.key == '\\' && e.type == eKeyDown) {
+		proc2Game();
+	}
 
 }
 
@@ -189,17 +208,17 @@ void CHexWorld::onEvent(CGameEvent& e) {
 		onPlayerDeath();
 	}
 	else if (e.type == gameLevelChange) {
-		physics.clearEntities();
-		physics.setMap(game.level->getHexArray());
-		hexRender.loadMap(game.level->getHexArray());
-		prepMapEntities();
+		//physics.setMap(game.level->getHexArray());
+		//hexRender.loadMap(game.level->getHexArray());
+		//prepMapEntities();
 		setViewMode(mode->viewMode);
 	}
 }
 
+//FIXME phase out
 void CHexWorld::onEvent(CPhysicsEvent& e) {
 	if (e.action == physAdd)
-		physics.add(e.entity);
+		;//	physics.add(e.entity);
 	else if (e.action == physRemove)
 		physics.remove(e.entity);
 }
@@ -209,7 +228,7 @@ void CHexWorld::onEvent(CPhysicsEvent& e) {
 void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
 	CImporter importer;
 	importer.loadFile(fileName);	
-	spawn::models[name] = importer.getModel();
+	game.models[name] = importer.getModel();
 }
 
 /** Import a mesh to use in drawing the level. */
@@ -227,28 +246,7 @@ void CHexWorld::deleteMap() {
 }
 
 
-/** Start a new session. */
-void CHexWorld::start() {
 
-	mode->start();
-
-	setViewMode(mode->viewMode); 
-
-
-	game.paused = false;
-
-	pBotZero = nullptr;
-	for (auto& entity : game.entities) {
-		if (entity->isRobot && entity->id == 7) {
-			if (pBotZero == NULL)
-				pBotZero = entity.get();
-			else
-				;// ((CRobot*)entity.get())->setState(robotDoNothing);
-		}
-	}
-
-
-}
 
 /** Terminate an existing session to start a new one. */
 void CHexWorld::restart() {
@@ -296,7 +294,7 @@ void CHexWorld::draw() {
 	hexRender.resetDrawLists();
 
 	for (auto& entity : game.entities) {
-		if (entity->live) 
+		if (entity->live && entity->modelCmp->drawFn->visible) 
 			//entity->drawFn.get()->draw(hexRender);
 			entity->modelCmp->draw(hexRender);
 	}
@@ -316,7 +314,7 @@ void CHexWorld::draw() {
 
 
 	//draw masks first
-	hexRender.drawMaskList();
+	hexRender.drawMaskList(); 
 
 	hexRender.drawLineList(); 
 
@@ -715,5 +713,22 @@ void CHexWorld::initPalettes() {
 	hexRender.storePalette("shield", { {0,0,1,0.15f}, {1,0,0,0.15f}, {0,1,0,1}, {1,1,0,1} });
 
 
-	spawn::pPalettes = &hexRender.palettes;
+	game.pPalettes = &hexRender.palettes;
+}
+
+void CHexWorld::proc2Game() {
+
+	if (viewMode == keepView) { //FIXME: cheap trick, do not keep!
+		gameMode = std::make_unique<CGameMode>(this);
+		mode = gameMode.get();
+	}
+	else {
+		mode = procGenMode.get();
+		hexRender.setCameraPos(0, 0);
+	}
+	
+	
+	mode->init();
+	setViewMode(mode->viewMode);
+
 }

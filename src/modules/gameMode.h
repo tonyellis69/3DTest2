@@ -13,7 +13,6 @@ class CGameMode : public CBaseModule {
 public:
 	CGameMode(CHexWorld* engine) : CBaseModule(engine) {}
 	void init();
-	void start();
 	void restart();
 	void guiHandler(CGUIevent& e);
 	void gameEventHandler(CGameEvent& e);

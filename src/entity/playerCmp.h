@@ -15,7 +15,7 @@ class CGun;
 class CArmour;
 class CItem;
 
-class CPlayerC : public CEntityCmp {
+class CPlayerC : public CDerivedC<CPlayerC> {
 public:
 	CPlayerC(CEntity* parent);
 	void onSpawn();

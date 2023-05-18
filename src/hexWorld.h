@@ -55,7 +55,6 @@ public:
 	void addMesh(const std::string& name, const std::string& fileName);
 	void addHexTile(const std::string& name, const std::string& fileName, std::vector<glm::vec4>& colours);
 	void deleteMap();
-	void start();
 	void restart();
 	void startProcTest();
 	void moveCamera(glm::vec3& direction);
@@ -121,6 +120,8 @@ private:
 
 
 	void initPalettes();
+
+	void proc2Game();
 
 	void toggleDirectionGraphics();
 

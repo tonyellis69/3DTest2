@@ -1,10 +1,13 @@
 #include "gun.h"
 
-#include "..\spawner.h"
 #include "sound/sound.h"
 
 
 #include <glm/gtc/matrix_transform.hpp>	
+
+#include "..\gameState.h"
+
+#include "..\missile.h"
 
 CGun::CGun() {
 	entityType = entGun;
@@ -64,8 +67,7 @@ std::string CGun::getMenuTextInv() {
 
 void CSmallGun::fire(float firingAngle) {
 
-
-	auto missile = (CMissile*) spawn::missile("missile", gun->parent->getPos(), firingAngle);
+	auto missile = (CMissile*)game.spawn("missile", gun->parent->getPos(), firingAngle);
 	missile->setOwner(gun->parent); //FIXME phasing out
 	missile->setParent(gun->parent);
 

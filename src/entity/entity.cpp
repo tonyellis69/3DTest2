@@ -18,6 +18,8 @@
 
 #include "../gameState.h"
 
+#include <typeinfo>
+
 const float rad360 = M_PI * 2;
 
 unsigned int CEntity::nextId = 1;
@@ -35,9 +37,6 @@ void CEntity::update(float dT) {
 	this->dT = dT;
 	diagnostic = "";
 
-	if (tmpId == 57)
-		int b = 0;
-
 	//update various components here
 	if (ai)
 		ai->update(dT);
@@ -53,6 +52,10 @@ void CEntity::update(float dT) {
 		playerC->update(dT);
 	if (healthC)
 		healthC->update(dT);
+
+	//for (auto& comp : components) {
+	//	comp.second->update(dT);
+	//}
 }
 
 
@@ -105,6 +108,11 @@ void CEntity::init() {
 		healthC->thisEntity = this;
 		healthC->onSpawn();
 	}
+
+	//for (auto& comp : components) {
+	//	comp.second->thisEntity = this;
+	//	comp.second->onSpawn();
+	//}
 }
 
 
@@ -127,13 +135,15 @@ CEntity* CEntity::getParent() {
 	return parentEntity.get();
 }
 
+
+
 void CEntity::addComponent(std::shared_ptr<CPhys> phys) {
 	this->phys = phys;
 
-	CPhysicsEvent e;
-	e.entity = this;
-	e.action = physAdd;
-	lis::event<CPhysicsEvent>(e);
+	//CPhysicsEvent e;
+	//e.entity = this;
+	//e.action = physAdd;
+	//lis::event<CPhysicsEvent>(e);
 }
 
 void CEntity::addComponent(std::shared_ptr<CPlayerC> playerC) {

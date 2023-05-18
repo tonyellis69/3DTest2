@@ -5,11 +5,16 @@
 #include "../entity/component.h"
 
 /** Simple class for storing physics properties. */
-class CPhys : public CEntityCmp {
+class CPhys : public CDerivedC<CPhys> {
 public:
-	CPhys() {}
-	CPhys(CEntity* ent, float iMass) : CEntityCmp(ent) {
+	//CPhys() {}
+	CPhys(CEntity* ent, float iMass) : CDerivedC(ent) {
 		invMass = iMass;
+	}
+	CEntityCmp* onAdd(CEntity* parent) {
+		//auto tmp = typeid(CPhys).name();
+		int b = 0;
+		return this;
 	}
 
 	glm::vec3 moveImpulse = { 0,0,0 }; //Motive force.

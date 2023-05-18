@@ -35,20 +35,24 @@ public:
 		size = {x,y};
 	}
 	void resize(int dSize);
-	void drawLevel();
-	void draw(CHexQuad* quad);
+	void updateHexGrid();
+	void makeQuadLines(CHexQuad* quad);
 	void subdivide();
 	void quadRemovals();
 	void reset();
+	glm::vec3 findPlayerPos();
+	void makeDoors();
+
+	std::vector< std::vector<glm::i32vec2> > hexLines;
 
 private:
-	void storeQuad( CHexQuad* quad);
-	void fillLine(const glm::i32vec2& a,const  glm::i32vec2& b);
-	void drawLines();
+	void storeUniqueQuadLines( CHexQuad* quad);
+	std::vector<glm::i32vec2> makeHexLine(const glm::i32vec2& a,const  glm::i32vec2& b);
+	void makeHexLines();
 	void split(CHexQuad* quad, bool splitHoriz);
 	int findDivisor(int freeSpace);
 	std::unique_ptr<CLevel> level;
-	glm::i32vec2 size = { 50,50 };
+	glm::i32vec2 size = { 30,30 };
 	std::shared_ptr<CHexQuad> rootQuad;
 
 	int divCount = 1;
@@ -61,4 +65,6 @@ private:
 	std::mt19937 randEngine;
 
 	const int minSplitable = 6;
+
+	
 };

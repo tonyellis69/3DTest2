@@ -8,6 +8,10 @@
 #include "../entity/entity.h"
 #include "hex/hexArray.h"
 
+#include "../gameEvent.h"
+//TODO: supply event type rather than use gameEvent, for true decoupling
+//or if we're just calling one function, simply make a callback via lambda
+
 class CBodyPairKey;
 class CBodyPair;
 
@@ -16,6 +20,8 @@ class CBodyPair;
 class CHexPhysics {
 public:
 	CHexPhysics();
+	void onEvent(CGameEvent& e);
+	void onEvent(CEntityEvent& e);
 	void add(CEntity* entity);
 	void remove(CEntity* entity);
 	void setMap(CHexArray* hexArray);

@@ -9,13 +9,12 @@
 
 #include "utils/random.h"
 #include "gameState.h"
+#include "missile.h"
 
 #include "utils/log.h"
 #include "utils/mathsLib.h"
 
 #include "intersect.h"
-
-#include "spawner.h"
 
 #include "sound/sound.h"
 
@@ -656,7 +655,7 @@ std::shared_ptr<CRoboState> CCloseAndShoot::updateState(float dT) {
 			glm::vec3 targetVec = targetEntity->getPos() - thisEntity->getPos();
 			float targetAngle = glm::orientedAngle(glm::normalize(targetVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 
-			auto missile = (CMissile*)spawn::missile("missile", thisEntity->getPos(), targetAngle);
+			auto missile = (CMissile*)game.spawn("missile", thisEntity->getPos(), targetAngle);
 			missile->setOwner(thisEntity); //FIXME: phasing out
 			missile->setParent(thisEntity);
 			missile->setSpeed(15);// 7.0f);

@@ -14,4 +14,6 @@ public:
 //protected:
 	CModel* model;
 	CEntity* pOwner;
+
+	bool visible = true;
 };

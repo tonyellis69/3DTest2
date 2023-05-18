@@ -3,11 +3,12 @@
 
 #include "entity.h"
 
-#include "../spawner.h"
 #include "listen/listen.h"
 #include  "../gameEvent.h"
 
 #include "../items/shield.h"
+
+#include "../gameState.h"
 
 #include "utils/log.h"
 
@@ -31,7 +32,7 @@ void CPlayerHealthC::receiveDamage(CEntity& attacker, int damage) {
 		thisEntity->playerC->dead = true;
 		thisEntity->visible = false;
 		//game.onPlayerDeath();
-		spawn::explosion("explosion", thisEntity->getPos(), 1.5f);
+		game.spawn("explosion", thisEntity->getPos(), 1.5f);
 
 		CGameEvent e;
 		e.type = gamePlayerDeath;

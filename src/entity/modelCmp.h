@@ -6,14 +6,15 @@
 
 class CHexRender;
 class CDrawFunc;
-class CModelCmp : public CEntityCmp {
+class CModelCmp : public CDerivedC<CModelCmp> {
 public:
-	CModelCmp(CEntity* parent);
+	CModelCmp(CEntity* parent) : CDerivedC(parent) {}
 	virtual void loadModel(CModel& model);
 	virtual void draw(CHexRender& hexRender);
 	virtual void update(float dT);
 	virtual void initDrawFn();
 	virtual void setPalette(std::vector<glm::vec4>& pal);
+	void setVisible(bool onOff);
 
 	virtual void translateAll(glm::vec3& translate);
 	virtual void rotate(float angle);
