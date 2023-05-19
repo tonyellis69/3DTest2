@@ -57,20 +57,10 @@ public:
 	T* addComponentTest(Args... args) {
 		auto comp = std::make_shared<T>(this,(args)...);
 
+		auto classPtr = comp->testFunc();
 
-		addComponentTestSpec(comp);
+		addComponentTestSpec(classPtr);
 
-		auto tmp2 = comp->testFunc();
-
-		addComponentTestSpec2(tmp2);
-
-		//if (typeid(CModelCmp) == typeid(tmp2)) {
-		//	int a = 1;
-		//}
-		//else
-		//{
-		//	int a = 2;
-		//}
 
 		int id = comp->getUniqueID();
 
@@ -79,73 +69,45 @@ public:
 		return comp.get();
 	}
 
-	void addComponentTestSpec2(ColliderCmp* comp) {
-		//collider = comp;
+	void addComponentTestSpec(CTransformCmp* comp) {
+		int t = 0;
 	}
 
-	void addComponentTestSpec2(CItemCmp* comp) {
-		//item = comp;
+	void addComponentTestSpec(CModelCmp* comp) {
+		int model = 0;
 	}
 
-	void addComponentTestSpec2(CPlayerC* comp) {
-		//playerC = comp;
+	void addComponentTestSpec(CPhys* comp) {
+		int p = 0;
+	}
+
+	void addComponentTestSpec(ColliderCmp* comp) {
+		int collider = 0;
+	}
+
+	void addComponentTestSpec(CItemCmp* comp) {
+		int item = 0;
+	}
+
+	void addComponentTestSpec(CPlayerC* comp) {
+		int pc = 0;
+	}
+
+	void addComponentTestSpec(CAiCmp* comp) {
+		int ai = 0;
+	}
+
+	void addComponentTestSpec(CHealthC* comp) {
+		int h = 0;
 	}
 
 	template <typename T>
-	void addComponentTestSpec2(T t) {
+	void addComponentTestSpec(T t) {
 		int a = 0;
 	}
 
 
 
-	template <typename T>
-	void addComponentTestSpec(T t) {
-
-	}
-
-	void addComponentTestSpec(std::shared_ptr <CTransformCmp> comp) {
-		transform = comp;
-	}
-
-	void addComponentTestSpec(std::shared_ptr <CPhys> comp) {
-		phys = comp;
-	}
-
-	void addComponentTestSpec(std::shared_ptr <ColliderCmp> comp) {
-		//collider = comp;
-	}
-
-	void addComponentTestSpec(std::shared_ptr <CModelCmp> comp) {
-		modelCmp = comp;
-	}
-
-	void addComponentTestSpec(std::shared_ptr <CPlayerModelCmp> comp) {
-		modelCmp = comp;
-	}
-
-	void addComponentTestSpec(std::shared_ptr <CPlayerC> comp) {
-		playerC = comp;
-	}
-
-	void addComponentTestSpec(std::shared_ptr <CPlayerHealthC> comp) {
-		healthC = comp;
-	}
-
-	void addComponentTestSpec(std::shared_ptr <CBotHealthC> comp) {
-		healthC = comp;
-	}
-
-	void addComponentTestSpec(std::shared_ptr <CBotTreadsModelCmp> comp) {
-		modelCmp = comp;
-	}
-
-	void addComponentTestSpec(std::shared_ptr <CRoboWander> comp) {
-		ai = comp;
-	}
-
-	void addComponentTestSpec(std::shared_ptr <CShieldComponent> comp) {
-	//	item = comp;
-	}
 
 
 	template <typename T>
@@ -214,7 +176,7 @@ public:
 	std::shared_ptr<CPlayerC> playerC;
 	std::shared_ptr<CHealthC> healthC;
 
-//	std::unordered_map<int, std::shared_ptr<CEntityCmp> > components;
+	std::unordered_map<int, std::shared_ptr<CEntityCmp> > components;
 
 
 private:
