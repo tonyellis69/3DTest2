@@ -7,15 +7,11 @@
 /** Simple class for storing physics properties. */
 class CPhys : public CDerivedC<CPhys> {
 public:
-	//CPhys() {}
 	CPhys(CEntity* ent, float iMass) : CDerivedC(ent) {
 		invMass = iMass;
 	}
-	CEntityCmp* onAdd(CEntity* parent) {
-		//auto tmp = typeid(CPhys).name();
-		int b = 0;
-		return this;
-	}
+	void onAdd();
+	void onRemove();
 
 	glm::vec3 moveImpulse = { 0,0,0 }; //Motive force.
 	glm::vec3 velocity = { 0,0,0 };

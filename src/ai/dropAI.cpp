@@ -11,7 +11,7 @@ void CDropAI::update(float dT) {
 			oldPos = thisEntity->getPos();
 			return;
 		}
-		thisEntity->removePhysComponent();
+		thisEntity->removeComponent(thisEntity->phys);
 		still = true;
 	}
 

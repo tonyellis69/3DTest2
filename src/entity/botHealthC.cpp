@@ -34,8 +34,8 @@ void CBotHealthC::receiveDamage(CEntity& attacker, int damage) {
 
 	}
 	else {
-		if (((CRoboState*)thisEntity->ai.get())->canSeeEnemy() == false) {
-			thisEntity->ai = std::make_shared<CTurnToSee>(thisEntity, glm::normalize(attacker.getPos() - thisEntity->getPos()));
+		if (((CRoboState*)thisEntity->ai)->canSeeEnemy() == false) {
+			thisEntity->addComponent<CTurnToSee>(glm::normalize(attacker.getPos() - thisEntity->getPos()));
 		}
 	}
 

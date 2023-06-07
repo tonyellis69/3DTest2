@@ -15,7 +15,7 @@
 void CShieldComponent::update(float dT) {
 	const float rad90 = float(M_PI) / 2;
 
-	CTransformCmp* transform = thisEntity->transform.get();
+	CTransformCmp* transform = thisEntity->transform;
 
 	transform->setPos(itemOwner->getPos());
 	transform->setRotation(rad90);

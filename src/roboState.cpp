@@ -27,8 +27,13 @@ void CRoboState::update(float dT) {
 	updateTreadCycle();
 
 	auto newState = updateState(dT);
-	if (newState)
-		thisEntity->ai = newState;
+	if (newState) {
+		//thisEntity->ai = newState;
+		int id = newState->getUniqueID();
+		thisEntity->ai = newState.get();
+		thisEntity->components[id] = newState;
+
+	}
 	//FIXME: we're putting this very object out of scope, inside its own function!
 	//probably more elegant and safe to create an entity func that we *request*
 	//makes the change after we return
@@ -154,7 +159,7 @@ void CRoboState::headTo(glm::vec3& destinationPos) {
 	if (abs(avoidanceNeeded) > 0) {
 
 		//Special case: colliding bots side-by-side heading same way
-		if (pRoboCollidee && ((CRoboState*)pRoboCollidee->ai.get())->backingUp <= 0 &&
+		if (pRoboCollidee && ((CRoboState*)pRoboCollidee->ai)->backingUp <= 0 &&
 			glm::dot(thisEntity->transform->getRotationVec(), pRoboCollidee->transform->getRotationVec()) > 0.8f &&
 			glm::distance(thisEntity->getPos(), pRoboCollidee->getPos()) < 1.0f) {
 			backingUp = 0.55f;
@@ -346,7 +351,7 @@ void CRoboState::amIStuck() {
 
 /** What to do when we can't get to the destinatin.*/
 void CRoboState::abortDestination() {
-	thisEntity->ai = std::make_shared<CRoboWander>(thisEntity); //!!!!!!temp!
+	thisEntity->addComponent<CRoboWander>(); //!!!!!!temp!
 }
 
 /** Continue turning toward dir, if not facing it. */

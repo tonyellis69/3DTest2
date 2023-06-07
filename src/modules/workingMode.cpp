@@ -197,7 +197,7 @@ void CWorkingMode::makeMap() {
 	//level = new CLevel();
 	//level->init(100, 40);
 	auto level = std::make_unique<CLevel>();
-	level->init(100, 40);
+	level->onSpawn(100, 40);
 
 
 	for (int y = 0; y < 40; y++) {

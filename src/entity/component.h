@@ -9,7 +9,9 @@ class CEntityCmp  {
 public:
 	CEntityCmp(CEntity* parent) : thisEntity(parent) {}
 	virtual void update(float dT) {}
-	virtual void onSpawn() {}
+	virtual void onAdd() {}
+	virtual void onRemove() {}
+	virtual void onSpawn() {} //TODO: call lateInit, it's more accurate 
 	virtual CEntityCmp* onAdd(CEntity* parent) { return nullptr; }
 
 	virtual int getUniqueID() const = 0;
@@ -41,6 +43,6 @@ public:
 		return IDGenerator::getID<T>();
 	}
 
-	virtual T* testFunc() { return (T*)this; };
+	virtual T* getClass() { return (T*)this; };
 };
 

@@ -12,6 +12,8 @@
 //TODO: supply event type rather than use gameEvent, for true decoupling
 //or if we're just calling one function, simply make a callback via lambda
 
+#include "../physEvent.h"
+
 class CBodyPairKey;
 class CBodyPair;
 
@@ -21,7 +23,7 @@ class CHexPhysics {
 public:
 	CHexPhysics();
 	void onEvent(CGameEvent& e);
-	void onEvent(CEntityEvent& e);
+	void onEvent(CPhysicsEvent& e);
 	void add(CEntity* entity);
 	void remove(CEntity* entity);
 	void setMap(CHexArray* hexArray);

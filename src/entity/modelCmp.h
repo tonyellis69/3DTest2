@@ -9,6 +9,8 @@ class CDrawFunc;
 class CModelCmp : public CDerivedC<CModelCmp> {
 public:
 	CModelCmp(CEntity* parent) : CDerivedC(parent) {}
+	void onAdd();
+	void onRemove();
 	virtual void loadModel(CModel& model);
 	virtual void draw(CHexRender& hexRender);
 	virtual void update(float dT);

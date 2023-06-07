@@ -17,8 +17,7 @@ void CAvoidGraphic::update(float dT) {
 
 	std::fill(verts.begin(), verts.end() - 4, vc3({ { 0,0,0 }, { 1 } } ));
 
-	auto  ai = ((CRoboState*)pRobot->ai.get());
-
+	auto  ai = (CRoboState*)pRobot->ai;
 	verts[1].v = ai->tmpCollisionSegPt;
 	verts[2].v = ai->tmpCollisionPt;
 	verts[0].v = 2.0f * verts[1].v - verts[2].v;

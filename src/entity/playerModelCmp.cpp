@@ -61,7 +61,7 @@ void CPlayerModelCmp::initDrawFn() {
 }
 
 void CPlayerModelCmp::update(float dT) {
-	auto transform = thisEntity->transform.get();
+	auto transform = thisEntity->transform;
 	translateAll(transform->worldPos);
 	rotateUpper(transform->upperBodyRotation);
 	rotateLower(transform->rotation);

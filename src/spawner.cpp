@@ -36,28 +36,18 @@
 
 CEntity* CSpawn::player(const std::string& name, glm::vec3& pos) {
 	auto player = std::make_shared<CEntity>();
-
-
-	player->addComponentTest<CTransformCmp>();
-	player->addComponentTest<CPlayerModelCmp>();
-
-	player->addComponentTest<ColliderCmp>();
-	player->collider = std::make_shared<ColliderCmp>(player.get());
-
-	player->modelCmp = std::make_shared<CPlayerModelCmp>(player.get());
-
+	player->addComponent<CTransformCmp>();
+	player->addComponent<CPlayerModelCmp>();
+	player->addComponent<ColliderCmp>();
 	player->modelCmp->loadModel(game.models[name]);
 	player->modelCmp->setPalette(game.pPalettes->at("basic"));
 	player->modelCmp->drawFn = std::make_shared<CMultiDraw>(player.get());
 	player->modelCmp->initDrawFn();
 	player->setPosition(pos);
 
-	player->addComponentTest<CPhys>(1.0f/80.0f);
-	player->phys = std::make_shared <CPhys>(player.get(), 1.0f / 80.0f);
-	player->addComponentTest<CPlayerC>();
-	player->addComponent(std::make_shared<CPlayerC>(player.get()));
-	player->addComponentTest<CPlayerHealthC>();
-	player->addComponent(std::make_shared<CPlayerHealthC>(player.get()));
+	player->addComponent<CPhys>(1.0f/80.0f);
+	player->addComponent<CPlayerC>();
+	player->addComponent<CPlayerHealthC>();
 
 	CEntity* equippedGun = gun("guntype1");
 	equippedGun->tmpId = 42;
@@ -75,34 +65,25 @@ CEntity* CSpawn::player(const std::string& name, glm::vec3& pos) {
 	player->playerC->setShield(equippedShield);
 
 	game.addEntity(player);
-	player->init();
+	player->onSpawn();
 	return player.get();
 }
 
 /** Create the given entity, and notify the registered callback-handler. */
 CEntity* CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	auto robot = std::make_shared<CEntity>();
+	robot->addComponent<CTransformCmp>();
+	robot->addComponent<CBotTreadsModelCmp>();
+	robot->addComponent<ColliderCmp>();
 
-	robot->addComponentTest<CTransformCmp>();
-	robot->addComponentTest<CBotTreadsModelCmp>();
-
-	robot->collider = std::make_shared<ColliderCmp>(robot.get());
-	robot->addComponentTest<ColliderCmp>();
-
-
-	robot->modelCmp = std::make_shared<CBotTreadsModelCmp>(robot.get());
 	robot->modelCmp->loadModel(game.models["robot"]);
 	robot->modelCmp->setPalette(game.pPalettes->at("basic"));
 	robot->modelCmp->drawFn = std::make_shared<CMultiDraw>(robot.get());
 	robot->modelCmp->initDrawFn();
-	robot->ai = std::make_shared<CRoboWander>(robot.get());
-	robot->addComponentTest<CRoboWander>();
 
-	robot->phys = std::make_shared <CPhys>(robot.get(), 1.0f / 80.0f);
-	robot->addComponentTest<CPhys>(1.0f / 80.0f);
-
-	robot->addComponent(std::make_shared<CBotHealthC>(robot.get()));
-	robot->addComponentTest<CBotHealthC>();
+	robot->addComponent<CRoboWander>();
+	robot->addComponent<CPhys>(1.0f / 80.0f);
+	robot->addComponent<CBotHealthC>();
 
 	robot->healthC->hp = 3;
 
@@ -121,14 +102,12 @@ CEntity* CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	// test kludge for random bot distribution
 	static int r = 0;
 	if (r % 3 == 0) {
-		robot->ai = std::make_shared<CRoboWander>(robot.get());
-		robot->addComponentTest<CRoboWander>();
+		robot->addComponent<CRoboWander>();
 		robot->entityType = entMeleeBot;
 	}
 	else
 	{
-		robot->ai = std::make_shared<CRoboWander>(robot.get());
-		robot->addComponentTest<CRoboWander>();
+		robot->addComponent<CRoboWander>();
 		robot->entityType = entShootBot;
 	}
 	r++;
@@ -137,55 +116,53 @@ CEntity* CSpawn::robot(const std::string& name, glm::vec3& pos) {
 	robot->name = "robot";
 
 	game.addEntity(robot);
-	robot->init();
+	robot->onSpawn();
 	return robot.get();
 }
 
 CEntity* CSpawn::missile(const std::string& name, glm::vec3& pos, float angle) {
 	auto missile = std::make_shared<CMissile>();
+	missile->addComponent<CTransformCmp>();
+	missile->setPosition(pos, angle);
 
-	missile->addComponentTest<CTransformCmp>();
-	missile->addComponentTest<CModelCmp>();
-
-	missile->collider = std::make_shared<CMissileColliderCmp>(missile.get());
-	missile->addComponentTest<CMissileColliderCmp>();
-
+	missile->addComponent<CModelCmp>();
+	missile->addComponent<CMissileColliderCmp>();
 	missile->collider->colliderType = missileCollider;
+
 	missile->modelCmp->drawFn = std::make_shared<CEntityDraw>(missile.get());
 	missile->modelCmp->loadModel(game.models["bolt"]);
 	missile->modelCmp->setPalette(game.pPalettes->at("basic"));
 	missile->modelCmp->initDrawFn();
-	missile->addComponent(std::make_shared <CPhys>(missile.get(), 1.0f / 80.0f));
-	missile->setPosition(pos, angle);
+	missile->addComponent<CPhys>(1.0f / 80.0f);
+
+	missile->name = "missile";
 
 	game.addEntity(missile);
-	missile->init();
+	missile->onSpawn();
 	return missile.get();
 }
 
 CEntity* CSpawn::explosion(const std::string& name, glm::vec3& pos, float scale) {
 	auto explode = std::make_shared<CExplosion>(scale);
-
-	explode->addComponentTest<CTransformCmp>();
-	explode->addComponentTest<CModelCmp>();
-
+	explode->addComponent<CTransformCmp>();
+	explode->addComponent<CModelCmp>();
 	explode->modelCmp->drawFn = std::make_shared<CSplodeDraw>(explode.get());
 	explode->modelCmp->setPalette(game.pPalettes->at("explosion"));
 	explode->modelCmp->initDrawFn();
-	//explode->worldPos = pos;
 	explode->transform->setPos(pos);
 
+	explode->name = "explosion";
+
 	game.addEntity(explode);
-	explode->init();
+	explode->onSpawn();
 	return explode.get();
 }
 
 
 CEntity* CSpawn::gun(const std::string& name, glm::vec3& pos ) {
 	auto gun = std::make_shared<CGun>();
-
-	gun->addComponentTest<CTransformCmp>();
-	gun->addComponentTest<CModelCmp>();
+	gun->addComponent<CTransformCmp>();
+	gun->addComponent<CModelCmp>();
 	gun->modelCmp->loadModel(game.models["gun"]);
 	gun->modelCmp->drawFn = std::make_shared<CItemDraw>(gun.get());
 	gun->modelCmp->setPalette(game.pPalettes->at("gun"));
@@ -199,15 +176,14 @@ CEntity* CSpawn::gun(const std::string& name, glm::vec3& pos ) {
 	gun->name = "gun";
 
 	game.addEntity(gun);
-	gun->init();
+	gun->onSpawn();
 	return gun.get();
 }
 
 CEntity* CSpawn::armour(const std::string& name, glm::vec3& pos) {
 	auto armour = std::make_shared<CArmour>();
-
-	armour->addComponentTest<CTransformCmp>();
-	armour->addComponentTest<CModelCmp>();
+	armour->addComponent<CTransformCmp>();
+	armour->addComponent<CModelCmp>();
 	armour->modelCmp->loadModel(game.models["armour"]);
 	armour->modelCmp->drawFn = std::make_shared<CItemDraw>(armour.get());
 	armour->modelCmp->setPalette(game.pPalettes->at("armour"));
@@ -221,53 +197,49 @@ CEntity* CSpawn::armour(const std::string& name, glm::vec3& pos) {
 	armour->name = "armour";
 
 	game.addEntity(armour);
-	armour->init();
+	armour->onSpawn();
 	return armour.get();
 }
 
 CEntity* CSpawn::shield(const std::string& name) {
 	auto shieldEnt = std::make_shared<CEntity>();
-
-	shieldEnt->addComponentTest<CTransformCmp>();
-
-	shieldEnt->addComponentTest<CModelCmp>();
+	shieldEnt->addComponent<CTransformCmp>();
+	shieldEnt->addComponent<CModelCmp>();
 	shieldEnt->modelCmp->loadModel(game.models["solidHex"]);
 	shieldEnt->modelCmp->setPalette(game.pPalettes->at("shield"));
 	shieldEnt->modelCmp->drawFn = std::make_shared<CSolidDraw>(shieldEnt.get());
 	shieldEnt->modelCmp->initDrawFn();
 
-	shieldEnt->item = std::make_shared<CShieldComponent>(shieldEnt.get());
-	shieldEnt->addComponentTest<CShieldComponent>();
+	shieldEnt->addComponent<CShieldComponent>();
 	shieldEnt->name = name;
 
 	game.addEntity(shieldEnt);
-	shieldEnt->init();
+	shieldEnt->onSpawn();
 	return shieldEnt.get();
 }
 
 
 CEntity* CSpawn::drop(const std::string& name, glm::vec3& pos) {
 	auto drop = std::make_shared<CEntity>();
-	drop->collider = std::make_shared<ColliderCmp>(drop.get());
-	drop->addComponentTest<ColliderCmp>();
+	drop->addComponent<ColliderCmp>();
 	drop->collider->sceneryOnly = true;
+	drop->addComponent<CModelCmp>();
 	drop->modelCmp->loadModel(game.models["hex"]);
 	drop->modelCmp->drawFn = std::make_shared<CEntityDraw>(drop.get());
 	drop->modelCmp->setPalette(game.pPalettes->at("basic"));
 	drop->modelCmp->initDrawFn();
 
-	drop->addComponentTest<CTransformCmp>();
+	drop->addComponent<CTransformCmp>();
 	drop->transform->setScale(glm::vec3{ 0.05f });
 	drop->setPosition(pos);
 
-	drop->addComponentTest<CDropAI>();
-	drop->addAIComponent(std::make_shared<CDropAI>(drop.get()));
+	drop->addComponent<CDropAI>();
+	drop->addComponent<CPhys>(1.0f / 80.0f);
 
-	drop->addComponentTest<CPhys>(1.0f / 80.0f);
-	drop->addComponent(std::make_shared<CPhys>(drop.get(), 1.0f / 80.0f));
+	drop->name = "drop";
 
 	game.addEntity(drop);
 
-	drop->init();
+	drop->onSpawn();
 	return drop.get();
 }

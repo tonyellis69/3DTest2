@@ -27,7 +27,7 @@ std::tuple<bool, glm::vec3> CMissileColliderCmp::entCollisionCheck(CEntity* ent2
 }
 
 void CMissileColliderCmp::onSpawn()
-{
+{ 
 	startingPos = thisEntity->getPos();
 	newHex = CHex(-1);
 	leadingPoint = thisEntity->getPos() + (thisEntity->transform->getRotationVec() * distToPoint);
@@ -44,8 +44,8 @@ void CMissileColliderCmp::update(float dT) {
 		
 		auto collision = collisions.begin();
 		CExplosion* splode = (CExplosion*)game.spawn("explosion", collision->collisionPt, 1);
-		if (collision->ent) {
-			splode->setCollidee(collision->ent);
+		if (collision->ent && collision->ent->live) {
+			splode->setCollidee(collision->ent->getSmart());
 			if (collision->ent->healthC)
 				collision->ent->healthC->receiveDamage(*thisEntity->getParent(), 5);
 		}

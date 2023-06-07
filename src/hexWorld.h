@@ -48,10 +48,12 @@ enum TCameraMode {camNone, camFollow, camFree, camFixed};
 class CHexWorld { 
 public:
 	CHexWorld();
-	void init();
+	~CHexWorld() {
+		lis::unsubscribe<CPhysicsEvent>(&physics);
+	}
+	void onSpawn();
 	void onEvent(CGUIevent& e);
 	void onEvent(CGameEvent& e);
-	void onEvent(CPhysicsEvent& e);
 	void addMesh(const std::string& name, const std::string& fileName);
 	void addHexTile(const std::string& name, const std::string& fileName, std::vector<glm::vec4>& colours);
 	void deleteMap();

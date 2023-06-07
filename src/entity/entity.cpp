@@ -29,33 +29,23 @@ CEntity::CEntity() {
 		id++;
 	id = nextId++;
 
-	transform = std::make_shared<CTransformCmp>(this);
-	modelCmp = std::make_shared<CModelCmp>(this);
+	//transform = std::make_shared<CTransformCmp>(this);
+	//modelCmp = std::make_shared<CModelCmp>(this);
+}
+
+CEntity::~CEntity() {
+	//sysLog << "\nEntity " << id << " named " << name << " destructed.";
+	onDestroy();
+
 }
 
 void CEntity::update(float dT) {
 	this->dT = dT;
 	diagnostic = "";
 
-	//update various components here
-	if (ai)
-		ai->update(dT);
-	if (item)
-		item->update(dT);
-	if (transform)
-		transform->update(dT);  //TO DO: may not need
-	if (modelCmp)
-		modelCmp->update(dT);
-	if (collider)
-		collider->update(dT);
-	if (playerC)
-		playerC->update(dT);
-	if (healthC)
-		healthC->update(dT);
-
-	//for (auto& comp : components) {
-	//	comp.second->update(dT);
-	//}
+	for (auto& comp : components) {
+		comp.second->update(dT);
+	}
 }
 
 
@@ -75,44 +65,11 @@ void CEntity::setPosition(glm::vec3& worldPos) {
 }
 
 
-void CEntity::init() {
-	if (ai) {
-		ai->thisEntity = this;
-		ai->onSpawn();
+void CEntity::onSpawn() {
+	for (auto& comp : components) {
+		comp.second->thisEntity = this;
+		comp.second->onSpawn();
 	}
-	if (item) {
-		item->thisEntity = this;
-		item->onSpawn();
-	}
-	if (transform) {
-		transform->thisEntity = this;
-		transform->onSpawn();  //TO DO: may not need
-	}
-	if (modelCmp) {
-		modelCmp->thisEntity = this;
-		modelCmp->onSpawn();
-	}
-	if (collider) {
-		collider->thisEntity = this;
-		collider->onSpawn();
-	}
-	if (phys) {
-		phys->thisEntity = this;
-		phys->onSpawn();
-	}
-	if (playerC) {
-		playerC->thisEntity = this;
-		playerC->onSpawn();
-	}
-	if (healthC) {
-		healthC->thisEntity = this;
-		healthC->onSpawn();
-	}
-
-	//for (auto& comp : components) {
-	//	comp.second->thisEntity = this;
-	//	comp.second->onSpawn();
-	//}
 }
 
 
@@ -122,56 +79,49 @@ glm::vec3 CEntity::getPos()
 }
 
 void CEntity::destroyMe() {
+
 	live = false;
 	deleteMe = true;
 	game.entitiesToKill = true;
 }
 
 void CEntity::setParent(CEntity* parent) {
-	parentEntity = std::make_shared<CEntity>(*parent);
+	//parentEntity = std::make_shared<CEntity>(*parent);
+	parentEntity = parent;
 }
 
 CEntity* CEntity::getParent() {
-	return parentEntity.get();
+	//return parentEntity.get();
+	return parentEntity;
+}
+
+std::shared_ptr<CEntity> CEntity::getSmart() {
+	return game.getEntitySmart(id);
+}
+
+void CEntity::removeComponent(CEntityCmp* component) {
+	int id = component->getUniqueID();
+	component->onRemove();
+	components.erase(id);
+}
+
+void CEntity::onDestroy() {
+	for (auto & component : components)
+		component.second->onRemove();
+	//components.clear();
 }
 
 
 
-void CEntity::addComponent(std::shared_ptr<CPhys> phys) {
-	this->phys = phys;
-
-	//CPhysicsEvent e;
-	//e.entity = this;
-	//e.action = physAdd;
-	//lis::event<CPhysicsEvent>(e);
-}
-
-void CEntity::addComponent(std::shared_ptr<CPlayerC> playerC) {
-	this->playerC = playerC;
-}
-
-
-void CEntity::addAIComponent(std::shared_ptr<CAiCmp> ai) {
-	this->ai = ai;
-}
-
-void CEntity::addComponent(std::shared_ptr<CBotHealthC> healthC) {
-	this->healthC = healthC;
-}
-
-void CEntity::addComponent(std::shared_ptr<CPlayerHealthC> healthC) {
-	this->healthC = healthC;
-}
-
-void CEntity::removePhysComponent() {
-	phys = nullptr;
-
-	CPhysicsEvent e;
-	e.entity = this;
-	e.action = physRemove;
-	lis::event<CPhysicsEvent>(e);
-}
-
+//void CEntity::removePhysComponent() {
+//	phys = nullptr;
+//
+//	CPhysicsEvent e;
+//	e.entity = this;
+//	e.action = physRemove;
+//	lis::event<CPhysicsEvent>(e);
+//}
+//
 
 
 

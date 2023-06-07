@@ -7,6 +7,8 @@
 class CHealthC : public CDerivedC<CHealthC> {
 public:
 	CHealthC(CEntity* parent) : CDerivedC(parent) {}
+	void onAdd();
+	void onRemove();
 	virtual void receiveDamage(CEntity& attacker, int damage) {}
 
 

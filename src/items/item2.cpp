@@ -2,6 +2,15 @@
 
 #include "../gameState.h"
 
+void CItemCmp::onAdd() {
+	thisEntity->item = this;
+}
+
+void CItemCmp::onRemove() {
+	thisEntity->item = nullptr;
+}
+
+
 void CItemCmp::setOwner(CEntity* owner) {
 	this->itemOwner = owner;
 	ownerId = owner->id;

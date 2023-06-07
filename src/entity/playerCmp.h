@@ -18,6 +18,8 @@ class CItem;
 class CPlayerC : public CDerivedC<CPlayerC> {
 public:
 	CPlayerC(CEntity* parent);
+	void onAdd();
+	void onRemove();
 	void onSpawn();
 	void onFireKey(bool pressed);
 

@@ -7,6 +7,8 @@
 class CItemCmp : public CDerivedC<CItemCmp> {
 public:
 	CItemCmp(CEntity* parent) : CDerivedC(parent) {}
+	void onAdd();
+	void onRemove();
 	void setOwner(CEntity* owner);
 	void onSpawn();
 

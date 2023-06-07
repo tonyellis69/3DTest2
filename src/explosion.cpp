@@ -34,9 +34,9 @@ void CExplosion::update(float dT) {
 
 
 /** If we hit a moving target, this allows us to move with it. */
-void CExplosion::setCollidee(CEntity* collidee) {
-	//this->collidee = collidee;
-	this->collidee = std::make_shared<CEntity>(*collidee);
+void CExplosion::setCollidee(std::shared_ptr<CEntity> collidee) {
+	this->collidee = collidee;
+	//this->collidee = std::make_shared<CEntity>(*collidee);
 	relativePos = getPos() - collidee->getPos();
 }
 

@@ -16,7 +16,7 @@
 
 
 /** Load shaders, etc. */
-void CHexRender::init() {
+void CHexRender::onSpawn() {
 	recompileShader();
 
 	std::vector<glm::vec3> dummyVerts(numExplosionParticles, glm::vec3(0));

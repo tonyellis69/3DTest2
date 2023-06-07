@@ -20,7 +20,7 @@
 struct THexTile;
 class CHexRender {
 public:
-	void init();
+	void onSpawn();
 	void recompileShader();
 	void onEvent(CGameEvent& e);
 	void loadMap(CHexArray* hexArray);

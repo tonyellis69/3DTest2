@@ -12,6 +12,14 @@
 
 //const float rad360 = float(M_PI) * 2.0f;
 
+void CTransformCmp::onAdd() {
+	thisEntity->transform = this;
+}
+
+void CTransformCmp::onRemove() {
+	thisEntity->transform = nullptr;
+}
+
 void CTransformCmp::setRotation(float angle) {
 	if (upperBodyLocked) {
 		float diff = upperBodyRotation - rotation;

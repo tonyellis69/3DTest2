@@ -6,7 +6,7 @@
 
 std::unique_ptr<CLevel> CRandLevel::makeLevel() {
     level = std::make_unique<CLevel>();
-    level->init(size.x, size.y);
+    level->onSpawn(size.x, size.y);
     if (!rootQuad)
         rootQuad = std::make_shared<CHexQuad>(glm::i32vec2{ 0,0 }, size);
 

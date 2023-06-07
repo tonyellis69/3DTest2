@@ -54,7 +54,7 @@ void CBotTreadsModelCmp::initDrawFn() {
 }
 
 void CBotTreadsModelCmp::update(float dT) {
-	auto transform = thisEntity->transform.get();
+	auto transform = thisEntity->transform;
 	translateAll(thisEntity->getPos());
 	rotateUpper(transform->upperBodyRotation);
 	rotateLower(transform->rotation);

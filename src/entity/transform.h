@@ -10,6 +10,8 @@
 class CTransformCmp : public CDerivedC<CTransformCmp> {
 public:
 	CTransformCmp(CEntity* parent) : CDerivedC(parent) {}
+	void onAdd();
+	void onRemove();
 	void setRotation(float angle);
 	void setRotation(glm::vec3& vec);
 	void rotate(float angle);

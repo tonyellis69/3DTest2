@@ -7,13 +7,14 @@ class CExplosion : public CEntity {
 public:
 	CExplosion(float size);
 	void update(float dT);
-	void setCollidee(CEntity* collidee);
+	void setCollidee(std::shared_ptr<CEntity> collidee);
 
 
 	float lifeTime = 0;
 	float timeOut = 3.0f;
 	float size;
 	int particleCount;
+	//CEntity* collidee;
 	std::shared_ptr<CEntity> collidee;
 	glm::vec3 relativePos; ///<From collidee.
 

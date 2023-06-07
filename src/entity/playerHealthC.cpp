@@ -14,7 +14,7 @@
 
 void CPlayerHealthC::receiveDamage(CEntity& attacker, int damage) {
 	if (thisEntity->playerC->shield) {
-		CShieldComponent* playerShield = (CShieldComponent*)thisEntity->playerC->shield->item.get();
+		CShieldComponent* playerShield = (CShieldComponent*)thisEntity->playerC->shield->item;
 		damage = playerShield->absorbDamage(damage);
 		if (damage <= 0)
 			return;

@@ -5,7 +5,13 @@
 #include "..\hexRender\drawFunc.h"
 #include "..\hexRender\multiDraw.h"
 
+void CModelCmp::onAdd() {
+	thisEntity->modelCmp = this;
+}
 
+void CModelCmp::onRemove() {
+	thisEntity->modelCmp = nullptr;
+}
 
 void CModelCmp::loadModel(CModel& pModel) {
 	if (pModel.meshes.empty()) {
@@ -22,7 +28,7 @@ void CModelCmp::draw(CHexRender& hexRender) {
 }
 
 void CModelCmp::update(float dT) {
-	auto transform = thisEntity->transform.get();
+	auto transform = thisEntity->transform;
 	translateAll(thisEntity->getPos());
 	rotate(transform->rotation);
 	scale(transform->scale);
@@ -90,5 +96,5 @@ void CModelCmp::retranslateLower(glm::vec3& translate) {
 
 void CModelCmp::onSpawn() {
 	//Fudge for when entities get restored. Lose this when drawFuncs become true components
-	drawFn->pOwner = thisEntity;
+	//drawFn->pOwner = thisEntity;
 }

@@ -21,6 +21,15 @@ CPlayerC::CPlayerC(CEntity* parent) : CDerivedC(parent) {
 
 }
 
+void CPlayerC::onAdd() {
+	thisEntity->playerC = this;
+}
+
+void CPlayerC::onRemove() {
+	thisEntity->playerC = nullptr;
+}
+
+
 void CPlayerC::onSpawn()
 {
 	shield = game.getEntity(shieldId);
@@ -178,7 +187,7 @@ void CPlayerC::setArmour(CEntity* armour) {
 }
 
 void CPlayerC::setShield(CEntity* shield) {
-	CItemCmp* item = (CItemCmp*)shield->item.get();
+	CItemCmp* item = (CItemCmp*)shield->item;
 	item->setOwner(thisEntity);
 	this->shield = shield;
 	shieldId = shield->id;

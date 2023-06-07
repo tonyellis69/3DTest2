@@ -22,7 +22,7 @@ CDestinationGraphic::CDestinationGraphic() {
 void CDestinationGraphic::update(float dT) {
 	CEntity* pRobot = entity.get();
 
-	dest = &((CRoboState*) pRobot->ai.get())->getDestination();
+	dest = &((CRoboState*) pRobot->ai)->getDestination();
 
 
 

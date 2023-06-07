@@ -7,7 +7,7 @@
 
 #include "win/win.h"
 
-void CProcGenMode::init() {
+void CProcGenMode::onSpawn() {
 	viewMode = keepView;
 	makeLevel();
 

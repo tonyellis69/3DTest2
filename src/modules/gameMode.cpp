@@ -5,7 +5,7 @@
 #include "win/win.h"
 
 
-void CGameMode::init() {
+void CGameMode::onSpawn() {
 	if (!game.level) {
 		loadLevel("manyMapTest.map");
 		game.restoreEntities();
@@ -104,7 +104,7 @@ void CGameMode::loadLevel(const std::string& fileName) {
 	int numHexes = header.height * header.width;
 
 	auto newLevel = std::make_unique<CLevel>();
-	newLevel->init(header.width, header.height);
+	newLevel->onSpawn(header.width, header.height);
 
 	//FIXME: ugh
 	TFlatArray flatArray(numHexes);

@@ -3,6 +3,15 @@
 #include "entity.h"
 
 
+void ColliderCmp::onAdd() {
+	thisEntity->collider = this;
+}
+
+void ColliderCmp::onRemove() {
+	thisEntity->collider = nullptr;
+}
+
+
 std::tuple<bool, glm::vec3> ColliderCmp::segCollisionCheck(glm::vec3& segA, glm::vec3& segB) {
    // return thisEntity->collisionCheck(segA, segB);
 

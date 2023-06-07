@@ -51,17 +51,16 @@
 CHexWorld::CHexWorld() {
 	game.paused = true;
 
-	hexRender.init();
+	hexRender.onSpawn();
 
 	imRendr::setMatrix(&hexRender.camera.clipMatrix);
 	
 	lis::subscribe<CGUIevent>(this);
 	lis::subscribe<CGameEvent>(this);
-	lis::subscribe<CPhysicsEvent>(this);
 
 	lis::subscribe<CGameEvent>(&hexRender);
 	lis::subscribe<CGameEvent>(&physics);
-	lis::subscribe<CEntityEvent>(&physics);
+	lis::subscribe<CPhysicsEvent>(&physics);
 
 	hexPosLbl = gui::addLabel("xxx", 10, 10);
 	hexPosLbl->setTextColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -76,7 +75,7 @@ CHexWorld::CHexWorld() {
 
 }
 
-void CHexWorld::init() {
+void CHexWorld::onSpawn() {
 	reticule = game.models["reticule"];
 	reticule.palette[0] = { 1,1,1,1 };
 
@@ -85,7 +84,7 @@ void CHexWorld::init() {
 	//procGenMode = std::make_unique<CProcGenMode>(this);
 	//mode = procGenMode.get();
 
-	mode->init();
+	mode->onSpawn();
 
 
 	setViewMode(mode->viewMode);
@@ -208,20 +207,10 @@ void CHexWorld::onEvent(CGameEvent& e) {
 		onPlayerDeath();
 	}
 	else if (e.type == gameLevelChange) {
-		//physics.setMap(game.level->getHexArray());
-		//hexRender.loadMap(game.level->getHexArray());
-		//prepMapEntities();
 		setViewMode(mode->viewMode);
 	}
 }
 
-//FIXME phase out
-void CHexWorld::onEvent(CPhysicsEvent& e) {
-	if (e.action == physAdd)
-		;//	physics.add(e.entity);
-	else if (e.action == physRemove)
-		physics.remove(e.entity);
-}
 
 
 /**	Load a multipart mesh for storage under the given name. */
@@ -295,7 +284,6 @@ void CHexWorld::draw() {
 
 	for (auto& entity : game.entities) {
 		if (entity->live && entity->modelCmp->drawFn->visible) 
-			//entity->drawFn.get()->draw(hexRender);
 			entity->modelCmp->draw(hexRender);
 	}
 	if (directionGraphicsOn) {
@@ -331,7 +319,7 @@ void CHexWorld::draw() {
 	}
 
 	if (game.player) {
-		int sh = ((CShieldComponent*)game.player->playerC->shield->item.get())->hp;
+		int sh = ((CShieldComponent*)game.player->playerC->shield->item)->hp;
 
 		imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->healthC->hp)
 			+ " Shield: " + std::to_string(sh)
@@ -378,15 +366,17 @@ void CHexWorld::update(float dt) {
 
 	calcMouseWorldPos();
 
+	game.update(dT);
+
 	physics.update(dT);
 
 
-	if (game.entitiesToKill) {
-		removeDeadEntities();
-	}
+	//if (game.entitiesToKill) {
+	//	removeDeadEntities();
+	//}
 
 
-	game.update(dT);
+
 
 	if (game.level->mapUpdated) {
 		//hexRendr2.setMap(level->getHexArray()); //temp to refresh map
@@ -396,9 +386,9 @@ void CHexWorld::update(float dt) {
 
 	gWin::update(dT);
 
-	for (auto& graphic : hexRender.graphics) {
-		graphic->update(dT);
-	}
+	//for (auto& graphic : hexRender.graphics) {
+	//	graphic->update(dT);
+	//}
 
 
 
@@ -671,7 +661,7 @@ void CHexWorld::onPlayerDeath() {
 	for (auto& entity : game.entities) {
 		if (entity->isRobot) {
 			//((CRobot*)entity.get())->setState(robotWander3);
-			entity->ai = std::make_shared<CRoboWander>(entity.get());
+			entity->addComponent<CRoboWander>();
 		}
 	}
 }
@@ -728,7 +718,7 @@ void CHexWorld::proc2Game() {
 	}
 	
 	
-	mode->init();
+	mode->onSpawn();
 	setViewMode(mode->viewMode);
 
 }

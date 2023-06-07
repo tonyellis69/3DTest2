@@ -3,6 +3,8 @@
 //#include "robot.h"
 
 #include "utils/files.h"
+#include "utils/log.h"
+
 #include "spawner.h"
 
 #include "gameEvent.h"
@@ -55,6 +57,15 @@ CEntity* CGameState::getEntity(int idNo) {
 	return nullptr;
 }
 
+std::shared_ptr<CEntity> CGameState::getEntitySmart(int idNo) {
+	for (auto& entity : entities) {
+		if (entity->id == idNo)
+			return entity;
+	}
+
+	return std::shared_ptr<CEntity>();
+}
+
 /** Basic add-to-world without specifying a location. For items in
 	posession of another entity, not yet in play, etc.*/
 void CGameState::addEntity(TEntity entity) {
@@ -70,6 +81,7 @@ void CGameState::deleteEntity(CEntity& entity) {
 
 
 void CGameState::killEntity(CEntity& entity) {
+//	liveLog << "\nEntity " << entity.id << " to kill";
 	entity.live = false; 
 	entity.deleteMe = true;
 	game.entitiesToKill = true;
@@ -78,16 +90,26 @@ void CGameState::killEntity(CEntity& entity) {
 /** Remove any enities marked for deletion from the entity lists. */
 void CGameState::tidyEntityLists() {
 	if (entitiesToDelete) {
-
+		/*sysLog << "\nNew destruction loop, entity count " << entities.size();
+		for (auto& ent : entities)
+			if (ent->id == 11)
+				sysLog << "\nEnt 11 found!";*/
 
 		for (auto& it = entities.begin(); it != entities.end(); ) {
-			if (it->get()->deleteMe)
+			if (it->get()->deleteMe) {
+				//sysLog << "\n...killing ent " << it->get()->id;
 				it = entities.erase(it);
+			}
 			else
-				it++;
+				++it;
 		}
 
 		entitiesToDelete = false;
+		//sysLog << "\nLoop ends, entity count " << entities.size();
+		//for (auto& ent : entities)
+		//	if (ent->id == 11)
+		//		sysLog << "\nEnt 11 still found!";
+
 	}
 }
 
@@ -136,7 +158,7 @@ void CGameState::loadLevel(const std::string& fileName) {
 	int numHexes = header.height * header.width;
 
 	auto newLevel = std::make_unique<CLevel>();
-	newLevel->init(header.width, header.height);
+	newLevel->onSpawn(header.width, header.height);
 
 	//FIXME: ugh
 	TFlatArray flatArray(numHexes);
@@ -199,11 +221,11 @@ void CGameState::restoreEntities() {
 	}
 
 	for (auto& ent : entities) {
-		ent->init();
+		ent->onSpawn();
 	}
 
 	updatePlayerPtr();
-	game.player->init(); //FIXME: fudge!!!!
+	game.player->onSpawn(); //FIXME: fudge!!!!
 
 	CGameEvent e;
 	e.type = gameLevelChange;

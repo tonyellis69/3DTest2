@@ -21,8 +21,6 @@
 #include "botTreadsModelCmp.h"
 #include "../ai/dropAI.h"
 #include "../items/shield.h"
-//#include "../items/armour.h"
-//#include "../items/gun.h"
 #include "../items/item2.h"
 #include "../roboState.h"
 #include <typeinfo>
@@ -43,97 +41,36 @@ class CDrawFunc;
 class CEntity  {
 public:
 	CEntity();
-	virtual ~CEntity() {}
+	virtual ~CEntity();
 	virtual void update(float dT);
 	void setPosition(glm::vec3& worldPos);
 	glm::vec3 getPos();
-	//virtual void receiveDamage(CEntity& attacker, int damage) {};
-	virtual void init();
+	virtual void onSpawn();
 	void destroyMe();
 	void setParent(CEntity* parent);
 	CEntity* getParent();
+	std::shared_ptr<CEntity> getSmart();
+
 
 	template <typename T, typename... Args>
-	T* addComponentTest(Args... args) {
+	T* addComponent(Args... args) {
 		auto comp = std::make_shared<T>(this,(args)...);
-
-		auto classPtr = comp->testFunc();
-
-		addComponentTestSpec(classPtr);
-
+		auto classPtr = comp->getClass();
 
 		int id = comp->getUniqueID();
-
 		components[id] = comp;
+
+		comp->onAdd();
 
 		return comp.get();
 	}
 
-	void addComponentTestSpec(CTransformCmp* comp) {
-		int t = 0;
-	}
-
-	void addComponentTestSpec(CModelCmp* comp) {
-		int model = 0;
-	}
-
-	void addComponentTestSpec(CPhys* comp) {
-		int p = 0;
-	}
-
-	void addComponentTestSpec(ColliderCmp* comp) {
-		int collider = 0;
-	}
-
-	void addComponentTestSpec(CItemCmp* comp) {
-		int item = 0;
-	}
-
-	void addComponentTestSpec(CPlayerC* comp) {
-		int pc = 0;
-	}
-
-	void addComponentTestSpec(CAiCmp* comp) {
-		int ai = 0;
-	}
-
-	void addComponentTestSpec(CHealthC* comp) {
-		int h = 0;
-	}
-
-	template <typename T>
-	void addComponentTestSpec(T t) {
-		int a = 0;
-	}
+	void removeComponent(CEntityCmp* component);
 
 
+	//void removePhysComponent();
 
-
-
-	template <typename T>
-	void addComponentTest2(std::shared_ptr<T> component) {
-		auto tmp = typeid(component).name();
-
-	}
-
-	template <typename T>
-	void addComponent(std::shared_ptr<T> t) {
-		//TODO: handle default components here
-
-	}
-	void addComponent(std::shared_ptr<CPhys> phys);
-	void addComponent(std::shared_ptr<CPlayerC> playerC);
-	void addComponent(std::shared_ptr<CHealthC> healthC);
-	void addComponent(std::shared_ptr<CPlayerHealthC> playerHealthC);
-	void addComponent(std::shared_ptr<CBotHealthC> botHealthC);
-	void addAIComponent(std::shared_ptr<CAiCmp> ai);
-
-	template <typename T>
-	T* removeComponent() {
-		//TODO: handle default components here
-		return nullptr;
-	}
-	void removePhysComponent();
+	void onDestroy();
 
 
 	float dT;
@@ -164,17 +101,15 @@ public:
 
 	std::string diagnostic;
 
-	//bool toRemove = false;
 
-	std::shared_ptr<CTransformCmp> transform;
-	std::shared_ptr<CEntityCmp> item;
-	std::shared_ptr<ColliderCmp> collider;
-	//ColliderCmp* collider = nullptr;
-	std::shared_ptr<CModelCmp> modelCmp;
-	std::shared_ptr<CAiCmp> ai;
-	std::shared_ptr<CPhys> phys;
-	std::shared_ptr<CPlayerC> playerC;
-	std::shared_ptr<CHealthC> healthC;
+	CTransformCmp* transform = nullptr;
+	CEntityCmp* item = nullptr;
+	ColliderCmp* collider = nullptr;
+	CModelCmp* modelCmp = nullptr;
+	CAiCmp* ai = nullptr;
+	CPhys* phys = nullptr;
+	CPlayerC* playerC = nullptr;
+	CHealthC* healthC = nullptr;
 
 	std::unordered_map<int, std::shared_ptr<CEntityCmp> > components;
 
@@ -182,7 +117,8 @@ public:
 private:
 	static unsigned int nextId;
 
-	std::shared_ptr<CEntity> parentEntity;
+	//std::shared_ptr<CEntity> parentEntity;
+	CEntity* parentEntity;
 };
 
 using TEntity = std::shared_ptr<CEntity>;

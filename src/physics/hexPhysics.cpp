@@ -5,9 +5,10 @@
 #include "../entity/sceneryCollider.h"
 
 CHexPhysics::CHexPhysics() {
-	tmpMapObj.phys = std::make_shared <CPhys>(&tmpMapObj, 0.0f);
-	tmpMapObj.collider = std::make_shared<CSceneryColliderCmp>(&tmpMapObj);
-	//tmpMapObj.addComponentTest<CSceneryColliderCmp>();
+	//tmpMapObj.phys = std::make_shared <CPhys>(&tmpMapObj, 0.0f);
+	tmpMapObj.addComponent<CPhys>( 0.0f);
+	//tmpMapObj.collider = std::make_shared<CSceneryColliderCmp>(&tmpMapObj);
+	tmpMapObj.addComponent<CSceneryColliderCmp>();
 
 	//TODO: this is really hacky! Probably the map should be an entity or something
 }
@@ -18,9 +19,11 @@ void CHexPhysics::onEvent(CGameEvent& e) {
 	}
 }
 
-void CHexPhysics::onEvent(CEntityEvent& e) {
-	if (e.eventType == entAdd && e.entity->phys)
+void CHexPhysics::onEvent(CPhysicsEvent& e) {
+	if (e.action == physAdd)
 		add(e.entity);
+	else if (e.action == physRemove)
+		remove(e.entity);
 }
 
 void CHexPhysics::add(CEntity* entity) {
@@ -148,7 +151,7 @@ void CHexPhysics::broadphase() {
 /** Find velocities of all entities. */
 void CHexPhysics::integrateForces() {
 	for (auto& entity : entities) {
-		CPhys* ent = entity->phys.get();
+		CPhys* ent = entity->phys;
 		glm::vec3 a = (ent->invMass * ent->moveImpulse) * dT;
 		ent->velocity += a;
 		ent->moveImpulse = { 0, 0, 0};
@@ -168,8 +171,8 @@ void CHexPhysics::integrateForces() {
 void CHexPhysics::resolveContacts() {
 	for (int i = 0; i < 10; i++) {
 		for (auto& [key,bodyPair] : bodyPairs) {
-			CPhys* physA = bodyPair.A->phys.get();
-			CPhys* physB = bodyPair.B->phys.get();
+			CPhys* physA = bodyPair.A->phys;
+			CPhys* physB = bodyPair.B->phys;
 
 			glm::vec3 relativeVelocity = physB->velocity - physA->velocity;
 			float velocityAlongNormal = glm::dot(relativeVelocity, bodyPair.normal);

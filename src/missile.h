@@ -23,7 +23,7 @@ public:
 private:
 	void approachDestHex();
 	//void buildWorldMatrix();
-	bool collisionCheck(glm::vec3& moveVec);
+	//bool collisionCheck(glm::vec3& moveVec);
 
 	void spawnExplosion();
 
