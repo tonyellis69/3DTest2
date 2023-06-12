@@ -10,7 +10,7 @@
 #include "gameEvent.h"
 #include "listen/listen.h"
 
-CGameState game;
+CGameState gameWorld;
 
 
 void CGameState::setLevel(CLevel* level) {
@@ -84,7 +84,7 @@ void CGameState::killEntity(CEntity& entity) {
 //	liveLog << "\nEntity " << entity.id << " to kill";
 	entity.live = false; 
 	entity.deleteMe = true;
-	game.entitiesToKill = true;
+	gameWorld.entitiesToKill = true;
 }
 
 /** Remove any enities marked for deletion from the entity lists. */
@@ -180,10 +180,10 @@ void CGameState::loadLevel(const std::string& fileName) {
 		glm::vec3 pos;
 		file::readObject(pos, in);
 		switch (entType) {
-		case entPlayer: game.spawn("player", pos); break;
-		case entMeleeBot: game.spawn("melee bot", pos); break;
-		case entShootBot: game.spawn("shooter bot", pos); break;
-		case entGun: game.spawn("gun", pos); break;
+		case entPlayer: gameWorld.spawn("player", pos); break;
+		case entMeleeBot: gameWorld.spawn("melee bot", pos); break;
+		case entShootBot: gameWorld.spawn("shooter bot", pos); break;
+		case entGun: gameWorld.spawn("gun", pos); break;
 		}
 	}
 
@@ -225,7 +225,7 @@ void CGameState::restoreEntities() {
 	}
 
 	updatePlayerPtr();
-	game.player->onSpawn(); //FIXME: fudge!!!!
+	gameWorld.player->onSpawn(); //FIXME: fudge!!!!
 
 	CGameEvent e;
 	e.type = gameLevelChange;

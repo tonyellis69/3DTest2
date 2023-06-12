@@ -181,7 +181,7 @@ void CMapEdit::save() {
 	std::string filename = file::getDataPath() + "manyMapTest.map";
 	std::ofstream saveFile(filename);
 	updateMap();
-	game.save(saveFile);
+	gameWorld.save(saveFile);
 	saveFile.close();
 }
 
@@ -191,7 +191,7 @@ void CMapEdit::load() {
 	//assert(loadFile.is_open());
 	//game.load(loadFile);
 	//loadFile.close();
-	game.loadLevel("manyMapTest.map");
+	gameWorld.loadLevel("manyMapTest.map");
 	setMap(pMap);
 	pMap->mapUpdated = true;
 }
@@ -214,12 +214,12 @@ void CMapEdit::shapeWheel(float delta) {
 }
 
 void CMapEdit::addEntity(glm::vec3& mousePos) {
-	for (auto it = game.entities.begin(); it != game.entities.end();) {
+	for (auto it = gameWorld.entities.begin(); it != gameWorld.entities.end();) {
 		TEntity entity = *it;
 		if (glm::distance(entity->getPos(), mousePos) < 0.5f) {
-			game.deleteEntity(*it->get());
-			if (game.player == (*it).get())
-				game.player = nullptr;
+			gameWorld.deleteEntity(*it->get());
+			if (gameWorld.player == (*it).get())
+				gameWorld.player = nullptr;
 			return;
 		}
 		it++;
@@ -227,16 +227,16 @@ void CMapEdit::addEntity(glm::vec3& mousePos) {
 
 	switch (currentEntity) {
 	case editPlayer: {
-		if (game.player == nullptr)
-			game.spawn("player", mousePos); 
+		if (gameWorld.player == nullptr)
+			gameWorld.spawn("player", mousePos); 
 		else {
-			game.player->setPosition(mousePos);
+			gameWorld.player->setPosition(mousePos);
 		}
 		break;
 	}
-	case editMeleeBot: game.spawn("melee bot", mousePos); break;
-	case editShooterBot: game.spawn("shooter bot", mousePos); break;
-	case editGun: game.spawn("gun", mousePos); break;
+	case editMeleeBot: gameWorld.spawn("melee bot", mousePos); break;
+	case editShooterBot: gameWorld.spawn("shooter bot", mousePos); break;
+	case editGun: gameWorld.spawn("gun", mousePos); break;
 
 	}
 
@@ -322,7 +322,7 @@ void CMapEdit::onMouseMove(glm::vec3& mouseWPos) {
 	
 	//on an entity?
 	entIdStr = "";
-	for (auto& it = game.entities.begin(); it != game.entities.end(); it++) {
+	for (auto& it = gameWorld.entities.begin(); it != gameWorld.entities.end(); it++) {
 		TEntity entity = *it;
 		if (glm::distance(entity->getPos(), mouseWPos) < 0.5f) {
 			entIdStr = std::to_string(entity->id);

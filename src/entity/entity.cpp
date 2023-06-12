@@ -82,7 +82,7 @@ void CEntity::destroyMe() {
 
 	live = false;
 	deleteMe = true;
-	game.entitiesToKill = true;
+	gameWorld.entitiesToKill = true;
 }
 
 void CEntity::setParent(CEntity* parent) {
@@ -96,7 +96,7 @@ CEntity* CEntity::getParent() {
 }
 
 std::shared_ptr<CEntity> CEntity::getSmart() {
-	return game.getEntitySmart(id);
+	return gameWorld.getEntitySmart(id);
 }
 
 void CEntity::removeComponent(CEntityCmp* component) {

@@ -150,7 +150,7 @@
     <ClCompile Include="src\hexRender\multiDraw.cpp" />
     <ClCompile Include="src\hexRender\solidDraw.cpp" />
     <ClCompile Include="src\hexRender\splodeDraw.cpp" />
-    <ClCompile Include="src\hexWorld.cpp" />
+    <ClCompile Include="src\hexEngine.cpp" />
     <ClCompile Include="src\items\armour.cpp" />
     <ClCompile Include="src\items\gun.cpp" />
     <ClCompile Include="src\items\item.cpp" />
@@ -216,7 +216,7 @@
     <ClInclude Include="src\hexRender\multiDraw.h" />
     <ClInclude Include="src\hexRender\solidDraw.h" />
     <ClInclude Include="src\hexRender\splodeDraw.h" />
-    <ClInclude Include="src\hexWorld.h" />
+    <ClInclude Include="src\hexEngine.h" />
     <ClInclude Include="src\items\armour.h" />
     <ClInclude Include="src\items\gun.h" />
     <ClInclude Include="src\items\item.h" />

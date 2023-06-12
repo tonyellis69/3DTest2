@@ -43,7 +43,7 @@ void CMissileColliderCmp::update(float dT) {
 			[](TMissileCollision& A, TMissileCollision& B) { return A.dist < B.dist; } );
 		
 		auto collision = collisions.begin();
-		CExplosion* splode = (CExplosion*)game.spawn("explosion", collision->collisionPt, 1);
+		CExplosion* splode = (CExplosion*)gameWorld.spawn("explosion", collision->collisionPt, 1);
 		if (collision->ent && collision->ent->live) {
 			splode->setCollidee(collision->ent->getSmart());
 			if (collision->ent->healthC)
@@ -62,7 +62,7 @@ void CMissileColliderCmp::update(float dT) {
 		//now check for collisions along this path. 
 		auto [impact, collisionPt] = sceneryCollisionCheck(oldLeadingPoint, leadingPoint);
 		if (impact) {
-			CExplosion* splode = (CExplosion*)game.spawn("explosion", collisionPt, 1);
+			CExplosion* splode = (CExplosion*)gameWorld.spawn("explosion", collisionPt, 1);
 			thisEntity->destroyMe();
 			return;
 		}
@@ -75,7 +75,7 @@ std::tuple<bool, glm::vec3> CMissileColliderCmp::sceneryCollisionCheck(glm::vec3
 	TIntersections intersectedHexes = getIntersectedHexes(segA, segB);
 	
 	for (auto& hex : intersectedHexes) {
-		if (game.level->getHexArray()->getHexCube(hex.first).content == solidHex) 
+		if (gameWorld.level->getHexArray()->getHexCube(hex.first).content == solidHex) 
 			return { true, {hex.second} };
 	}
 	return { false, {0,0,0} };

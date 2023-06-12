@@ -6,12 +6,12 @@
 
 enum TViewMode { gameView, devView, keepView };
 
-class CHexWorld;
+class CHexEngine;
 /** Base class for the different hexWorld plug-in modules. */
 
 class CBaseModule {
 public:
-	CBaseModule(CHexWorld* engine) {
+	CBaseModule(CHexEngine* engine) {
 		pHexWorld = engine;
 	}
 	virtual void onSpawn() {}
@@ -29,7 +29,7 @@ public:
 
 	TViewMode viewMode;///<Whether to use followcam, screen controls, etc, with this module
 
-	CHexWorld* pHexWorld;
+	CHexEngine* pHexWorld;
 	float dT;
 
 	//std::vector<CEntity> entityState; ///<Latest preserved entity states for this module

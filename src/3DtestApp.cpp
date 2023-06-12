@@ -94,16 +94,16 @@ void C3DtestApp::keyCheck() {
 		if (keyNow(GLFW_KEY_LEFT_CONTROL)) {
 			if (keyNow('W')) {
 
-				hexWorld.moveCamera(glm::vec3{ 0, 1, 0 });
+				hexEngine.moveCamera(glm::vec3{ 0, 1, 0 });
 			}
 			else if (keyNow('S')) {
-				hexWorld.moveCamera(glm::vec3{ 0, -1, 0 });
+				hexEngine.moveCamera(glm::vec3{ 0, -1, 0 });
 			}
 			else if (keyNow('A')) {
-				hexWorld.moveCamera(glm::vec3{ -1,0,0 });
+				hexEngine.moveCamera(glm::vec3{ -1,0,0 });
 			}
 			else if (keyNow('D')) {
-				hexWorld.moveCamera(glm::vec3{ 1,0,0 });
+				hexEngine.moveCamera(glm::vec3{ 1,0,0 });
 			}
 		}
 		else {
@@ -157,7 +157,7 @@ void C3DtestApp::keyCheck() {
 void C3DtestApp::onKeyDown(int key, long mod) {
 	if (appMode == hexMode) {
 		if (key == GLFW_KEY_F1)
-			hexWorld.toggleEditMode();
+			hexEngine.toggleEditMode();
 
 		if (key == 'W')
 			moveKeyDown |= upKey;
@@ -171,21 +171,21 @@ void C3DtestApp::onKeyDown(int key, long mod) {
 
 
 		if (key == 'V') {
-			hexWorld.toggleView();
+			hexEngine.toggleView();
 		}
 
 		if (key == GLFW_KEY_SPACE) {
 			Paused = !Paused;
 			if (Paused)
 				sysLog << "\n!!!!Paused!!!!";
-			game.togglePause();
+			gameWorld.togglePause();
 		}
 
 		if (key == 'Z' && mod == GLFW_MOD_CONTROL) {
-			hexWorld.onUndo();
+			hexEngine.onUndo();
 		}
 		if (key == 'Y' && mod == GLFW_MOD_CONTROL) {
-			hexWorld.onRedo();
+			hexEngine.onRedo();
 		}
 
 		return;
@@ -237,7 +237,7 @@ void C3DtestApp::draw() {
 	if (appMode == hexMode) {
 		renderer.setBackColour((rgba&)style::uialmostBlack);
 		renderer.clearFrame();
-		hexWorld.draw(); 
+		hexEngine.draw(); 
 		return;
 	}
 
@@ -251,7 +251,7 @@ void C3DtestApp::draw() {
 void C3DtestApp::Update() {
 
 	if (appMode == hexMode)
-		hexWorld.update(float(dT));
+		hexEngine.update(float(dT));
 
 }
 
@@ -303,7 +303,7 @@ void C3DtestApp::HandleUImsg(CGUIbase& control, CMessage& Message) {
 
 
 void C3DtestApp::onResize(int width, int height) {
-	hexWorld.setAspectRatio(glm::vec2(width, height));
+	hexEngine.setAspectRatio(glm::vec2(width, height));
 }
 
 void C3DtestApp::addGameWindow(CGUIbase* gameWin) {
@@ -312,33 +312,33 @@ void C3DtestApp::addGameWindow(CGUIbase* gameWin) {
 
 /** Get the hexWorld ready for use. */
 void C3DtestApp::initHexWorld() {
-	hexWorld.addMesh("test", dataPath + "models\\test.obj");
-	hexWorld.addMesh("cursor", dataPath + "models\\cursor.dae");
+	hexEngine.addMesh("test", dataPath + "models\\test.obj");
+	hexEngine.addMesh("cursor", dataPath + "models\\cursor.dae");
 	
 
 
 	//hexWorld.addMesh("player", dataPath + "models\\player.obj");
-	hexWorld.addMesh("player", dataPath + "models\\basePlayer.dae");
+	hexEngine.addMesh("player", dataPath + "models\\basePlayer.dae");
 
-	hexWorld.addMesh("dummyItem", dataPath + "models\\dummyItem.dae");
-	hexWorld.addMesh("medkit", dataPath + "models\\medkit.dae");
+	hexEngine.addMesh("dummyItem", dataPath + "models\\dummyItem.dae");
+	hexEngine.addMesh("medkit", dataPath + "models\\medkit.dae");
 
 	//hexWorld.addMesh("robot", dataPath + "models\\robot.obj");
-	hexWorld.addMesh("robot", dataPath + "models\\robot.dae");
-	hexWorld.addMesh("shield", dataPath + "models\\shield.obj");
-	hexWorld.addMesh("bolt", dataPath + "models\\bolt.obj");
-	hexWorld.addMesh("desk", dataPath + "models\\desk.obj");
+	hexEngine.addMesh("robot", dataPath + "models\\robot.dae");
+	hexEngine.addMesh("shield", dataPath + "models\\shield.obj");
+	hexEngine.addMesh("bolt", dataPath + "models\\bolt.obj");
+	hexEngine.addMesh("desk", dataPath + "models\\desk.obj");
 
-	hexWorld.addMesh("door", dataPath + "models\\door.dae");
+	hexEngine.addMesh("door", dataPath + "models\\door.dae");
 
-	hexWorld.addMesh("solidHex", dataPath + "models\\solidHex.dae");
+	hexEngine.addMesh("solidHex", dataPath + "models\\solidHex.dae");
 
-	hexWorld.addMesh("gun", dataPath + "models\\gun.dae");
+	hexEngine.addMesh("gun", dataPath + "models\\gun.dae");
 
-	hexWorld.addMesh("armour", dataPath + "models\\armour.dae");
+	hexEngine.addMesh("armour", dataPath + "models\\armour.dae");
 
-	hexWorld.addMesh("reticule", dataPath + "models\\reticule.dae");
-	hexWorld.addMesh("hex", dataPath + "models\\hex.dae");
+	hexEngine.addMesh("reticule", dataPath + "models\\reticule.dae");
+	hexEngine.addMesh("hex", dataPath + "models\\hex.dae");
 
 	//... more models
 
@@ -346,11 +346,11 @@ void C3DtestApp::initHexWorld() {
 	//tiles
 	std::vector<glm::vec4> hex = { { 0.0f,0.3f,0.0f,1.0f} };
 	std::vector<glm::vec4> largerHex = { { 0.0f,0.0f,0.9f,1.0f}, { 0.5f,0.5f,0.8f,1.0f} };
-	hexWorld.addHexTile("hex", dataPath + "models\\hex.dae", hex);
-	hexWorld.addHexTile("largeHex", dataPath + "models\\largeHex.dae", largerHex);
+	hexEngine.addHexTile("hex", dataPath + "models\\hex.dae", hex);
+	hexEngine.addHexTile("largeHex", dataPath + "models\\largeHex.dae", largerHex);
 
 
-	hexWorld.onSpawn(); //TODO: maybe the meshloading above goes in init? Is one-off setup stuff.
+	hexEngine.onSpawn(); //TODO: maybe the meshloading above goes in init? Is one-off setup stuff.
 	//hexWorld.start();
 
 }

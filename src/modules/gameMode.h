@@ -11,7 +11,7 @@
 
 class CGameMode : public CBaseModule {
 public:
-	CGameMode(CHexWorld* engine) : CBaseModule(engine) {}
+	CGameMode(CHexEngine* engine) : CBaseModule(engine) {}
 	void onSpawn();
 	void restart();
 	void guiHandler(CGUIevent& e);

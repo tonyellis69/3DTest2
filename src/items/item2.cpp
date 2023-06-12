@@ -17,5 +17,5 @@ void CItemCmp::setOwner(CEntity* owner) {
 }
 
 void CItemCmp::onSpawn() {
-	itemOwner = game.getEntity(ownerId);
+	itemOwner = gameWorld.getEntity(ownerId);
 }

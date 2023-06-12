@@ -15,8 +15,8 @@ void CDropAI::update(float dT) {
 		still = true;
 	}
 
-	if (game.player->live) {
-		glm::vec3 toPlayer = game.player->getPos() - thisEntity->getPos();
+	if (gameWorld.player->live) {
+		glm::vec3 toPlayer = gameWorld.player->getPos() - thisEntity->getPos();
 		if (glm::length(toPlayer) < 0.1f) {
 			thisEntity->destroyMe();
 			//message about points

@@ -35,7 +35,7 @@ void CItemMenu::startTimeout() {
 }
 
 void CItemMenu::showItemChoices() {
-	CItem* item = (CItem*)game.getEntity(currentItem);
+	CItem* item = (CItem*)gameWorld.getEntity(currentItem);
 
 	//get this item's menu text
 	std::string menuTxt;
@@ -102,16 +102,16 @@ void CItemMenu::update(float dT) {
 /** Catch a click on drop/examine, etc. */
 void CItemMenu::onRichTextClick(const std::string& msg) {
 	if (msg == "drop") {
-		game.player->playerC->dropItem(currentItem);
+		gameWorld.player->playerC->dropItem(currentItem);
 		//CItem* item = (CItem*)game.getEntity(currentItem);
 		//item->drop();
 	} 
 	else if (msg == "examine") {
-		CItem* item = (CItem*)game.getEntity(currentItem);
+		CItem* item = (CItem*)gameWorld.getEntity(currentItem);
 		item->examine();
 	} else if (msg == "take") {
-		CItem* item = (CItem*)game.getEntity(currentItem);
-		item->take(game.player);
+		CItem* item = (CItem*)gameWorld.getEntity(currentItem);
+		item->take(gameWorld.player);
 	}
 	pWin->setVisible(false);
 }

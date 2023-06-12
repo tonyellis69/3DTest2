@@ -5,7 +5,7 @@
 /** Store the current state of the game's entities. */
 void CBaseModule::saveEntityState() {
 	entityState.clear();
-	for (auto& ent : game.entities) {
+	for (auto& ent : gameWorld.entities) {
 		entityState.push_back(std::make_shared<CEntity>(*ent));
 	}
 }

@@ -10,7 +10,7 @@
 
 class CWorkingMode : public CBaseModule {
 public:
-	CWorkingMode(CHexWorld* engine) : CBaseModule(engine) {}
+	CWorkingMode(CHexEngine* engine) : CBaseModule(engine) {}
 	void guiHandler(CGUIevent& e);
 	void gameEventHandler(CGameEvent& e);
 

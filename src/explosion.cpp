@@ -27,7 +27,7 @@ void CExplosion::update(float dT) {
 	//error here: collidee out of scope
 
 	if (lifeTime > timeOut) {
-		game.deleteEntity(*this);
+		gameWorld.deleteEntity(*this);
 	}
 }
 

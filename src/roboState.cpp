@@ -296,11 +296,11 @@ std::vector<TObstacle> CRoboState::findNearObstacles(glm::vec3& centre) {
 	std::vector<TObstacle> obstacles;
 
 	for (auto& hex : aheadHexes) {
-		if (game.level->getHexArray()->getHexCube(hex).content == solidHex) {
+		if (gameWorld.level->getHexArray()->getHexCube(hex).content == solidHex) {
 			obstacles.push_back({ cubeToWorldSpace(hex), hexSize * 1.0f });
 		}
 		else {
-			CEntities entities = game.getEntitiesAt(hex);
+			CEntities entities = gameWorld.getEntitiesAt(hex);
 			for (auto& entity : entities) {
 				if (entity->isRobot && entity != thisEntity) {
 					obstacles.push_back({ entity->getPos(),0.8f /* entity->getRadius()*/, entity });
@@ -395,7 +395,7 @@ bool CRoboState::clearLineTo(CEntity* target) {
 bool CRoboState::clearLineTo(const glm::vec3& p) {
 	TIntersections intersectedHexes = getIntersectedHexes(thisEntity->transform->worldPos, p);
 	for (auto& hex : intersectedHexes) {
-		if (game.level->getHexArray()->getHexCube(hex.first).content != emptyHex)
+		if (gameWorld.level->getHexArray()->getHexCube(hex.first).content != emptyHex)
 			return false;
 		//TO DO: can expand this to check for other robots blocking
 	}
@@ -405,9 +405,9 @@ bool CRoboState::clearLineTo(const glm::vec3& p) {
 
 
 bool CRoboState::canSeeEnemy() {
-	if (game.player == nullptr)
+	if (gameWorld.player == nullptr)
 		return false;
-	return game.player->visible && !game.player->playerC->dead && inFov(game.player);
+	return gameWorld.player->visible && !gameWorld.player->playerC->dead && inFov(gameWorld.player);
 }
 
 
@@ -445,9 +445,9 @@ std::shared_ptr<CRoboState> CRoboWander::updateState(float dT) {
 	thisEntity->diagnostic += "wandering!";
 	if (canSeeEnemy()) {
 		if (thisEntity->entityType == entMeleeBot)
-			return std::make_shared<CCharge>(thisEntity, game.player);
+			return std::make_shared<CCharge>(thisEntity, gameWorld.player);
 		else
-			return std::make_shared<CCloseAndShoot>(thisEntity, game.player);
+			return std::make_shared<CCloseAndShoot>(thisEntity, gameWorld.player);
 	}
 		//!!!!!!!!!!Temp for testing
 
@@ -491,10 +491,10 @@ CGlanceAround::CGlanceAround(CEntity* bot) : CRoboState(bot) {
 std::shared_ptr<CRoboState> CGlanceAround::updateState(float dT) {
 	thisEntity->diagnostic += "glancing!";
 	if (canSeeEnemy()) {
-		return std::make_shared<CCharge>(thisEntity,game.player);
+		return std::make_shared<CCharge>(thisEntity,gameWorld.player);
 		//!!!!!!!!!!Temp for testing!!!!!!!!!!!!!
 		thisEntity->transform->upperBodyLocked = true;
-		return std::make_shared<CCloseAndShoot>(thisEntity, game.player);
+		return std::make_shared<CCloseAndShoot>(thisEntity, gameWorld.player);
 	}
 
 	if (pause > 0) {
@@ -660,7 +660,7 @@ std::shared_ptr<CRoboState> CCloseAndShoot::updateState(float dT) {
 			glm::vec3 targetVec = targetEntity->getPos() - thisEntity->getPos();
 			float targetAngle = glm::orientedAngle(glm::normalize(targetVec), glm::vec3(1, 0, 0), glm::vec3(0, 0, 1));
 
-			auto missile = (CMissile*)game.spawn("missile", thisEntity->getPos(), targetAngle);
+			auto missile = (CMissile*)gameWorld.spawn("missile", thisEntity->getPos(), targetAngle);
 			missile->setOwner(thisEntity); //FIXME: phasing out
 			missile->setParent(thisEntity);
 			missile->setSpeed(15);// 7.0f);
@@ -756,7 +756,7 @@ CTurnToSee::CTurnToSee(CEntity* bot, glm::vec3& dir) : CRoboState(bot) {
 
 std::shared_ptr<CRoboState> CTurnToSee::updateState(float dT) {
 	if (canSeeEnemy()) {
-		return std::make_shared<CCloseAndShoot>(thisEntity, game.player);
+		return std::make_shared<CCloseAndShoot>(thisEntity, gameWorld.player);
 	}
 
 	float success = turnToward(dir);

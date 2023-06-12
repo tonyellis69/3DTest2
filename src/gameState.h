@@ -61,4 +61,4 @@ public:
 
 };
 
-extern CGameState game;
+extern CGameState gameWorld;

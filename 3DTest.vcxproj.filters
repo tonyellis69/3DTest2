@@ -54,7 +54,7 @@
     <ClCompile Include="src\GUIrichTextPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\hexWorld.cpp">
+    <ClCompile Include="src\hexEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gameWin.cpp">
@@ -233,7 +233,7 @@
     <ClInclude Include="src\GUIrichTextPanel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\hexWorld.h">
+    <ClInclude Include="src\hexEngine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\TC\Debug\tigConst.h">

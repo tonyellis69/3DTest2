@@ -3,7 +3,7 @@
 //#include <glew.h> 
 //#include "GLFW/glfw3.h"
 
-#include "../hexWorld.h"
+#include "../hexEngine.h"
 
 #include "win/win.h"
 
@@ -70,7 +70,7 @@ void CWorkingMode::guiHandler(CGUIevent& e) {
 
 
 		if (e.key == GLFW_KEY_LEFT_CONTROL) {
-			game.toggleUImode(true);
+			gameWorld.toggleUImode(true);
 		}
 	}
 
@@ -81,7 +81,7 @@ void CWorkingMode::guiHandler(CGUIevent& e) {
 		}
 		else {
 			if (e.key == GLFW_KEY_LEFT_CONTROL) {
-				game.toggleUImode(false);
+				gameWorld.toggleUImode(false);
 			}
 		}
 
@@ -125,7 +125,7 @@ void CWorkingMode::guiHandler(CGUIevent& e) {
 
 	//!!!mousemove stuff: 
 	if (e.type == eMouseMove) {
-		if (game.paused)
+		if (gameWorld.paused)
 			return;
 
 		pHexWorld->mapDragging = false;
@@ -207,7 +207,7 @@ void CWorkingMode::makeMap() {
 	}
 
 	mapEdit.setMap(level.get());
-	game.setLevel(std::move(level)); //added!
+	gameWorld.setLevel(std::move(level)); //added!
 
 	//makemap new
 	//auto level = levelGen.makeLevel();
@@ -216,14 +216,14 @@ void CWorkingMode::makeMap() {
 
 void CWorkingMode::startProcTest() {
 	procTestMode = true;
-	pHexWorld->hexRender.loadMap(game.level->getHexArray());
+	pHexWorld->hexRender.loadMap(gameWorld.level->getHexArray());
 	/*if (pHexWorld->hexCursor == NULL)
 		pHexWorld->createCursorObject();*/
 	if (pHexWorld->hexRender.camera.getPos() == glm::vec3(0))
 		pHexWorld->setViewMode(gameView);
 	else
 		pHexWorld->setViewMode(keepView);
-	game.paused = false;
+	gameWorld.paused = false;
 	pHexWorld->freeCam();
 	CWin::fullScreen();
 //	pHexWorld->zoom2fit = true;
@@ -234,12 +234,12 @@ void CWorkingMode::startGame() {
 	//game.setLevel(level); //old
 
 	pHexWorld->physics.clearEntities();
-	pHexWorld->physics.setMap(game.level->getHexArray());
+	pHexWorld->physics.setMap(gameWorld.level->getHexArray());
 
 	mapEdit.load();
 	//!!!!!!!!!Previous point where map file was loaded
 
-	pHexWorld->hexRender.loadMap(game.level->getHexArray());
+	pHexWorld->hexRender.loadMap(gameWorld.level->getHexArray());
 	pHexWorld->prepMapEntities();
 
 	//if (pHexWorld->hexCursor == NULL)
@@ -249,15 +249,15 @@ void CWorkingMode::startGame() {
 
 	//gWin::pInv->refresh(); //can prob scrap, needs new system
 
-	game.paused = false;
+	gameWorld.paused = false;
 
-	pHexWorld->followCam(game.player);
+	pHexWorld->followCam(gameWorld.player);
 	//freeCam(-76, 15);
 //	toggleDirectionGraphics();
 	//game.slowed = true;
 
 	pHexWorld->pBotZero = nullptr;
-	for (auto& entity : game.entities) {
+	for (auto& entity : gameWorld.entities) {
 		if (entity->isRobot && entity->id == 7) {
 			if (pHexWorld->pBotZero == NULL)
 				pHexWorld->pBotZero = entity.get();
@@ -285,22 +285,22 @@ void CWorkingMode::startGame() {
 void CWorkingMode::update(float dt) {
 
 
-	if (game.paused)
+	if (gameWorld.paused)
 		return;
 
 	this->dT = dt;
 
-	if (game.slowed)
+	if (gameWorld.slowed)
 		this->dT = dt * 0.1f;
-	if (game.speeded)
+	if (gameWorld.speeded)
 		this->dT = dt * 4.0f;
 
 
 	if (!pHexWorld->editMode)
-		for (int n = 0; n < game.entities.size(); n++) {
-			auto& entity = game.entities[n];
+		for (int n = 0; n < gameWorld.entities.size(); n++) {
+			auto& entity = gameWorld.entities[n];
 			if (entity->live)
-				game.entities[n]->update(dT);
+				gameWorld.entities[n]->update(dT);
 		}
 
 

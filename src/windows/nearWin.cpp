@@ -10,12 +10,12 @@ void CNearWin::update(float dT)
 	return;
 	//scraping so scrap
 
-	if (game.player == nullptr)
+	if (gameWorld.player == nullptr)
 		return;
 
 	float nearDist = 1.0f;
 	bool nearItemsChanged = false;
-	glm::vec3 playerPos = game.player->getPos();
+	glm::vec3 playerPos = gameWorld.player->getPos();
 
 	//check if any items are no longer near
 	for (auto& item = nearItems.begin(); item != nearItems.end();) {
@@ -30,7 +30,7 @@ void CNearWin::update(float dT)
 	//add any newly near items
 	//TO DO: if we're looping through all entities/items every tick, may as well 
 	//clear and rebuild list every time.
-	for (auto& entity : game.entities) {
+	for (auto& entity : gameWorld.entities) {
 		if (entity->isItem && ((CItem*)entity.get())->parent == nullptr
 			&& glm::distance(playerPos, entity->getPos()) < nearDist) {
 			if (std::find(nearItems.begin(), nearItems.end(), (CItem*)entity.get()) == nearItems.end()) {

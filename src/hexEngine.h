@@ -45,10 +45,10 @@ enum TMsgType {msgId,msgId2,msgId3};
 enum TCameraMode {camNone, camFollow, camFree, camFixed};
 
 /** A class encapsulating the hex-based representation of the world. */
-class CHexWorld { 
+class CHexEngine { 
 public:
-	CHexWorld();
-	~CHexWorld() {
+	CHexEngine();
+	~CHexEngine() {
 		lis::unsubscribe<CPhysicsEvent>(&physics);
 	}
 	void onSpawn();

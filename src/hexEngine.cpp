@@ -1,4 +1,4 @@
-#include "hexWorld.h"
+#include "hexEngine.h"
 
 #include <string>
 #include <algorithm>
@@ -48,8 +48,8 @@
 
 #include "roboState.h"
 
-CHexWorld::CHexWorld() {
-	game.paused = true;
+CHexEngine::CHexEngine() {
+	gameWorld.paused = true;
 
 	hexRender.onSpawn();
 
@@ -75,8 +75,8 @@ CHexWorld::CHexWorld() {
 
 }
 
-void CHexWorld::onSpawn() {
-	reticule = game.models["reticule"];
+void CHexEngine::onSpawn() {
+	reticule = gameWorld.models["reticule"];
 	reticule.palette[0] = { 1,1,1,1 };
 
 	gameMode = std::make_unique<CGameMode>(this);
@@ -90,10 +90,10 @@ void CHexWorld::onSpawn() {
 	setViewMode(mode->viewMode);
 
 
-	game.paused = false;
+	gameWorld.paused = false;
 
 	pBotZero = nullptr;
-	for (auto& entity : game.entities) {
+	for (auto& entity : gameWorld.entities) {
 		if (entity->isRobot && entity->id == 7) {
 			if (pBotZero == NULL)
 				pBotZero = entity.get();
@@ -104,7 +104,7 @@ void CHexWorld::onSpawn() {
 
 }
 
-void CHexWorld::onEvent(CGUIevent& e) {
+void CHexEngine::onEvent(CGUIevent& e) {
 	mode->guiHandler(e);
 
 	//!!!Keep for now, not replicated in module
@@ -112,9 +112,9 @@ void CHexWorld::onEvent(CGUIevent& e) {
 		if (e.i1 == GLFW_KEY_F2)
 			toggleDirectionGraphics();
 		else if (e.i1 == 'F')
-			game.slowed = !game.slowed;
+			gameWorld.slowed = !gameWorld.slowed;
 		else if (e.i1 == 'G')
-			game.speeded = !game.speeded;
+			gameWorld.speeded = !gameWorld.speeded;
 		else if (e.i1 == GLFW_KEY_F3)
 			hexRender.tmpX = hexRender.tmpX == 0 ? 1 : 0;
 
@@ -162,7 +162,7 @@ void CHexWorld::onEvent(CGUIevent& e) {
 
 
 	if (e.type == eMouseMove) {
-		if (game.paused)
+		if (gameWorld.paused)
 			return;
 		
 		lastMousePos = mousePos;
@@ -201,7 +201,7 @@ void CHexWorld::onEvent(CGUIevent& e) {
 
 }
 
-void CHexWorld::onEvent(CGameEvent& e) {
+void CHexEngine::onEvent(CGameEvent& e) {
 	mode->gameEventHandler(e);
 	if (e.type == gamePlayerDeath) {
 		onPlayerDeath();
@@ -214,14 +214,14 @@ void CHexWorld::onEvent(CGameEvent& e) {
 
 
 /**	Load a multipart mesh for storage under the given name. */
-void CHexWorld::addMesh(const std::string& name, const std::string& fileName) {
+void CHexEngine::addMesh(const std::string& name, const std::string& fileName) {
 	CImporter importer;
 	importer.loadFile(fileName);	
-	game.models[name] = importer.getModel();
+	gameWorld.models[name] = importer.getModel();
 }
 
 /** Import a mesh to use in drawing the level. */
-void CHexWorld::addHexTile(const std::string& name, const std::string& fileName, std::vector<glm::vec4>& colours) {
+void CHexEngine::addHexTile(const std::string& name, const std::string& fileName, std::vector<glm::vec4>& colours) {
 	CImporter importer;
 	importer.loadFile(fileName);
 
@@ -230,7 +230,7 @@ void CHexWorld::addHexTile(const std::string& name, const std::string& fileName,
 }
 
 
-void CHexWorld::deleteMap() {
+void CHexEngine::deleteMap() {
 	//delete level;
 }
 
@@ -238,17 +238,17 @@ void CHexWorld::deleteMap() {
 
 
 /** Terminate an existing session to start a new one. */
-void CHexWorld::restart() {
+void CHexEngine::restart() {
 	mode->restart();
 //	mode->start();
 }
 
-void CHexWorld::startProcTest() {
+void CHexEngine::startProcTest() {
 	mode->startProcTest();
 }
 
 
-void CHexWorld::moveCamera(glm::vec3& direction) {
+void CHexEngine::moveCamera(glm::vec3& direction) {
 	float camSpeed =  10 * dT;
 	glm::vec3 vector = direction * camSpeed;
 	//hexRendr2.moveCamera(vector); //FIX: phase out!
@@ -258,14 +258,14 @@ void CHexWorld::moveCamera(glm::vec3& direction) {
 
 
 
-void CHexWorld::calcMouseWorldPos() {
+void CHexEngine::calcMouseWorldPos() {
 	glm::vec3 mouseWS = hexRender.screenToWS(mousePos.x, mousePos.y);
 	mouseHex = worldSpaceToHex(mouseWS);
 	lastMouseWorldPos = mouseWorldPos;
 	mouseWorldPos = mouseWS;
-	if (game.player) {
-		glm::vec3 mouseVec = mouseWorldPos - game.player->getPos();
-		game.player->playerC->setMouseDir(glm::normalize(mouseVec));
+	if (gameWorld.player) {
+		glm::vec3 mouseVec = mouseWorldPos - gameWorld.player->getPos();
+		gameWorld.player->playerC->setMouseDir(glm::normalize(mouseVec));
 	} //needed for game.player orientation etc
 
 	if (mouseHex != lastMouseHex) {
@@ -277,12 +277,12 @@ void CHexWorld::calcMouseWorldPos() {
 }
 
 
-void CHexWorld::draw() {
+void CHexEngine::draw() {
 	hexRender.drawMap();
 
 	hexRender.resetDrawLists();
 
-	for (auto& entity : game.entities) {
+	for (auto& entity : gameWorld.entities) {
 		if (entity->live && entity->modelCmp->drawFn->visible) 
 			entity->modelCmp->draw(hexRender);
 	}
@@ -311,17 +311,17 @@ void CHexWorld::draw() {
 
 	hexRender.drawExplosionList();
 
-	if (game.player && !game.player->playerC->dead) {
+	if (gameWorld.player && !gameWorld.player->playerC->dead) {
 		//imRendr::setDrawColour({ 1.0f, 1.0f, 1.0f, 1.0f });
 		//imRendr::drawLine(game.player->worldPos, mouseWorldPos);
 		//hexCursor->draw();
 		drawReticule();
 	}
 
-	if (game.player) {
-		int sh = ((CShieldComponent*)game.player->playerC->shield->item)->hp;
+	if (gameWorld.player) {
+		int sh = ((CShieldComponent*)gameWorld.player->playerC->shield->item)->hp;
 
-		imRendr::drawText(600, 50, "HP: " + std::to_string(game.player->healthC->hp)
+		imRendr::drawText(600, 50, "HP: " + std::to_string(gameWorld.player->healthC->hp)
 			+ " Shield: " + std::to_string(sh)
 
 		);
@@ -347,7 +347,7 @@ void CHexWorld::draw() {
 }
 
 /** Adjust horizontal vs vertical detail of the view. Usually called when the screen size changes. */
-void CHexWorld::setAspectRatio(glm::vec2& ratio) {
+void CHexEngine::setAspectRatio(glm::vec2& ratio) {
 	float defFov = glm::radians(45.0f);
 	float defaultScreenH = 800.0f;
 	float newFov = asin(sin(defFov / 2.0f) * ratio.y / defaultScreenH) * 2.0f;
@@ -357,7 +357,7 @@ void CHexWorld::setAspectRatio(glm::vec2& ratio) {
 
 
 /** Called every frame to get the hex world up to date.*/
-void CHexWorld::update(float dt) {
+void CHexEngine::update(float dt) {
 	this->dT = dt;
 
 	mode->update(dT);
@@ -366,7 +366,7 @@ void CHexWorld::update(float dt) {
 
 	calcMouseWorldPos();
 
-	game.update(dT);
+	gameWorld.update(dT);
 
 	physics.update(dT);
 
@@ -378,10 +378,10 @@ void CHexWorld::update(float dt) {
 
 
 
-	if (game.level->mapUpdated) {
+	if (gameWorld.level->mapUpdated) {
 		//hexRendr2.setMap(level->getHexArray()); //temp to refresh map
-		hexRender.loadMap(game.level->getHexArray());
-		game.level->mapUpdated = false;
+		hexRender.loadMap(gameWorld.level->getHexArray());
+		gameWorld.level->mapUpdated = false;
 	}
 
 	gWin::update(dT);
@@ -396,23 +396,23 @@ void CHexWorld::update(float dt) {
 }
 
 
-void CHexWorld::toggleView() {
+void CHexEngine::toggleView() {
 	if (viewMode == gameView)
 		setViewMode(devView);
 	else
 		setViewMode(gameView);
 }
 
-void CHexWorld::toggleEditMode() {
+void CHexEngine::toggleEditMode() {
 	editMode = !editMode;
 	if (editMode) {
-		mapEdit.setMap(game.level.get());
+		mapEdit.setMap(gameWorld.level.get());
 		freeCam();
 		gWin::pNear->hideWin();
 		CWin::showMouse(true);
 	}
 	else {
-		followCam(game.player);
+		followCam(gameWorld.player);
 		gWin::pNear->showWin();
 		prepMapEntities();
 		CWin::showMouse(false);
@@ -420,12 +420,12 @@ void CHexWorld::toggleEditMode() {
 	
 }
 
-void CHexWorld::onUndo() {
+void CHexEngine::onUndo() {
 	if (editMode)
 		mapEdit.onUndo();
 }
 
-void CHexWorld::onRedo() {
+void CHexEngine::onRedo() {
 	if (editMode)
 		mapEdit.onRedo();
 }
@@ -433,15 +433,15 @@ void CHexWorld::onRedo() {
 
 /** Plug the map's entities into physics and whatever else they need
 	to be connected to. */
-void CHexWorld::prepMapEntities() {
+void CHexEngine::prepMapEntities() {
 	physics.clearEntities();
 
-	for (auto& entity : game.entities) {
+	for (auto& entity : gameWorld.entities) {
 		if (entity->isRobot)
 			physics.add(entity.get());
 
 		if (entity->entityType == entPlayer) {
-			game.player = entity.get();
+			gameWorld.player = entity.get();
 //			game.player = (Cgame.playerect*)entity.get();
 			physics.add(entity.get());
 		}
@@ -465,7 +465,7 @@ void CHexWorld::prepMapEntities() {
 
 
 /** Respond to mouse cursor moving to a new hex. */
-void CHexWorld::onNewMouseHex() {
+void CHexEngine::onNewMouseHex() {
 	//hexCursor->setPosition(cubeToWorldSpace(mouseHex));
 
 
@@ -478,11 +478,11 @@ void CHexWorld::onNewMouseHex() {
 	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
 	glm::i32vec2 offset = cubeToOffset(mouseHex);
 	coords << "  offset " << offset.x << ", " << offset.y;
-	glm::i32vec2 index = game.level->getHexArray()->cubeToIndex(mouseHex);
+	glm::i32vec2 index = gameWorld.level->getHexArray()->cubeToIndex(mouseHex);
 	coords << " index " << index.x << " " << index.y;
 	glm::vec3 worldSpace = cubeToWorldSpace(mouseHex);
 	coords << " worldPos " << worldSpace.x << " " << worldSpace.y << " " << worldSpace.z;
-	coords << " " << game.level->getHexArray()->getHexCube(mouseHex).content;
+	coords << " " << gameWorld.level->getHexArray()->getHexCube(mouseHex).content;
 	//glm::vec2 screenPos = hexRenderer.worldPosToScreen(worldSpace);
 	coords << " wsMouse " << mouseWorldPos.x << " " << mouseWorldPos.y;
 	coords << " scrnMouse " << mousePos.x << " " << mousePos.y;
@@ -504,7 +504,7 @@ void CHexWorld::onNewMouseHex() {
 
 
 /** Handle an 'external function call' from Tig. */
-int CHexWorld::tigCall(int memberId) {
+int CHexEngine::tigCall(int memberId) {
 	//std::string strParam;
 	//switch (memberId) {
 	//case tig::msgFn : 
@@ -518,7 +518,7 @@ int CHexWorld::tigCall(int memberId) {
 }
 
 
-void CHexWorld::updateCameraPosition() {	
+void CHexEngine::updateCameraPosition() {	
 	if (cameraMode == camFollow) {
 		if (pFollowCamEnt) {
 			 hexRender.setCameraPos(pFollowCamEnt->getPos().x, pFollowCamEnt->getPos().y);
@@ -536,13 +536,13 @@ void CHexWorld::updateCameraPosition() {
 
 
 /** Whether we're in standard follow-cam mode or not, etc. */
-void CHexWorld::setViewMode(TViewMode vMode) {
+void CHexEngine::setViewMode(TViewMode vMode) {
 	viewMode = vMode;
 
 	if (viewMode == gameView) {
 		hexRender.pointCamera(glm::vec3(0, 0, -1));
 		hexRender.setCameraHeight(15);
-		followCam(game.player);
+		followCam(gameWorld.player);
 	}
 	else if (viewMode == devView) {
 		hexRender.setCameraPos(glm::vec3(0, -0, 12));
@@ -555,7 +555,7 @@ void CHexWorld::setViewMode(TViewMode vMode) {
 
 }
 
-void CHexWorld::adjustZoomScale(float delta) {
+void CHexEngine::adjustZoomScale(float delta) {
 	zoomAdjust += (delta > 0) ? -0.1f : 0.1f;
 	zoomAdjust = std::max<float>(zoomAdjust, 0.0f);
 	zoomScale = 1.0f + (std::pow(zoomAdjust, 0.5f) * 10);
@@ -563,11 +563,11 @@ void CHexWorld::adjustZoomScale(float delta) {
 
 
 
-void CHexWorld::toggleDirectionGraphics() {
+void CHexEngine::toggleDirectionGraphics() {
 	directionGraphicsOn = !directionGraphicsOn;
 
 	if (directionGraphicsOn) {
-		for (auto& entity : game.entities) {
+		for (auto& entity : gameWorld.entities) {
 			if (entity->isRobot) {
 				auto graphic = std::make_shared<CAvoidGraphic>();
 				graphic->entity = entity;
@@ -587,46 +587,46 @@ void CHexWorld::toggleDirectionGraphics() {
 
 }
 
-void CHexWorld::followCam(CEntity* ent) {
+void CHexEngine::followCam(CEntity* ent) {
 	if (ent) {
 		pFollowCamEnt = ent;
 		cameraMode = camFollow;
 	}
 }
 
-void CHexWorld::freeCam(float x, float y) {
+void CHexEngine::freeCam(float x, float y) {
 	cameraMode = camFree;
 	freeCamPos = glm::vec2(x, y);
 }
 
-void CHexWorld::freeCam() {
+void CHexEngine::freeCam() {
 	cameraMode = camFree;
 	freeCamPos = glm::vec2(hexRender.camera.getPos().x, hexRender.camera.getPos().y);
 }
 
-void CHexWorld::fixedCam(float x, float y) {
+void CHexEngine::fixedCam(float x, float y) {
 	cameraMode = camFixed;
 	hexRender.setCameraPos(x, y);
 }
 
 
 
-void CHexWorld::drawReticule() {
+void CHexEngine::drawReticule() {
 	hexRender.drawModelAt(reticule, mouseWorldPos);	
 }
 
-void CHexWorld::removeDeadEntities() {
+void CHexEngine::removeDeadEntities() {
 	physics.removeDeadEntities();
 
-	for (auto& ent = game.entities.begin(); ent != game.entities.end();) {
+	for (auto& ent = gameWorld.entities.begin(); ent != gameWorld.entities.end();) {
 		if (ent->get()->deleteMe)
-			ent = game.entities.erase(ent);
+			ent = gameWorld.entities.erase(ent);
 		else
 			ent++;
 	}
 
 
-	game.entitiesToKill = false;
+	gameWorld.entitiesToKill = false;
 }
 
 ///** Remove marked entities from the game. */
@@ -653,12 +653,12 @@ void CHexWorld::removeDeadEntities() {
 //
 //}
 
-void CHexWorld::onPlayerDeath() {
-	fixedCam(game.player->getPos().x, game.player->getPos().y);
+void CHexEngine::onPlayerDeath() {
+	fixedCam(gameWorld.player->getPos().x, gameWorld.player->getPos().y);
 	//level->removeEntity(game.player);
-	game.player->setPosition(glm::vec3(0));
+	gameWorld.player->setPosition(glm::vec3(0));
 
-	for (auto& entity : game.entities) {
+	for (auto& entity : gameWorld.entities) {
 		if (entity->isRobot) {
 			//((CRobot*)entity.get())->setState(robotWander3);
 			entity->addComponent<CRoboWander>();
@@ -667,9 +667,9 @@ void CHexWorld::onPlayerDeath() {
 }
 
 /** Progressively zoom while the map doesn't fit the screen. */
-void CHexWorld::zoomToFit() {
-	glm::vec3 gridTL = abs(cubeToWorldSpace(game.level->indexToCube( glm::i32vec2{ 0,0 })));
-	glm::vec3 gridBR = abs(cubeToWorldSpace(game.level->indexToCube(game.level->getGridSize())));
+void CHexEngine::zoomToFit() {
+	glm::vec3 gridTL = abs(cubeToWorldSpace(gameWorld.level->indexToCube( glm::i32vec2{ 0,0 })));
+	glm::vec3 gridBR = abs(cubeToWorldSpace(gameWorld.level->indexToCube(gameWorld.level->getGridSize())));
 
 	glm::i32vec2 scnSize = hexRender.getScreenSize();
 	glm::vec3 scnTL = abs(hexRender.screenToWS(0, 0));
@@ -690,7 +690,7 @@ void CHexWorld::zoomToFit() {
 
 /** TO DO: ultimately this should be automated via a Tig
 	config file rather than hardcoded. */
-void CHexWorld::initPalettes() {
+void CHexEngine::initPalettes() {
 	hexRender.storePalette("hex", { {0.0f,0.3f,0.0f,1.0f} });
 	hexRender.storePalette("largeHex", { { 0.0f,0.0f,0.9f,1.0f}, { 0.5f,0.5f,0.8f,1.0f} });
 	hexRender.storePalette("basic", { {1,1,1,1}, {1,1,1,1}, {1,1,1,1}, {0,0,1,1} });
@@ -703,10 +703,10 @@ void CHexWorld::initPalettes() {
 	hexRender.storePalette("shield", { {0,0,1,0.15f}, {1,0,0,0.15f}, {0,1,0,1}, {1,1,0,1} });
 
 
-	game.pPalettes = &hexRender.palettes;
+	gameWorld.pPalettes = &hexRender.palettes;
 }
 
-void CHexWorld::proc2Game() {
+void CHexEngine::proc2Game() {
 
 	if (viewMode == keepView) { //FIXME: cheap trick, do not keep!
 		gameMode = std::make_unique<CGameMode>(this);

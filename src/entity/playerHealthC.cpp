@@ -32,7 +32,7 @@ void CPlayerHealthC::receiveDamage(CEntity& attacker, int damage) {
 		thisEntity->playerC->dead = true;
 		thisEntity->visible = false;
 		//game.onPlayerDeath();
-		game.spawn("explosion", thisEntity->getPos(), 1.5f);
+		gameWorld.spawn("explosion", thisEntity->getPos(), 1.5f);
 
 		CGameEvent e;
 		e.type = gamePlayerDeath;

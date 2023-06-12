@@ -3,7 +3,7 @@
 //#include <glew.h> 
 //#include "GLFW/glfw3.h"
 
-#include "../hexWorld.h"
+#include "../hexEngine.h"
 
 #include "win/win.h"
 
@@ -60,7 +60,7 @@ void CProcGenMode::gameEventHandler(CGameEvent& e) {
 
 
 void CProcGenMode::makeLevel() {
-	game.clearEntities();
+	gameWorld.clearEntities();
 
 	auto level = levelGen.makeLevel();
 
@@ -70,22 +70,22 @@ void CProcGenMode::makeLevel() {
 	//ensure player spawns there
 	level->entityRecs.push_back({ entPlayer,playerPos });
 
-	game.setLevel(std::move(level));
-	game.restoreEntities();
+	gameWorld.setLevel(std::move(level));
+	gameWorld.restoreEntities();
 
 	writeGridToLevel();
 }
 
 
 void CProcGenMode::update(float dt) {
-	if (game.paused)
+	if (gameWorld.paused)
 		return;
 
 	this->dT = dt;
 }
 
 void CProcGenMode::writeGridToLevel() {
-	auto pArray = game.level->getHexArray();
+	auto pArray = gameWorld.level->getHexArray();
 
 	for (auto& hexLine : levelGen.hexLines) {
 		for (auto& hex : hexLine) {

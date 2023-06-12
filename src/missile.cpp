@@ -76,7 +76,7 @@ void CMissile::approachDestHex() {
 
 
 void CMissile::spawnExplosion() {
-	CExplosion* splode = (CExplosion *) game.spawn("explosion", collisionPt, 1);
+	CExplosion* splode = (CExplosion *) gameWorld.spawn("explosion", collisionPt, 1);
 	if (collidee)
 		splode->setCollidee(collidee->getSmart());
 

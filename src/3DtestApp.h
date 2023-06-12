@@ -15,7 +15,7 @@
 
 #include "utils/log.h"
 
-#include "hexWorld.h" 
+#include "hexEngine.h" 
 
 #include "gameTextWin.h"
 
@@ -63,8 +63,8 @@ public:
 
 	std::string dataPath; ///<Filepath to the Data folder
 
-	//CHexRenderer hexRenderer;
-	CHexWorld hexWorld; 
+
+	CHexEngine hexEngine; 
 
 	TAppMode appMode;
 	

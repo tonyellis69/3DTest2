@@ -67,7 +67,7 @@ std::string CGun::getMenuTextInv() {
 
 void CSmallGun::fire(float firingAngle) {
 
-	auto missile = (CMissile*)game.spawn("missile", gun->parent->getPos(), firingAngle);
+	auto missile = (CMissile*)gameWorld.spawn("missile", gun->parent->getPos(), firingAngle);
 	missile->setOwner(gun->parent); //FIXME phasing out
 	missile->setParent(gun->parent);
 
