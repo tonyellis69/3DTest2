@@ -222,6 +222,9 @@
     <ClCompile Include="src\entity\component.cpp">
       <Filter>Source Files\entity</Filter>
     </ClCompile>
+    <ClCompile Include="src\entity\cameraC.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -417,6 +420,12 @@
       <Filter>Source Files\entity</Filter>
     </ClInclude>
     <ClInclude Include="src\entity\entity.h">
+      <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hexEngineEvent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\cameraC.h">
       <Filter>Source Files\entity</Filter>
     </ClInclude>
   </ItemGroup>

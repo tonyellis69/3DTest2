@@ -350,7 +350,7 @@ void C3DtestApp::initHexWorld() {
 	hexEngine.addHexTile("largeHex", dataPath + "models\\largeHex.dae", largerHex);
 
 
-	hexEngine.onSpawn(); //TODO: maybe the meshloading above goes in init? Is one-off setup stuff.
+	hexEngine.initialise(); //TODO: maybe the meshloading above goes in init? Is one-off setup stuff.
 	//hexWorld.start();
 
 }

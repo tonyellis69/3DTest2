@@ -9,7 +9,7 @@
 class CProcGenMode : public CBaseModule {
 public:
 	CProcGenMode(CHexEngine* engine) : CBaseModule(engine) {}
-	void onSpawn();
+	void initalise();
 
 	void start();
 	void restart();

@@ -7,7 +7,7 @@
 
 #include "win/win.h"
 
-void CProcGenMode::onSpawn() {
+void CProcGenMode::initalise() {
 	viewMode = keepView;
 	makeLevel();
 
@@ -85,7 +85,7 @@ void CProcGenMode::update(float dt) {
 }
 
 void CProcGenMode::writeGridToLevel() {
-	auto pArray = gameWorld.level->getHexArray();
+	auto pArray = gameWorld.level.getHexArray();
 
 	for (auto& hexLine : levelGen.hexLines) {
 		for (auto& hex : hexLine) {

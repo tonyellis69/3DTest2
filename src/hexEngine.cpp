@@ -57,6 +57,7 @@ CHexEngine::CHexEngine() {
 	
 	lis::subscribe<CGUIevent>(this);
 	lis::subscribe<CGameEvent>(this);
+	lis::subscribe<CEngineEvent>(this);
 
 	lis::subscribe<CGameEvent>(&hexRender);
 	lis::subscribe<CGameEvent>(&physics);
@@ -75,7 +76,7 @@ CHexEngine::CHexEngine() {
 
 }
 
-void CHexEngine::onSpawn() {
+void CHexEngine::initialise() {
 	reticule = gameWorld.models["reticule"];
 	reticule.palette[0] = { 1,1,1,1 };
 
@@ -84,10 +85,7 @@ void CHexEngine::onSpawn() {
 	//procGenMode = std::make_unique<CProcGenMode>(this);
 	//mode = procGenMode.get();
 
-	mode->onSpawn();
-
-
-	setViewMode(mode->viewMode);
+	mode->initalise();
 
 
 	gameWorld.paused = false;
@@ -188,26 +186,23 @@ void CHexEngine::onEvent(CGUIevent& e) {
 	}
 
 
-
-
-
-	if (e.key == GLFW_KEY_ENTER && e.type == eKeyDown) {
-		restart();
-	}
-
-	if (e.key == '\\' && e.type == eKeyDown) {
-		proc2Game();
-	}
-
 }
 
 void CHexEngine::onEvent(CGameEvent& e) {
 	mode->gameEventHandler(e);
-	if (e.type == gamePlayerDeath) {
-		onPlayerDeath();
+	switch (e.type) {
+	case gamePlayerDeath:	onPlayerDeath(); break;
+	case gameLevelChange: break;
+	case gamePlayerSpawn: { if (cameraMode == camFollow)
+		pFollowCamEnt = e.entity;
+	}; break;
+
 	}
-	else if (e.type == gameLevelChange) {
-		setViewMode(mode->viewMode);
+}
+
+void CHexEngine::onEvent(CEngineEvent& e) {
+	 if (e.action == engGetRenderer) {
+		e.pHexRender = &hexRender;
 	}
 }
 
@@ -235,13 +230,6 @@ void CHexEngine::deleteMap() {
 }
 
 
-
-
-/** Terminate an existing session to start a new one. */
-void CHexEngine::restart() {
-	mode->restart();
-//	mode->start();
-}
 
 void CHexEngine::startProcTest() {
 	mode->startProcTest();
@@ -363,6 +351,7 @@ void CHexEngine::update(float dt) {
 	mode->update(dT);
 
 	updateCameraPosition();
+	//TODO: make modules handle their own camera business, and remove
 
 	calcMouseWorldPos();
 
@@ -370,28 +359,7 @@ void CHexEngine::update(float dt) {
 
 	physics.update(dT);
 
-
-	//if (game.entitiesToKill) {
-	//	removeDeadEntities();
-	//}
-
-
-
-
-	if (gameWorld.level->mapUpdated) {
-		//hexRendr2.setMap(level->getHexArray()); //temp to refresh map
-		hexRender.loadMap(gameWorld.level->getHexArray());
-		gameWorld.level->mapUpdated = false;
-	}
-
 	gWin::update(dT);
-
-	//for (auto& graphic : hexRender.graphics) {
-	//	graphic->update(dT);
-	//}
-
-
-
 
 }
 
@@ -406,7 +374,7 @@ void CHexEngine::toggleView() {
 void CHexEngine::toggleEditMode() {
 	editMode = !editMode;
 	if (editMode) {
-		mapEdit.setMap(gameWorld.level.get());
+		mapEdit.setMap(&gameWorld.level);
 		freeCam();
 		gWin::pNear->hideWin();
 		CWin::showMouse(true);
@@ -478,11 +446,11 @@ void CHexEngine::onNewMouseHex() {
 	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
 	glm::i32vec2 offset = cubeToOffset(mouseHex);
 	coords << "  offset " << offset.x << ", " << offset.y;
-	glm::i32vec2 index = gameWorld.level->getHexArray()->cubeToIndex(mouseHex);
+	glm::i32vec2 index = gameWorld.level.getHexArray()->cubeToIndex(mouseHex);
 	coords << " index " << index.x << " " << index.y;
 	glm::vec3 worldSpace = cubeToWorldSpace(mouseHex);
 	coords << " worldPos " << worldSpace.x << " " << worldSpace.y << " " << worldSpace.z;
-	coords << " " << gameWorld.level->getHexArray()->getHexCube(mouseHex).content;
+	coords << " " << gameWorld.level.getHexArray()->getHexCube(mouseHex).content;
 	//glm::vec2 screenPos = hexRenderer.worldPosToScreen(worldSpace);
 	coords << " wsMouse " << mouseWorldPos.x << " " << mouseWorldPos.y;
 	coords << " scrnMouse " << mousePos.x << " " << mousePos.y;
@@ -519,12 +487,7 @@ int CHexEngine::tigCall(int memberId) {
 
 
 void CHexEngine::updateCameraPosition() {	
-	if (cameraMode == camFollow) {
-		if (pFollowCamEnt) {
-			 hexRender.setCameraPos(pFollowCamEnt->getPos().x, pFollowCamEnt->getPos().y);
-		}
-	}
-	else if (cameraMode == camFree) {
+	if (cameraMode == camFree) {
 		hexRender.setCameraPos(freeCamPos.x, freeCamPos.y);
 	}
 
@@ -668,8 +631,8 @@ void CHexEngine::onPlayerDeath() {
 
 /** Progressively zoom while the map doesn't fit the screen. */
 void CHexEngine::zoomToFit() {
-	glm::vec3 gridTL = abs(cubeToWorldSpace(gameWorld.level->indexToCube( glm::i32vec2{ 0,0 })));
-	glm::vec3 gridBR = abs(cubeToWorldSpace(gameWorld.level->indexToCube(gameWorld.level->getGridSize())));
+	glm::vec3 gridTL = abs(cubeToWorldSpace(gameWorld.level.indexToCube( glm::i32vec2{ 0,0 })));
+	glm::vec3 gridBR = abs(cubeToWorldSpace(gameWorld.level.indexToCube(gameWorld.level.getGridSize())));
 
 	glm::i32vec2 scnSize = hexRender.getScreenSize();
 	glm::vec3 scnTL = abs(hexRender.screenToWS(0, 0));
@@ -718,7 +681,7 @@ void CHexEngine::proc2Game() {
 	}
 	
 	
-	mode->onSpawn();
+	mode->initalise();
 	setViewMode(mode->viewMode);
 
 }

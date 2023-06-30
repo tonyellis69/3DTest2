@@ -39,6 +39,9 @@
 
 #include "modules/baseModule.h"
 
+#include "hexEngineEvent.h"
+
+
 
 enum TMsgType {msgId,msgId2,msgId3};
 
@@ -51,9 +54,10 @@ public:
 	~CHexEngine() {
 		lis::unsubscribe<CPhysicsEvent>(&physics);
 	}
-	void onSpawn();
+	void initialise();
 	void onEvent(CGUIevent& e);
 	void onEvent(CGameEvent& e);
+	void onEvent(CEngineEvent& e);
 	void addMesh(const std::string& name, const std::string& fileName);
 	void addHexTile(const std::string& name, const std::string& fileName, std::vector<glm::vec4>& colours);
 	void deleteMap();

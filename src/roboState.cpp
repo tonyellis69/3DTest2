@@ -296,7 +296,7 @@ std::vector<TObstacle> CRoboState::findNearObstacles(glm::vec3& centre) {
 	std::vector<TObstacle> obstacles;
 
 	for (auto& hex : aheadHexes) {
-		if (gameWorld.level->getHexArray()->getHexCube(hex).content == solidHex) {
+		if (gameWorld.level.getHexArray()->getHexCube(hex).content == solidHex) {
 			obstacles.push_back({ cubeToWorldSpace(hex), hexSize * 1.0f });
 		}
 		else {
@@ -395,7 +395,7 @@ bool CRoboState::clearLineTo(CEntity* target) {
 bool CRoboState::clearLineTo(const glm::vec3& p) {
 	TIntersections intersectedHexes = getIntersectedHexes(thisEntity->transform->worldPos, p);
 	for (auto& hex : intersectedHexes) {
-		if (gameWorld.level->getHexArray()->getHexCube(hex.first).content != emptyHex)
+		if (gameWorld.level.getHexArray()->getHexCube(hex.first).content != emptyHex)
 			return false;
 		//TO DO: can expand this to check for other robots blocking
 	}

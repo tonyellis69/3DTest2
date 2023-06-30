@@ -67,6 +67,11 @@ public:
 
 	void removeComponent(CEntityCmp* component);
 
+	template <typename T>
+	T* getComponent() {
+		int id = IDGenerator::getID<T>();
+		return (T*)components[id].get();
+	}
 
 	//void removePhysComponent();
 

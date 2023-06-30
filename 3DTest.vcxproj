@@ -122,6 +122,7 @@
     <ClCompile Include="src\entity\aiCmp.cpp" />
     <ClCompile Include="src\entity\botHealthC.cpp" />
     <ClCompile Include="src\entity\botTreadsModelCmp.cpp" />
+    <ClCompile Include="src\entity\cameraC.cpp" />
     <ClCompile Include="src\entity\collider.cpp" />
     <ClCompile Include="src\entity\component.cpp" />
     <ClCompile Include="src\entity\entity.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="src\entity\aiCmp.h" />
     <ClInclude Include="src\entity\botHealthC.h" />
     <ClInclude Include="src\entity\botTreadsModelCmp.h" />
+    <ClInclude Include="src\entity\cameraC.h" />
     <ClInclude Include="src\entity\collider.h" />
     <ClInclude Include="src\entity\component.h" />
     <ClInclude Include="src\entity\entity.h" />
@@ -204,6 +206,7 @@
     <ClInclude Include="src\gameWin.h" />
     <ClInclude Include="src\GUIgamePanel.h" />
     <ClInclude Include="src\GUIrichTextPanel.h" />
+    <ClInclude Include="src\hexEngineEvent.h" />
     <ClInclude Include="src\hexMsg.h" />
     <ClInclude Include="src\hexRender\avoidGraphic.h" />
     <ClInclude Include="src\hexRender\destGraphic.h" />

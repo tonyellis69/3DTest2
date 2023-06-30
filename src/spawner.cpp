@@ -27,11 +27,15 @@
 #include "entity/playerCmp.h"
 #include "entity/botHealthC.h"
 #include "entity/playerHealthC.h"
+#include "entity/cameraC.h"
+
 #include "hexRender/multiDraw.h"
 
 #include "gameState.h"
 
 #include "roboState.h"
+
+#include "listen/listen.h"
 
 
 CEntity* CSpawn::player(const std::string& name, glm::vec3& pos) {
@@ -48,6 +52,8 @@ CEntity* CSpawn::player(const std::string& name, glm::vec3& pos) {
 	player->addComponent<CPhys>(1.0f/80.0f);
 	player->addComponent<CPlayerC>();
 	player->addComponent<CPlayerHealthC>();
+
+	player->addComponent<CameraC>();
 
 	CEntity* equippedGun = gun("guntype1");
 	equippedGun->tmpId = 42;
@@ -66,6 +72,11 @@ CEntity* CSpawn::player(const std::string& name, glm::vec3& pos) {
 
 	gameWorld.addEntity(player);
 	player->onSpawn();
+
+	CGameEvent e(gamePlayerSpawn);
+	e.entity = player.get();
+	lis::event(e);
+
 	return player.get();
 }
 

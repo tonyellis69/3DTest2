@@ -12,7 +12,7 @@
 class CGameMode : public CBaseModule {
 public:
 	CGameMode(CHexEngine* engine) : CBaseModule(engine) {}
-	void onSpawn();
+	void initalise();
 	void restart();
 	void guiHandler(CGUIevent& e);
 	void gameEventHandler(CGameEvent& e);
@@ -25,7 +25,6 @@ public:
 	void update(float dt);
 
 
-	void loadLevel(const std::string& fileName);
 	
 
 };

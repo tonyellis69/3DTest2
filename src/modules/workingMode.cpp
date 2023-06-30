@@ -216,7 +216,7 @@ void CWorkingMode::makeMap() {
 
 void CWorkingMode::startProcTest() {
 	procTestMode = true;
-	pHexWorld->hexRender.loadMap(gameWorld.level->getHexArray());
+	pHexWorld->hexRender.loadMap(gameWorld.level.getHexArray());
 	/*if (pHexWorld->hexCursor == NULL)
 		pHexWorld->createCursorObject();*/
 	if (pHexWorld->hexRender.camera.getPos() == glm::vec3(0))
@@ -234,12 +234,12 @@ void CWorkingMode::startGame() {
 	//game.setLevel(level); //old
 
 	pHexWorld->physics.clearEntities();
-	pHexWorld->physics.setMap(gameWorld.level->getHexArray());
+	pHexWorld->physics.setMap(gameWorld.level.getHexArray());
 
 	mapEdit.load();
 	//!!!!!!!!!Previous point where map file was loaded
 
-	pHexWorld->hexRender.loadMap(gameWorld.level->getHexArray());
+	pHexWorld->hexRender.loadMap(gameWorld.level.getHexArray());
 	pHexWorld->prepMapEntities();
 
 	//if (pHexWorld->hexCursor == NULL)

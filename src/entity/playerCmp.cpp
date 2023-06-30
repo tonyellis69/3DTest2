@@ -93,7 +93,7 @@ void CPlayerC::updateViewField() {
 	//CCalcVisionField calcFieldMsg(hexPosition, viewField.ringHexes, true);
 	//send(calcFieldMsg);
 
-	THexList visibleHexes = gameWorld.level->findVisibleHexes(thisEntity->transform->hexPosition, viewField.ringHexes, true);
+	THexList visibleHexes = gameWorld.level.findVisibleHexes(thisEntity->transform->hexPosition, viewField.ringHexes, true);
 
 	std::vector<CHex> unvisibledHexes;
 	for (auto hex : viewField.visibleHexes) {
@@ -109,7 +109,7 @@ void CPlayerC::updateViewField() {
 	//CUpdateFog fogMsg(visibleHexes, unvisibledHexes);
 //	send(fogMsg);
 
-	gameWorld.level->updateVisibility(visibleHexes, unvisibledHexes);
+	gameWorld.level.updateVisibility(visibleHexes, unvisibledHexes);
 
 	//hexRendr->updateFogBuffer();
 	//game.level->getHexArray()->effectsNeedUpdate = true;

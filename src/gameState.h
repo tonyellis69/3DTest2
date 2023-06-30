@@ -42,7 +42,8 @@ public:
 	//CPlayerObject* player = nullptr;
 	CEntity* player = nullptr;
 
-	std::unique_ptr<CLevel> level;
+	//std::unique_ptr<CLevel> level;
+	CLevel level;
 
 
 	bool paused = true;

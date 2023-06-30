@@ -34,8 +34,7 @@ void CPlayerHealthC::receiveDamage(CEntity& attacker, int damage) {
 		//game.onPlayerDeath();
 		gameWorld.spawn("explosion", thisEntity->getPos(), 1.5f);
 
-		CGameEvent e;
-		e.type = gamePlayerDeath;
+		CGameEvent e(gamePlayerDeath);
 		lis::event(e);
 
 	}

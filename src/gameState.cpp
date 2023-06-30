@@ -14,24 +14,22 @@ CGameState gameWorld;
 
 
 void CGameState::setLevel(CLevel* level) {
-	//std::unique_ptr<CLevel> ptr(level);
-	//this->level = std::move(ptr);
-	this->level =  std::unique_ptr<CLevel> (level);
+	//this->level =  std::unique_ptr<CLevel> (level);
+	//TODO: scrap function!
 }
 
 void CGameState::setLevel(std::unique_ptr<CLevel> level) {
-	//TODO: finesse this re persistence of player entity and others:
-	//entities.clear();
-	this->level = std::move(level);
-	CGameEvent e; 
-	e.type = gameLevelChange;
-	e.hexArray = &this->level->hexArray;
-	lis::event(e);
+	//this->level = std::move(level);
+	//CGameEvent e; 
+	//e.type = gameLevelChange;
+	//e.hexArray = level.hexArray;
+	//lis::event(e);
+	//TODO: scrap function!
 }
 
 /** Returns a short-term convenience pointer to the level. */
 CLevel* CGameState::getLevel() {
-	return level.get();
+	return &level;
 }
 
 
@@ -125,9 +123,9 @@ void CGameState::save(std::ostream& out) {
 	file::writeObject(version, out);
 
 	//TO DO: hand the level-saving off to CLevel.save(out) - hexArray should be invisible at this level
-	CMapHeader header = { level->hexArray.width, level->hexArray.height };
+	CMapHeader header = { level.hexArray.width, level.hexArray.height };
 	file::writeObject(header, out);
-	for (auto& hex : level->hexArray.getFlatArray()) {
+	for (auto& hex : level.hexArray.getFlatArray()) {
 		file::writeObject(hex, out);
 	}
 
@@ -145,6 +143,8 @@ void CGameState::togglePause() {
 
 
 void CGameState::loadLevel(const std::string& fileName) {
+	entities.clear();
+
 	std::string fullPath = file::getDataPath() + fileName;
 	std::ifstream in(fullPath);
 	assert(in.is_open());
@@ -157,19 +157,21 @@ void CGameState::loadLevel(const std::string& fileName) {
 
 	int numHexes = header.height * header.width;
 
-	auto newLevel = std::make_unique<CLevel>();
-	newLevel->onSpawn(header.width, header.height);
+	//auto newLevel = std::make_unique<CLevel>();
+	level.onSpawn(header.width, header.height);
 
 	//FIXME: ugh
 	TFlatArray flatArray(numHexes);
 	for (auto& hex : flatArray) {
 		file::readObject(hex, in);
 	}
-	newLevel->hexArray.setArray(flatArray);
+	level.hexArray.setArray(flatArray);
 
 
-	this->level = std::move(newLevel);
-	entities.clear();
+//	this->level = std::move(newLevel);
+
+	//TODO: create an entity to represent terrain collision
+
 
 	int numEnts;
 	file::readObject(numEnts, in);
@@ -180,7 +182,7 @@ void CGameState::loadLevel(const std::string& fileName) {
 		glm::vec3 pos;
 		file::readObject(pos, in);
 		switch (entType) {
-		case entPlayer: gameWorld.spawn("player", pos); break;
+		case entPlayer: player = gameWorld.spawn("player", pos); break;
 		case entMeleeBot: gameWorld.spawn("melee bot", pos); break;
 		case entShootBot: gameWorld.spawn("shooter bot", pos); break;
 		case entGun: gameWorld.spawn("gun", pos); break;
@@ -190,8 +192,8 @@ void CGameState::loadLevel(const std::string& fileName) {
 	in.close();
 
 
-	CGameEvent e;
-	e.type = gameLevelChange;
+	CGameEvent e(gameLevelChange);
+	e.hexArray = &level.hexArray;
 	lis::event(e);
 }
 
@@ -211,7 +213,7 @@ void CGameState::updatePlayerPtr() {
 
 void CGameState::restoreEntities() {
 
-	for (auto& entRec : level->entityRecs) {
+	for (auto& entRec : level.entityRecs) {
 		switch (entRec.entType) {
 		case entPlayer: spawn("player", entRec.pos); break;
 		case entMeleeBot: spawn("melee bot", entRec.pos); break;
@@ -227,9 +229,8 @@ void CGameState::restoreEntities() {
 	updatePlayerPtr();
 	gameWorld.player->onSpawn(); //FIXME: fudge!!!!
 
-	CGameEvent e;
-	e.type = gameLevelChange;
-	e.hexArray = &level->hexArray;
+	CGameEvent e(gameLevelChange);
+	e.hexArray = &level.hexArray;
 	lis::event(e);
 	//FIXME:If we need this event at all, it should be gameEntitiesRestored or something
 }

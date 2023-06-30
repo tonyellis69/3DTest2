@@ -4,30 +4,30 @@
 #include "utils/files.h"
 #include "win/win.h"
 
-
-void CGameMode::onSpawn() {
-	if (!gameWorld.level) {
-		loadLevel("manyMapTest.map");
-		gameWorld.restoreEntities();
-	}
+#include "../hexEngineEvent.h"
+#include "../entity/cameraC.h"
 
 
+void CGameMode::initalise() {
+	gameWorld.loadLevel("manyMapTest.map");
 
-	viewMode = gameView;
+	gameWorld.player->getComponent<CameraC>()->setHeight(15);
+
 	CWin::showMouse(false);
-
 	CWin::fullScreen();
 }
 
 
 
 void CGameMode::restart() {
-	gameWorld.clearEntities();
-	gameWorld.restoreEntities();
+	//hardcoding for now
+	gameWorld.loadLevel("manyMapTest.map");
 }
 
 void CGameMode::guiHandler(CGUIevent& e) {
-
+	if (e.key == GLFW_KEY_ENTER && e.type == eKeyDown) {
+		restart();
+	}
 
 
 }
@@ -38,8 +38,7 @@ void CGameMode::gameEventHandler(CGameEvent& e) {
 }
 
 
-void CGameMode::update(float dt)
-{
+void CGameMode::update(float dt) {
 	if (gameWorld.paused)
 		return;
 
@@ -50,8 +49,6 @@ void CGameMode::update(float dt)
 	if (gameWorld.speeded)
 		this->dT = dt * 4.0f;
 
-
-	
 	for (int n = 0; n < gameWorld.entities.size(); n++) {
 		auto& entity = gameWorld.entities[n];
 		if (entity->live)
@@ -62,7 +59,6 @@ void CGameMode::update(float dt)
 	if (CWin::mouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		gameWorld.player->playerC->onFireKey(true);
 	}
-
 
 	//handle movement
 	if (CWin::keyPressed('A')) {
@@ -89,54 +85,3 @@ void CGameMode::update(float dt)
 	}
 }
 
-
-void CGameMode::loadLevel(const std::string& fileName) {
-	std::string fullPath = file::getDataPath() + fileName;
-	std::ifstream in(fullPath);
-	assert(in.is_open());
-
-	int version;
-	file::readObject(version, in);
-
-	CMapHeader header;
-	file::readObject(header, in);
-
-	int numHexes = header.height * header.width;
-
-	auto newLevel = std::make_unique<CLevel>();
-	newLevel->onSpawn(header.width, header.height);
-
-	//FIXME: ugh
-	TFlatArray flatArray(numHexes);
-	for (auto& hex : flatArray) {
-		file::readObject(hex, in);
-	}
-	newLevel->hexArray.setArray(flatArray);
-
-
-	//this->level = std::move(newLevel);
-	//entities.clear();
-
-
-
-	int numEnts;
-	file::readObject(numEnts, in);
-	for (int n = 0; n < numEnts; n++) {
-		TEntityType entType;
-		file::readObject(entType, in);
-
-		glm::vec3 pos;
-		file::readObject(pos, in);
-
-		newLevel->entityRecs.push_back({entType,pos});
-	}
-
-	in.close();
-
-	gameWorld.setLevel(std::move(newLevel));
-
-	//CGameEvent e;
-	//e.type = gameLevelChange;
-	//e.hexArray = 
-	//lis::event(e);
-}

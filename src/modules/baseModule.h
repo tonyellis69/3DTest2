@@ -14,7 +14,7 @@ public:
 	CBaseModule(CHexEngine* engine) {
 		pHexWorld = engine;
 	}
-	virtual void onSpawn() {}
+	virtual void initalise() {}
 	virtual void restart() {}
 	virtual void guiHandler(CGUIevent& e) {}
 	virtual void gameEventHandler(CGameEvent& e) {}

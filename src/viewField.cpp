@@ -33,7 +33,7 @@ bool CViewFieldArc::calculateOutline(CHex& pos, float rotation) {
 }
 
 bool CViewFieldArc::searchView(CHex& hex) {
-	for (auto viewHex : visibleHexes) {
+	for (auto& viewHex : visibleHexes) {
 		if (viewHex == hex) {
 			return true;
 		}
