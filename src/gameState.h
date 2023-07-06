@@ -36,7 +36,9 @@ public:
 	void restoreEntities();
 	void clearEntities();
 
-	CEntity* spawn(const std::string& name, glm::vec3& pos, float angle=0);
+	CEntity* spawn(const std::string& name, glm::vec3& pos = glm::vec3{0,0,0}, float angle = 0);
+
+	void updateHexMap(CHexArray& newArray);
 
 
 	//CPlayerObject* player = nullptr;

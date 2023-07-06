@@ -73,19 +73,12 @@ public:
 		return (T*)components[id].get();
 	}
 
-	//void removePhysComponent();
-
 	void onDestroy();
+
 
 
 	float dT;
 
-
-	//CHex hexPosition = CHex(-1); ///<Position on a hex grid in cube coordinates.
-
-
-	//components
-	//CPhys physics;
 	
 	bool isItem = false; //temp cludge!
 	bool isRobot = false; //temp cludge!
@@ -122,7 +115,6 @@ public:
 private:
 	static unsigned int nextId;
 
-	//std::shared_ptr<CEntity> parentEntity;
 	CEntity* parentEntity;
 };
 

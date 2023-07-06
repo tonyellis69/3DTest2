@@ -227,7 +227,7 @@ void CGameState::restoreEntities() {
 	}
 
 	updatePlayerPtr();
-	gameWorld.player->onSpawn(); //FIXME: fudge!!!!
+	//gameWorld.player->onSpawn(); //FIXME: fudge!!!!
 
 	CGameEvent e(gameLevelChange);
 	e.hexArray = &level.hexArray;
@@ -256,6 +256,8 @@ CEntity* CGameState::spawn(const std::string& name, glm::vec3& pos, float f1) {
 		ent = spawn::explosion("explosion", pos, f1);
 	else if (name == "drop")
 		ent = spawn::drop("drop", pos);
+	else if (name == "mainCam")
+		ent = spawn::mainCamera("mainCam", pos);
 
 	if (ent) {
 		CEntityEvent e = { entAdd,ent };
@@ -264,4 +266,14 @@ CEntity* CGameState::spawn(const std::string& name, glm::vec3& pos, float f1) {
 	}
 
 	return ent;
+}
+
+void CGameState::updateHexMap(CHexArray& newArray) {
+	//entities.clear();
+	level.onSpawn(newArray.width, newArray.height);
+	level.hexArray.setArray(newArray);
+
+	CGameEvent e(gameLevelChange);
+	e.hexArray = &level.hexArray;
+	lis::event(e);
 }

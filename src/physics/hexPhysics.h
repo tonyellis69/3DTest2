@@ -29,8 +29,8 @@ public:
 	void setMap(CHexArray* hexArray);
 	void clearEntities();
 	void update(float dT);
-	void removeDeletedEntities();
-	void removeDeadEntities();
+
+
 
 
 private:

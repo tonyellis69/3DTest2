@@ -4,15 +4,25 @@
 
 #include "utils/random.h"
 
-std::unique_ptr<CLevel> CRandLevel::makeLevel() {
-    level = std::make_unique<CLevel>();
-    level->onSpawn(size.x, size.y);
+CHexArray CRandLevel::makeLevel() {
+    CHexArray tmpArray;
+    tmpArray.onSpawn(size.x,size.y);
     if (!rootQuad)
         rootQuad = std::make_shared<CHexQuad>(glm::i32vec2{ 0,0 }, size);
 
-    updateHexGrid();
+    uniqueLines.clear();
+    makeQuadLines(rootQuad.get());
 
-    return std::move(level);
+    removeRandomLines();
+
+    storeUniqueQuadLines(rootQuad.get()); //for outline
+    makeHexLines();
+
+
+
+    tmpArray = writeHexLinesToLevel(tmpArray);
+
+    return tmpArray;
 }
 
 /** Grow or shrink the map, keeping its general proportions. */
@@ -25,26 +35,19 @@ void CRandLevel::resize(int dSize) {
     removalChance = 1;
 }
 
-void CRandLevel::updateHexGrid() {
-    uniqueLines.clear();
-    makeQuadLines(rootQuad.get());
-
-    //randomly remove some lines
-    //for (auto& line = uniqueLines.begin(); line != uniqueLines.end();) {
-    //    if (rnd::dice(maxRemovals) < removalChance) {
-    //        line = uniqueLines.erase(line);
-    //    }
-    //    else
-    //        line++;
-    //}
-
-    //add outline lines
-    storeUniqueQuadLines(rootQuad.get());
-
-    makeHexLines();
+void CRandLevel::removeRandomLines() {
+    for (auto& line = uniqueLines.begin(); line != uniqueLines.end();) {
+        if (rnd::dice(maxRemovals) < removalChance) {
+            line = uniqueLines.erase(line);
+        }
+        else
+            line++;
+    }
 }
 
 
+
+/** Make lines out of the deepest subquads and store the unique ones. */
 void CRandLevel::makeQuadLines(CHexQuad* quad) {
     if (quad->childA && quad->childB) {
         divCount++;
@@ -81,9 +84,10 @@ void CRandLevel::reset() {
     divCount = 1;
 }
 
-glm::vec3 CRandLevel::findPlayerPos()
-{
-    return glm::vec3(0,0,0);
+glm::vec3 CRandLevel::findPlayerPos() {
+    CHex defaultPos = offsetToCube(size.x * -0.25f, size.y * -0.25f);
+    CHex pos = offsetToCube(7, 21);
+    return cubeToWorldSpace(CHex(0,-1,1));
 }
 
 void CRandLevel::makeDoors() {
@@ -115,10 +119,17 @@ std::vector<glm::i32vec2> CRandLevel::makeHexLine(const glm::i32vec2& a, const g
     }
 
     //remove 2 hexes to make a door.
-    //if (lineHexes.size() > 5) {
-    //    int midPt = lineHexes.size() / 2;
-    //    lineHexes.erase(lineHexes.begin() + midPt, lineHexes.begin() + midPt + 2);
-    //}
+    if (lineHexes.size() > 5) {
+        if (a.x == 0)
+            if (a.y == 0 || a.y == size.y)
+                return lineHexes;
+        if (a.x == size.x)
+            return lineHexes; //unless they are the outline hexes
+
+
+        int midPt = lineHexes.size() / 2;
+        lineHexes.erase(lineHexes.begin() + midPt, lineHexes.begin() + midPt + 2);
+    }
 
     return lineHexes;
 }
@@ -183,5 +194,14 @@ int CRandLevel::findDivisor(int freeSpace) {
     return std::clamp(int(d), minGap, freeSpace - minGap);
 }
 
+
+CHexArray CRandLevel::writeHexLinesToLevel(CHexArray& pArray) {
+    for (auto& hexLine : hexLines) {
+        for (auto& hex : hexLine) {
+            pArray.getHexOffset(hex.x, hex.y).content = solidHex;
+        }
+    }
+    return pArray;
+}
 
 

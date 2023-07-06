@@ -13,7 +13,12 @@ void CGameMode::initalise() {
 
 	gameWorld.player->getComponent<CameraC>()->setHeight(15);
 
-	CWin::showMouse(false);
+	//auto cam = gameWorld.spawn("mainCam");
+	//cam->getComponent<CameraC>()->setHeight(15);
+
+	//gameWorld.player->getComponent<CameraC>()->enabled = false;
+
+	CWin::showMouse(true);
 	CWin::fullScreen();
 }
 
@@ -49,11 +54,11 @@ void CGameMode::update(float dt) {
 	if (gameWorld.speeded)
 		this->dT = dt * 4.0f;
 
-	for (int n = 0; n < gameWorld.entities.size(); n++) {
-		auto& entity = gameWorld.entities[n];
-		if (entity->live)
-			gameWorld.entities[n]->update(dT);
-	}
+	//for (int n = 0; n < gameWorld.entities.size(); n++) {
+	//	auto& entity = gameWorld.entities[n];
+	//	if (entity->live)
+	//		gameWorld.entities[n]->update(dT);
+	//}
 
 	//Needed for continous fire. GLFW callbacks only trigger once.
 	if (CWin::mouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {

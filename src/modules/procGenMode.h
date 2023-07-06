@@ -11,21 +11,20 @@ public:
 	CProcGenMode(CHexEngine* engine) : CBaseModule(engine) {}
 	void initalise();
 
-	void start();
 	void restart();
 
 
 	void guiHandler(CGUIevent& e);
 	void gameEventHandler(CGameEvent& e);
 
-	void makeLevel();
+	void updateGameWorld();
 	
 
 	void update(float dt);
 
-	void writeGridToLevel();
-
+private:
 	CRandLevel levelGen;
 
 	glm::vec3 playerPos;
+	CEntity* mainCam;
 };

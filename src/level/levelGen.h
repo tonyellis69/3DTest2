@@ -30,12 +30,12 @@ struct THexQuadLine {
 /** Creates a CLevel object with a populated, randomly generated map. */
 class CRandLevel {
 public:
-	std::unique_ptr<CLevel>  makeLevel();
+	CHexArray makeLevel();
 	void setSize(int x, int y) {
 		size = {x,y};
 	}
 	void resize(int dSize);
-	void updateHexGrid();
+	void removeRandomLines();
 	void makeQuadLines(CHexQuad* quad);
 	void subdivide();
 	void quadRemovals();
@@ -51,6 +51,7 @@ private:
 	void makeHexLines();
 	void split(CHexQuad* quad, bool splitHoriz);
 	int findDivisor(int freeSpace);
+	CHexArray writeHexLinesToLevel(CHexArray& pArray);
 	std::unique_ptr<CLevel> level;
 	glm::i32vec2 size = { 30,30 };
 	std::shared_ptr<CHexQuad> rootQuad;

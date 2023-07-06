@@ -80,25 +80,17 @@ void CHexEngine::initialise() {
 	reticule = gameWorld.models["reticule"];
 	reticule.palette[0] = { 1,1,1,1 };
 
-	gameMode = std::make_unique<CGameMode>(this);
-	mode = gameMode.get();
-	//procGenMode = std::make_unique<CProcGenMode>(this);
-	//mode = procGenMode.get();
+	//gameMode = std::make_unique<CGameMode>(this);
+	//mode = gameMode.get();
+	procGenMode = std::make_unique<CProcGenMode>(this);
+	mode = procGenMode.get();
 
 	mode->initalise();
 
 
 	gameWorld.paused = false;
 
-	pBotZero = nullptr;
-	for (auto& entity : gameWorld.entities) {
-		if (entity->isRobot && entity->id == 7) {
-			if (pBotZero == NULL)
-				pBotZero = entity.get();
-			else
-				;// ((CRobot*)entity.get())->setState(robotDoNothing);
-		}
-	}
+	hexRender.screenToWS(0, 0);
 
 }
 
@@ -271,7 +263,7 @@ void CHexEngine::draw() {
 	hexRender.resetDrawLists();
 
 	for (auto& entity : gameWorld.entities) {
-		if (entity->live && entity->modelCmp->drawFn->visible) 
+		if (entity->live && entity->modelCmp && entity->modelCmp->drawFn->visible) 
 			entity->modelCmp->draw(hexRender);
 	}
 	if (directionGraphicsOn) {
@@ -350,10 +342,13 @@ void CHexEngine::update(float dt) {
 
 	mode->update(dT);
 
-	updateCameraPosition();
-	//TODO: make modules handle their own camera business, and remove
-
 	calcMouseWorldPos();
+
+	for (int n = 0; n < gameWorld.entities.size(); n++) {
+		auto& entity = gameWorld.entities[n];
+		if (entity->live)
+			gameWorld.entities[n]->update(dT);
+	}
 
 	gameWorld.update(dT);
 
@@ -486,15 +481,6 @@ int CHexEngine::tigCall(int memberId) {
 }
 
 
-void CHexEngine::updateCameraPosition() {	
-	if (cameraMode == camFree) {
-		hexRender.setCameraPos(freeCamPos.x, freeCamPos.y);
-	}
-
-	if (zoom2fit)
-		zoomToFit();
-
-}
 
 
 
@@ -578,19 +564,7 @@ void CHexEngine::drawReticule() {
 	hexRender.drawModelAt(reticule, mouseWorldPos);	
 }
 
-void CHexEngine::removeDeadEntities() {
-	physics.removeDeadEntities();
 
-	for (auto& ent = gameWorld.entities.begin(); ent != gameWorld.entities.end();) {
-		if (ent->get()->deleteMe)
-			ent = gameWorld.entities.erase(ent);
-		else
-			ent++;
-	}
-
-
-	gameWorld.entitiesToKill = false;
-}
 
 ///** Remove marked entities from the game. */
 //void CHexWorld::removeEntities() {
@@ -629,27 +603,7 @@ void CHexEngine::onPlayerDeath() {
 	}
 }
 
-/** Progressively zoom while the map doesn't fit the screen. */
-void CHexEngine::zoomToFit() {
-	glm::vec3 gridTL = abs(cubeToWorldSpace(gameWorld.level.indexToCube( glm::i32vec2{ 0,0 })));
-	glm::vec3 gridBR = abs(cubeToWorldSpace(gameWorld.level.indexToCube(gameWorld.level.getGridSize())));
 
-	glm::i32vec2 scnSize = hexRender.getScreenSize();
-	glm::vec3 scnTL = abs(hexRender.screenToWS(0, 0));
-	glm::vec3 scnBR = abs(hexRender.screenToWS(scnSize.x, scnSize.y));
-
-	glm::vec3 margin(2, 2, 0);
-
-	if (glm::any(glm::greaterThan(gridTL + margin, scnTL))) {
-		hexRender.dollyCamera(-4.0f);
-	} 
-	else	if (glm::all(glm::lessThanEqual(gridTL , scnTL - margin * 1.5f))) {
-		hexRender.dollyCamera(1.0f);
-	}
-	else
-		zoom2fit = false;
-
-}
 
 /** TO DO: ultimately this should be automated via a Tig
 	config file rather than hardcoded. */

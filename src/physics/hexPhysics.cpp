@@ -57,33 +57,7 @@ void CHexPhysics::update(float dT) {
 
 }
 
-void CHexPhysics::removeDeletedEntities() {
-	for (auto& it = entities.begin(); it != entities.end(); ) {
-		if ((*it)->deleteMe)
-			it = entities.erase(it);
-		else
-			it++;
-	}
-}
 
-void CHexPhysics::removeDeadEntities() {
-	for (auto& it = entities.begin(); it != entities.end(); ) {
-		if ((*it)->live == false)
-			it = entities.erase(it);
-		else
-			it++;
-	}
-}
-//FIXME: scrap above for below
-
-//void CHexPhysics::removeEntities() {
-//	for (auto& it = entities.begin(); it != entities.end(); ) {
-//		if ((*it)->toRemove == true)
-//			it = entities.erase(it);
-//		else
-//			it++;
-//	}
-//}
 
 /** Look for possible collisions between scenery and pairs of bodies. */
 void CHexPhysics::broadphase() {

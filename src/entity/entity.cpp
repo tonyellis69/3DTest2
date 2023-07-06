@@ -44,7 +44,8 @@ void CEntity::update(float dT) {
 	diagnostic = "";
 
 	for (auto& comp : components) {
-		comp.second->update(dT);
+		if (comp.second->enabled)
+			comp.second->update(dT);
 	}
 }
 

@@ -4,48 +4,50 @@
 //#include "GLFW/glfw3.h"
 
 #include "../hexEngine.h"
+#include "../entity/cameraC.h"
 
 #include "win/win.h"
 
 void CProcGenMode::initalise() {
-	viewMode = keepView;
-	makeLevel();
+	updateGameWorld();
 
-	CWin::showMouse(false);
+	mainCam = gameWorld.spawn("mainCam");
+	mainCam->getComponent<CameraC>()->setZoom2Fit(true);
+
+	auto player = gameWorld.spawn("player");
+	player->getComponent<CameraC>()->enabled = false;
+
+	player->setPosition(levelGen.findPlayerPos());
+
+	CWin::showMouse(true);
 	CWin::fullScreen();
 }
 
-/** Called every time we start a new session. */
-void CProcGenMode::start() {
-
-}
 
 void CProcGenMode::restart(){
 	//game.clearEntities();
 	levelGen.reset();
-	makeLevel();
+	updateGameWorld();
 }
 
 void CProcGenMode::guiHandler(CGUIevent& e) {
-
 		if (e.type == eMouseWheel ) {
 			levelGen.resize(int(e.f2));
-			makeLevel();
+			updateGameWorld();
+			mainCam->getComponent<CameraC>()->setZoom2Fit(true);
 		}
 		if (e.type == eKeyDown) {
 			if (e.key == 'L') {
 				levelGen.subdivide();
-				//update hex grid of existing level
-				levelGen.updateHexGrid();
-				writeGridToLevel();
+				updateGameWorld();
 			}
 			if (e.key == 'R') {
 				levelGen.quadRemovals();
-				makeLevel();
+				updateGameWorld();
 			}
 			if (e.key == 'D') {
 				levelGen.makeDoors();
-				makeLevel();
+				updateGameWorld();
 			}
 		}	
 
@@ -59,37 +61,24 @@ void CProcGenMode::gameEventHandler(CGameEvent& e) {
 
 
 
-void CProcGenMode::makeLevel() {
-	gameWorld.clearEntities();
+void CProcGenMode::updateGameWorld() {
+	CHexArray tmpArray = levelGen.makeLevel();
 
-	auto level = levelGen.makeLevel();
-
-	//find player pos
 	playerPos = levelGen.findPlayerPos();
-
 	//ensure player spawns there
-	level->entityRecs.push_back({ entPlayer,playerPos });
+	//TODO
 
-	gameWorld.setLevel(std::move(level));
-	gameWorld.restoreEntities();
+	gameWorld.updateHexMap(tmpArray);
 
-	writeGridToLevel();
 }
 
 
 void CProcGenMode::update(float dt) {
-	if (gameWorld.paused)
-		return;
+
 
 	this->dT = dt;
+
+
 }
 
-void CProcGenMode::writeGridToLevel() {
-	auto pArray = gameWorld.level.getHexArray();
 
-	for (auto& hexLine : levelGen.hexLines) {
-		for (auto& hex : hexLine) {
-			pArray->getHexOffset(hex.x, hex.y).content = solidHex;
-		}
-	} 
-}

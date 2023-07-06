@@ -21,6 +21,8 @@ public:
 
 	static CEntity* drop(const std::string& name, glm::vec3& pos);
 
+	static CEntity* mainCamera(const std::string& name, glm::vec3& pos);
+
 
 
 };

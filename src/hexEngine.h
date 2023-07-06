@@ -121,9 +121,6 @@ private:
 
 	void onNewMouseHex();
 	int tigCall(int memberId) ;
-	void updateCameraPosition();
-
-
 
 	void initPalettes();
 
@@ -137,12 +134,8 @@ private:
 	void fixedCam(float x, float y);
 
 	void drawReticule();
-	void removeDeadEntities();
-	//void removeEntities();
+	
 
-	void zoomToFit();
-
-//	CLevel* level;
 
 
 

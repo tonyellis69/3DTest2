@@ -254,3 +254,17 @@ CEntity* CSpawn::drop(const std::string& name, glm::vec3& pos) {
 	drop->onSpawn();
 	return drop.get();
 }
+
+CEntity* CSpawn::mainCamera(const std::string& name, glm::vec3& pos) {
+	auto camera = std::make_shared<CEntity>();
+	camera->addComponent<CameraC>();
+	camera->addComponent<CTransformCmp>();
+	camera->setPosition(pos);
+
+	camera->name = "mainCam";
+
+	gameWorld.addEntity(camera);
+
+	camera->onSpawn();
+	return camera.get();
+}
