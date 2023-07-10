@@ -11,6 +11,8 @@ public:
 	CProcGenMode(CHexEngine* engine) : CBaseModule(engine) {}
 	void initalise();
 
+	void onSwitchTo();
+
 	void restart();
 
 
@@ -27,4 +29,6 @@ private:
 
 	glm::vec3 playerPos;
 	CEntity* mainCam;
+	CEntity* player;
+
 };

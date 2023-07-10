@@ -16,9 +16,9 @@ void CMapPatch::onNewMouseHex(CHex& hex) {
 }
 
 void CMapPatch::plotLine(CHex& A, CHex& B) {
-	if (A.z == B.z)
+	if (A.s == B.s)
 		plotHorizLine(A, B);
-	else if (A.x == B.x || A.y == B.y)
+	else if (A.q == B.q || A.r == B.r)
 		plotDiagLine(A, B);
 	else
 		plotVertLine(A, B);
@@ -26,7 +26,7 @@ void CMapPatch::plotLine(CHex& A, CHex& B) {
 
 /** Draws a more aesthetically pleasing line without redundant hexes at the ends. */
 void CMapPatch::plotVertLine(CHex& A, CHex& B) {
-	bool veerEast = (A.x > 0) ? true : false;
+	bool veerEast = (A.q > 0) ? true : false;
 
 	THexList hexList = vertLine(A, B, veerEast);
 	for (auto& hex : hexList)
@@ -48,7 +48,7 @@ void CMapPatch::plotDiagLine(CHex& A, CHex& B) {
 	if (A == B)
 		return;
 	THexDir dir = relativeDir(A, B);
-	int hDist = abs(A.z - B.z);
+	int hDist = abs(A.s - B.s);
 	CHex hex = A;
 	for (int n = 0; n < hDist; n++ ) {
 		hexes[hex].content = solidHex;

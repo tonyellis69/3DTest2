@@ -17,6 +17,8 @@ public:
 	void guiHandler(CGUIevent& e);
 	void gameEventHandler(CGameEvent& e);
 
+	void onSwitchTo();
+
 	virtual void makeMap() {}
 	virtual void startProcTest() {}
 	virtual void startGame() {}

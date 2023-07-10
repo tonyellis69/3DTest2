@@ -9,15 +9,10 @@
 
 
 void CGameMode::initalise() {
-	gameWorld.loadLevel("manyMapTest.map");
-
-	gameWorld.player->getComponent<CameraC>()->setHeight(15);
-
-	//auto cam = gameWorld.spawn("mainCam");
-	//cam->getComponent<CameraC>()->setHeight(15);
-
-	//gameWorld.player->getComponent<CameraC>()->enabled = false;
-
+	if (gameWorld.entities.empty()) {
+		gameWorld.loadLevel("manyMapTest.map");
+		gameWorld.player->getComponent<CameraC>()->setHeight(15);
+	}
 	CWin::showMouse(true);
 	CWin::fullScreen();
 }
@@ -39,7 +34,14 @@ void CGameMode::guiHandler(CGUIevent& e) {
 
 void CGameMode::gameEventHandler(CGameEvent& e) {
 
+}
 
+void CGameMode::onSwitchTo() {
+	CEntity* mainCam = gameWorld.getEntity("mainCam");
+	if (mainCam) {
+		mainCam->live = false;
+	}
+	gameWorld.player->getComponent<CameraC>()->enabled = true;
 }
 
 

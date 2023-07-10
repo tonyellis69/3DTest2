@@ -85,9 +85,8 @@ void CRandLevel::reset() {
 }
 
 glm::vec3 CRandLevel::findPlayerPos() {
-    CHex defaultPos = offsetToCube(size.x * -0.25f, size.y * -0.25f);
-    CHex pos = offsetToCube(7, 21);
-    return cubeToWorldSpace(CHex(0,-1,1));
+    CHex defaultPos = offsetToCube(size.x * -0.25f, size.y * 0.25f);
+    return cubeToWorldSpace(defaultPos);
 }
 
 void CRandLevel::makeDoors() {

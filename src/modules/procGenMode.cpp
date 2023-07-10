@@ -14,13 +14,23 @@ void CProcGenMode::initalise() {
 	mainCam = gameWorld.spawn("mainCam");
 	mainCam->getComponent<CameraC>()->setZoom2Fit(true);
 
-	auto player = gameWorld.spawn("player");
+	player = gameWorld.spawn("player");
 	player->getComponent<CameraC>()->enabled = false;
 
 	player->setPosition(levelGen.findPlayerPos());
 
 	CWin::showMouse(true);
 	CWin::fullScreen();
+}
+
+void CProcGenMode::onSwitchTo() {
+	mainCam = gameWorld.getEntity("mainCam");
+	if (mainCam) {
+		mainCam->live = true;
+		mainCam->getComponent<CameraC>()->setZoom2Fit(true);
+	}
+	player->getComponent<CameraC>()->enabled = false;
+	player->setPosition(levelGen.findPlayerPos());
 }
 
 
@@ -35,6 +45,7 @@ void CProcGenMode::guiHandler(CGUIevent& e) {
 			levelGen.resize(int(e.f2));
 			updateGameWorld();
 			mainCam->getComponent<CameraC>()->setZoom2Fit(true);
+			player->setPosition(levelGen.findPlayerPos());
 		}
 		if (e.type == eKeyDown) {
 			if (e.key == 'L') {

@@ -90,7 +90,6 @@ void CHexEngine::initialise() {
 
 	gameWorld.paused = false;
 
-	hexRender.screenToWS(0, 0);
 
 }
 
@@ -147,8 +146,13 @@ void CHexEngine::onEvent(CGUIevent& e) {
 
 		else if (e.i1 == 'R')
 			hexRender.recompileShader();
+		else if (e.i1 == 'I') {
+			switchModes();
+		}
+
 
 	}
+
 
 
 	if (e.type == eMouseMove) {
@@ -187,6 +191,7 @@ void CHexEngine::onEvent(CGameEvent& e) {
 	case gameLevelChange: break;
 	case gamePlayerSpawn: { if (cameraMode == camFollow)
 		pFollowCamEnt = e.entity;
+		gameWorld.player = e.entity;
 	}; break;
 
 	}
@@ -437,8 +442,7 @@ void CHexEngine::onNewMouseHex() {
 	else
 		cursorPath = *hexLine2(game.player->hexPosition, hexCursor->hexPosition);*/
 
-
-	std::stringstream coords; coords << "cube " << mouseHex.x << ", " << mouseHex.y << ", " << mouseHex.z;
+	std::stringstream coords; coords << "cube " << mouseHex.q << ", " << mouseHex.r << ", " << mouseHex.s;
 	glm::i32vec2 offset = cubeToOffset(mouseHex);
 	coords << "  offset " << offset.x << ", " << offset.y;
 	glm::i32vec2 index = gameWorld.level.getHexArray()->cubeToIndex(mouseHex);
@@ -623,19 +627,20 @@ void CHexEngine::initPalettes() {
 	gameWorld.pPalettes = &hexRender.palettes;
 }
 
-void CHexEngine::proc2Game() {
-
-	if (viewMode == keepView) { //FIXME: cheap trick, do not keep!
-		gameMode = std::make_unique<CGameMode>(this);
+void CHexEngine::switchModes() {
+	if (mode == procGenMode.get()) {
+		mode->onSwitchFrom();
+		if (!gameMode) {
+			gameMode = std::make_unique<CGameMode>(this);
+			gameMode->initalise();
+		}
 		mode = gameMode.get();
+		mode->onSwitchTo();
 	}
 	else {
-		mode = procGenMode.get();
-		hexRender.setCameraPos(0, 0);
-	}
-	
-	
-	mode->initalise();
-	setViewMode(mode->viewMode);
+		mode->onSwitchFrom();
 
+		mode = procGenMode.get();
+		mode->onSwitchTo();
+	}
 }

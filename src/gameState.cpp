@@ -55,6 +55,14 @@ CEntity* CGameState::getEntity(int idNo) {
 	return nullptr;
 }
 
+CEntity* CGameState::getEntity(const std::string& name) {
+	for (auto& entity : entities) {
+		if (entity->name == name)
+			return entity.get();
+	}
+	return nullptr;
+}
+
 std::shared_ptr<CEntity> CGameState::getEntitySmart(int idNo) {
 	for (auto& entity : entities) {
 		if (entity->id == idNo)

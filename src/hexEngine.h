@@ -124,7 +124,7 @@ private:
 
 	void initPalettes();
 
-	void proc2Game();
+	void switchModes();
 
 	void toggleDirectionGraphics();
 

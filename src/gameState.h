@@ -20,6 +20,7 @@ public:
 
 	CEntities getEntitiesAt(const CHex& hex);
 	CEntity* getEntity(int idNo);
+	CEntity* getEntity(const std::string& name);
 	std::shared_ptr<CEntity> getEntitySmart(int idNo);
 	void addEntity(TEntity entity);
 	void deleteEntity(CEntity& entity);

@@ -18,6 +18,8 @@ public:
 	virtual void restart() {}
 	virtual void guiHandler(CGUIevent& e) {}
 	virtual void gameEventHandler(CGameEvent& e) {}
+	virtual void onSwitchTo() {}
+	virtual void onSwitchFrom() {}
 
 	
 	virtual void startProcTest() {}
