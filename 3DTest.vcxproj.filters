@@ -225,6 +225,12 @@
     <ClCompile Include="src\entity\cameraC.cpp">
       <Filter>Source Files\entity</Filter>
     </ClCompile>
+    <ClCompile Include="src\modules\procGen.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\procRoom.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -427,6 +433,12 @@
     </ClInclude>
     <ClInclude Include="src\entity\cameraC.h">
       <Filter>Source Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\procGen.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\procRoom.h">
+      <Filter>Source Files\modules</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

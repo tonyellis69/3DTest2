@@ -45,6 +45,7 @@
 #include "modules/workingMode.h" //remove
 #include "modules/gameMode.h"
 #include "modules/procGenMode.h"
+#include "modules/procGen.h"
 
 #include "roboState.h"
 
@@ -82,8 +83,11 @@ void CHexEngine::initialise() {
 
 	//gameMode = std::make_unique<CGameMode>(this);
 	//mode = gameMode.get();
-	procGenMode = std::make_unique<CProcGenMode>(this);
-	mode = procGenMode.get();
+	/*procGenMode = std::make_unique<CProcGenMode>(this);
+	mode = procGenMode.get();*/
+
+	procGenMode2 = std::make_unique<CProcGen>(this);
+	mode = procGenMode2.get();
 
 	mode->initalise();
 

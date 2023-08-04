@@ -186,6 +186,7 @@ private:
 	std::unique_ptr<CBaseModule> workingMode;
 	std::unique_ptr<CBaseModule> gameMode;
 	std::unique_ptr<CBaseModule> procGenMode;
+	std::unique_ptr<CBaseModule> procGenMode2;
 };
 
 

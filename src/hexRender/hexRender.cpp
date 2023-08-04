@@ -96,6 +96,8 @@ void CHexRender::recompileShader() {
 	hFade = sceneLayerShader->getUniform("fade");
 }
 
+
+
 void CHexRender::onEvent(CGameEvent& e) {
 	if (e.type == gameLevelChange) {
 		loadMap(e.hexArray);

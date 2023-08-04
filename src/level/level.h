@@ -18,7 +18,7 @@ struct TEntityRec {
 class CLevel  {
 public:
 	void onSpawn(int x, int y) {
-		hexArray.onSpawn(x, y);
+		hexArray.initialise(x, y);
 	}
 	THexList findVisibleHexes(CHex& apex, THexList& perimeterHexes, bool obsessive);
 	void updateVisibility(THexList& visibleHexes, THexList& unvisibleHexes);

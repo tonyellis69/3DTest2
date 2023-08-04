@@ -6,7 +6,7 @@
 
 CHexArray CRandLevel::makeLevel() {
     CHexArray tmpArray;
-    tmpArray.onSpawn(size.x,size.y);
+    tmpArray.initialise(size.x,size.y);
     if (!rootQuad)
         rootQuad = std::make_shared<CHexQuad>(glm::i32vec2{ 0,0 }, size);
 
