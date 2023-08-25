@@ -15,6 +15,9 @@ public:
 	glm::vec3 getOrigin() {
 		return origin;
 	}
+	glm::vec3 getSize() {
+		return size;
+	}
 
 private:
 	void calcWorldCorners();
@@ -27,5 +30,7 @@ private:
 	glm::vec3 b;
 	glm::vec3 c;
 	glm::vec3 d;
+
+
 
 };

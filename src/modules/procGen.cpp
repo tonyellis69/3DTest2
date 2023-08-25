@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 
 #include <algorithm>
+#include <set>
 
 #include "../gameState.h"
 
@@ -14,6 +15,8 @@
 
 #include "renderer/imRendr/imRendr.h"
 
+#include "delaunator.hpp"
+
 
 void CProcGen::initalise() {
 
@@ -22,7 +25,7 @@ void CProcGen::initalise() {
 	mainCam = gameWorld.spawn("mainCam");
 	mainCam->getComponent<CameraC>()->setZoom2Fit(true);
 
-	hexArray.initialise(60, 40);
+	hexArray.initialise(80,60); // (60, 40);
 
 	gameWorld.updateHexMap(hexArray);
 
@@ -36,8 +39,31 @@ void CProcGen::update(float dt) {
 		room.drawWireFrame();
 	}
 
-	imRendr::drawLine(centreOfMass - glm::vec3(3,0,0), centreOfMass + glm::vec3(3, 0, 0));
-	imRendr::drawLine(centreOfMass - glm::vec3(0, 3, 0), centreOfMass + glm::vec3(0, 3, 0));
+	//imRendr::drawLine(centreOfMass - glm::vec3(3,0,0), centreOfMass + glm::vec3(3, 0, 0));
+	//imRendr::drawLine(centreOfMass - glm::vec3(0, 3, 0), centreOfMass + glm::vec3(0, 3, 0));
+
+
+	//draw tris
+	if (!triEdges.empty()) {
+		for (auto& triEdge : triEdges) {
+			imRendr::drawLine(rooms[triEdge.a].getOrigin(), rooms[triEdge.b].getOrigin());
+		}
+	}
+
+	if (!mstEdges.empty()) {
+		triEdges.clear();
+		for (auto& mstEdge : mstEdges) {
+			imRendr::drawLine(rooms[mstEdge.a].getOrigin(), rooms[mstEdge.b].getOrigin());
+		}
+	}
+
+	if (!doorRects.empty()) {
+		for (auto& rect : doorRects) {
+			rect.drawWireFrame();
+		}
+
+	}
+
 
 }
 
@@ -60,9 +86,22 @@ void CProcGen::guiHandler(CGUIevent& e)
 		if (e.key == 'O') {
 			arrangeRooms();
 		}
+		if (e.key == 'T') {
+			triangulate();
+		}
+		if (e.key == 'M') {
+			createMST();
+		}
+		if (e.key == 'R') {
+			createDoorways();
+		}
 		if (e.key == 'H') {
-			for (auto& room : rooms) {
-				room.writeHexes(hexArray);
+			showHexes = !showHexes;
+			if (showHexes) {
+				drawHexes();
+			}
+			else {
+				hexArray.clear();
 			}
 			gameWorld.updateHexMap(hexArray);
 		}
@@ -79,7 +118,7 @@ glm::vec3 CProcGen::randomPos() {
 }
 
 glm::i32vec2 CProcGen::randomSize() {
-	static std::normal_distribution<float> s{8, 2};
+	static std::normal_distribution<float> s{12, 3}; // s{ 8, 2 };
 
 	int w = std::max<int>(int(s(randEngine)), 4);
 	int h = std::max<int>(int(s(randEngine)), 4);
@@ -104,6 +143,9 @@ glm::i32vec2 CProcGen::randomSize() {
 void CProcGen::arrangeRooms() {
 	randEngine.seed(seed++);
 	rooms.clear();
+	triEdges.clear();
+	mstEdges.clear();
+	doorRects.clear();
 	for (int r = 0; r < maxRooms; r++) {
 		rooms.push_back(CProcRoom(randomPos(), randomSize()));
 	}
@@ -292,5 +334,90 @@ void CProcGen::cullOverlaps() {
 
 		if (mostOverlapped > -1) 
 			rooms.erase(rooms.begin() + mostOverlapped);
+	}
+}
+
+/**	Find the indices that triagulate the room centres. */
+void CProcGen::triangulate() {
+	//convert origins to Delaunator format
+	std::vector<double> coords;
+	for (auto& room : rooms) {
+		glm::vec3 origin = room.getOrigin();
+		coords.emplace_back(double(origin.x));
+		coords.emplace_back(double(origin.y));
+	}
+
+	//triangulate
+	delaunator::Delaunator d(coords);
+
+	//fill with triangle edge indices
+	triEdges.clear();
+	for (int tri = 0; tri < d.triangles.size(); tri += 3) {
+		int a = d.triangles[tri];
+		int b = d.triangles[tri + 1];
+		int c = d.triangles[tri + 2];
+
+		triEdges.push_back({ a,b });
+		triEdges.push_back({ b,c });
+		triEdges.push_back({ c,a });
+	}
+}
+
+void CProcGen::createMST() {
+	mstEdges.clear();
+	std::set<int> inMST;
+
+	inMST.insert(0); //makes this the starting vertex
+
+	while (inMST.size() != rooms.size() ) {
+		float smallestWeight = FLT_MAX;
+		edge minEdge;
+		int newVert;
+		for (int v = 0; v < rooms.size(); v++) {
+			if (inMST.count(v) == false) {
+				for (int v1 = 0; v1 < rooms.size(); v1++) {
+					if (inMST.count(v1) ) {
+						for (auto& triEdge : triEdges) {
+							if (triEdge == edge{v, v1}) {
+								float dist = glm::distance(rooms[triEdge.a].getOrigin(), rooms[triEdge.b].getOrigin());
+								if (dist < smallestWeight) {
+									smallestWeight = dist;
+									minEdge = triEdge;
+									newVert = v;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if (smallestWeight < FLT_MAX) {
+			mstEdges.push_back(minEdge);
+			inMST.insert(newVert);
+		}
+
+	}
+
+}
+
+/** Create rects for each doorway, establishing orientation, size. */
+void CProcGen::createDoorways() {
+	doorRects.clear();
+	for (auto& edge : mstEdges) {
+		doorRects.push_back(CDoorRect(rooms[edge.a], rooms[edge.b]));
+
+
+	}
+}
+
+/** Write rooms as hexes to our hexArray. */
+void CProcGen::drawHexes() {
+	for (auto& room : rooms) {
+		room.writeHexes(hexArray);
+	}
+
+	//draw doorways
+	for (auto& doorRect : doorRects) {
+		doorRect.writeHexes(hexArray);
 	}
 }

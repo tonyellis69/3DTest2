@@ -6,6 +6,7 @@
 #include "baseModule.h"
 
 #include "procRoom.h"
+#include "doorRect.h"
 
 class CProcGen : public CBaseModule {
 public:
@@ -28,17 +29,35 @@ private:
 	int convergeRooms(int maxAttempts);
 	void moveRoomInward(int roomNo);
 	void cullOverlaps();
+	void triangulate();
+	void createMST();
+	void createDoorways();
+	void drawHexes();
 
 
 	CEntity* mainCam;
 	CHexArray hexArray;
 
 	std::vector<CProcRoom>  rooms;
-	int maxRooms = 30;
+	int maxRooms = 8;// 30;
 
 	std::mt19937 randEngine;
 
 	glm::vec3 centreOfMass;
 
 	unsigned int seed = 0;
+
+	struct edge {
+		int a;
+		int b;
+		bool operator==(const edge& rhs) {
+			return  (a == rhs.a && b == rhs.b) || (b == rhs.a && a == rhs.b);
+		}
+	};
+	std::vector<edge> triEdges;
+	std::vector<edge> mstEdges;
+
+	bool showHexes = false;
+
+	std::vector<CDoorRect>  doorRects;
 };

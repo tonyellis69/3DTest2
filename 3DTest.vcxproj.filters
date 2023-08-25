@@ -231,6 +231,12 @@
     <ClCompile Include="src\modules\procRoom.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
+    <ClCompile Include="src\modules\delaunator.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\doorRect.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -438,6 +444,12 @@
       <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="src\modules\procRoom.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\delaunator.hpp">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\doorRect.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
   </ItemGroup>
