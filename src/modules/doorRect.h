@@ -19,6 +19,12 @@ public:
 	glm::vec3 c;
 	glm::vec3 d;
 
+	glm::vec3 door1A;
+	glm::vec3 door1B;
+
+	glm::vec3 door2A;
+	glm::vec3 door2B;
+
 
 
 };

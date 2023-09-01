@@ -39,13 +39,13 @@ private:
 	CHexArray hexArray;
 
 	std::vector<CProcRoom>  rooms;
-	int maxRooms = 8;// 30;
+	int maxRooms = 5;// 30;
 
 	std::mt19937 randEngine;
 
 	glm::vec3 centreOfMass;
 
-	unsigned int seed = 0;
+	unsigned int seed =  0;
 
 	struct edge {
 		int a;
