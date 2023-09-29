@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+/** Scrapping in favour of automata. */
+
 class CHexArray;
 class CProcRoom;
 class CDoorRect {
@@ -9,6 +11,8 @@ public:
 	CDoorRect(CProcRoom& roomA, CProcRoom& roomB);
 	void drawWireFrame();
 	void writeHexes(CHexArray& array);
+
+	void writeHexLine(glm::vec3& a, glm::vec3& b, CHexArray& array);
 
 
 	glm::vec3 origin;

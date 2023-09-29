@@ -166,6 +166,7 @@
     <ClCompile Include="src\missile.cpp" />
     <ClCompile Include="src\modules\baseModule.cpp" />
     <ClCompile Include="src\modules\delaunator.cpp" />
+    <ClCompile Include="src\modules\doorBot.cpp" />
     <ClCompile Include="src\modules\doorRect.cpp" />
     <ClCompile Include="src\modules\gameMode.cpp" />
     <ClCompile Include="src\modules\procGen.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="src\missile.h" />
     <ClInclude Include="src\modules\baseModule.h" />
     <ClInclude Include="src\modules\delaunator.hpp" />
+    <ClInclude Include="src\modules\doorBot.h" />
     <ClInclude Include="src\modules\doorRect.h" />
     <ClInclude Include="src\modules\gameMode.h" />
     <ClInclude Include="src\modules\procGen.h" />

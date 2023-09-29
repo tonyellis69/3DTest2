@@ -7,6 +7,7 @@
 
 #include "procRoom.h"
 #include "doorRect.h"
+#include "doorBot.h"
 
 class CProcGen : public CBaseModule {
 public:
@@ -33,6 +34,10 @@ private:
 	void createMST();
 	void createDoorways();
 	void drawHexes();
+	void initPaths();
+	void runDoorBots();
+	void drawPaths();
+	void fillRooms();
 
 
 	CEntity* mainCam;
@@ -60,4 +65,5 @@ private:
 	bool showHexes = false;
 
 	std::vector<CDoorRect>  doorRects;
+	std::vector<CDoorBot>  doorBots;
 };

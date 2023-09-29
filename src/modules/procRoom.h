@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "hex/hex.h"
+
 class CHexArray;
 class CProcRoom {
 public:
@@ -18,6 +20,10 @@ public:
 	glm::vec3 getSize() {
 		return size;
 	}
+	CHex getOriginHex() {
+		return worldSpaceToHex(origin);
+	}
+
 
 private:
 	void calcWorldCorners();

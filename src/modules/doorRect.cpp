@@ -94,5 +94,24 @@ void CDoorRect::drawWireFrame() {
 
 /** Write blank hexes for doors, lines of hexes for corridor walls.*/
 void CDoorRect::writeHexes(CHexArray& array) {
+	writeHexLine(door1A, door1B, array);
+	writeHexLine(door2A, door2B, array);
+
+}
+
+/* copypasted from CRoom - find a better way! */
+void CDoorRect::writeHexLine(glm::vec3& a, glm::vec3& b, CHexArray& array) {
+	CHex A = worldSpaceToHex(a);
+	CHex B = worldSpaceToHex(b);
+
+	THexList hexes;
+
+	hexes = *hexLine(A, B);
+
+	for (auto& hex : hexes) {
+		array.getHexCube(hex).content = solidHex;
+	}
+
+	return;
 
 }
