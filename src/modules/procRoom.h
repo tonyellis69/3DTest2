@@ -23,7 +23,14 @@ public:
 	CHex getOriginHex() {
 		return worldSpaceToHex(origin);
 	}
-
+	THexList getCornerHexes() {
+		THexList corners;
+		corners.push_back(worldSpaceToHex(a));
+		corners.push_back(worldSpaceToHex(b));
+		corners.push_back(worldSpaceToHex(c));
+		corners.push_back(worldSpaceToHex(d));
+		return corners;
+	}
 
 private:
 	void calcWorldCorners();

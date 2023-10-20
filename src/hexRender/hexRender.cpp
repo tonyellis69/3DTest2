@@ -120,8 +120,10 @@ void CHexRender::loadMap(CHexArray* hexArray) {
 			CHex hex = pHexArray->indexToCube(x, y);
 			if (tile == emptyHex)
 				addToMapBuf(verts, index, hex, 0);
-			else
+			if (tile == solidHex)
 				addToMapBuf(verts, index, hex, 1);
+			if (tile == testHex)
+				addToMapBuf(verts, index, hex, 2);
 
 		}
 	}

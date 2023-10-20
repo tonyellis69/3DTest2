@@ -106,6 +106,12 @@ void CProcGen::guiHandler(CGUIevent& e)
 			initPaths();
 			runDoorBots();
 		}
+		if (e.key >= '1' && e.key <= '9') {
+			if (mstEdges.empty())
+				return;
+			int startRoom = e.key - 49;
+			findPathDijkstra(mstEdges[startRoom].a, mstEdges[startRoom].b);
+		}
 		if (e.key == 'H') {
 			showHexes = !showHexes;
 			if (showHexes) {
@@ -117,11 +123,12 @@ void CProcGen::guiHandler(CGUIevent& e)
 			}
 			gameWorld.updateHexMap(hexArray);
 		}
+		if (e.key == 'S') {
+			solveDoorPaths();
+			gameWorld.updateHexMap(hexArray);
+		}
 
 	}
-
-
-
 }
 
 glm::vec3 CProcGen::randomPos() {
@@ -159,6 +166,8 @@ void CProcGen::arrangeRooms() {
 	mstEdges.clear();
 	doorRects.clear();
 	doorBots.clear();
+	hexArray.clear();
+	gameWorld.updateHexMap(hexArray);
 	for (int r = 0; r < maxRooms; r++) {
 		rooms.push_back(CProcRoom(randomPos(), randomSize()));
 	}
@@ -426,15 +435,6 @@ void CProcGen::drawHexes() {
 	for (auto& room : rooms) {
 		room.writeHexes(hexArray);
 	}
-
-	//draw doorways
-	//for (auto& doorRect : doorRects) {
-	//	doorRect.writeHexes(hexArray);
-	//}
-
-
-
-
 }
 
 void CProcGen::initPaths() {
@@ -463,32 +463,59 @@ void CProcGen::runDoorBots() {
 
 void CProcGen::drawPaths() {
 	float size = 0.5f;
-	imRendr::setDrawColour({ 1,1,1,0.75f });
 
-	for (int x = 0; x < hexArray.width; x++)
-		for (int y = 0; y < hexArray.height; y++) {;
-			if (hexArray.getHexOffset(x, y).cost == 10) {
-				glm::vec3 hexPos = hexArray.getHexOffset(x, y).position;
-				imRendr::drawLine(hexPos + glm::vec3(-size, 0, 0), hexPos + glm::vec3(size, 0, 0));
-				imRendr::drawLine(hexPos + glm::vec3(0, -size, 0), hexPos + glm::vec3(0, size, 0));
+	//draws cost:
+	//for (int x = 0; x < hexArray.width; x++)
+	//	for (int y = 0; y < hexArray.height; y++) {
+	//		if (hexArray.getHexOffset(x, y).cost == 0)
+	//			continue;
+	//		if (hexArray.getHexOffset(x, y).cost == 1)
+	//			imRendr::setDrawColour({ 1,1,1,0.75f });
+	//		if (hexArray.getHexOffset(x, y).cost == 2)
+	//			imRendr::setDrawColour({ 0,0,1,1 });
+	//		if (hexArray.getHexOffset(x, y).cost == 3)
+	//			imRendr::setDrawColour({ 1,0,0,0.75f });
+	//		if (hexArray.getHexOffset(x, y).cost == 4)
+	//			imRendr::setDrawColour({ 1,0,0,1 });
 
+	//		glm::vec3 hexPos = hexArray.getHexOffset(x, y).position;
+	//		imRendr::drawLine(hexPos + glm::vec3(-size, 0, 0), hexPos + glm::vec3(size, 0, 0));
+	//		imRendr::drawLine(hexPos + glm::vec3(0, -size, 0), hexPos + glm::vec3(0, size, 0));
+	//	}
+
+
+	//draws came-from:
+	for (auto& hex : cameFrom) {
+		CHex currentHex = axialToCube(hex.first.x, hex.first.y);
+
+		switch (hexArray.getHexCube(currentHex).cost) {
+		case 1: imRendr::setDrawColour({ 1,1,1,0.75f }); break;
+		case 2: imRendr::setDrawColour({ 0,0,1,1 }); break;
+		case 3: imRendr::setDrawColour({ 1,0,0,0.75f }); break;
+		case 4: imRendr::setDrawColour({ 1,0,0,1 }); break;
 		}
+
+		CHex cameFromHex = hex.second;
+		THexDir dir = relativeDir(currentHex, cameFromHex);
+		glm::vec3 pt = moveVector3D[dir] * 0.5f;;
+		glm::vec3 hexPos = cubeToWorldSpace(currentHex);
+		imRendr::drawLine(hexPos , hexPos + pt);
+
 	}
+
+	
 	imRendr::setDrawColour({ 1,1,1,1 });
 
 }
 
-
-
-/** Flood-fill rooms with pathfinding values for door creation. */
+/** Give room hexes useful cost values for pathfinding. */
 void CProcGen::fillRooms() {
-	//for each room, do a breadth-first search for empty hexes.
+	int roomNo = 0;
 	for (auto& room : rooms) {
+
 		std::queue<CHex>  frontier;
 		frontier.push(room.getOriginHex());
-		std::unordered_map<glm::i32vec2,CHex> reached;
-		reached[room.getOriginHex().getAxial()] = room.getOriginHex();
-
+		std::unordered_map<glm::i32vec2, CHex> reached;
 
 		while (!frontier.empty()) {
 			CHex current = frontier.front();
@@ -498,26 +525,134 @@ void CProcGen::fillRooms() {
 			for (int dir = 0; dir < 6; dir++) {
 				CHex& next = getNeighbour(current, (THexDir)dir);
 
-				if (hexArray.getHexCube(next).content == solidHex)
-					continue; //solid hex
+				if (hexArray.getHexCube(next).content == solidHex) {
+					hexArray.getHexCube(next).cost = 2;
+					continue; //stop at solid hexes
+				}
 
 				if (hexArray.outsideArray(next))
 					continue;
 
-				//if next not in reached
 				if (reached.find(next.getAxial()) == reached.end()) {
 					frontier.push(next);
 					reached[next.getAxial()] = next;
-					hexArray.getHexCube(next).cost = 10;
+					hexArray.getHexCube(next).cost = 1;
+					hexArray.getHexCube(next).roomNo = roomNo;
 				}
 
 			}
 
-
-
 		}
-
+		roomNo++;
 
 
 	}
+
+	//ensure corners are verbotten
+	for (auto& room : rooms) {
+		THexList corners = room.getCornerHexes();
+		for (auto& corner : corners) {
+			hexArray.getHexCube(corner).cost = 4;
+			for (int dir = 0; dir < 6; dir++)
+				hexArray.getHexCube(getNeighbour(corner, (THexDir)dir)).cost = 4;					
+		}
+	}
+
+}
+
+
+
+/** Map the paths from A to B, with their costs. */
+void CProcGen::findPath(int roomA, int roomB) {
+
+	CProcRoom& startRoom = rooms[roomA];
+	CProcRoom& endRoom = rooms[roomB];
+	CHex endHex = endRoom.getOriginHex();
+
+	std::queue<CHex>  frontier;
+	frontier.push(startRoom.getOriginHex());
+	//std::unordered_map<glm::i32vec2, CHex> reached;
+	//reached[startRoom.getOriginHex().getAxial()] = startRoom.getOriginHex();
+	cameFrom.clear();
+
+	while (!frontier.empty()) {
+		CHex current = frontier.front();
+		frontier.pop();
+
+		if (current == endHex)
+			break;
+
+		//for each neighbour of this hex
+		for (int dir = 0; dir < 6; dir++) {
+			CHex& next = getNeighbour(current, (THexDir)dir);
+
+			if (hexArray.getHexCube(next).content == solidHex) {
+				//continue; //solid hexes never get added to the frontier
+			}
+
+			if (hexArray.outsideArray(next))
+				continue;
+
+			if (cameFrom.find(next.getAxial()) == cameFrom.end()) {
+				frontier.push(next);
+				cameFrom[next.getAxial()] = current;
+			}
+		}
+	}
+}
+
+void CProcGen::findPathDijkstra(int roomA, int roomB) {
+
+	CProcRoom& startRoom = rooms[roomA];
+	CProcRoom& endRoom = rooms[roomB];
+	CHex endHex = endRoom.getOriginHex();
+
+	std::priority_queue<PQElement, std::vector<PQElement>, order> frontier;
+	frontier.push({ 0,startRoom.getOriginHex() });
+	std::unordered_map<glm::i32vec2, int> costSoFar;
+	costSoFar[startRoom.getOriginHex().getAxial()] = 0;
+	cameFrom.clear();
+	//cameFrom[startRoom.getOriginHex().getAxial()] = startRoom.getOriginHex();
+
+	while (!frontier.empty()) {
+		CHex current = frontier.top().second;
+		frontier.pop();
+
+		if (current == endHex)
+			break;
+
+		int roomNo = hexArray.getHexCube(current).roomNo;
+		if (roomNo != -1 && roomNo != roomA && roomNo != roomB)
+			continue;
+
+		//for each neighbour of this hex
+		for (int dir = 0; dir < 6; dir++) {
+			CHex& next = getNeighbour(current, (THexDir)dir);
+
+			if (hexArray.outsideArray(next))
+				continue;
+
+		
+
+			int newCost = costSoFar[current.getAxial()] + hexArray.getHexCube(next).cost;
+
+			if (costSoFar.find(next.getAxial()) == costSoFar.end() || newCost < costSoFar[next.getAxial()]) {
+				costSoFar[next.getAxial()] = newCost;
+				frontier.push({ newCost,next });
+				cameFrom[next.getAxial()] = current;
+			}
+		}
+	}
+}
+
+void CProcGen::solveDoorPaths() {
+	for (auto& roomPair : mstEdges) {
+		findPathDijkstra(roomPair.a, roomPair.b);
+		CHex currentHex = rooms[roomPair.b].getOriginHex();
+		while (currentHex != rooms[roomPair.a].getOriginHex()) {
+			hexArray.getHexCube(currentHex).content = testHex;
+			currentHex = cameFrom[currentHex.getAxial()];
+		}
+	}
+
 }

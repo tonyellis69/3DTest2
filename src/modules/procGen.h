@@ -38,6 +38,9 @@ private:
 	void runDoorBots();
 	void drawPaths();
 	void fillRooms();
+	void findPath(int roomA, int roomB);
+	void findPathDijkstra(int roomA, int roomB);
+	void solveDoorPaths();
 
 
 	CEntity* mainCam;
@@ -66,4 +69,7 @@ private:
 
 	std::vector<CDoorRect>  doorRects;
 	std::vector<CDoorBot>  doorBots;
+
+	std::unordered_map<glm::i32vec2, CHex> cameFrom;
 };
+
