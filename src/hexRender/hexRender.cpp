@@ -124,6 +124,10 @@ void CHexRender::loadMap(CHexArray* hexArray) {
 				addToMapBuf(verts, index, hex, 1);
 			if (tile == testHex)
 				addToMapBuf(verts, index, hex, 2);
+			if (tile == testHex2)
+				addToMapBuf(verts, index, hex, 3);
+			if (tile == testHex3)
+				addToMapBuf(verts, index, hex, 4);
 
 		}
 	}

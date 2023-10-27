@@ -618,6 +618,8 @@ void CProcGen::findPathDijkstra(int roomA, int roomB) {
 		CHex current = frontier.top().second;
 		frontier.pop();
 
+
+
 		if (current == endHex)
 			break;
 
@@ -625,14 +627,36 @@ void CProcGen::findPathDijkstra(int roomA, int roomB) {
 		if (roomNo != -1 && roomNo != roomA && roomNo != roomB)
 			continue;
 
+		if (hexArray.getHexCube(current).cost == 4)
+			continue;
+
+
+
+		if (current == CHex(-6, 7, -1))
+			int b = 0;
+
 		//for each neighbour of this hex
 		for (int dir = 0; dir < 6; dir++) {
 			CHex& next = getNeighbour(current, (THexDir)dir);
 
+			if (next == CHex(-6, 7, -1))
+				int b = 0;
+
 			if (hexArray.outsideArray(next))
 				continue;
 
-		
+			if (hexArray.getHexCube(next).cost == 4)
+				continue; //why is this necessary?
+
+	
+			//disqualify solid hexes if there isn't a neighbour hex we can also remove (doors being 2 hexes wide) 
+			if ( hexArray.getHexCube(next).content == solidHex) {
+				if (hexArray.getHexCube(getNeighbour(next,hexEast)).cost == 4 ||
+					hexArray.getHexCube(getNeighbour(next, hexSE)).cost == 4 ||
+					hexArray.getHexCube(getNeighbour(next, hexSW)).cost == 4) {
+					continue;
+				}
+			}
 
 			int newCost = costSoFar[current.getAxial()] + hexArray.getHexCube(next).cost;
 
@@ -649,7 +673,55 @@ void CProcGen::solveDoorPaths() {
 	for (auto& roomPair : mstEdges) {
 		findPathDijkstra(roomPair.a, roomPair.b);
 		CHex currentHex = rooms[roomPair.b].getOriginHex();
+		bool horizontalTravel = false;
 		while (currentHex != rooms[roomPair.a].getOriginHex()) {
+			if (currentHex == CHex(-4, 9, -5))
+				int b = 0;
+
+
+			CHex comeFromHex = cameFrom[currentHex.getAxial()];
+			THexDir fromDir = neighbourDirection(currentHex,comeFromHex);
+			 
+
+			if (hexArray.getHexCube(currentHex).content == solidHex || hexArray.getHexCube(currentHex).content == testHex) {
+	
+					if (hexArray.getHexCube(getNeighbour(currentHex, hexEast)).content == solidHex) {
+						hexArray.getHexCube(getNeighbour(currentHex, hexEast)).content = testHex;
+					}
+					if (hexArray.getHexCube(getNeighbour(currentHex, hexSE)).content == solidHex) {
+						hexArray.getHexCube(getNeighbour(currentHex, hexSE)).content = testHex;
+					}
+					if (hexArray.getHexCube(getNeighbour(currentHex, hexSW)).content == solidHex) {
+						hexArray.getHexCube(getNeighbour(currentHex, hexSW)).content = testHex;
+					}
+				
+
+			}
+
+
+
+
+			horizontalTravel = (fromDir == hexEast || fromDir == hexWest) ? true : false;
+			if (horizontalTravel) {
+				CHex NW = getNeighbour(currentHex, hexNW);
+				if (hexArray.getHexCube(NW).roomNo == -1 && hexArray.getHexCube(NW).content != solidHex)
+					hexArray.getHexCube(NW).content = testHex2;
+				CHex NE = getNeighbour(currentHex, hexNE);
+				if (hexArray.getHexCube(NE).roomNo == -1 && hexArray.getHexCube(NE).content != solidHex)
+					hexArray.getHexCube(NE).content = testHex2;
+			}
+			else {
+				CHex W = getNeighbour(currentHex, hexWest);
+				if (hexArray.getHexCube(W).roomNo == -1 && hexArray.getHexCube(W).content == emptyHex)
+					hexArray.getHexCube(W).content = testHex2;
+				CHex E = getNeighbour(currentHex, hexEast);
+				E = getNeighbour(E, hexEast);
+				if (hexArray.getHexCube(E).roomNo == -1 && hexArray.getHexCube(E).content == emptyHex)
+					hexArray.getHexCube(E).content = testHex3;
+
+
+			}
+
 			hexArray.getHexCube(currentHex).content = testHex;
 			currentHex = cameFrom[currentHex.getAxial()];
 		}

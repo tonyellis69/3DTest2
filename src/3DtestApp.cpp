@@ -346,9 +346,14 @@ void C3DtestApp::initHexWorld() {
 	//tiles
 	std::vector<glm::vec4> hex = { { 0.0f,0.3f,0.0f,1.0f} };
 	std::vector<glm::vec4> largerHex = { { 0.0f,0.0f,0.9f,1.0f}, { 0.5f,0.5f,0.8f,1.0f} };
+	std::vector<glm::vec4> green = { { 0.0f,0.9f,0.0f,1.0f} };
+	std::vector<glm::vec4> red = { { 0.9f,0.0f,0.0f,1.0f} };
+
 	hexEngine.addHexTile("hex", dataPath + "models\\hex.dae", hex);
 	hexEngine.addHexTile("largeHex", dataPath + "models\\largeHex.dae", largerHex);
 	hexEngine.addHexTile("dummy", dataPath + "models\\dummyItem.dae", largerHex); //temp for test purposes!
+	hexEngine.addHexTile("dummy2", dataPath + "models\\dummyItem.dae", green); //temp for test purposes!
+	hexEngine.addHexTile("dummy3", dataPath + "models\\dummyItem.dae", red); //temp for test purposes!
 
 	hexEngine.initialise(); //TODO: maybe the meshloading above goes in init? Is one-off setup stuff.
 	//hexWorld.start();
