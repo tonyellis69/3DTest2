@@ -8,7 +8,7 @@
 
 #include "intersect.h"
 
-CDoorRect::CDoorRect(CProcRoom& roomA, CProcRoom& roomB) {
+CDoorRect::CDoorRect(CProcRoom& A, CProcRoom& B) : roomA(A), roomB(B) {
 	glm::vec3 AhalfSize = roomA.getSize() / 2.0f;
 	glm::vec3 BhalfSize = roomB.getSize() / 2.0f;
 
@@ -45,24 +45,39 @@ CDoorRect::CDoorRect(CProcRoom& roomA, CProcRoom& roomB) {
 
 
 
-//	if (abs(vecAB.x) > abs(vecAB.y)) { //left-right door
+//	if (abs(vecAB.x) > abs(vecAB.y)) {
 //	if ( (AhalfSize.x + BhalfSize.x) - vecAB.x <= 0) {
-		midPt1 = a + (d - a) / 2.0f;
+
+
+		//left-right door
+		const float halfDoorHeight = hexHeight;// *1.5f;
+
+		if (glm::length(a - d) < hexRowHeight * 4) {
+			tooSmall = true;
+		}
+
+		midPt1 = a + (d - a) / 2.0f;     
 		midPt2 = b + (c - b) / 2.0f;
 
-		const float halfDoorHeight = hexHeight;// *1.5f;
+		
 		door1A = midPt1 + glm::vec3(0,halfDoorHeight, 0);
 		door1B = midPt1 + glm::vec3(0,-halfDoorHeight, 0);
 		door2A = midPt2 + glm::vec3(0,halfDoorHeight, 0);
 		door2B = midPt2 + glm::vec3(0,-halfDoorHeight, 0);
 	} 
-	else {
+	else {	//top-bottom door
+		const float halfDoorWidth = hexWidth;// hexWidth * 1.5f;
+
+		if (glm::length(b - a) + 0.0001f < hexWidth * 4) {
+			tooSmall = true;
+		}
+
 		midPt1 = a + (b - a) / 2.0f;
 		midPt2 = d + (c - d) / 2.0f;
 		midPt1 = cubeToWorldSpace(worldSpaceToHex(midPt1));
 		midPt2 = cubeToWorldSpace(worldSpaceToHex(midPt2));
 
-		const float halfDoorWidth = hexWidth;// hexWidth * 1.5f;
+		
 		door1A = midPt1 + glm::vec3(halfDoorWidth, 0, 0) ;
 		door1B = midPt1 + glm::vec3(-halfDoorWidth, 0, 0);
 		door2A = midPt2 + glm::vec3(halfDoorWidth, 0, 0) ;
@@ -78,13 +93,19 @@ CDoorRect::CDoorRect(CProcRoom& roomA, CProcRoom& roomB) {
 }
 
 void CDoorRect::drawWireFrame() {
-	imRendr::setDrawColour({0,1,0,1});
+	if (tooSmall)
+		imRendr::setDrawColour({1,0,0,1 });
+	else
+		imRendr::setDrawColour({0,1,0,1});
 	imRendr::drawLine(a, b);
 	imRendr::drawLine(b, c);
 	imRendr::drawLine(c, d);
 	imRendr::drawLine(d, a);
 
-	imRendr::setDrawColour({ 1,0,1,1 });
+	if (tooSmall)
+		imRendr::setDrawColour({ 1,0,0,1 });
+	else
+		imRendr::setDrawColour({ 1,0,1,1 });
 	imRendr::drawLine(door1A, door1B);
 	imRendr::drawLine(door2A, door2B);
 

@@ -67,6 +67,12 @@ void CProcGen::update(float dt) {
 		}
 	}
 
+	if (!indiRects.empty()) {
+		for (auto& indiRect : indiRects) {
+			indiRect.drawWireFrame();
+		}
+	}
+
 	for (auto& bot : doorBots) {
 		bot.drawPos();
 	}
@@ -165,6 +171,7 @@ void CProcGen::arrangeRooms() {
 	triEdges.clear();
 	mstEdges.clear();
 	doorRects.clear();
+	indiRects.clear();
 	doorBots.clear();
 	hexArray.clear();
 	gameWorld.updateHexMap(hexArray);
@@ -425,9 +432,30 @@ void CProcGen::createMST() {
 /** Create rects for each doorway, establishing orientation, size. */
 void CProcGen::createDoorways() {
 	doorRects.clear();
+	indiRects.clear();
 	for (auto& edge : mstEdges) {
-		doorRects.push_back(CDoorRect(rooms[edge.a], rooms[edge.b]));
+		CDoorRect doorRect(rooms[edge.a], rooms[edge.b]);
+		if (doorRect.tooSmall)
+			createIndiRect(doorRect);
+		else
+			doorRects.push_back(doorRect);
+
 	}
+}
+
+/** Create an CIndiRect to replace the given doorRect. */
+void CProcGen::createIndiRect(CDoorRect& failDoorRect) {
+	CIndiRect A(failDoorRect.roomA, failDoorRect.roomB);
+	CIndiRect B(failDoorRect.roomB, failDoorRect.roomA);
+
+	//clip indiRects against existing doors
+	//pick best
+	//if none, freak out 
+
+	//add to drawing list unchecked for now:
+	indiRects.push_back(A);
+	indiRects.push_back(B);
+
 }
 
 /** Write rooms as hexes to our hexArray. */

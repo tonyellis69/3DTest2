@@ -3,9 +3,10 @@
 #include <glm/glm.hpp>
 
 #include "hex/hex.h"
+#include "baseRect.h"
 
 class CHexArray;
-class CProcRoom {
+class CProcRoom : public CBaseRect {
 public:
 	CProcRoom(glm::vec3& pos, glm::i32vec2& size);
 	void drawWireFrame();
@@ -32,6 +33,11 @@ public:
 		return corners;
 	}
 
+	//glm::vec3 a;
+	//glm::vec3 b;
+	//glm::vec3 c;
+	//glm::vec3 d;
+
 private:
 	void calcWorldCorners();
 	void writeHexLine(glm::vec3& a, glm::vec3& b, CHexArray& array);
@@ -39,10 +45,7 @@ private:
 	glm::vec3 origin;
 	glm::vec3 size;
 
-	glm::vec3 a;
-	glm::vec3 b;
-	glm::vec3 c;
-	glm::vec3 d;
+
 
 
 

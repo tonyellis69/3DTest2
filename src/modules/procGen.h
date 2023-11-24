@@ -8,6 +8,7 @@
 #include "procRoom.h"
 #include "doorRect.h"
 #include "doorBot.h"
+#include "indiRect.h"
 
 class CProcGen : public CBaseModule {
 public:
@@ -16,8 +17,16 @@ public:
 	void update(float dt);
 	void guiHandler(CGUIevent& e);
 
+	struct edge {
+		int a;
+		int b;
+		bool operator==(const edge& rhs) {
+			return  (a == rhs.a && b == rhs.b) || (b == rhs.a && a == rhs.b);
+		}
+	};
 
 private:
+
 	glm::vec3 randomPos();
 	glm::i32vec2 randomSize();
 	void arrangeRooms();
@@ -33,6 +42,7 @@ private:
 	void triangulate();
 	void createMST();
 	void createDoorways();
+	void createIndiRect(CDoorRect& failDoorRect);
 	void drawHexes();
 	void initPaths();
 	void runDoorBots();
@@ -53,15 +63,9 @@ private:
 
 	glm::vec3 centreOfMass;
 
-	unsigned int seed =  0;
+	unsigned int seed = 76;// 180;// 76;// 164;// 76;//has a too-small overlap
 
-	struct edge {
-		int a;
-		int b;
-		bool operator==(const edge& rhs) {
-			return  (a == rhs.a && b == rhs.b) || (b == rhs.a && a == rhs.b);
-		}
-	};
+
 	std::vector<edge> triEdges;
 	std::vector<edge> mstEdges;
 
@@ -69,6 +73,7 @@ private:
 
 	std::vector<CDoorRect>  doorRects;
 	std::vector<CDoorBot>  doorBots;
+	std::vector<CIndiRect>  indiRects;
 
 	std::unordered_map<glm::i32vec2, CHex> cameFrom;
 };

@@ -240,6 +240,12 @@
     <ClCompile Include="src\modules\doorBot.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
+    <ClCompile Include="src\modules\indiRect.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\baseRect.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\3DtestApp.h">
@@ -456,6 +462,12 @@
       <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="src\modules\doorBot.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\indiRect.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\baseRect.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,6 +14,10 @@ public:
 
 	void writeHexLine(glm::vec3& a, glm::vec3& b, CHexArray& array);
 
+	bool tooSmall = false;
+
+	CProcRoom& roomA;
+	CProcRoom& roomB;
 
 	glm::vec3 origin;
 	glm::vec3 size;
