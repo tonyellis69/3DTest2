@@ -449,8 +449,22 @@ void CProcGen::createIndiRect(CDoorRect& failDoorRect) {
 	CIndiRect B(failDoorRect.roomB, failDoorRect.roomA);
 
 	//clip indiRects against existing doors
+
+	for (auto& room : rooms) {
+		if (A.clip(room) == false) {
+			break;
+		}
+	}
+
+	for (auto& room : rooms) {
+		if (B.clip(room) == false) {
+			break;
+		}
+	}
 	//pick best
 	//if none, freak out 
+
+	
 
 	//add to drawing list unchecked for now:
 	indiRects.push_back(A);
@@ -660,15 +674,12 @@ void CProcGen::findPathDijkstra(int roomA, int roomB) {
 
 
 
-		if (current == CHex(-6, 7, -1))
-			int b = 0;
 
 		//for each neighbour of this hex
 		for (int dir = 0; dir < 6; dir++) {
 			CHex& next = getNeighbour(current, (THexDir)dir);
 
-			if (next == CHex(-6, 7, -1))
-				int b = 0;
+
 
 			if (hexArray.outsideArray(next))
 				continue;

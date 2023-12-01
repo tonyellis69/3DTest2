@@ -240,10 +240,10 @@
     <ClCompile Include="src\modules\doorBot.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
-    <ClCompile Include="src\modules\indiRect.cpp">
+    <ClCompile Include="src\modules\baseRect.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
-    <ClCompile Include="src\modules\baseRect.cpp">
+    <ClCompile Include="src\modules\indiRect.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
   </ItemGroup>

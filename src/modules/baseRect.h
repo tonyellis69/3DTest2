@@ -7,6 +7,8 @@ class CBaseRect {
 public:
 	bool isOnBoundary(glm::vec3& p);
 	glm::vec3 getVert(int i);
+	void setVerts(glm::vec3&v, glm::vec3& op);
+	bool operator ==(const CBaseRect& other);
 
 	glm::vec3 a;
 	glm::vec3 b;

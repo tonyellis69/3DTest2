@@ -63,7 +63,7 @@ private:
 
 	glm::vec3 centreOfMass;
 
-	unsigned int seed = 76;// 180;// 76;// 164;// 76;//has a too-small overlap
+	unsigned int seed = 219;// 180;// 180;// 180;// 76;// 164;// 76;//has a too-small overlap
 
 
 	std::vector<edge> triEdges;

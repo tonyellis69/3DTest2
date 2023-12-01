@@ -4,7 +4,7 @@
 
 #include "renderer/imRendr/imRendr.h"
 
-CIndiRect::CIndiRect(CProcRoom& roomA, CProcRoom& roomB) {
+CIndiRect::CIndiRect(CProcRoom& roomA, CProcRoom& roomB) : A(roomA), B(roomB) {
 
 	glm::vec3 BL;
 	glm::vec3 TR;
@@ -33,13 +33,16 @@ CIndiRect::CIndiRect(CProcRoom& roomA, CProcRoom& roomB) {
 	for (int i = 0; i < 4; i++) {
 		glm::vec3 v = getVert(i);
 		if (roomA.isOnBoundary(v) && roomB.isOnBoundary(v))
-			sharedVert = i;
+			sharedCorner = i;
 	}
 }
 
 void CIndiRect::drawWireFrame() {
 
-	imRendr::setDrawColour({ 1,0,0,1 });
+	if (scrapped)
+		imRendr::setDrawColour({ 1,1,0,1 });
+	else
+		imRendr::setDrawColour({ 1,0,0,1 });
 
 	imRendr::drawLine(a, b);
 	imRendr::drawLine(b, c);
@@ -48,3 +51,67 @@ void CIndiRect::drawWireFrame() {
 
 	imRendr::setDrawColour({ 1,1,1,1 });
 }
+
+
+bool CIndiRect::clip(CProcRoom& room) {
+	if (room == A || room == B)
+		return true;
+
+	
+
+	//if there's no intersection, bail
+	float x1 = std::max(d.x, room.d.x);
+	float y1 = std::max(d.y, room.d.y);
+	float x2 = std::min(b.x , room.b.x);
+	float y2 = std::min(b.y , room.b.y);
+	if (x1 >= x2 || y1 >= y2)
+		return true;
+
+
+
+	//find the intersection rect that has sharedVert.
+
+	//let opCorner be this indiRect's corner diagonally opposite sharedCorner
+	int opCorner = (sharedCorner + 2) % 4;
+	glm::vec3 sharedVert = getVert(sharedCorner);
+	glm::vec3 opVert = getVert(opCorner);
+
+	//if intersecting room has shared vert, it must cover this rect
+	for (int c = 0; c < 4; c++) {
+		if (glm::distance(room.getVert(c), sharedVert) < 0.0001) {
+			scrapped = true;
+			return false;
+		}
+	}
+
+	glm::vec3 oldOpVert = opVert;
+
+	if ((y1 != sharedVert.y) && abs(y1) < abs(opVert.y))
+		opVert.y = y1;
+	if ((y2 != sharedVert.y) && abs(y2) < abs(opVert.y))
+		opVert.y = y2;
+
+	if ((x1 != sharedVert.x ) && abs(x1) < abs(opVert.x))
+		opVert.x = x1;
+	if ((x2 != sharedVert.x != 0) && abs(x2) < abs(opVert.x))
+		opVert.x = x2;
+
+	if (opVert.x != oldOpVert.x && opVert.y != oldOpVert.y) {
+		//revert the biggest change
+		glm::vec3 diff = opVert - sharedVert;
+		if (abs(diff.x) < abs(diff.y))
+			opVert.x = oldOpVert.x;
+		else
+			opVert.y = oldOpVert.y;
+	}
+
+
+
+	if (sharedVert.x == opVert.x || sharedVert.y == opVert.y)
+		return true;
+
+	setVerts(sharedVert, opVert);
+
+	return true;
+}
+
