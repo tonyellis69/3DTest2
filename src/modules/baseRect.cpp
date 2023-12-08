@@ -38,6 +38,27 @@ void CBaseRect::setVerts(glm::vec3& v, glm::vec3& op) {
 }
 
 bool CBaseRect::operator ==(const CBaseRect& other) {
-    return a == other.a && b == other.b && c == other.c && d == other.d;
+    return glm::distance(a,other.a) < 0.0001 && glm::distance(b,other.b) < 0.0001 
+        && glm::distance( c, other.c) < 0.0001 && glm::distance(d, other.d) < 0.0001;
+}
+
+bool CBaseRect::overlap(CBaseRect& other) {
+    float x1 = std::max(d.x, other.d.x);
+    float y1 = std::max(d.y, other.d.y);
+    float x2 = std::min(b.x, other.b.x);
+    float y2 = std::min(b.y, other.b.y);
+    return (x1 < x2 && y1 < y2);
+}
+
+float CBaseRect::volume() {
+    return glm::distance(a,b) * glm::distance(b,c);
+}
+
+float CBaseRect::width() {
+    return glm::distance(a, b);
+}
+
+float CBaseRect::height() {
+    return glm::distance(b, c);
 }
 

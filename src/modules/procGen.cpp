@@ -424,7 +424,6 @@ void CProcGen::createMST() {
 			mstEdges.push_back(minEdge);
 			inMST.insert(newVert);
 		}
-
 	}
 
 }
@@ -436,7 +435,7 @@ void CProcGen::createDoorways() {
 	for (auto& edge : mstEdges) {
 		CDoorRect doorRect(rooms[edge.a], rooms[edge.b]);
 		if (doorRect.tooSmall)
-			createIndiRect(doorRect);
+			 createIndiRect(doorRect);
 		else
 			doorRects.push_back(doorRect);
 
@@ -445,31 +444,63 @@ void CProcGen::createDoorways() {
 
 /** Create an CIndiRect to replace the given doorRect. */
 void CProcGen::createIndiRect(CDoorRect& failDoorRect) {
+	//shared vec should be 2, is it?
 	CIndiRect A(failDoorRect.roomA, failDoorRect.roomB);
 	CIndiRect B(failDoorRect.roomB, failDoorRect.roomA);
 
-	//clip indiRects against existing doors
+	fitIndiRect(A);
+	fitIndiRect(B);
 
-	for (auto& room : rooms) {
-		if (A.clip(room) == false) {
-			break;
-		}
-	}
-
-	for (auto& room : rooms) {
-		if (B.clip(room) == false) {
-			break;
-		}
-	}
 	//pick best
 	//if none, freak out 
+	//if (A.scrapped && B.scrapped)
+	//	return; ///FAIL!!!
 
-	
+	if (A.scrapped) {
+		indiRects.push_back(B);
+		return;
+	}
+	if (B.scrapped) {
+		indiRects.push_back(A);
+		return;
+	}
 
-	//add to drawing list unchecked for now:
-	indiRects.push_back(A);
-	indiRects.push_back(B);
+	if (A.volume() > B.volume())
+		indiRects.push_back(B);
+	else
+		indiRects.push_back(A);
 
+}
+
+void CProcGen::fitIndiRect(CIndiRect& indiRect) {
+	//clip indiRect against existing doors
+	for (auto& room : rooms) {
+		indiRect.clipAgainstRoom(room);
+		if (indiRect.scrapped)
+			return;
+	}
+
+
+	if ( (indiRect.width() < hexWidth * 3) || (indiRect.height() < hexRowHeight * 4) ) {
+		indiRect.scrapped = true;
+		return;
+	}
+
+	//scrap if there's a clash with an existing indiRect
+	for (auto& existingRect : indiRects) {
+		if (existingRect.overlap(indiRect)) {
+			indiRect.scrapped = true;
+			return;
+		}
+	}
+
+	//or an existing doorRect
+	for (auto& doorRect : doorRects) {
+		if (doorRect.overlap(indiRect)) {
+			indiRect.scrapped = true;
+			return;
+		}
+	}
 }
 
 /** Write rooms as hexes to our hexArray. */

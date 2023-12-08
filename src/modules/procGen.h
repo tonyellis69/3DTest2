@@ -43,6 +43,7 @@ private:
 	void createMST();
 	void createDoorways();
 	void createIndiRect(CDoorRect& failDoorRect);
+	void fitIndiRect(CIndiRect& indiRect);
 	void drawHexes();
 	void initPaths();
 	void runDoorBots();
@@ -57,13 +58,13 @@ private:
 	CHexArray hexArray;
 
 	std::vector<CProcRoom>  rooms;
-	int maxRooms = 5;// 30;
+	int maxRooms =5;// 30;
 
 	std::mt19937 randEngine;
 
 	glm::vec3 centreOfMass;
 
-	unsigned int seed = 219;// 180;// 180;// 180;// 76;// 164;// 76;//has a too-small overlap
+	unsigned int seed = 397;// 386;// 436;// 434;// 386;// 386;// 265;// 180;// 219*;// 180;// 180;// 180;// 76;// 164;// 76;//has a too-small overlap
 
 
 	std::vector<edge> triEdges;

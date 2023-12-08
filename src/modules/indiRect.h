@@ -10,13 +10,13 @@ class CIndiRect : public CBaseRect {
 public:
 	CIndiRect(CProcRoom& roomA, CProcRoom& roomB);
 	void drawWireFrame();
-	bool clip(CProcRoom& room);
+	void clipAgainstRoom(CProcRoom& room);
 
 
 	CProcRoom A;
 	CProcRoom B;
 
-	int sharedCorner;
+	int sharedCorner = -1;
 
 	bool scrapped = false;
 
