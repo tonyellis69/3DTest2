@@ -18,4 +18,6 @@ public:
 	glm::vec3 b;
 	glm::vec3 c;
 	glm::vec3 d;
+
+	glm::vec3 origin;
 };

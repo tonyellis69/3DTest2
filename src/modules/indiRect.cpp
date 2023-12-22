@@ -1,6 +1,7 @@
 #include "indiRect.h"
 
 #include "procRoom.h"
+#include "hex/hexArray.h"
 
 #include "renderer/imRendr/imRendr.h"
 
@@ -27,10 +28,7 @@ CIndiRect::CIndiRect(CProcRoom& roomA, CProcRoom& roomB) : A(roomA), B(roomB) {
 	else
 		BL.y = roomB.a.y;
 
-	a = {BL.x, TR.y, 0};
-	b = {TR.x, TR.y, 0 };
-	c = {TR.x, BL.y, 0 };
-	d = {BL.x, BL.y, 0 };
+	setVerts(BL, TR);
 
 	for (int i = 0; i < 4; i++) {
 		glm::vec3 v = getVert(i);
@@ -123,5 +121,108 @@ void CIndiRect::clipAgainstRoom(CProcRoom& room) {
 
 
 	setVerts(sharedVert, opVert);
+}
+
+void CIndiRect::writeHexes(CHexArray& array) {
+	//
+	CHex sharedCornerHex = worldSpaceToHex(getVert(sharedCorner));
+
+	int adjCorner; THexDir inDir; THexDir slopeDir;
+	switch (sharedCorner) {
+	case 0: adjCorner = 1; inDir = hexNW; slopeDir = hexNE; break;
+	case 1: adjCorner = 0; inDir = hexNE;  slopeDir = hexNW;  break;
+	case 2: adjCorner = 3; inDir = hexSE; slopeDir = hexSW; break;
+	case 3: adjCorner = 2; inDir = hexSW;  slopeDir = hexSE;  break;
+	}
+
+	CHex furthestDiagHex = worldSpaceToHex(getVert(adjCorner));
+	furthestDiagHex = (adjCorner == 0 || adjCorner == 3) ? getNeighbour(furthestDiagHex, hexEast)
+		: getNeighbour(furthestDiagHex, hexWest);
+
+	int topR = worldSpaceToHex(a).r +1;
+	int bottomR = worldSpaceToHex(c).r-1;
+
+	CHex mitre[4];
+
+	//find hex where the two diagonals meet
+	CHex tmpHex;
+	if (sharedCorner == 0 || sharedCorner == 2) {
+		mitre[3] = CHex(sharedCornerHex.q, -sharedCornerHex.q - furthestDiagHex.s, furthestDiagHex.s);
+	}
+	else {
+		mitre[3] = CHex(furthestDiagHex.q, -furthestDiagHex.q - sharedCornerHex.s, sharedCornerHex.s);
+	}
+
+	//ensure mitre inside rect 
+	if ((sharedCorner == 3 || sharedCorner == 2) && mitre[3].r < topR) {
+		mitre[3].r = topR;
+		if (sharedCorner == 2)
+			mitre[3].s = -mitre[3].q - mitre[3].r;
+		else
+			mitre[3].q = -mitre[3].s - mitre[3].r;
+	}
+	if ((sharedCorner == 0 || sharedCorner == 1) && mitre[3].r > bottomR) {
+		mitre[3].r = bottomR;
+		if (sharedCorner == 0)
+			mitre[3].s = -mitre[3].q - mitre[3].r;
+		else
+			mitre[3].q = -mitre[3].s - mitre[3].r;
+	}
+
+	//create mitre
+	for (int s = 2; s >= 0; s--) {
+		mitre[s] = getNeighbour(mitre[s + 1], inDir);
+	}
+
+
+	//for (int t = 0; t < 4; t++)
+	//	array.getHexCube(mitre[t]).content = testHex3;
+
+
+	//carve doors
+	bool eastDoor = (sharedCorner == 1 || sharedCorner == 2) ? true : false;
+	bool northDoor = (sharedCorner == 0 || sharedCorner == 1) ? true : false;
+	for (int door = 1; door < 3; door++) {
+		//horizontal
+		CHex currentHex = mitre[door];
+		bool carving = false;
+		while (!carving || array.getHexCube(currentHex).content == solidHex) {
+			if (array.getHexCube(currentHex).content == solidHex) {
+				carving = true;
+				array.getHexCube(currentHex).content = emptyHex;
+			}
+			currentHex = (eastDoor) ? getNeighbour(currentHex, hexEast) : getNeighbour(currentHex, hexWest);
+		}
+
+		//angled
+		currentHex = mitre[door];
+		carving = false;
+		while (!carving || array.getHexCube(currentHex).content == solidHex) {
+			if (array.getHexCube(currentHex).content == solidHex) {
+				carving = true;
+				array.getHexCube(currentHex).content = emptyHex;
+			}
+			currentHex = getNeighbour(currentHex, slopeDir);
+		}
+	}
+
+
+	//corridor walls
+	for (int wall = 0; wall < 4; wall+=3) {
+		//horizontal
+		CHex currentHex = mitre[wall];
+		while (array.getHexCube(currentHex).content != solidHex) {
+			array.getHexCube(currentHex).content = solidHex;
+			currentHex = (eastDoor) ? getNeighbour(currentHex, hexEast) : getNeighbour(currentHex, hexWest);
+		}
+		 
+		//angled
+		currentHex = mitre[wall];
+		while ((northDoor) ? currentHex.r >= topR : currentHex.r <= bottomR) {
+			array.getHexCube(currentHex).content = solidHex;
+			currentHex = getNeighbour(currentHex, slopeDir);
+		} 
+	}
+
 }
 

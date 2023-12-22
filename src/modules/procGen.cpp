@@ -43,9 +43,6 @@ void CProcGen::update(float dt) {
 		room.drawWireFrame();
 	}
 
-	//imRendr::drawLine(centreOfMass - glm::vec3(3,0,0), centreOfMass + glm::vec3(3, 0, 0));
-	//imRendr::drawLine(centreOfMass - glm::vec3(0, 3, 0), centreOfMass + glm::vec3(0, 3, 0));
-
 
 	//draw tris
 	if (!triEdges.empty()) {
@@ -73,11 +70,11 @@ void CProcGen::update(float dt) {
 		}
 	}
 
-	for (auto& bot : doorBots) {
-		bot.drawPos();
-	}
+	//for (auto& bot : doorBots) {
+	//	bot.drawPos();
+	//}
 
-	drawPaths();
+	//drawPaths();
 
 
 }
@@ -108,9 +105,16 @@ void CProcGen::guiHandler(CGUIevent& e)
 			createMST();
 		}
 		if (e.key == 'R') {
-			createDoorways();
-			initPaths();
-			runDoorBots();
+			int failedRoom = createDoorways();
+			if (failedRoom != -1) {
+				rooms.erase(rooms.begin() + failedRoom);
+				doorRects.clear();
+				indiRects.clear();
+				triEdges.clear();
+				mstEdges.clear();
+				triangulate();
+				createMST();
+			};
 		}
 		if (e.key >= '1' && e.key <= '9') {
 			if (mstEdges.empty())
@@ -122,7 +126,8 @@ void CProcGen::guiHandler(CGUIevent& e)
 			showHexes = !showHexes;
 			if (showHexes) {
 				drawHexes();
-				fillRooms();
+				//fillRooms(); //Code might be useful for other purposes
+				removeDoorHexes();
 			}
 			else {
 				hexArray.clear();
@@ -429,21 +434,24 @@ void CProcGen::createMST() {
 }
 
 /** Create rects for each doorway, establishing orientation, size. */
-void CProcGen::createDoorways() {
+int CProcGen::createDoorways() {
 	doorRects.clear();
 	indiRects.clear();
 	for (auto& edge : mstEdges) {
 		CDoorRect doorRect(rooms[edge.a], rooms[edge.b]);
-		if (doorRect.tooSmall)
-			 createIndiRect(doorRect);
+		if (doorRect.tooSmall) {
+			if (!createIndiRect(doorRect)) {
+				return edge.a; //arbitrarily mark one room for removal
+			}
+		}
 		else
 			doorRects.push_back(doorRect);
-
 	}
+	return -1;
 }
 
 /** Create an CIndiRect to replace the given doorRect. */
-void CProcGen::createIndiRect(CDoorRect& failDoorRect) {
+bool CProcGen::createIndiRect(CDoorRect& failDoorRect) {
 	//shared vec should be 2, is it?
 	CIndiRect A(failDoorRect.roomA, failDoorRect.roomB);
 	CIndiRect B(failDoorRect.roomB, failDoorRect.roomA);
@@ -453,23 +461,23 @@ void CProcGen::createIndiRect(CDoorRect& failDoorRect) {
 
 	//pick best
 	//if none, freak out 
-	//if (A.scrapped && B.scrapped)
-	//	return; ///FAIL!!!
+	if (A.scrapped && B.scrapped)
+		return false; ///FAIL!!!
 
 	if (A.scrapped) {
 		indiRects.push_back(B);
-		return;
+		return true;
 	}
 	if (B.scrapped) {
 		indiRects.push_back(A);
-		return;
+		return true;
 	}
 
-	if (A.volume() > B.volume())
+	if (min(A.width(),A.height()) < min(B.width(),B.height()) )
 		indiRects.push_back(B);
 	else
 		indiRects.push_back(A);
-
+	return true;
 }
 
 void CProcGen::fitIndiRect(CIndiRect& indiRect) {
@@ -508,6 +516,16 @@ void CProcGen::drawHexes() {
 	for (auto& room : rooms) {
 		room.writeHexes(hexArray);
 	}
+}
+
+void CProcGen::removeDoorHexes() {
+	for (auto& doorRect : doorRects) {
+		doorRect.writeHexes(hexArray);
+	}
+	for (auto& indiRect : indiRects) {
+		indiRect.writeHexes(hexArray);
+	}
+
 }
 
 void CProcGen::initPaths() {

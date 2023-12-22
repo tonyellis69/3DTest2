@@ -11,6 +11,7 @@ public:
 	CIndiRect(CProcRoom& roomA, CProcRoom& roomB);
 	void drawWireFrame();
 	void clipAgainstRoom(CProcRoom& room);
+	void writeHexes(CHexArray& array);
 
 
 	CProcRoom A;

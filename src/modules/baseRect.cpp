@@ -35,6 +35,8 @@ void CBaseRect::setVerts(glm::vec3& v, glm::vec3& op) {
     c = { TR.x, BL.y,0 };
     d = { BL.x, BL.y, 0 };
 
+    origin = a + (c - a) / 2.0f;
+
 }
 
 bool CBaseRect::operator ==(const CBaseRect& other) {
